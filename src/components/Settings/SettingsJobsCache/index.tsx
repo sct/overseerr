@@ -13,7 +13,7 @@ import { PencilIcon } from '@heroicons/react/solid';
 import type { CacheItem } from '@server/interfaces/api/settingsInterfaces';
 import type { JobId } from '@server/lib/settings';
 import axios from 'axios';
-import { Fragment, useState } from 'react';
+import { Fragment, useReducer, useState } from 'react';
 import type { MessageDescriptor } from 'react-intl';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -73,6 +73,56 @@ interface Job {
   running: boolean;
 }
 
+type JobModalState = {
+  isOpen?: boolean;
+  job?: Job;
+  scheduleHours: number;
+  scheduleMinutes: number;
+};
+
+type JobModalAction =
+  | { type: 'reset' }
+  | { type: 'set'; hours?: number; minutes?: number }
+  | {
+      type: 'close';
+    }
+  | { type: 'open'; job?: Job };
+
+const jobModalReducer = (
+  state: JobModalState,
+  action: JobModalAction
+): JobModalState => {
+  switch (action.type) {
+    case 'reset':
+      return {
+        ...state,
+        isOpen: false,
+        scheduleMinutes: 5,
+        scheduleHours: 1,
+      };
+
+    case 'close':
+      return {
+        ...state,
+        isOpen: false,
+      };
+
+    case 'open':
+      return {
+        ...state,
+        isOpen: true,
+        job: action.job,
+      };
+
+    case 'set':
+      return {
+        ...state,
+        scheduleHours: action.hours ?? state.scheduleHours,
+        scheduleMinutes: action.minutes ?? state.scheduleMinutes,
+      };
+  }
+};
+
 const SettingsJobs = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
@@ -90,15 +140,12 @@ const SettingsJobs = () => {
     }
   );
 
-  const [jobEditModal, setJobEditModal] = useState<{
-    isOpen: boolean;
-    job?: Job;
-  }>({
+  const [jobModalState, dispatch] = useReducer(jobModalReducer, {
     isOpen: false,
+    scheduleHours: 1,
+    scheduleMinutes: 5,
   });
   const [isSaving, setIsSaving] = useState(false);
-  const [jobScheduleMinutes, setJobScheduleMinutes] = useState(5);
-  const [jobScheduleHours, setJobScheduleHours] = useState(1);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -148,10 +195,10 @@ const SettingsJobs = () => {
     const jobScheduleCron = ['0', '0', '*', '*', '*', '*'];
 
     try {
-      if (jobEditModal.job?.interval === 'short') {
-        jobScheduleCron[1] = `*/${jobScheduleMinutes}`;
-      } else if (jobEditModal.job?.interval === 'long') {
-        jobScheduleCron[2] = `*/${jobScheduleHours}`;
+      if (jobModalState.job?.interval === 'short') {
+        jobScheduleCron[1] = `*/${jobModalState.scheduleMinutes}`;
+      } else if (jobModalState.job?.interval === 'long') {
+        jobScheduleCron[2] = `*/${jobModalState.scheduleHours}`;
       } else {
         // jobs with interval: fixed should not be editable
         throw new Error();
@@ -159,18 +206,18 @@ const SettingsJobs = () => {
 
       setIsSaving(true);
       await axios.post(
-        `/api/v1/settings/jobs/${jobEditModal.job?.id}/schedule`,
+        `/api/v1/settings/jobs/${jobModalState.job.id}/schedule`,
         {
           schedule: jobScheduleCron.join(' '),
         }
       );
+
       addToast(intl.formatMessage(messages.jobScheduleEditSaved), {
         appearance: 'success',
         autoDismiss: true,
       });
-      setJobEditModal({ isOpen: false });
-      setJobScheduleHours(1);
-      setJobScheduleMinutes(5);
+
+      dispatch({ type: 'reset' });
       revalidate();
     } catch (e) {
       addToast(intl.formatMessage(messages.jobScheduleEditFailed), {
@@ -198,7 +245,7 @@ const SettingsJobs = () => {
         leave="opacity-100 transition duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
-        show={jobEditModal.isOpen}
+        show={jobModalState.isOpen}
       >
         <Modal
           title={intl.formatMessage(messages.editJobSchedule)}
@@ -207,11 +254,7 @@ const SettingsJobs = () => {
               ? intl.formatMessage(globalMessages.saving)
               : intl.formatMessage(globalMessages.save)
           }
-          onCancel={() => {
-            setJobEditModal({ isOpen: false });
-            setJobScheduleHours(1);
-            setJobScheduleMinutes(5);
-          }}
+          onCancel={() => dispatch({ type: 'reset' })}
           okDisabled={isSaving}
           onOk={() => scheduleJob()}
         >
@@ -222,7 +265,7 @@ const SettingsJobs = () => {
                   {intl.formatMessage(messages.editJobScheduleCurrent)}
                 </label>
                 <div className="form-input-area mt-2 mb-1">
-                  {jobEditModal.job?.cronSchedule}
+                  {jobModalState.job?.cronSchedule}
                 </div>
               </div>
               <div className="form-row">
@@ -230,13 +273,16 @@ const SettingsJobs = () => {
                   {intl.formatMessage(messages.editJobSchedulePrompt)}
                 </label>
                 <div className="form-input-area">
-                  {jobEditModal.job?.interval === 'short' ? (
+                  {jobModalState.job?.interval === 'short' ? (
                     <select
                       name="jobScheduleMinutes"
                       className="inline"
-                      value={jobScheduleMinutes}
+                      value={jobModalState.scheduleMinutes}
                       onChange={(e) =>
-                        setJobScheduleMinutes(Number(e.target.value))
+                        dispatch({
+                          type: 'set',
+                          minutes: Number(e.target.value),
+                        })
                       }
                     >
                       {[5, 10, 15, 20, 30, 60].map((v) => (
@@ -254,9 +300,12 @@ const SettingsJobs = () => {
                     <select
                       name="jobScheduleHours"
                       className="inline"
-                      value={jobScheduleHours}
+                      value={jobModalState.scheduleHours}
                       onChange={(e) =>
-                        setJobScheduleHours(Number(e.target.value))
+                        dispatch({
+                          type: 'set',
+                          hours: Number(e.target.value),
+                        })
                       }
                     >
                       {[1, 2, 3, 4, 6, 8, 12, 24, 48, 72].map((v) => (
@@ -335,9 +384,7 @@ const SettingsJobs = () => {
                     <Button
                       className="mr-2"
                       buttonType="warning"
-                      onClick={() =>
-                        setJobEditModal({ isOpen: true, job: job })
-                      }
+                      onClick={() => dispatch({ type: 'open', job })}
                     >
                       <PencilIcon />
                       <span>{intl.formatMessage(globalMessages.edit)}</span>
