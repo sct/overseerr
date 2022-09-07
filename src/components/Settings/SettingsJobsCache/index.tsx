@@ -81,7 +81,6 @@ type JobModalState = {
 };
 
 type JobModalAction =
-  | { type: 'reset' }
   | { type: 'set'; hours?: number; minutes?: number }
   | {
       type: 'close';
@@ -93,14 +92,6 @@ const jobModalReducer = (
   action: JobModalAction
 ): JobModalState => {
   switch (action.type) {
-    case 'reset':
-      return {
-        ...state,
-        isOpen: false,
-        scheduleMinutes: 5,
-        scheduleHours: 1,
-      };
-
     case 'close':
       return {
         ...state,
@@ -109,9 +100,10 @@ const jobModalReducer = (
 
     case 'open':
       return {
-        ...state,
         isOpen: true,
         job: action.job,
+        scheduleHours: 1,
+        scheduleMinutes: 5,
       };
 
     case 'set':
@@ -217,7 +209,7 @@ const SettingsJobs = () => {
         autoDismiss: true,
       });
 
-      dispatch({ type: 'reset' });
+      dispatch({ type: 'close' });
       revalidate();
     } catch (e) {
       addToast(intl.formatMessage(messages.jobScheduleEditFailed), {
@@ -254,7 +246,7 @@ const SettingsJobs = () => {
               ? intl.formatMessage(globalMessages.saving)
               : intl.formatMessage(globalMessages.save)
           }
-          onCancel={() => dispatch({ type: 'reset' })}
+          onCancel={() => dispatch({ type: 'close' })}
           okDisabled={isSaving}
           onOk={() => scheduleJob()}
         >
