@@ -5,6 +5,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import Modal from '@app/components/Common/Modal';
 import PageTitle from '@app/components/Common/PageTitle';
 import Table from '@app/components/Common/Table';
+import useLocale from '@app/hooks/useLocale';
 import globalMessages from '@app/i18n/globalMessages';
 import { formatBytes } from '@app/utils/numberHelpers';
 import { Transition } from '@headlessui/react';
@@ -13,6 +14,7 @@ import { PencilIcon } from '@heroicons/react/solid';
 import type { CacheItem } from '@server/interfaces/api/settingsInterfaces';
 import type { JobId } from '@server/lib/settings';
 import axios from 'axios';
+import cronstrue from 'cronstrue/i18n';
 import { Fragment, useReducer, useState } from 'react';
 import type { MessageDescriptor } from 'react-intl';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
@@ -117,6 +119,7 @@ const jobModalReducer = (
 
 const SettingsJobs = () => {
   const intl = useIntl();
+  const { locale } = useLocale();
   const { addToast } = useToasts();
   const {
     data,
@@ -257,7 +260,15 @@ const SettingsJobs = () => {
                   {intl.formatMessage(messages.editJobScheduleCurrent)}
                 </label>
                 <div className="form-input-area mt-2 mb-1">
-                  {jobModalState.job?.cronSchedule}
+                  <div>
+                    {jobModalState.job &&
+                      cronstrue.toString(jobModalState.job.cronSchedule, {
+                        locale,
+                      })}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {jobModalState.job?.cronSchedule}
+                  </div>
                 </div>
               </div>
               <div className="form-row">
