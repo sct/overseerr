@@ -47,7 +47,7 @@
     "cookie-parser": "1.4.6",
     "copy-to-clipboard": "3.3.2",
     "country-flag-icons": "1.5.5",
-    "cronstrue": "^2.11.0",
+    "cronstrue": "2.11.0",
     "csurf": "1.11.0",
     "date-fns": "2.29.1",
     "email-templates": "9.0.0",
