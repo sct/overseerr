@@ -25,7 +25,7 @@ import { getAppVersion } from '@server/utils/appVersion';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
-import { merge, omit, set, sortBy } from 'lodash';
+import { escapeRegExp, merge, omit, set, sortBy } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import semver from 'semver';
@@ -344,6 +344,8 @@ settingsRoutes.get(
   (req, res, next) => {
     const pageSize = req.query.take ? Number(req.query.take) : 25;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
+    const search = (req.query.search as string) ?? '';
+    const searchRegexp = new RegExp(escapeRegExp(search), 'i');
 
     let filter: string[] = [];
     switch (req.query.filter) {
@@ -375,6 +377,22 @@ settingsRoutes.get(
       'data',
     ];
 
+    const deepValueStrings = (obj: Record<string, unknown>): string[] => {
+      const values = [];
+
+      for (const val of Object.values(obj)) {
+        if (typeof val === 'string') {
+          values.push(val);
+        } else if (typeof val === 'number') {
+          values.push(val.toString());
+        } else if (val !== null && typeof val === 'object') {
+          values.push(...deepValueStrings(val as Record<string, unknown>));
+        }
+      }
+
+      return values;
+    };
+
     try {
       fs.readFileSync(logFile, 'utf-8')
         .split('\n')
@@ -397,6 +415,19 @@ settingsRoutes.get(
               .forEach((prop) => {
                 set(logMessage, `data.${prop}`, logMessage[prop]);
               });
+          }
+
+          if (req.query.search) {
+            if (
+              // label and data are sometimes undefined
+              !searchRegexp.test(logMessage.label ?? '') &&
+              !searchRegexp.test(logMessage.message) &&
+              !deepValueStrings(logMessage.data ?? {}).some((val) =>
+                searchRegexp.test(val)
+              )
+            ) {
+              return;
+            }
           }
 
           logs.push(logMessage);
