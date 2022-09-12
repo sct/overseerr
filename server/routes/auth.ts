@@ -301,7 +301,7 @@ authRoutes.post('/local', async (req, res, next) => {
     }
 
     // Set logged in session
-    if (user && req.session) {
+    if (req.session) {
       req.session.userId = user.id;
     }
 
