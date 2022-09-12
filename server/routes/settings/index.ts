@@ -433,6 +433,7 @@ settingsRoutes.get('/jobs', (_req, res) => {
       name: job.name,
       type: job.type,
       interval: job.interval,
+      cronSchedule: job.cronSchedule,
       nextExecutionTime: job.job.nextInvocation(),
       running: job.running ? job.running() : false,
     }))
@@ -453,6 +454,7 @@ settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
     name: scheduledJob.name,
     type: scheduledJob.type,
     interval: scheduledJob.interval,
+    cronSchedule: scheduledJob.cronSchedule,
     nextExecutionTime: scheduledJob.job.nextInvocation(),
     running: scheduledJob.running ? scheduledJob.running() : false,
   });
@@ -478,6 +480,7 @@ settingsRoutes.post<{ jobId: string }>(
       name: scheduledJob.name,
       type: scheduledJob.type,
       interval: scheduledJob.interval,
+      cronSchedule: scheduledJob.cronSchedule,
       nextExecutionTime: scheduledJob.job.nextInvocation(),
       running: scheduledJob.running ? scheduledJob.running() : false,
     });
@@ -502,11 +505,14 @@ settingsRoutes.post<{ jobId: string }>(
       settings.jobs[scheduledJob.id].schedule = req.body.schedule;
       settings.save();
 
+      scheduledJob.cronSchedule = req.body.schedule;
+
       return res.status(200).json({
         id: scheduledJob.id,
         name: scheduledJob.name,
         type: scheduledJob.type,
         interval: scheduledJob.interval,
+        cronSchedule: scheduledJob.cronSchedule,
         nextExecutionTime: scheduledJob.job.nextInvocation(),
         running: scheduledJob.running ? scheduledJob.running() : false,
       });
