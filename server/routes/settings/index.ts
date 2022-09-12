@@ -377,17 +377,16 @@ settingsRoutes.get(
       'data',
     ];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const deepValues = (obj: Record<string, any>): any[] => {
+    const deepValueStrings = (obj: Record<string, unknown>): string[] => {
       const values = [];
 
       for (const val of Object.values(obj)) {
-        if (typeof val === 'string' || typeof val === 'number') {
+        if (typeof val === 'string') {
           values.push(val);
-        } else if (typeof val === 'object') {
-          values.push(...deepValues(val));
-        } else {
-          values.push(val);
+        } else if (typeof val === 'number') {
+          values.push(val.toString());
+        } else if (val !== null && typeof val === 'object') {
+          values.push(...deepValueStrings(val as Record<string, unknown>));
         }
       }
 
@@ -423,7 +422,7 @@ settingsRoutes.get(
               // label and data are sometimes undefined
               !searchRegexp.test(logMessage.label ?? '') &&
               !searchRegexp.test(logMessage.message) &&
-              !deepValues(logMessage.data ?? {}).some((val) =>
+              !deepValueStrings(logMessage.data ?? {}).some((val) =>
                 searchRegexp.test(val)
               )
             ) {
