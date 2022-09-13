@@ -62,8 +62,8 @@ export class User {
   })
   public email: string;
 
-  @Column({ nullable: true })
-  public plexUsername?: string;
+  @Column({ type: 'varchar', nullable: true })
+  public plexUsername?: string | null;
 
   @Column({ nullable: true })
   public username?: string;
@@ -77,11 +77,11 @@ export class User {
   @Column({ type: 'date', nullable: true })
   public recoveryLinkExpirationDate?: Date | null;
 
-  @Column({ nullable: true })
-  public plexId?: number;
+  @Column({ type: 'int', nullable: true })
+  public plexId?: number | null;
 
-  @Column({ nullable: true, select: false })
-  public plexToken?: string;
+  @Column({ type: 'varchar', nullable: true, select: false })
+  public plexToken?: string | null;
 
   @Column({ type: 'integer', default: 0 })
   public permissions = 0;

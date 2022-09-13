@@ -189,6 +189,36 @@ authRoutes.post('/plex', async (req, res, next) => {
   }
 });
 
+authRoutes.get('/plex/unlink', isAuthenticated(), async (req, res, next) => {
+  const userRepository = getRepository(User);
+  try {
+    if (!req.user) {
+      throw new Error('User data is not present in request.');
+    }
+
+    const user = await userRepository.findOneByOrFail({ id: req.user.id });
+
+    user.plexId = null;
+    user.plexToken = null;
+    user.avatar = gravatarUrl(user.email, { default: 'mm', size: 200 });
+    user.plexUsername = null;
+
+    await userRepository.save(user);
+
+    return res.status(204).send();
+  } catch (e) {
+    logger.error('Something went wrong unlinking a Plex account', {
+      label: 'API',
+      errorMessage: e.message,
+      userId: req.user?.id,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to unlink plex account.',
+    });
+  }
+});
+
 authRoutes.post('/local', async (req, res, next) => {
   const settings = getSettings();
   const userRepository = getRepository(User);

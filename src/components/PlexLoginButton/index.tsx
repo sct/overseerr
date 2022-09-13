@@ -1,3 +1,4 @@
+import Button from '@app/components/Common/Button';
 import globalMessages from '@app/i18n/globalMessages';
 import PlexOAuth from '@app/utils/plex';
 import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
@@ -11,18 +12,25 @@ const messages = defineMessages({
 
 const plexOAuth = new PlexOAuth();
 
-interface PlexLoginButtonProps {
+type PlexLoginButtonProps = Pick<
+  React.ComponentPropsWithoutRef<typeof Button>,
+  'buttonSize' | 'buttonType'
+> & {
   onAuthToken: (authToken: string) => void;
   isProcessing?: boolean;
   onError?: (message: string) => void;
   textOverride?: string;
-}
+  svgIcon?: React.ReactNode;
+};
 
 const PlexLoginButton = ({
   onAuthToken,
   onError,
   isProcessing,
   textOverride,
+  buttonType = 'plex',
+  buttonSize,
+  svgIcon,
 }: PlexLoginButtonProps) => {
   const intl = useIntl();
   const [loading, setLoading] = useState(false);
@@ -42,16 +50,17 @@ const PlexLoginButton = ({
   };
   return (
     <span className="block w-full rounded-md shadow-sm">
-      <button
+      <Button
         type="button"
         onClick={() => {
           plexOAuth.preparePopup();
           setTimeout(() => getPlexLogin(), 1500);
         }}
         disabled={loading || isProcessing}
-        className="plex-button"
+        buttonType={buttonType}
+        buttonSize={buttonSize}
       >
-        <ArrowLeftOnRectangleIcon />
+        {svgIcon ?? <LoginIcon />}
         <span>
           {loading
             ? intl.formatMessage(globalMessages.loading)
@@ -61,7 +70,7 @@ const PlexLoginButton = ({
             ? textOverride
             : intl.formatMessage(messages.signinwithplex)}
         </span>
-      </button>
+      </Button>
     </span>
   );
 };

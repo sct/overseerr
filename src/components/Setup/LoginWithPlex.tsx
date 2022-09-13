@@ -8,14 +8,20 @@ const messages = defineMessages({
   signinwithplex: 'Sign In with Plex',
 });
 
-interface LoginWithPlexProps {
+type LoginWithPlexProps = Omit<
+  React.ComponentPropsWithoutRef<typeof PlexLoginButton>,
+  'onAuthToken'
+> & {
   onComplete: () => void;
-}
+};
 
-const LoginWithPlex = ({ onComplete }: LoginWithPlexProps) => {
+const LoginWithPlex = ({
+  onComplete,
+  ...plexLoginButtonProps
+}: LoginWithPlexProps) => {
   const intl = useIntl();
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
-  const { user, revalidate } = useUser();
+  const { revalidate } = useUser();
 
   // Effect that is triggered when the `authToken` comes back from the Plex OAuth
   // We take the token and attempt to login. If we get a success message, we will
@@ -26,21 +32,17 @@ const LoginWithPlex = ({ onComplete }: LoginWithPlexProps) => {
       const response = await axios.post('/api/v1/auth/plex', { authToken });
 
       if (response.data?.id) {
-        revalidate();
+        const user = await revalidate();
+        if (user) {
+          setAuthToken(undefined);
+          onComplete();
+        }
       }
     };
     if (authToken) {
       login();
     }
-  }, [authToken, revalidate]);
-
-  // Effect that is triggered whenever `useUser`'s user changes. If we get a new
-  // valid user, we call onComplete which will take us to the next step in Setup.
-  useEffect(() => {
-    if (user) {
-      onComplete();
-    }
-  }, [user, onComplete]);
+  }, [authToken, revalidate, onComplete]);
 
   return (
     <form>
@@ -48,6 +50,7 @@ const LoginWithPlex = ({ onComplete }: LoginWithPlexProps) => {
         <PlexLoginButton
           onAuthToken={(authToken) => setAuthToken(authToken)}
           textOverride={intl.formatMessage(messages.signinwithplex)}
+          {...plexLoginButtonProps}
         />
       </div>
     </form>

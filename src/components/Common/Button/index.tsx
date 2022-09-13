@@ -7,7 +7,8 @@ export type ButtonType =
   | 'danger'
   | 'warning'
   | 'success'
-  | 'ghost';
+  | 'ghost'
+  | 'plex';
 
 // Helper type to override types (overrides onClick)
 type MergeElementProps<
@@ -73,6 +74,9 @@ function Button<P extends ElementTypes = 'button'>(
       buttonStyle.push(
         'text-white bg-transparent border-gray-600 hover:border-gray-200 focus:border-gray-100 active:border-gray-100'
       );
+      break;
+    case 'plex':
+      buttonStyle.push('plex-button');
       break;
     default:
       buttonStyle.push(
