@@ -3100,6 +3100,15 @@ paths:
                   type: string
               required:
                 - authToken
+  /auth/plex/unlink:
+    get:
+      summary: Unlink Plex from currently logged in account
+      description: Will remove connected Plex account information from the currently logged-in user.
+      tags:
+        - auth
+      responses:
+        '204':
+          description: OK
   /auth/local:
     post:
       summary: Sign in using a local account

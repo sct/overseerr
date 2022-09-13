@@ -67,7 +67,7 @@ app
         where: { id: 1 },
       });
 
-      if (admin) {
+      if (admin?.plexToken) {
         logger.info('Migrating Plex libraries to include media type', {
           label: 'Settings',
         });

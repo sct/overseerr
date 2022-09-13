@@ -153,9 +153,12 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
       select: { id: true, plexToken: true },
       where: { id: 1 },
     });
-    const plexTvClient = admin.plexToken
-      ? new PlexTvAPI(admin.plexToken)
-      : null;
+
+    if (!admin.plexToken) {
+      throw new Error('Plex must be configured to retrieve servers.');
+    }
+
+    const plexTvClient = new PlexTvAPI(admin.plexToken);
     const devices = (await plexTvClient?.getDevices())?.filter((device) => {
       return device.provides.includes('server') && device.owned;
     });
@@ -192,7 +195,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
                 useSsl: connection.protocol === 'https',
               };
               const plexClient = new PlexAPI({
-                plexToken: admin.plexToken,
+                plexToken: admin.plexToken ?? '',
                 plexSettings: plexDeviceSettings,
                 timeout: 5000,
               });
@@ -223,7 +226,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
   }
 });
 
-settingsRoutes.get('/plex/library', async (req, res) => {
+settingsRoutes.get('/plex/library', async (req, res, next) => {
   const settings = getSettings();
 
   if (req.query.sync) {
@@ -232,6 +235,14 @@ settingsRoutes.get('/plex/library', async (req, res) => {
       select: { id: true, plexToken: true },
       where: { id: 1 },
     });
+
+    if (!admin.plexToken) {
+      return next({
+        status: '500',
+        message: 'Plex must be configured to retrieve libraries.',
+      });
+    }
+
     const plexapi = new PlexAPI({ plexToken: admin.plexToken });
 
     await plexapi.syncLibraries();

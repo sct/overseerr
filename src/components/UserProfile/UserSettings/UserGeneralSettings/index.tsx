@@ -1,10 +1,11 @@
-import Badge from '@app/components/Common/Badge';
+import PlexLogo from '@app/assets/services/plex.svg';
 import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import LanguageSelector from '@app/components/LanguageSelector';
 import QuotaSelector from '@app/components/QuotaSelector';
 import RegionSelector from '@app/components/RegionSelector';
+import LoginWithPlex from '@app/components/Setup/LoginWithPlex';
 import type { AvailableLocale } from '@app/context/LanguageContext';
 import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
@@ -13,6 +14,11 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { SaveIcon } from '@heroicons/react/outline';
+import {
+  CheckCircleIcon,
+  RefreshIcon,
+  XCircleIcon,
+} from '@heroicons/react/solid';
 import type { UserSettingsGeneralResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -27,7 +33,7 @@ const messages = defineMessages({
   general: 'General',
   generalsettings: 'General Settings',
   displayName: 'Display Name',
-  accounttype: 'Account Type',
+  connectedaccounts: 'Connected Accounts',
   plexuser: 'Plex User',
   localuser: 'Local User',
   role: 'Role',
@@ -95,6 +101,23 @@ const UserGeneralSettings = () => {
       data?.tvQuotaLimit != undefined && data?.tvQuotaDays != undefined
     );
   }, [data]);
+
+  const unlinkPlex = async () => {
+    try {
+      await axios.get('/api/v1/auth/plex/unlink');
+
+      addToast('Plex account is no longer connected.', {
+        appearance: 'success',
+        autoDismiss: true,
+      });
+      revalidateUser();
+    } catch (e) {
+      addToast('Failed to disconnect Plex account.', {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    }
+  };
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -186,20 +209,51 @@ const UserGeneralSettings = () => {
             <Form className="section">
               <div className="form-row">
                 <label className="text-label">
-                  {intl.formatMessage(messages.accounttype)}
+                  {intl.formatMessage(messages.connectedaccounts)}
                 </label>
-                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
-                  <div className="flex max-w-lg items-center">
-                    {user?.isPlexUser ? (
-                      <Badge badgeType="warning">
-                        {intl.formatMessage(messages.plexuser)}
-                      </Badge>
-                    ) : (
-                      <Badge badgeType="default">
-                        {intl.formatMessage(messages.localuser)}
-                      </Badge>
-                    )}
+                <div className="flex items-center rounded sm:col-span-2">
+                  <div className="mr-4 flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 bg-gray-800">
+                    <CheckCircleIcon className="w-full text-green-500" />
                   </div>
+                  <PlexLogo className="h-8 border-r border-gray-700 pr-4" />
+                  {!user?.isPlexUser ? (
+                    <>
+                      <div className="ml-4">
+                        <LoginWithPlex
+                          onComplete={() => {
+                            revalidateUser();
+                          }}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="ml-4">
+                        <LoginWithPlex
+                          onComplete={() => {
+                            addToast('Refreshed Plex token.', {
+                              appearance: 'success',
+                              autoDismiss: true,
+                            });
+                            revalidateUser();
+                          }}
+                          svgIcon={<RefreshIcon />}
+                          textOverride="Refresh Token"
+                          buttonSize="sm"
+                          buttonType="primary"
+                        />
+                      </div>
+                      <Button
+                        type="button"
+                        className="ml-4"
+                        buttonSize="sm"
+                        onClick={() => unlinkPlex()}
+                      >
+                        <XCircleIcon />
+                        <span>Disconnect Plex</span>
+                      </Button>
+                    </>
+                  )}
                 </div>
               </div>
               <div className="form-row">
