@@ -4,9 +4,11 @@ import type {
   TmdbMovieResult,
   TmdbTvResult,
 } from '@server/api/themoviedb/interfaces';
+import { getRepository } from '@server/datasource';
+import { User } from '@server/entity/User';
 import type { StatusResponse } from '@server/interfaces/api/settingsInterfaces';
 import { Permission } from '@server/lib/permissions';
-import { getSettings } from '@server/lib/settings';
+import { getSettings, type FullPublicSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { checkUser, isAuthenticated } from '@server/middleware/auth';
 import { mapProductionCompany } from '@server/models/Movie';
@@ -91,16 +93,23 @@ router.get('/status/appdata', (_req, res) => {
 });
 
 router.use('/user', isAuthenticated(), user);
-router.get('/settings/public', async (req, res) => {
+router.get<never, FullPublicSettings>('/settings/public', async (req, res) => {
   const settings = getSettings();
+  const userRepository = getRepository(User);
+
+  const fullPublicSettings: FullPublicSettings = settings.fullPublicSettings;
 
   if (!(req.user?.settings?.notificationTypes.webpush ?? true)) {
-    return res
-      .status(200)
-      .json({ ...settings.fullPublicSettings, enablePushRegistration: false });
-  } else {
-    return res.status(200).json(settings.fullPublicSettings);
+    fullPublicSettings.enablePushRegistration = false;
   }
+
+  const admin = await userRepository.findOneBy({ id: 1 });
+
+  if (admin && admin.plexId) {
+    fullPublicSettings.plexLoginEnabled = true;
+  }
+
+  return res.status(200).json(fullPublicSettings);
 });
 router.use('/settings', isAuthenticated(Permission.ADMIN), settingsRoutes);
 router.use('/search', isAuthenticated(), searchRoutes);

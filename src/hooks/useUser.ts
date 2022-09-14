@@ -9,7 +9,7 @@ export type { PermissionCheckOptions };
 
 export interface User {
   id: number;
-  plexUsername?: string;
+  plexUsername?: string | null;
   username?: string;
   displayName: string;
   email: string;
