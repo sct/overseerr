@@ -26,7 +26,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [isProcessing, setProcessing] = useState(false);
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
-  const { user, revalidate } = useUser();
+  const { revalidate } = useUser();
   const router = useRouter();
   const settings = useSettings();
 
@@ -40,7 +40,11 @@ const Login = () => {
         const response = await axios.post('/api/v1/auth/plex', { authToken });
 
         if (response.data?.id) {
-          revalidate();
+          const user = await revalidate();
+
+          if (user) {
+            router.push('/');
+          }
         }
       } catch (e) {
         setError(e.response.data.message);
@@ -51,15 +55,7 @@ const Login = () => {
     if (authToken) {
       login();
     }
-  }, [authToken, revalidate]);
-
-  // Effect that is triggered whenever `useUser`'s user changes. If we get a new
-  // valid user, we redirect the user to the home page as the login was successful.
-  useEffect(() => {
-    if (user) {
-      router.push('/');
-    }
-  }, [user, router]);
+  }, [authToken, revalidate, router]);
 
   const { data: backdrops } = useSWR<string[]>('/api/v1/backdrops', {
     refreshInterval: 0,
@@ -118,26 +114,30 @@ const Login = () => {
             <Accordion single atLeastOne>
               {({ openIndexes, handleClick, AccordionContent }) => (
                 <>
-                  <button
-                    className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 focus:outline-none sm:rounded-t-lg ${
-                      openIndexes.includes(0) && 'text-indigo-500'
-                    } ${
-                      settings.currentSettings.localLogin &&
-                      'hover:cursor-pointer hover:bg-gray-700'
-                    }`}
-                    onClick={() => handleClick(0)}
-                    disabled={!settings.currentSettings.localLogin}
-                  >
-                    {intl.formatMessage(messages.signinwithplex)}
-                  </button>
-                  <AccordionContent isOpen={openIndexes.includes(0)}>
-                    <div className="px-10 py-8">
-                      <PlexLoginButton
-                        isProcessing={isProcessing}
-                        onAuthToken={(authToken) => setAuthToken(authToken)}
-                      />
-                    </div>
-                  </AccordionContent>
+                  {settings.currentSettings.plexLoginEnabled && (
+                    <>
+                      <button
+                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 focus:outline-none sm:rounded-t-lg ${
+                          openIndexes.includes(0) && 'text-indigo-500'
+                        } ${
+                          settings.currentSettings.localLogin &&
+                          'hover:cursor-pointer hover:bg-gray-700'
+                        }`}
+                        onClick={() => handleClick(0)}
+                        disabled={!settings.currentSettings.localLogin}
+                      >
+                        {intl.formatMessage(messages.signinwithplex)}
+                      </button>
+                      <AccordionContent isOpen={openIndexes.includes(0)}>
+                        <div className="px-10 py-8">
+                          <PlexLoginButton
+                            isProcessing={isProcessing}
+                            onAuthToken={(authToken) => setAuthToken(authToken)}
+                          />
+                        </div>
+                      </AccordionContent>
+                    </>
+                  )}
                   {settings.currentSettings.localLogin && (
                     <div>
                       <button

@@ -213,7 +213,11 @@ const UserGeneralSettings = () => {
                 </label>
                 <div className="flex items-center rounded sm:col-span-2">
                   <div className="mr-4 flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 bg-gray-800">
-                    <CheckCircleIcon className="w-full text-green-500" />
+                    <CheckCircleIcon
+                      className={`w-full ${
+                        user?.isPlexUser ? 'text-green-500' : 'text-gray-700'
+                      }`}
+                    />
                   </div>
                   <PlexLogo className="h-8 border-r border-gray-700 pr-4" />
                   {!user?.isPlexUser ? (
@@ -223,6 +227,7 @@ const UserGeneralSettings = () => {
                           onComplete={() => {
                             revalidateUser();
                           }}
+                          textOverride="Connect Plex Account"
                         />
                       </div>
                     </>
