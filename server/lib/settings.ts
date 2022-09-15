@@ -96,6 +96,7 @@ export interface MainSettings {
   hideAvailable: boolean;
   localLogin: boolean;
   newPlexLogin: boolean;
+  verifyPlexLogin: boolean;
   region: string;
   originalLanguage: string;
   trustProxy: boolean;
@@ -289,6 +290,7 @@ class Settings {
         hideAvailable: false,
         localLogin: true,
         newPlexLogin: true,
+        verifyPlexLogin: true,
         region: '',
         originalLanguage: '',
         trustProxy: false,

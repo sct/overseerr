@@ -23,6 +23,9 @@ const messages = defineMessages({
     'Allow users to sign in using their email address and password, instead of Plex OAuth',
   newPlexLogin: 'Enable New Plex Sign-In',
   newPlexLoginTip: 'Allow Plex users to sign in without first being imported',
+  verifyPlexLogin: 'Verify Plex access',
+  verifyPlexLoginTip:
+    'Allow Plex users to sign in only if they still have server access',
   movieRequestLimitLabel: 'Global Movie Request Limit',
   tvRequestLimitLabel: 'Global Series Request Limit',
   defaultPermissions: 'Default Permissions',
@@ -61,6 +64,7 @@ const SettingsUsers = () => {
           initialValues={{
             localLogin: data?.localLogin,
             newPlexLogin: data?.newPlexLogin,
+            verifyPlexLogin: data?.verifyPlexLogin,
             movieQuotaLimit: data?.defaultQuotas.movie.quotaLimit ?? 0,
             movieQuotaDays: data?.defaultQuotas.movie.quotaDays ?? 7,
             tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
@@ -73,6 +77,7 @@ const SettingsUsers = () => {
               await axios.post('/api/v1/settings/main', {
                 localLogin: values.localLogin,
                 newPlexLogin: values.newPlexLogin,
+                verifyPlexLogin: values.verifyPlexLogin,
                 defaultQuotas: {
                   movie: {
                     quotaLimit: values.movieQuotaLimit,
@@ -136,6 +141,27 @@ const SettingsUsers = () => {
                       name="newPlexLogin"
                       onChange={() => {
                         setFieldValue('newPlexLogin', !values.newPlexLogin);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="verifyPlexLogin" className="checkbox-label">
+                    {intl.formatMessage(messages.verifyPlexLogin)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.verifyPlexLoginTip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="verifyPlexLogin"
+                      name="verifyPlexLogin"
+                      onChange={() => {
+                        setFieldValue(
+                          'verifyPlexLogin',
+                          !values.verifyPlexLogin
+                        );
                       }}
                     />
                   </div>
