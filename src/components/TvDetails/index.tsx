@@ -4,6 +4,7 @@ import RTFresh from '@app/assets/rt_fresh.svg';
 import RTRotten from '@app/assets/rt_rotten.svg';
 import TmdbLogo from '@app/assets/tmdb_logo.svg';
 import Badge from '@app/components/Common/Badge';
+import BadgeMobile from '@app/components/Common/BadgeMobile';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
@@ -35,7 +36,13 @@ import {
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/outline';
-import { ChevronUpIcon } from '@heroicons/react/solid';
+import {
+  BellIcon,
+  CheckIcon,
+  ChevronUpIcon,
+  ClockIcon,
+  MinusSmIcon,
+} from '@heroicons/react/solid';
 import type { RTRating } from '@server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { IssueStatus } from '@server/constants/issue';
@@ -561,75 +568,131 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                           {((!mSeason &&
                             request?.status === MediaRequestStatus.APPROVED) ||
                             mSeason?.status === MediaStatus.PROCESSING) && (
-                            <Badge badgeType="primary">
-                              {intl.formatMessage(globalMessages.requested)}
-                            </Badge>
+                            <>
+                              <div className="hidden md:flex">
+                                <Badge badgeType="primary">
+                                  {intl.formatMessage(globalMessages.requested)}
+                                </Badge>
+                              </div>
+                              <BadgeMobile badgeType="primary">
+                                <ClockIcon />
+                              </BadgeMobile>
+                            </>
                           )}
                           {((!mSeason &&
                             request?.status === MediaRequestStatus.PENDING) ||
                             mSeason?.status === MediaStatus.PENDING) && (
-                            <Badge badgeType="warning">
-                              {intl.formatMessage(globalMessages.pending)}
-                            </Badge>
+                            <>
+                              <div className="hidden md:flex">
+                                <Badge badgeType="warning">
+                                  {intl.formatMessage(globalMessages.pending)}
+                                </Badge>
+                              </div>
+                              <BadgeMobile badgeType="warning">
+                                <BellIcon />
+                              </BadgeMobile>
+                            </>
                           )}
                           {mSeason?.status ===
                             MediaStatus.PARTIALLY_AVAILABLE && (
-                            <Badge badgeType="success">
-                              {intl.formatMessage(
-                                globalMessages.partiallyavailable
-                              )}
-                            </Badge>
+                            <>
+                              <div className="hidden md:flex">
+                                <Badge badgeType="success">
+                                  {intl.formatMessage(
+                                    globalMessages.partiallyavailable
+                                  )}
+                                </Badge>
+                              </div>
+                              <BadgeMobile badgeType="success">
+                                <MinusSmIcon />
+                              </BadgeMobile>
+                            </>
                           )}
                           {mSeason?.status === MediaStatus.AVAILABLE && (
-                            <Badge badgeType="success">
-                              {intl.formatMessage(globalMessages.available)}
-                            </Badge>
+                            <>
+                              <div className="hidden md:flex">
+                                <Badge badgeType="success">
+                                  {intl.formatMessage(globalMessages.available)}
+                                </Badge>
+                              </div>
+                              <BadgeMobile badgeType="success">
+                                <CheckIcon />
+                              </BadgeMobile>
+                            </>
                           )}
                           {((!mSeason4k &&
                             request4k?.status ===
                               MediaRequestStatus.APPROVED) ||
                             mSeason4k?.status4k === MediaStatus.PROCESSING) &&
                             show4k && (
-                              <Badge badgeType="primary">
-                                {intl.formatMessage(messages.status4k, {
-                                  status: intl.formatMessage(
-                                    globalMessages.requested
-                                  ),
-                                })}
-                              </Badge>
+                              <>
+                                <div className="hidden md:flex">
+                                  <Badge badgeType="primary">
+                                    {intl.formatMessage(messages.status4k, {
+                                      status: intl.formatMessage(
+                                        globalMessages.requested
+                                      ),
+                                    })}
+                                  </Badge>
+                                </div>
+                                <BadgeMobile badgeType="primary4K">
+                                  <ClockIcon />
+                                </BadgeMobile>
+                              </>
                             )}
                           {((!mSeason4k &&
                             request4k?.status === MediaRequestStatus.PENDING) ||
                             mSeason?.status4k === MediaStatus.PENDING) &&
                             show4k && (
-                              <Badge badgeType="warning">
-                                {intl.formatMessage(messages.status4k, {
-                                  status: intl.formatMessage(
-                                    globalMessages.pending
-                                  ),
-                                })}
-                              </Badge>
+                              <>
+                                <div className="hidden md:flex">
+                                  <Badge badgeType="warning">
+                                    {intl.formatMessage(messages.status4k, {
+                                      status: intl.formatMessage(
+                                        globalMessages.pending
+                                      ),
+                                    })}
+                                  </Badge>
+                                </div>
+                                <BadgeMobile badgeType="warning4K">
+                                  <BellIcon />
+                                </BadgeMobile>
+                              </>
                             )}
                           {mSeason4k?.status4k ===
                             MediaStatus.PARTIALLY_AVAILABLE &&
                             show4k && (
-                              <Badge badgeType="success">
-                                {intl.formatMessage(messages.status4k, {
-                                  status: intl.formatMessage(
-                                    globalMessages.partiallyavailable
-                                  ),
-                                })}
-                              </Badge>
+                              <>
+                                <div className="hidden md:flex">
+                                  <Badge badgeType="success">
+                                    {intl.formatMessage(messages.status4k, {
+                                      status: intl.formatMessage(
+                                        globalMessages.partiallyavailable
+                                      ),
+                                    })}
+                                  </Badge>
+                                </div>
+                                <BadgeMobile badgeType="success4K">
+                                  <MinusSmIcon />
+                                </BadgeMobile>
+                              </>
                             )}
                           {mSeason4k?.status4k === MediaStatus.AVAILABLE &&
                             show4k && (
-                              <Badge badgeType="success">
-                                {intl.formatMessage(messages.status4k, {
-                                  status: intl.formatMessage(
-                                    globalMessages.available
-                                  ),
-                                })}
-                              </Badge>
+                              <>
+                                <div className="hidden md:flex">
+                                  <Badge badgeType="success">
+                                    {intl.formatMessage(messages.status4k, {
+                                      status: intl.formatMessage(
+                                        globalMessages.available
+                                      ),
+                                    })}
+                                  </Badge>
+                                </div>
+                                <BadgeMobile badgeType="success4K">
+                                  <CheckIcon />
+                                </BadgeMobile>
+                              </>
                             )}
                           <ChevronUpIcon
                             className={`${
