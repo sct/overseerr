@@ -30,9 +30,40 @@ const prodConfig: DataSourceOptions = {
   subscribers: ['dist/subscriber/**/*.js'],
 };
 
-const dataSource = new DataSource(
-  process.env.NODE_ENV !== 'production' ? devConfig : prodConfig
-);
+const prodConfigPostgres: DataSourceOptions = {
+  type: 'postgres',
+  host: process.env.POSTGRES_HOST,
+  port: Number(process.env.PORT) || 5432,
+  username: process.env.POSTGRES_USERNAME,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DATABASE || 'overseerr',
+  synchronize: false,
+  migrationsRun: false,
+  logging: false,
+  entities: ['dist/entity/**/*.js'],
+  migrations: ['dist/migration/**/*.js'],
+  subscribers: ['dist/subscriber/**/*.js'],
+};
+
+function selectedDataSource(): DataSourceOptions {
+  let dataSourceOptions!: DataSourceOptions;
+  if (
+    process.env.NODE_ENV == 'production' &&
+    process.env.POSTGRES_ENABLED !== 'true'
+  ) {
+    dataSourceOptions = prodConfig;
+  } else if (
+    process.env.NODE_ENV == 'production' &&
+    process.env.POSTGRES_ENABLED == 'true'
+  ) {
+    dataSourceOptions = prodConfigPostgres;
+  } else {
+    dataSourceOptions = devConfig;
+  }
+  return dataSourceOptions;
+}
+
+const dataSource = new DataSource(selectedDataSource());
 
 export const getRepository = <Entity>(
   target: EntityTarget<Entity>
