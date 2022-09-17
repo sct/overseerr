@@ -4,13 +4,13 @@ import RTFresh from '@app/assets/rt_fresh.svg';
 import RTRotten from '@app/assets/rt_rotten.svg';
 import TmdbLogo from '@app/assets/tmdb_logo.svg';
 import Badge from '@app/components/Common/Badge';
-import BadgeMobile from '@app/components/Common/BadgeMobile';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import type { PlayButtonLink } from '@app/components/Common/PlayButton';
 import PlayButton from '@app/components/Common/PlayButton';
+import StatusBadgeMini from '@app/components/Common/StatusBadgeMini';
 import Tooltip from '@app/components/Common/Tooltip';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import IssueModal from '@app/components/IssueModal';
@@ -36,13 +36,7 @@ import {
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/outline';
-import {
-  BellIcon,
-  CheckIcon,
-  ChevronUpIcon,
-  ClockIcon,
-  MinusSmIcon,
-} from '@heroicons/react/solid';
+import { ChevronUpIcon } from '@heroicons/react/solid';
 import type { RTRating } from '@server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { IssueStatus } from '@server/constants/issue';
@@ -574,9 +568,11 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                   {intl.formatMessage(globalMessages.requested)}
                                 </Badge>
                               </div>
-                              <BadgeMobile badgeType="primary">
-                                <ClockIcon />
-                              </BadgeMobile>
+                              <div className="flex md:hidden">
+                                <StatusBadgeMini
+                                  status={MediaStatus.PROCESSING}
+                                />
+                              </div>
                             </>
                           )}
                           {((!mSeason &&
@@ -588,9 +584,9 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                   {intl.formatMessage(globalMessages.pending)}
                                 </Badge>
                               </div>
-                              <BadgeMobile badgeType="warning">
-                                <BellIcon />
-                              </BadgeMobile>
+                              <div className="flex md:hidden">
+                                <StatusBadgeMini status={MediaStatus.PENDING} />
+                              </div>
                             </>
                           )}
                           {mSeason?.status ===
@@ -603,9 +599,11 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                   )}
                                 </Badge>
                               </div>
-                              <BadgeMobile badgeType="success">
-                                <MinusSmIcon />
-                              </BadgeMobile>
+                              <div className="flex md:hidden">
+                                <StatusBadgeMini
+                                  status={MediaStatus.PARTIALLY_AVAILABLE}
+                                />
+                              </div>
                             </>
                           )}
                           {mSeason?.status === MediaStatus.AVAILABLE && (
@@ -615,9 +613,11 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                   {intl.formatMessage(globalMessages.available)}
                                 </Badge>
                               </div>
-                              <BadgeMobile badgeType="success">
-                                <CheckIcon />
-                              </BadgeMobile>
+                              <div className="flex md:hidden">
+                                <StatusBadgeMini
+                                  status={MediaStatus.AVAILABLE}
+                                />
+                              </div>
                             </>
                           )}
                           {((!mSeason4k &&
@@ -635,9 +635,12 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                     })}
                                   </Badge>
                                 </div>
-                                <BadgeMobile badgeType="primary4K">
-                                  <ClockIcon />
-                                </BadgeMobile>
+                                <div className="flex md:hidden">
+                                  <StatusBadgeMini
+                                    status={MediaStatus.PROCESSING}
+                                    is4k={true}
+                                  />
+                                </div>
                               </>
                             )}
                           {((!mSeason4k &&
@@ -654,9 +657,12 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                     })}
                                   </Badge>
                                 </div>
-                                <BadgeMobile badgeType="warning4K">
-                                  <BellIcon />
-                                </BadgeMobile>
+                                <div className="flex md:hidden">
+                                  <StatusBadgeMini
+                                    status={MediaStatus.PENDING}
+                                    is4k={true}
+                                  />
+                                </div>
                               </>
                             )}
                           {mSeason4k?.status4k ===
@@ -672,9 +678,12 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                     })}
                                   </Badge>
                                 </div>
-                                <BadgeMobile badgeType="success4K">
-                                  <MinusSmIcon />
-                                </BadgeMobile>
+                                <div className="flex md:hidden">
+                                  <StatusBadgeMini
+                                    status={MediaStatus.PARTIALLY_AVAILABLE}
+                                    is4k={true}
+                                  />
+                                </div>
                               </>
                             )}
                           {mSeason4k?.status4k === MediaStatus.AVAILABLE &&
@@ -689,9 +698,12 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                     })}
                                   </Badge>
                                 </div>
-                                <BadgeMobile badgeType="success4K">
-                                  <CheckIcon />
-                                </BadgeMobile>
+                                <div className="flex md:hidden">
+                                  <StatusBadgeMini
+                                    status={MediaStatus.AVAILABLE}
+                                    is4k={true}
+                                  />
+                                </div>
                               </>
                             )}
                           <ChevronUpIcon
