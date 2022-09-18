@@ -191,7 +191,7 @@
   "components.MovieDetails.play4konplex": "Reproduciraj u 4K na Plex-u",
   "components.MovieDetails.recommendations": "Preporuke",
   "components.MovieDetails.releasedate": "{releaseCount, plural, one {Datum Izlaska} other {Datumi izlaska}}",
-  "components.MovieDetails.rtcriticsscore": "Tomatometar Rotten Tomatoes",
+  "components.MovieDetails.rtcriticsscore": "Rotten Tomatoes Tomatometer",
   "components.MovieDetails.runtime": "{minutes} minute",
   "components.MovieDetails.studio": "{studioCount, plural, one {Studio} other {Studiji}}",
   "components.MovieDetails.theatricalrelease": "Izdanje u kinima",
