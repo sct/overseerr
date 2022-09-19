@@ -1,13 +1,13 @@
+import { IssueStatus, IssueType } from '@server/constants/issue';
+import { getRepository } from '@server/datasource';
+import Issue from '@server/entity/Issue';
+import IssueComment from '@server/entity/IssueComment';
+import Media from '@server/entity/Media';
+import type { IssueResultsResponse } from '@server/interfaces/api/issueInterfaces';
+import { Permission } from '@server/lib/permissions';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
-import { getRepository } from 'typeorm';
-import { IssueStatus } from '../constants/issue';
-import Issue from '../entity/Issue';
-import IssueComment from '../entity/IssueComment';
-import Media from '../entity/Media';
-import { IssueResultsResponse } from '../interfaces/api/issueInterfaces';
-import { Permission } from '../lib/permissions';
-import logger from '../logger';
-import { isAuthenticated } from '../middleware/auth';
 
 const issueRoutes = Router();
 
@@ -145,6 +145,68 @@ issueRoutes.post<
     return res.status(200).json(newIssue);
   }
 );
+
+issueRoutes.get('/count', async (req, res, next) => {
+  const issueRepository = getRepository(Issue);
+
+  try {
+    const query = issueRepository.createQueryBuilder('issue');
+
+    const totalCount = await query.getCount();
+
+    const videoCount = await query
+      .where('issue.issueType = :issueType', {
+        issueType: IssueType.VIDEO,
+      })
+      .getCount();
+
+    const audioCount = await query
+      .where('issue.issueType = :issueType', {
+        issueType: IssueType.AUDIO,
+      })
+      .getCount();
+
+    const subtitlesCount = await query
+      .where('issue.issueType = :issueType', {
+        issueType: IssueType.SUBTITLES,
+      })
+      .getCount();
+
+    const othersCount = await query
+      .where('issue.issueType = :issueType', {
+        issueType: IssueType.OTHER,
+      })
+      .getCount();
+
+    const openCount = await query
+      .where('issue.status = :issueStatus', {
+        issueStatus: IssueStatus.OPEN,
+      })
+      .getCount();
+
+    const closedCount = await query
+      .where('issue.status = :issueStatus', {
+        issueStatus: IssueStatus.RESOLVED,
+      })
+      .getCount();
+
+    return res.status(200).json({
+      total: totalCount,
+      video: videoCount,
+      audio: audioCount,
+      subtitles: subtitlesCount,
+      others: othersCount,
+      open: openCount,
+      closed: closedCount,
+    });
+  } catch (e) {
+    logger.debug('Something went wrong retrieving issue counts.', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 500, message: 'Unable to retrieve issue counts.' });
+  }
+});
 
 issueRoutes.get<{ issueId: string }>(
   '/:issueId',
@@ -303,7 +365,7 @@ issueRoutes.delete(
     try {
       const issue = await issueRepository.findOneOrFail({
         where: { id: Number(req.params.issueId) },
-        relations: ['createdBy'],
+        relations: { createdBy: true },
       });
 
       if (

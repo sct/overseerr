@@ -1,8 +1,8 @@
-import React from 'react';
+import PageTitle from '@app/components/Common/PageTitle';
+import type { SettingsRoute } from '@app/components/Common/SettingsTabs';
+import SettingsTabs from '@app/components/Common/SettingsTabs';
+import globalMessages from '@app/i18n/globalMessages';
 import { defineMessages, useIntl } from 'react-intl';
-import globalMessages from '../../i18n/globalMessages';
-import PageTitle from '../Common/PageTitle';
-import SettingsTabs, { SettingsRoute } from '../Common/SettingsTabs';
 
 const messages = defineMessages({
   menuGeneralSettings: 'General',
@@ -15,7 +15,11 @@ const messages = defineMessages({
   menuAbout: 'About',
 });
 
-const SettingsLayout: React.FC = ({ children }) => {
+type SettingsLayoutProps = {
+  children: React.ReactNode;
+};
+
+const SettingsLayout = ({ children }: SettingsLayoutProps) => {
   const intl = useIntl();
 
   const settingsRoutes: SettingsRoute[] = [

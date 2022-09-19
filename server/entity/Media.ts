@@ -1,21 +1,22 @@
+import RadarrAPI from '@server/api/servarr/radarr';
+import SonarrAPI from '@server/api/servarr/sonarr';
+import { MediaStatus, MediaType } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
+import type { DownloadingItem } from '@server/lib/downloadtracker';
+import downloadTracker from '@server/lib/downloadtracker';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
 import {
   AfterLoad,
   Column,
   CreateDateColumn,
   Entity,
-  getRepository,
   In,
   Index,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import RadarrAPI from '../api/servarr/radarr';
-import SonarrAPI from '../api/servarr/sonarr';
-import { MediaStatus, MediaType } from '../constants/media';
-import downloadTracker, { DownloadingItem } from '../lib/downloadtracker';
-import { getSettings } from '../lib/settings';
-import logger from '../logger';
 import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import Season from './Season';
@@ -36,7 +37,7 @@ class Media {
       }
 
       const media = await mediaRepository.find({
-        tmdbId: In(finalIds),
+        where: { tmdbId: In(finalIds) },
       });
 
       return media;
@@ -55,10 +56,10 @@ class Media {
     try {
       const media = await mediaRepository.findOne({
         where: { tmdbId: id, mediaType },
-        relations: ['requests', 'issues'],
+        relations: { requests: true, issues: true },
       });
 
-      return media;
+      return media ?? undefined;
     } catch (e) {
       logger.error(e.message);
       return undefined;
@@ -145,6 +146,9 @@ class Media {
   public plexUrl?: string;
   public plexUrl4k?: string;
 
+  public iOSPlexUrl?: string;
+  public iOSPlexUrl4k?: string;
+
   public tautulliUrl?: string;
   public tautulliUrl4k?: string;
 
@@ -164,6 +168,8 @@ class Media {
         this.ratingKey
       }`;
 
+      this.iOSPlexUrl = `plex://preplay/?metadataKey=%2Flibrary%2Fmetadata%2F${this.ratingKey}&server=${machineId}`;
+
       if (tautulliUrl) {
         this.tautulliUrl = `${tautulliUrl}/info?rating_key=${this.ratingKey}`;
       }
@@ -175,6 +181,8 @@ class Media {
       }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${
         this.ratingKey4k
       }`;
+
+      this.iOSPlexUrl4k = `plex://preplay/?metadataKey=%2Flibrary%2Fmetadata%2F${this.ratingKey4k}&server=${machineId}`;
 
       if (tautulliUrl) {
         this.tautulliUrl4k = `${tautulliUrl}/info?rating_key=${this.ratingKey4k}`;

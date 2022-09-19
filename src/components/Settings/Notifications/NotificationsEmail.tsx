@@ -1,16 +1,16 @@
+import Button from '@app/components/Common/Button';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
+import SettingsBadge from '@app/components/Settings/SettingsBadge';
+import globalMessages from '@app/i18n/globalMessages';
 import { BeakerIcon, SaveIcon } from '@heroicons/react/outline';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
-import globalMessages from '../../../i18n/globalMessages';
-import Badge from '../../Common/Badge';
-import Button from '../../Common/Button';
-import LoadingSpinner from '../../Common/LoadingSpinner';
-import SensitiveInput from '../../Common/SensitiveInput';
 
 const messages = defineMessages({
   validationSmtpHostRequired: 'You must provide a valid hostname or IP address',
@@ -46,7 +46,7 @@ const messages = defineMessages({
   validationPgpPassword: 'You must provide a PGP password',
 });
 
-export function OpenPgpLink(msg: string): JSX.Element {
+export function OpenPgpLink(msg: React.ReactNode) {
   return (
     <a href="https://www.openpgp.org/" target="_blank" rel="noreferrer">
       {msg}
@@ -54,7 +54,7 @@ export function OpenPgpLink(msg: string): JSX.Element {
   );
 }
 
-const NotificationsEmail: React.FC = () => {
+const NotificationsEmail = () => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
@@ -265,9 +265,11 @@ const NotificationsEmail: React.FC = () => {
                     inputMode="email"
                   />
                 </div>
-                {errors.emailFrom && touched.emailFrom && (
-                  <div className="error">{errors.emailFrom}</div>
-                )}
+                {errors.emailFrom &&
+                  touched.emailFrom &&
+                  typeof errors.emailFrom === 'string' && (
+                    <div className="error">{errors.emailFrom}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -284,9 +286,11 @@ const NotificationsEmail: React.FC = () => {
                     inputMode="url"
                   />
                 </div>
-                {errors.smtpHost && touched.smtpHost && (
-                  <div className="error">{errors.smtpHost}</div>
-                )}
+                {errors.smtpHost &&
+                  touched.smtpHost &&
+                  typeof errors.smtpHost === 'string' && (
+                    <div className="error">{errors.smtpHost}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -302,9 +306,11 @@ const NotificationsEmail: React.FC = () => {
                   inputMode="numeric"
                   className="short"
                 />
-                {errors.smtpPort && touched.smtpPort && (
-                  <div className="error">{errors.smtpPort}</div>
-                )}
+                {errors.smtpPort &&
+                  touched.smtpPort &&
+                  typeof errors.smtpPort === 'string' && (
+                    <div className="error">{errors.smtpPort}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -376,9 +382,7 @@ const NotificationsEmail: React.FC = () => {
                 <span className="mr-2">
                   {intl.formatMessage(messages.pgpPrivateKey)}
                 </span>
-                <Badge badgeType="danger">
-                  {intl.formatMessage(globalMessages.advanced)}
-                </Badge>
+                <SettingsBadge badgeType="advanced" />
                 <span className="label-tip">
                   {intl.formatMessage(messages.pgpPrivateKeyTip, {
                     OpenPgpLink: OpenPgpLink,
@@ -396,9 +400,11 @@ const NotificationsEmail: React.FC = () => {
                     className="font-mono text-xs"
                   />
                 </div>
-                {errors.pgpPrivateKey && touched.pgpPrivateKey && (
-                  <div className="error">{errors.pgpPrivateKey}</div>
-                )}
+                {errors.pgpPrivateKey &&
+                  touched.pgpPrivateKey &&
+                  typeof errors.pgpPrivateKey === 'string' && (
+                    <div className="error">{errors.pgpPrivateKey}</div>
+                  )}
               </div>
             </div>
             <div className="form-row">
@@ -406,9 +412,7 @@ const NotificationsEmail: React.FC = () => {
                 <span className="mr-2">
                   {intl.formatMessage(messages.pgpPassword)}
                 </span>
-                <Badge badgeType="danger">
-                  {intl.formatMessage(globalMessages.advanced)}
-                </Badge>
+                <SettingsBadge badgeType="advanced" />
                 <span className="label-tip">
                   {intl.formatMessage(messages.pgpPasswordTip, {
                     OpenPgpLink: OpenPgpLink,
@@ -424,9 +428,11 @@ const NotificationsEmail: React.FC = () => {
                     autoComplete="one-time-code"
                   />
                 </div>
-                {errors.pgpPassword && touched.pgpPassword && (
-                  <div className="error">{errors.pgpPassword}</div>
-                )}
+                {errors.pgpPassword &&
+                  touched.pgpPassword &&
+                  typeof errors.pgpPassword === 'string' && (
+                    <div className="error">{errors.pgpPassword}</div>
+                  )}
               </div>
             </div>
             <div className="actions">

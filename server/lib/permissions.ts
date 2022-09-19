@@ -1,7 +1,6 @@
 export enum Permission {
   NONE = 0,
   ADMIN = 2,
-  MANAGE_SETTINGS = 4,
   MANAGE_USERS = 8,
   MANAGE_REQUESTS = 16,
   REQUEST = 32,
@@ -22,6 +21,11 @@ export enum Permission {
   MANAGE_ISSUES = 1048576,
   VIEW_ISSUES = 2097152,
   CREATE_ISSUES = 4194304,
+  AUTO_REQUEST = 8388608,
+  AUTO_REQUEST_MOVIE = 16777216,
+  AUTO_REQUEST_TV = 33554432,
+  RECENT_VIEW = 67108864,
+  WATCHLIST_VIEW = 134217728,
 }
 
 export interface PermissionCheckOptions {

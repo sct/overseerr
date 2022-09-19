@@ -1,9 +1,9 @@
+import Button from '@app/components/Common/Button';
+import type { User } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
 import { CogIcon, UserIcon } from '@heroicons/react/solid';
 import Link from 'next/link';
-import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Permission, User, useUser } from '../../../hooks/useUser';
-import Button from '../../Common/Button';
 
 const messages = defineMessages({
   settings: 'Edit Settings',
@@ -17,10 +17,7 @@ interface ProfileHeaderProps {
   isSettingsPage?: boolean;
 }
 
-const ProfileHeader: React.FC<ProfileHeaderProps> = ({
-  user,
-  isSettingsPage,
-}) => {
+const ProfileHeader = ({ user, isSettingsPage }: ProfileHeaderProps) => {
   const intl = useIntl();
   const { user: loggedInUser, hasPermission } = useUser();
 
@@ -44,7 +41,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
         <div className="flex-shrink-0">
           <div className="relative">
             <img
-              className="h-24 w-24 rounded-full bg-gray-600 ring-1 ring-gray-700"
+              className="h-24 w-24 rounded-full bg-gray-600 object-cover ring-1 ring-gray-700"
               src={user.avatar}
               alt=""
             />
@@ -61,7 +58,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({
                 user.id === loggedInUser?.id ? '/profile' : `/users/${user.id}`
               }
             >
-              <a className="bg-gradient-to-br from-indigo-400 to-purple-400 bg-clip-text text-lg font-bold text-transparent hover:to-purple-200 sm:text-2xl">
+              <a className="text-overseerr text-lg font-bold hover:to-purple-200 sm:text-2xl">
                 {user.displayName}
               </a>
             </Link>

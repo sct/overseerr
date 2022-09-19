@@ -1,25 +1,27 @@
-import { Router } from 'express';
-import gravatarUrl from 'gravatar-url';
-import { findIndex, sortBy } from 'lodash';
-import { getRepository, In, Not } from 'typeorm';
-import PlexTvAPI from '../../api/plextv';
-import TautulliAPI from '../../api/tautulli';
-import { MediaType } from '../../constants/media';
-import { UserType } from '../../constants/user';
-import Media from '../../entity/Media';
-import { MediaRequest } from '../../entity/MediaRequest';
-import { User } from '../../entity/User';
-import { UserPushSubscription } from '../../entity/UserPushSubscription';
-import {
+import PlexTvAPI from '@server/api/plextv';
+import TautulliAPI from '@server/api/tautulli';
+import { MediaType } from '@server/constants/media';
+import { UserType } from '@server/constants/user';
+import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
+import { MediaRequest } from '@server/entity/MediaRequest';
+import { User } from '@server/entity/User';
+import { UserPushSubscription } from '@server/entity/UserPushSubscription';
+import type { WatchlistResponse } from '@server/interfaces/api/discoverInterfaces';
+import type {
   QuotaResponse,
   UserRequestsResponse,
   UserResultsResponse,
   UserWatchDataResponse,
-} from '../../interfaces/api/userInterfaces';
-import { hasPermission, Permission } from '../../lib/permissions';
-import { getSettings } from '../../lib/settings';
-import logger from '../../logger';
-import { isAuthenticated } from '../../middleware/auth';
+} from '@server/interfaces/api/userInterfaces';
+import { hasPermission, Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
+import { Router } from 'express';
+import gravatarUrl from 'gravatar-url';
+import { findIndex, sortBy } from 'lodash';
+import { In } from 'typeorm';
 import userSettingsRoutes from './usersettings';
 
 const router = Router();
@@ -258,12 +260,7 @@ export const canMakePermissionsChange = (
   user?: User
 ): boolean =>
   // Only let the owner grant admin privileges
-  !(hasPermission(Permission.ADMIN, permissions) && user?.id !== 1) ||
-  // Only let users with the manage settings permission, grant the same permission
-  !(
-    hasPermission(Permission.MANAGE_SETTINGS, permissions) &&
-    !hasPermission(Permission.MANAGE_SETTINGS, user?.permissions ?? 0)
-  );
+  !(hasPermission(Permission.ADMIN, permissions) && user?.id !== 1);
 
 router.put<
   Record<string, never>,
@@ -282,8 +279,12 @@ router.put<
 
     const userRepository = getRepository(User);
 
-    const users = await userRepository.findByIds(req.body.ids, {
-      ...(!isOwner ? { id: Not(1) } : {}),
+    const users: User[] = await userRepository.find({
+      where: {
+        id: In(
+          isOwner ? req.body.ids : req.body.ids.filter((id) => Number(id) !== 1)
+        ),
+      },
     });
 
     const updatedUsers = await Promise.all(
@@ -350,7 +351,7 @@ router.delete<{ id: string }>(
 
       const user = await userRepository.findOne({
         where: { id: Number(req.params.id) },
-        relations: ['requests'],
+        relations: { requests: true },
       });
 
       if (!user) {
@@ -409,8 +410,8 @@ router.post(
 
       // taken from auth.ts
       const mainUser = await userRepository.findOneOrFail({
-        select: ['id', 'plexToken'],
-        order: { id: 'ASC' },
+        select: { id: true, plexToken: true },
+        where: { id: 1 },
       });
       const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
@@ -524,7 +525,7 @@ router.get<{ id: string }, UserWatchDataResponse>(
     try {
       const user = await getRepository(User).findOneOrFail({
         where: { id: Number(req.params.id) },
-        select: ['id', 'plexId'],
+        select: { id: true, plexId: true },
       });
 
       const tautulli = new TautulliAPI(settings);
@@ -603,6 +604,62 @@ router.get<{ id: string }, UserWatchDataResponse>(
         message: 'Failed to fetch user watch data.',
       });
     }
+  }
+);
+
+router.get<{ id: string; page?: number }, WatchlistResponse>(
+  '/:id/watchlist',
+  async (req, res, next) => {
+    if (
+      Number(req.params.id) !== req.user?.id &&
+      !req.user?.hasPermission(
+        [Permission.MANAGE_REQUESTS, Permission.WATCHLIST_VIEW],
+        {
+          type: 'or',
+        }
+      )
+    ) {
+      return next({
+        status: 403,
+        message:
+          "You do not have permission to view this user's Plex Watchlist.",
+      });
+    }
+
+    const itemsPerPage = 20;
+    const page = req.params.page ?? 1;
+    const offset = (page - 1) * itemsPerPage;
+
+    const user = await getRepository(User).findOneOrFail({
+      where: { id: Number(req.params.id) },
+      select: { id: true, plexToken: true },
+    });
+
+    if (!user?.plexToken) {
+      // We will just return an empty array if the user has no Plex token
+      return res.json({
+        page: 1,
+        totalPages: 1,
+        totalResults: 0,
+        results: [],
+      });
+    }
+
+    const plexTV = new PlexTvAPI(user.plexToken);
+
+    const watchlist = await plexTV.getWatchlist({ offset });
+
+    return res.json({
+      page,
+      totalPages: Math.ceil(watchlist.size / itemsPerPage),
+      totalResults: watchlist.size,
+      results: watchlist.items.map((item) => ({
+        ratingKey: item.ratingKey,
+        title: item.title,
+        mediaType: item.type === 'show' ? 'tv' : 'movie',
+        tmdbId: item.tmdbId,
+      })),
+    });
   }
 );
 

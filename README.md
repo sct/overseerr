@@ -12,7 +12,7 @@
 <a href="https://lgtm.com/projects/g/sct/overseerr/context:javascript"><img alt="Language grade: JavaScript" src="https://img.shields.io/lgtm/grade/javascript/g/sct/overseerr.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-72-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-80-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -167,6 +167,16 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/Andersborrits"><img src="https://avatars.githubusercontent.com/u/29452218?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Andersborrits</b></sub></a><br /><a href="#translation-Andersborrits" title="Translation">🌍</a></td>
     <td align="center"><a href="http://maxentrouault.fr"><img src="https://avatars.githubusercontent.com/u/67283154?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Maxent</b></sub></a><br /><a href="#translation-Maxentr" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/sambartik"><img src="https://avatars.githubusercontent.com/u/63553146?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Samuel Bartík</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=sambartik" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/frank-cywong"><img src="https://avatars.githubusercontent.com/u/90653148?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Chun Yeung Wong</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=frank-cywong" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/TheMeanCanEHdian"><img src="https://avatars.githubusercontent.com/u/16025103?v=4?s=100" width="100px;" alt=""/><br /><sub><b>TheMeanCanEHdian</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=TheMeanCanEHdian" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Gylesie"><img src="https://avatars.githubusercontent.com/u/86306812?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Gylesie</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Gylesie" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/Fhd-pro"><img src="https://avatars.githubusercontent.com/u/82862079?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Fhd-pro</b></sub></a><br /><a href="#translation-Fhd-pro" title="Translation">🌍</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/PovilasID"><img src="https://avatars.githubusercontent.com/u/396243?v=4?s=100" width="100px;" alt=""/><br /><sub><b>PovilasID</b></sub></a><br /><a href="#translation-PovilasID" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/byakurau"><img src="https://avatars.githubusercontent.com/u/1811683?v=4?s=100" width="100px;" alt=""/><br /><sub><b>byakurau</b></sub></a><br /><a href="#translation-byakurau" title="Translation">🌍</a></td>
+    <td align="center"><a href="https://github.com/miknii"><img src="https://avatars.githubusercontent.com/u/109232569?v=4?s=100" width="100px;" alt=""/><br /><sub><b>miknii</b></sub></a><br /><a href="#translation-miknii" title="Translation">🌍</a></td>
   </tr>
 </table>
 
