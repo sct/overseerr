@@ -41,7 +41,9 @@ const Season = ({ seasonNumber, tvId }: SeasonProps) => {
               <div className="flex-1">
                 <div className="flex flex-col space-y-2 xl:flex-row xl:items-center xl:space-y-0 xl:space-x-2">
                   <h3 className="text-lg">{episode.name}</h3>
-                  <AirDateBadge airDate={episode.airDate} />
+                  {episode.airDate && (
+                    <AirDateBadge airDate={episode.airDate} />
+                  )}
                 </div>
                 {episode.overview && <p>{episode.overview}</p>}
               </div>

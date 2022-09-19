@@ -829,6 +829,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               </div>
             )}
             {data.nextEpisodeToAir &&
+              data.nextEpisodeToAir.airDate &&
               data.nextEpisodeToAir.airDate !== data.firstAirDate && (
                 <div className="media-fact">
                   <span>{intl.formatMessage(messages.nextAirDate)}</span>
