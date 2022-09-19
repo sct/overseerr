@@ -141,7 +141,7 @@ export const mapSeasonWithEpisodes = (
   season: TmdbSeasonWithEpisodes
 ): SeasonWithEpisodes => ({
   airDate: season.air_date,
-  episodeCount: season.episode_count,
+  episodeCount: season.episodes.length,
   episodes: season.episodes.map(mapEpisodeResult),
   externalIds: mapExternalIds(season.external_ids),
   id: season.id,
