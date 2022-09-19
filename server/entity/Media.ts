@@ -6,6 +6,7 @@ import type { DownloadingItem } from '@server/lib/downloadtracker';
 import downloadTracker from '@server/lib/downloadtracker';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import type { ColumnOptions, ColumnType } from 'typeorm';
 import {
   AfterLoad,
   Column,
@@ -20,6 +21,28 @@ import {
 import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import Season from './Season';
+
+const sqlitePostgresTypemapping: { [key: string]: ColumnType } = {
+  datetime: 'timestamp',
+};
+
+export function resolveDbType(sqliteType: ColumnType): ColumnType {
+  const isSqlLiteEnv = process.env.POSTGRES_ENABLED != 'true';
+  if (
+    isSqlLiteEnv &&
+    sqliteType.toString() in sqlitePostgresTypemapping.toString
+  ) {
+    return sqlitePostgresTypemapping[sqliteType.toString()];
+  }
+  return sqliteType;
+}
+
+export function DbAwareColumn(columnOptions: ColumnOptions) {
+  if (columnOptions.type) {
+    columnOptions.type = resolveDbType(columnOptions.type);
+  }
+  return Column(columnOptions);
+}
 
 @Entity()
 class Media {
@@ -108,7 +131,7 @@ class Media {
   @UpdateDateColumn()
   public updatedAt: Date;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @DbAwareColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   public lastSeasonChange: Date;
 
   @Column({ type: 'datetime', nullable: true })
