@@ -191,7 +191,7 @@ export interface TmdbVideo {
 
 export interface TmdbTvEpisodeResult {
   id: number;
-  air_date: string;
+  air_date: string | null;
   episode_number: number;
   name: string;
   overview: string;

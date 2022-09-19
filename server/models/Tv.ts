@@ -29,7 +29,7 @@ import type { Video } from './Movie';
 interface Episode {
   id: number;
   name: string;
-  airDate: string;
+  airDate: string | null;
   episodeNumber: number;
   overview: string;
   productionCode: string;
