@@ -204,6 +204,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
         <div className="media-title">
           <div className="media-status">
             <StatusBadge
+              enableTooltip={false}
               status={collectionStatus}
               inProgress={data.parts.some(
                 (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
@@ -217,6 +218,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
                 }
               ) && (
                 <StatusBadge
+                  enableTooltip={false}
                   status={collectionStatus4k}
                   is4k
                   inProgress={data.parts.some(

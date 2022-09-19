@@ -23,6 +23,7 @@ interface StatusBadgeProps {
   serviceUrl?: string;
   tmdbId?: number;
   mediaType?: 'movie' | 'tv';
+  enableTooltip?: boolean;
 }
 
 const StatusBadge = ({
@@ -33,6 +34,7 @@ const StatusBadge = ({
   serviceUrl,
   tmdbId,
   mediaType,
+  enableTooltip = true,
 }: StatusBadgeProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
@@ -40,6 +42,7 @@ const StatusBadge = ({
 
   let mediaLink: string | undefined;
   let mediaLinkDescription: string | undefined;
+  let selectedBadge: JSX.Element | null;
 
   if (
     mediaType &&
@@ -87,80 +90,77 @@ const StatusBadge = ({
 
   switch (status) {
     case MediaStatus.AVAILABLE:
-      return (
-        <Tooltip content={mediaLinkDescription}>
-          <Badge badgeType="success" href={mediaLink}>
-            <div className="flex items-center">
-              <span>
-                {intl.formatMessage(
-                  is4k ? messages.status4k : messages.status,
-                  {
-                    status: intl.formatMessage(globalMessages.available),
-                  }
-                )}
-              </span>
-              {inProgress && <Spinner className="ml-1 h-3 w-3" />}
-            </div>
-          </Badge>
-        </Tooltip>
+      selectedBadge = (
+        <Badge badgeType="success" href={mediaLink}>
+          <div className="flex items-center">
+            <span>
+              {intl.formatMessage(is4k ? messages.status4k : messages.status, {
+                status: intl.formatMessage(globalMessages.available),
+              })}
+            </span>
+            {inProgress && <Spinner className="ml-1 h-3 w-3" />}
+          </div>
+        </Badge>
       );
+      break;
 
     case MediaStatus.PARTIALLY_AVAILABLE:
-      return (
-        <Tooltip content={mediaLinkDescription}>
-          <Badge badgeType="success" href={mediaLink}>
-            <div className="flex items-center">
-              <span>
-                {intl.formatMessage(
-                  is4k ? messages.status4k : messages.status,
-                  {
-                    status: intl.formatMessage(
-                      globalMessages.partiallyavailable
-                    ),
-                  }
-                )}
-              </span>
-              {inProgress && <Spinner className="ml-1 h-3 w-3" />}
-            </div>
-          </Badge>
-        </Tooltip>
+      selectedBadge = (
+        <Badge badgeType="success" href={mediaLink}>
+          <div className="flex items-center">
+            <span>
+              {intl.formatMessage(is4k ? messages.status4k : messages.status, {
+                status: intl.formatMessage(globalMessages.partiallyavailable),
+              })}
+            </span>
+            {inProgress && <Spinner className="ml-1 h-3 w-3" />}
+          </div>
+        </Badge>
       );
+      break;
 
     case MediaStatus.PROCESSING:
-      return (
-        <Tooltip content={mediaLinkDescription}>
-          <Badge badgeType="primary" href={mediaLink}>
-            <div className="flex items-center">
-              <span>
-                {intl.formatMessage(
-                  is4k ? messages.status4k : messages.status,
-                  {
-                    status: inProgress
-                      ? intl.formatMessage(globalMessages.processing)
-                      : intl.formatMessage(globalMessages.requested),
-                  }
-                )}
-              </span>
-              {inProgress && <Spinner className="ml-1 h-3 w-3" />}
-            </div>
-          </Badge>
-        </Tooltip>
+      selectedBadge = (
+        <Badge badgeType="primary" href={mediaLink}>
+          <div className="flex items-center">
+            <span>
+              {intl.formatMessage(is4k ? messages.status4k : messages.status, {
+                status: inProgress
+                  ? intl.formatMessage(globalMessages.processing)
+                  : intl.formatMessage(globalMessages.requested),
+              })}
+            </span>
+            {inProgress && <Spinner className="ml-1 h-3 w-3" />}
+          </div>
+        </Badge>
       );
+      break;
 
     case MediaStatus.PENDING:
-      return (
-        <Tooltip content={mediaLinkDescription}>
-          <Badge badgeType="warning" href={mediaLink}>
-            {intl.formatMessage(is4k ? messages.status4k : messages.status, {
-              status: intl.formatMessage(globalMessages.pending),
-            })}
-          </Badge>
-        </Tooltip>
+      selectedBadge = (
+        <Badge badgeType="warning" href={mediaLink}>
+          {intl.formatMessage(is4k ? messages.status4k : messages.status, {
+            status: intl.formatMessage(globalMessages.pending),
+          })}
+        </Badge>
       );
+      break;
 
     default:
-      return null;
+      selectedBadge = null;
+      break;
   }
+
+  // regardless of whether tooltip is enabled or not
+  if (selectedBadge === null) {
+    return null;
+  }
+
+  return enableTooltip ? (
+    <Tooltip content={mediaLinkDescription}>{selectedBadge}</Tooltip>
+  ) : (
+    selectedBadge
+  );
 };
 
 export default StatusBadge;
