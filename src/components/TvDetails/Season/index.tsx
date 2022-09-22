@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 const messages = defineMessages({
   somethingwentwrong: 'Something went wrong while retrieving season data.',
-  noepisodes: 'Episodes list unavailable',
+  noepisodes: 'Episode list unavailable',
 });
 
 type SeasonProps = {

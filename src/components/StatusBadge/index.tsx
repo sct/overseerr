@@ -23,7 +23,6 @@ interface StatusBadgeProps {
   serviceUrl?: string;
   tmdbId?: number;
   mediaType?: 'movie' | 'tv';
-  enableTooltip?: boolean;
 }
 
 const StatusBadge = ({
@@ -34,7 +33,6 @@ const StatusBadge = ({
   serviceUrl,
   tmdbId,
   mediaType,
-  enableTooltip = true,
 }: StatusBadgeProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
@@ -80,7 +78,7 @@ const StatusBadge = ({
           mediaType === 'movie' ? globalMessages.movie : globalMessages.tvshow
         ),
       });
-    } else if (hasPermission(Permission.ADMIN)) {
+    } else if (hasPermission(Permission.ADMIN) && serviceUrl) {
       mediaLink = serviceUrl;
       mediaLinkDescription = intl.formatMessage(messages.openinarr, {
         arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
@@ -151,12 +149,12 @@ const StatusBadge = ({
       break;
   }
 
-  // regardless of whether tooltip is enabled or not
+  // regardless of whether badge should have a tooltip
   if (selectedBadge === null) {
     return null;
   }
 
-  return enableTooltip ? (
+  return mediaLink ? (
     <Tooltip content={mediaLinkDescription}>{selectedBadge}</Tooltip>
   ) : (
     selectedBadge
