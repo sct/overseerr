@@ -13,7 +13,7 @@ const CachedImage = ({ src, ...props }: ImageProps) => {
 
   let imageUrl = src;
 
-  if (typeof imageUrl === 'string') {
+  if (typeof imageUrl === 'string' && imageUrl.startsWith('http')) {
     const parsedUrl = new URL(imageUrl);
 
     if (parsedUrl.host === 'image.tmdb.org' && currentSettings.cacheImages) {
