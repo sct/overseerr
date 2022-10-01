@@ -133,6 +133,7 @@
   "components.Login.signingin": "Signing In…",
   "components.Login.signinheader": "Sign in to continue",
   "components.Login.signinwithoidc": "Sign In With {provider}",
+  "components.Login.signinwithoidcaccount": "Use your {oidcName} account",
   "components.Login.signinwithoverseerr": "Use your {applicationTitle} account",
   "components.Login.signinwithplex": "Use your Plex account",
   "components.Login.validationemailrequired": "You must provide a valid email address",
