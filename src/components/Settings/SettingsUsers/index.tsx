@@ -58,9 +58,8 @@ const validationSchema = yup.object().shape({
         test: (val) => {
           return (
             !!val &&
-            /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/.test(
-              val
-            )
+            // Any HTTPS domain without query string
+            /^([a-zA-Z0-9-_]+\.)[^?]+$/i.test(val)
           );
         },
       }),

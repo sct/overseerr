@@ -20,7 +20,7 @@ const messages = defineMessages({
   signinheader: 'Sign in to continue',
   signinwithplex: 'Use your Plex account',
   signinwithoverseerr: 'Use your {applicationTitle} account',
-  signinwithoidc: 'Use your {oidcName} account',
+  signinwithoidcaccount: 'Use your {oidcName} account',
 });
 
 const Login = () => {
@@ -170,7 +170,7 @@ const Login = () => {
                         }`}
                         onClick={() => handleClick(2)}
                       >
-                        {intl.formatMessage(messages.signinwithoidc, {
+                        {intl.formatMessage(messages.signinwithoidcaccount, {
                           oidcName: settings.currentSettings.oidcName,
                         })}
                       </button>
