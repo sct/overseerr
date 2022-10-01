@@ -491,18 +491,21 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
     // Fetch the token data
     const callbackUrl = new URL(
       '/api/v1/auth/oidc-callback',
-      `http://${req.headers.host}`
+      `${req.protocol}://${req.headers.host}`
     );
+
+    const formData = new URLSearchParams();
+    formData.append('client_secret', oidcClientSecret);
+    formData.append('grant_type', 'authorization_code');
+    formData.append('redirect_uri', callbackUrl.toString());
+    formData.append('client_id', oidcClientId);
+    formData.append('code', code);
     const response = await fetch(wellKnownInfo.token_endpoint, {
       method: 'POST',
-      headers: new Headers([['Content-Type', 'application/json']]),
-      body: JSON.stringify({
-        client_cecret: oidcClientSecret,
-        grant_type: 'authorization_code',
-        redirect_uri: callbackUrl,
-        client_id: oidcClientId,
-        code,
-      }),
+      headers: new Headers([
+        ['Content-Type', 'application/x-www-form-urlencoded'],
+      ]),
+      body: formData,
     });
 
     // Check that the response is valid
