@@ -1,6 +1,6 @@
-import { Request } from 'express';
+import { getSettings } from '@server/lib/settings';
+import type { Request } from 'express';
 import * as yup from 'yup';
-import { getSettings } from '../lib/settings';
 
 export function getOIDCRedirectUrl(req: Request, state: string) {
   const settings = getSettings();
