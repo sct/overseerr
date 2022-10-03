@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 const messages = defineMessages({
   somethingwentwrong: 'Something went wrong while retrieving season data.',
-  noepisodes: 'Episode list unavailable',
+  noepisodes: 'Episode list unavailable.',
 });
 
 type SeasonProps = {
@@ -30,7 +30,7 @@ const Season = ({ seasonNumber, tvId }: SeasonProps) => {
 
   return (
     <div className="flex flex-col justify-center divide-y divide-gray-700">
-      {data.episodeCount === 0 ? (
+      {data.episodes.length === 0 ? (
         <p>{intl.formatMessage(messages.noepisodes)}</p>
       ) : (
         data.episodes
