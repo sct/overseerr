@@ -4,15 +4,13 @@ import * as yup from 'yup';
 
 /** Fetch the oidc configuration blob */
 export async function getOIDCWellknownConfiguration(domain: string) {
-  const wellKnownInfo: WellKnownConfiguration = await fetch(
-    new URL(
-      '/.well-known/openid-configuration',
-      `https://${domain}`
-    ).toString(),
-    {
-      headers: new Headers([['Content-Type', 'application/json']]),
-    }
-  ).then((r) => r.json());
+  // remove trailing slash from url if it exists and add /.well-known/openid-configuration path
+  const wellKnownUrl = new URL(
+    `https://${domain}`.replace(/\/$/, '') + '/.well-known/openid-configuration'
+  ).toString();
+  const wellKnownInfo: WellKnownConfiguration = await fetch(wellKnownUrl, {
+    headers: new Headers([['Content-Type', 'application/json']]),
+  }).then((r) => r.json());
 
   return wellKnownInfo;
 }
