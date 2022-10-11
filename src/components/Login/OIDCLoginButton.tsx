@@ -21,7 +21,12 @@ function OIDCLoginButton({ revalidate, oidcName }: Props) {
   const [loading, setLoading] = useState(false);
   const handleClick = async () => {
     setLoading(true);
-    await oidcAuth.preparePopup();
+    try {
+      await oidcAuth.preparePopup();
+    } catch (e) {
+      setLoading(false);
+      return;
+    }
     setLoading(false);
   };
 
