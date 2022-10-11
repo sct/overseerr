@@ -2,12 +2,27 @@ import { getSettings } from '@server/lib/settings';
 import type { Request } from 'express';
 import * as yup from 'yup';
 
-export function getOIDCRedirectUrl(req: Request, state: string) {
+/** Fetch the oidc configuration blob */
+export async function getOIDCWellknownConfiguration(domain: string) {
+  const wellKnownInfo: WellKnownConfiguration = await fetch(
+    new URL(
+      '/.well-known/openid-configuration',
+      `https://${domain}`
+    ).toString(),
+    {
+      headers: new Headers([['Content-Type', 'application/json']]),
+    }
+  ).then((r) => r.json());
+
+  return wellKnownInfo;
+}
+
+export async function getOIDCRedirectUrl(req: Request, state: string) {
   const settings = getSettings();
   const { oidcDomain, oidcClientId } = settings.main;
 
-  const url = new URL(`https://${oidcDomain}`);
-  url.pathname = '/authorize';
+  const wellKnownInfo = await getOIDCWellknownConfiguration(oidcDomain);
+  const url = new URL(wellKnownInfo.authorization_endpoint);
   url.searchParams.set('response_type', 'code');
   url.searchParams.set('client_id', oidcClientId);
 
