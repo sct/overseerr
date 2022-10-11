@@ -11,7 +11,7 @@ import { Router } from 'express';
 import {
   createJwtSchema,
   getOIDCRedirectUrl,
-  type WellKnownConfiguration,
+  getOIDCWellknownConfiguration,
 } from '@server/utils/oidc';
 import { randomBytes } from 'crypto';
 import gravatarUrl from 'gravatar-url';
@@ -416,7 +416,7 @@ authRoutes.post('/reset-password/:guid', async (req, res, next) => {
 
 authRoutes.get('/oidc-login', async (req, res, next) => {
   const state = randomBytes(32).toString('hex');
-  const redirectUrl = getOIDCRedirectUrl(req, state);
+  const redirectUrl = await getOIDCRedirectUrl(req, state);
 
   res.cookie('oidc-state', state, {
     maxAge: 60000,
@@ -462,16 +462,7 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
       return res.redirect('/login');
     }
 
-    // Fetch the oidc configuration blob
-    const wellKnownInfo: WellKnownConfiguration = await fetch(
-      new URL(
-        '/.well-known/openid-configuration',
-        `https://${oidcDomain}`
-      ).toString(),
-      {
-        headers: new Headers([['Content-Type', 'application/json']]),
-      }
-    ).then((r) => r.json());
+    const wellKnownInfo = await getOIDCWellknownConfiguration(oidcDomain);
 
     // Fetch the token data
     const callbackUrl = new URL(
