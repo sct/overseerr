@@ -421,7 +421,7 @@ authRoutes.get('/oidc-login', async (req, res, next) => {
   res.cookie('oidc-state', state, {
     maxAge: 60000,
     httpOnly: true,
-    secure: true,
+    secure: req.protocol === 'https',
   });
   return res.redirect(redirectUrl);
 });
