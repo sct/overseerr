@@ -26,8 +26,9 @@ function OIDCLoginButton({ revalidate, oidcName }: Props) {
     } catch (e) {
       setLoading(false);
       return;
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   return (
