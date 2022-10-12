@@ -434,7 +434,7 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
     return res.status(500).json({ error: 'OIDC sign-in is disabled.' });
   }
   const cookieState = req.cookies['oidc-state'];
-  const url = new URL(req.url, `http://${req.hostname}`);
+  const url = new URL(req.url, `${req.protocol}://${req.hostname}`);
   const state = url.searchParams.get('state');
 
   try {
