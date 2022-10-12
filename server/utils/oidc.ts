@@ -26,7 +26,7 @@ export async function getOIDCRedirectUrl(req: Request, state: string) {
 
   const callbackUrl = new URL(
     '/api/v1/auth/oidc-callback',
-    `http://${req.headers.host}`
+    `${req.protocol}://${req.headers.host}`
   ).toString();
   url.searchParams.set('redirect_uri', callbackUrl);
   url.searchParams.set('scope', 'openid profile email');
