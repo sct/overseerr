@@ -7,6 +7,7 @@ import PageTitle from '@app/components/Common/PageTitle';
 import IssueComment from '@app/components/IssueDetails/IssueComment';
 import IssueDescription from '@app/components/IssueDetails/IssueDescription';
 import { issueOptions } from '@app/components/IssueModal/constants';
+import useDeepLinks from '@app/hooks/useDeepLinks';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
@@ -87,6 +88,13 @@ const IssueDetails = () => {
       ? `/api/v1/${issueData.media.mediaType}/${issueData.media.tmdbId}`
       : null
   );
+
+  const { plexUrl, plexUrl4k } = useDeepLinks({
+    plexUrl: data?.mediaInfo?.plexUrl,
+    plexUrl4k: data?.mediaInfo?.plexUrl4k,
+    iOSPlexUrl: data?.mediaInfo?.iOSPlexUrl,
+    iOSPlexUrl4k: data?.mediaInfo?.iOSPlexUrl4k,
+  });
 
   const CommentSchema = Yup.object().shape({
     message: Yup.string().required(),
@@ -354,7 +362,7 @@ const IssueDetails = () => {
               {issueData?.media.plexUrl && (
                 <Button
                   as="a"
-                  href={issueData?.media.plexUrl}
+                  href={plexUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full"
@@ -387,7 +395,7 @@ const IssueDetails = () => {
               {issueData?.media.plexUrl4k && (
                 <Button
                   as="a"
-                  href={issueData?.media.plexUrl4k}
+                  href={plexUrl4k}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full"
@@ -590,7 +598,7 @@ const IssueDetails = () => {
             {issueData?.media.plexUrl && (
               <Button
                 as="a"
-                href={issueData?.media.plexUrl}
+                href={plexUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full"
@@ -623,7 +631,7 @@ const IssueDetails = () => {
             {issueData?.media.plexUrl4k && (
               <Button
                 as="a"
-                href={issueData?.media.plexUrl4k}
+                href={plexUrl4k}
                 target="_blank"
                 rel="noreferrer"
                 className="w-full"
