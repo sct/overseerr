@@ -36,10 +36,10 @@ import Media from './Media';
 import SeasonRequest from './SeasonRequest';
 import { User } from './User';
 
-export class RequestPermissionError extends Error {}
-export class QuotaRestrictedError extends Error {}
-export class DuplicateMediaRequestError extends Error {}
-export class NoSeasonsAvailableError extends Error {}
+export class RequestPermissionError extends Error { }
+export class QuotaRestrictedError extends Error { }
+export class DuplicateMediaRequestError extends Error { }
+export class NoSeasonsAvailableError extends Error { }
 
 type MediaRequestOptions = {
   isAutoRequest?: boolean;
@@ -91,8 +91,7 @@ export class MediaRequest {
       )
     ) {
       throw new RequestPermissionError(
-        `You do not have permission to make ${
-          requestBody.is4k ? '4K ' : ''
+        `You do not have permission to make ${requestBody.is4k ? '4K ' : ''
         }movie requests.`
       );
     } else if (
@@ -107,8 +106,7 @@ export class MediaRequest {
       )
     ) {
       throw new RequestPermissionError(
-        `You do not have permission to make ${
-          requestBody.is4k ? '4K ' : ''
+        `You do not have permission to make ${requestBody.is4k ? '4K ' : ''
         }series requests.`
       );
     }
@@ -247,8 +245,8 @@ export class MediaRequest {
       const requestedSeasons =
         requestBody.seasons === 'all'
           ? tmdbMediaShow.seasons
-              .map((season) => season.season_number)
-              .filter((sn) => sn > 0)
+            .map((season) => season.season_number)
+            .filter((sn) => sn > 0)
           : (requestBody.seasons as number[]);
       let existingSeasons: number[] = [];
 
@@ -337,7 +335,6 @@ export class MediaRequest {
         serverId: requestBody.serverId,
         profileId: requestBody.profileId,
         rootFolder: requestBody.rootFolder,
-        languageProfileId: requestBody.languageProfileId,
         tags: requestBody.tags,
         seasons: finalSeasons.map(
           (sn) =>
@@ -422,9 +419,6 @@ export class MediaRequest {
 
   @Column({ nullable: true })
   public rootFolder: string;
-
-  @Column({ nullable: true })
-  public languageProfileId: number;
 
   @Column({
     type: 'text',
@@ -575,7 +569,7 @@ export class MediaRequest {
       // Do not update the status if the item is already partially available or available
       media[this.is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE &&
       media[this.is4k ? 'status4k' : 'status'] !==
-        MediaStatus.PARTIALLY_AVAILABLE
+      MediaStatus.PARTIALLY_AVAILABLE
     ) {
       media[this.is4k ? 'status4k' : 'status'] = MediaStatus.PROCESSING;
       mediaRepository.save(media);
@@ -688,10 +682,8 @@ export class MediaRequest {
 
         if (!radarrSettings) {
           logger.warn(
-            `There is no default ${
-              this.is4k ? '4K ' : ''
-            }Radarr server configured. Did you set any of your ${
-              this.is4k ? '4K ' : ''
+            `There is no default ${this.is4k ? '4K ' : ''
+            }Radarr server configured. Did you set any of your ${this.is4k ? '4K ' : ''
             }Radarr servers as default?`,
             {
               label: 'Media Request',
@@ -882,10 +874,8 @@ export class MediaRequest {
 
         if (!sonarrSettings) {
           logger.warn(
-            `There is no default ${
-              this.is4k ? '4K ' : ''
-            }Sonarr server configured. Did you set any of your ${
-              this.is4k ? '4K ' : ''
+            `There is no default ${this.is4k ? '4K ' : ''
+            }Sonarr server configured. Did you set any of your ${this.is4k ? '4K ' : ''
             }Sonarr servers as default?`,
             {
               label: 'Media Request',
@@ -945,10 +935,6 @@ export class MediaRequest {
           seriesType === 'anime' && sonarrSettings.activeAnimeProfileId
             ? sonarrSettings.activeAnimeProfileId
             : sonarrSettings.activeProfileId;
-        let languageProfile =
-          seriesType === 'anime' && sonarrSettings.activeAnimeLanguageProfileId
-            ? sonarrSettings.activeAnimeLanguageProfileId
-            : sonarrSettings.activeLanguageProfileId;
         let tags =
           seriesType === 'anime'
             ? sonarrSettings.animeTags
@@ -979,21 +965,6 @@ export class MediaRequest {
           );
         }
 
-        if (
-          this.languageProfileId &&
-          this.languageProfileId !== languageProfile
-        ) {
-          languageProfile = this.languageProfileId;
-          logger.info(
-            `Request has an override language profile ID: ${languageProfile}`,
-            {
-              label: 'Media Request',
-              requestId: this.id,
-              mediaId: this.media.id,
-            }
-          );
-        }
-
         if (this.tags && !isEqual(this.tags, tags)) {
           tags = this.tags;
           logger.info(`Request has override tags`, {
@@ -1006,7 +977,6 @@ export class MediaRequest {
 
         const sonarrSeriesOptions: AddSeriesOptions = {
           profileId: qualityProfile,
-          languageProfileId: languageProfile,
           rootFolderPath: rootFolder,
           title: series.name,
           tvdbid: tvdbId,
@@ -1096,16 +1066,14 @@ export class MediaRequest {
           event = `New ${this.is4k ? '4K ' : ''}${mediaType} Request`;
           break;
         case Notification.MEDIA_AUTO_REQUESTED:
-          event = `${
-            this.is4k ? '4K ' : ''
-          }${mediaType} Request Automatically Submitted`;
+          event = `${this.is4k ? '4K ' : ''
+            }${mediaType} Request Automatically Submitted`;
           notifyAdmin = false;
           notifySystem = false;
           break;
         case Notification.MEDIA_AUTO_APPROVED:
-          event = `${
-            this.is4k ? '4K ' : ''
-          }${mediaType} Request Automatically Approved`;
+          event = `${this.is4k ? '4K ' : ''
+            }${mediaType} Request Automatically Approved`;
           break;
         case Notification.MEDIA_FAILED:
           event = `${this.is4k ? '4K ' : ''}${mediaType} Request Failed`;
@@ -1121,9 +1089,8 @@ export class MediaRequest {
           notifySystem,
           notifyUser: notifyAdmin ? undefined : this.requestedBy,
           event,
-          subject: `${movie.title}${
-            movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
-          }`,
+          subject: `${movie.title}${movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
+            }`,
           message: truncate(movie.overview, {
             length: 500,
             separator: /\s/,
@@ -1140,9 +1107,8 @@ export class MediaRequest {
           notifySystem,
           notifyUser: notifyAdmin ? undefined : this.requestedBy,
           event,
-          subject: `${tv.name}${
-            tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
-          }`,
+          subject: `${tv.name}${tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
+            }`,
           message: truncate(tv.overview, {
             length: 500,
             separator: /\s/,

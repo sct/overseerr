@@ -15,7 +15,6 @@ export type MediaRequestBody = {
   serverId?: number;
   profileId?: number;
   rootFolder?: string;
-  languageProfileId?: number;
   userId?: number;
   tags?: number[];
 };

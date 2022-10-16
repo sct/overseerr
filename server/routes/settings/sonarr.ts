@@ -49,7 +49,6 @@ sonarrRoutes.post('/test', async (req, res, next) => {
       .catch(() => req.body.baseUrl);
     const profiles = await sonarr.getProfiles();
     const folders = await sonarr.getRootFolders();
-    const languageProfiles = await sonarr.getLanguageProfiles();
     const tags = await sonarr.getTags();
 
     return res.status(200).json({
@@ -58,7 +57,6 @@ sonarrRoutes.post('/test', async (req, res, next) => {
         id: folder.id,
         path: folder.path,
       })),
-      languageProfiles,
       tags,
       urlBase,
     });

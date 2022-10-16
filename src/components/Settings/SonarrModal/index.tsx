@@ -28,7 +28,6 @@ const messages = defineMessages({
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
   validationProfileRequired: 'You must select a quality profile',
-  validationLanguageProfileRequired: 'You must select a language profile',
   toastSonarrTestSuccess: 'Sonarr connection established successfully!',
   toastSonarrTestFailure: 'Failed to connect to Sonarr.',
   add: 'Add Server',
@@ -41,22 +40,17 @@ const messages = defineMessages({
   apiKey: 'API Key',
   baseUrl: 'URL Base',
   qualityprofile: 'Quality Profile',
-  languageprofile: 'Language Profile',
   rootfolder: 'Root Folder',
   animequalityprofile: 'Anime Quality Profile',
-  animelanguageprofile: 'Anime Language Profile',
   animerootfolder: 'Anime Root Folder',
   seasonfolders: 'Season Folders',
   server4k: '4K Server',
   selectQualityProfile: 'Select quality profile',
   selectRootFolder: 'Select root folder',
-  selectLanguageProfile: 'Select language profile',
   loadingprofiles: 'Loading quality profiles…',
   testFirstQualityProfiles: 'Test connection to load quality profiles',
   loadingrootfolders: 'Loading root folders…',
   testFirstRootFolders: 'Test connection to load root folders',
-  loadinglanguageprofiles: 'Loading language profiles…',
-  testFirstLanguageProfiles: 'Test connection to load language profiles',
   loadingTags: 'Loading tags…',
   testFirstTags: 'Test connection to load tags',
   syncEnabled: 'Enable Scan',
@@ -81,10 +75,6 @@ interface TestResponse {
     id: number;
     path: string;
   }[];
-  languageProfiles: {
-    id: number;
-    name: string;
-  }[];
   tags: {
     id: number;
     label: string;
@@ -107,7 +97,6 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
   const [testResponse, setTestResponse] = useState<TestResponse>({
     profiles: [],
     rootFolders: [],
-    languageProfiles: [],
     tags: [],
   });
   const SonarrSettingsSchema = Yup.object().shape({
@@ -131,9 +120,6 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
     ),
     activeProfileId: Yup.string().required(
       intl.formatMessage(messages.validationProfileRequired)
-    ),
-    activeLanguageProfileId: Yup.number().required(
-      intl.formatMessage(messages.validationLanguageProfileRequired)
     ),
     externalUrl: Yup.string()
       .url(intl.formatMessage(messages.validationApplicationUrl))
@@ -239,10 +225,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
           apiKey: sonarr?.apiKey,
           baseUrl: sonarr?.baseUrl,
           activeProfileId: sonarr?.activeProfileId,
-          activeLanguageProfileId: sonarr?.activeLanguageProfileId,
           rootFolder: sonarr?.activeDirectory,
           activeAnimeProfileId: sonarr?.activeAnimeProfileId,
-          activeAnimeLanguageProfileId: sonarr?.activeAnimeLanguageProfileId,
           activeAnimeRootFolder: sonarr?.activeAnimeDirectory,
           tags: sonarr?.tags ?? [],
           animeTags: sonarr?.animeTags ?? [],
@@ -271,16 +255,10 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
               useSsl: values.ssl,
               baseUrl: values.baseUrl,
               activeProfileId: Number(values.activeProfileId),
-              activeLanguageProfileId: values.activeLanguageProfileId
-                ? Number(values.activeLanguageProfileId)
-                : undefined,
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
               activeAnimeProfileId: values.activeAnimeProfileId
                 ? Number(values.activeAnimeProfileId)
-                : undefined,
-              activeAnimeLanguageProfileId: values.activeAnimeLanguageProfileId
-                ? Number(values.activeAnimeLanguageProfileId)
                 : undefined,
               activeAnimeProfileName: animeProfileName ?? undefined,
               activeAnimeDirectory: values.activeAnimeRootFolder,
@@ -325,8 +303,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                 isSubmitting
                   ? intl.formatMessage(globalMessages.saving)
                   : sonarr
-                  ? intl.formatMessage(globalMessages.save)
-                  : intl.formatMessage(messages.add)
+                    ? intl.formatMessage(globalMessages.save)
+                    : intl.formatMessage(messages.add)
               }
               secondaryButtonType="warning"
               secondaryText={
@@ -360,13 +338,13 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
               title={
                 !sonarr
                   ? intl.formatMessage(
-                      values.is4k
-                        ? messages.create4ksonarr
-                        : messages.createsonarr
-                    )
+                    values.is4k
+                      ? messages.create4ksonarr
+                      : messages.createsonarr
+                  )
                   : intl.formatMessage(
-                      values.is4k ? messages.edit4ksonarr : messages.editsonarr
-                    )
+                    values.is4k ? messages.edit4ksonarr : messages.editsonarr
+                  )
               }
             >
               <div className="mb-6">
@@ -549,10 +527,10 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                           {isTesting
                             ? intl.formatMessage(messages.loadingprofiles)
                             : !isValidated
-                            ? intl.formatMessage(
+                              ? intl.formatMessage(
                                 messages.testFirstQualityProfiles
                               )
-                            : intl.formatMessage(messages.selectQualityProfile)}
+                              : intl.formatMessage(messages.selectQualityProfile)}
                         </option>
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
@@ -589,8 +567,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                           {isTesting
                             ? intl.formatMessage(messages.loadingrootfolders)
                             : !isValidated
-                            ? intl.formatMessage(messages.testFirstRootFolders)
-                            : intl.formatMessage(messages.selectRootFolder)}
+                              ? intl.formatMessage(messages.testFirstRootFolders)
+                              : intl.formatMessage(messages.selectRootFolder)}
                         </option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
@@ -611,54 +589,6 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="activeLanguageProfileId"
-                    className="text-label"
-                  >
-                    {intl.formatMessage(messages.languageprofile)}
-                    <span className="label-required">*</span>
-                  </label>
-                  <div className="form-input-area">
-                    <div className="form-input-field">
-                      <Field
-                        as="select"
-                        id="activeLanguageProfileId"
-                        name="activeLanguageProfileId"
-                        disabled={!isValidated || isTesting}
-                      >
-                        <option value="">
-                          {isTesting
-                            ? intl.formatMessage(
-                                messages.loadinglanguageprofiles
-                              )
-                            : !isValidated
-                            ? intl.formatMessage(
-                                messages.testFirstLanguageProfiles
-                              )
-                            : intl.formatMessage(
-                                messages.selectLanguageProfile
-                              )}
-                        </option>
-                        {testResponse.languageProfiles.length > 0 &&
-                          testResponse.languageProfiles.map((language) => (
-                            <option
-                              key={`loaded-profile-${language.id}`}
-                              value={language.id}
-                            >
-                              {language.name}
-                            </option>
-                          ))}
-                      </Field>
-                    </div>
-                    {errors.activeLanguageProfileId &&
-                      touched.activeLanguageProfileId && (
-                        <div className="error">
-                          {errors.activeLanguageProfileId}
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="form-row">
                   <label htmlFor="tags" className="text-label">
                     {intl.formatMessage(messages.tags)}
                   </label>
@@ -667,9 +597,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                       options={
                         isValidated
                           ? testResponse.tags.map((tag) => ({
-                              label: tag.label,
-                              value: tag.id,
-                            }))
+                            label: tag.label,
+                            value: tag.id,
+                          }))
                           : []
                       }
                       isMulti
@@ -678,8 +608,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                         !isValidated
                           ? intl.formatMessage(messages.testFirstTags)
                           : isTesting
-                          ? intl.formatMessage(messages.loadingTags)
-                          : intl.formatMessage(messages.selecttags)
+                            ? intl.formatMessage(messages.loadingTags)
+                            : intl.formatMessage(messages.selecttags)
                       }
                       isLoading={isTesting}
                       className="react-select-container"
@@ -688,23 +618,23 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                         isTesting
                           ? []
                           : (values.tags
-                              .map((tagId) => {
-                                const foundTag = testResponse.tags.find(
-                                  (tag) => tag.id === tagId
-                                );
+                            .map((tagId) => {
+                              const foundTag = testResponse.tags.find(
+                                (tag) => tag.id === tagId
+                              );
 
-                                if (!foundTag) {
-                                  return undefined;
-                                }
+                              if (!foundTag) {
+                                return undefined;
+                              }
 
-                                return {
-                                  value: foundTag.id,
-                                  label: foundTag.label,
-                                };
-                              })
-                              .filter(
-                                (option) => option !== undefined
-                              ) as OptionType[])
+                              return {
+                                value: foundTag.id,
+                                label: foundTag.label,
+                              };
+                            })
+                            .filter(
+                              (option) => option !== undefined
+                            ) as OptionType[])
                       }
                       onChange={(value: OnChangeValue<OptionType, true>) => {
                         setFieldValue(
@@ -734,10 +664,10 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                           {isTesting
                             ? intl.formatMessage(messages.loadingprofiles)
                             : !isValidated
-                            ? intl.formatMessage(
+                              ? intl.formatMessage(
                                 messages.testFirstQualityProfiles
                               )
-                            : intl.formatMessage(messages.selectQualityProfile)}
+                              : intl.formatMessage(messages.selectQualityProfile)}
                         </option>
                         {testResponse.profiles.length > 0 &&
                           testResponse.profiles.map((profile) => (
@@ -774,8 +704,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                           {isTesting
                             ? intl.formatMessage(messages.loadingrootfolders)
                             : !isValidated
-                            ? intl.formatMessage(messages.testFirstRootFolders)
-                            : intl.formatMessage(messages.selectRootFolder)}
+                              ? intl.formatMessage(messages.testFirstRootFolders)
+                              : intl.formatMessage(messages.selectRootFolder)}
                         </option>
                         {testResponse.rootFolders.length > 0 &&
                           testResponse.rootFolders.map((folder) => (
@@ -795,53 +725,6 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                   </div>
                 </div>
                 <div className="form-row">
-                  <label
-                    htmlFor="activeAnimeLanguageProfileId"
-                    className="text-label"
-                  >
-                    {intl.formatMessage(messages.animelanguageprofile)}
-                  </label>
-                  <div className="form-input-area">
-                    <div className="form-input-field">
-                      <Field
-                        as="select"
-                        id="activeAnimeLanguageProfileId"
-                        name="activeAnimeLanguageProfileId"
-                        disabled={!isValidated || isTesting}
-                      >
-                        <option value="">
-                          {isTesting
-                            ? intl.formatMessage(
-                                messages.loadinglanguageprofiles
-                              )
-                            : !isValidated
-                            ? intl.formatMessage(
-                                messages.testFirstLanguageProfiles
-                              )
-                            : intl.formatMessage(
-                                messages.selectLanguageProfile
-                              )}
-                        </option>
-                        {testResponse.languageProfiles.length > 0 &&
-                          testResponse.languageProfiles.map((language) => (
-                            <option
-                              key={`loaded-profile-${language.id}`}
-                              value={language.id}
-                            >
-                              {language.name}
-                            </option>
-                          ))}
-                      </Field>
-                    </div>
-                    {errors.activeAnimeLanguageProfileId &&
-                      touched.activeAnimeLanguageProfileId && (
-                        <div className="error">
-                          {errors.activeAnimeLanguageProfileId}
-                        </div>
-                      )}
-                  </div>
-                </div>
-                <div className="form-row">
                   <label htmlFor="tags" className="text-label">
                     {intl.formatMessage(messages.animeTags)}
                   </label>
@@ -850,9 +733,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                       options={
                         isValidated
                           ? testResponse.tags.map((tag) => ({
-                              label: tag.label,
-                              value: tag.id,
-                            }))
+                            label: tag.label,
+                            value: tag.id,
+                          }))
                           : []
                       }
                       isMulti
@@ -861,8 +744,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                         !isValidated
                           ? intl.formatMessage(messages.testFirstTags)
                           : isTesting
-                          ? intl.formatMessage(messages.loadingTags)
-                          : intl.formatMessage(messages.selecttags)
+                            ? intl.formatMessage(messages.loadingTags)
+                            : intl.formatMessage(messages.selecttags)
                       }
                       isLoading={isTesting}
                       className="react-select-container"
@@ -871,23 +754,23 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                         isTesting
                           ? []
                           : (values.animeTags
-                              .map((tagId) => {
-                                const foundTag = testResponse.tags.find(
-                                  (tag) => tag.id === tagId
-                                );
+                            .map((tagId) => {
+                              const foundTag = testResponse.tags.find(
+                                (tag) => tag.id === tagId
+                              );
 
-                                if (!foundTag) {
-                                  return undefined;
-                                }
+                              if (!foundTag) {
+                                return undefined;
+                              }
 
-                                return {
-                                  value: foundTag.id,
-                                  label: foundTag.label,
-                                };
-                              })
-                              .filter(
-                                (option) => option !== undefined
-                              ) as OptionType[])
+                              return {
+                                value: foundTag.id,
+                                label: foundTag.label,
+                              };
+                            })
+                            .filter(
+                              (option) => option !== undefined
+                            ) as OptionType[])
                       }
                       onChange={(value) => {
                         setFieldValue(

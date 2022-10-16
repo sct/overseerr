@@ -27,7 +27,6 @@ const messages = defineMessages({
   server: 'Destination Server',
   profilechanged: 'Quality Profile',
   rootfolder: 'Root Folder',
-  languageprofile: 'Language Profile',
   requestdate: 'Request Date',
   requestedby: 'Requested By',
   lastmodifiedby: 'Last Modified By',
@@ -47,7 +46,7 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const { profile, rootFolder, server, languageProfile } =
+  const { profile, rootFolder, server } =
     useRequestOverride(request);
 
   const updateRequest = async (type: 'approve' | 'decline'): Promise<void> => {
@@ -238,7 +237,7 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
             </div>
           </div>
         )}
-        {(server || profile || rootFolder || languageProfile) && (
+        {(server || profile || rootFolder) && (
           <>
             <div className="mt-4 mb-1 text-sm">
               {intl.formatMessage(messages.requestoverrides)}
@@ -266,14 +265,6 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
                     {intl.formatMessage(messages.rootfolder)}
                   </span>
                   <span>{rootFolder}</span>
-                </li>
-              )}
-              {languageProfile && (
-                <li className="flex justify-between px-1 py-2">
-                  <span className="mr-2 font-bold">
-                    {intl.formatMessage(messages.languageprofile)}
-                  </span>
-                  <span>{languageProfile}</span>
                 </li>
               )}
             </ul>

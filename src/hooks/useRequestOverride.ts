@@ -9,7 +9,6 @@ interface OverrideStatus {
   server?: string;
   profile?: string;
   rootFolder?: string;
-  languageProfile?: string;
 }
 
 const useRequestOverride = (request: MediaRequest): OverrideStatus => {
@@ -18,8 +17,7 @@ const useRequestOverride = (request: MediaRequest): OverrideStatus => {
   );
 
   const { data } = useSWR<ServiceCommonServerWithDetails>(
-    `/api/v1/service/${request.type === 'movie' ? 'radarr' : 'sonarr'}/${
-      request.serverId
+    `/api/v1/service/${request.type === 'movie' ? 'radarr' : 'sonarr'}/${request.serverId
     }`
   );
 
@@ -43,18 +41,11 @@ const useRequestOverride = (request: MediaRequest): OverrideStatus => {
     profile:
       defaultServer?.activeProfileId !== request.profileId
         ? data.profiles.find((profile) => profile.id === request.profileId)
-            ?.name
+          ?.name
         : undefined,
     rootFolder:
       defaultServer?.activeDirectory !== request.rootFolder
         ? request.rootFolder
-        : undefined,
-    languageProfile:
-      request.type === 'tv' &&
-      defaultServer?.activeLanguageProfileId !== request.languageProfileId
-        ? data.languageProfiles?.find(
-            (profile) => profile.id === request.languageProfileId
-          )?.name
         : undefined,
   };
 };

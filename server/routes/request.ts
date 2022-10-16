@@ -367,7 +367,6 @@ requestRoutes.put<{ requestId: string }>(
         request.serverId = req.body.serverId;
         request.profileId = req.body.profileId;
         request.rootFolder = req.body.rootFolder;
-        request.languageProfileId = req.body.languageProfileId;
         request.tags = req.body.tags;
         request.requestedBy = requestUser as User;
 

@@ -31,7 +31,6 @@ export interface SonarrSeries {
   year: number;
   path: string;
   profileId: number;
-  languageProfileId: number;
   seasonFolder: boolean;
   monitored: boolean;
   useSceneNumbering: boolean;
@@ -67,7 +66,6 @@ export interface AddSeriesOptions {
   tvdbid: number;
   title: string;
   profileId: number;
-  languageProfileId?: number;
   seasons: number[];
   seasonFolder: boolean;
   rootFolderPath: string;
@@ -75,11 +73,6 @@ export interface AddSeriesOptions {
   seriesType: SonarrSeries['seriesType'];
   monitored?: boolean;
   searchNow?: boolean;
-}
-
-export interface LanguageProfile {
-  id: number;
-  name: string;
 }
 
 class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
@@ -189,7 +182,6 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
           tvdbId: options.tvdbid,
           title: options.title,
           qualityProfileId: options.profileId,
-          languageProfileId: options.languageProfileId,
           seasons: this.buildSeasonList(
             options.seasons,
             series.seasons.map((season) => ({
@@ -233,28 +225,6 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
         response: e?.response?.data,
       });
       throw new Error('Failed to add series');
-    }
-  }
-
-  public async getLanguageProfiles(): Promise<LanguageProfile[]> {
-    try {
-      const data = await this.getRolling<LanguageProfile[]>(
-        '/languageprofile',
-        undefined,
-        3600
-      );
-
-      return data;
-    } catch (e) {
-      logger.error(
-        'Something went wrong while retrieving Sonarr language profiles.',
-        {
-          label: 'Sonarr API',
-          errorMessage: e.message,
-        }
-      );
-
-      throw new Error('Failed to get language profiles');
     }
   }
 

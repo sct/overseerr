@@ -418,13 +418,7 @@ components:
         activeDirectory:
           type: string
           example: '/tv/'
-        activeLanguageProfileId:
-          type: number
-          example: 1
         activeAnimeProfileId:
-          type: number
-          nullable: true
-        activeAnimeLanguageProfileId:
           type: number
           nullable: true
         activeAnimeProfileName:
@@ -1592,8 +1586,6 @@ components:
         path:
           type: string
         profileId:
-          type: number
-        languageProfileId:
           type: number
         seasonFolder:
           type: boolean
@@ -4601,8 +4593,6 @@ paths:
                   type: number
                 rootFolder:
                   type: string
-                languageProfileId:
-                  type: number
                 userId:
                   type: number
                   nullable: true
@@ -4705,8 +4695,6 @@ paths:
                   type: number
                 rootFolder:
                   type: string
-                languageProfileId:
-                  type: number
                 userId:
                   type: number
                   nullable: true

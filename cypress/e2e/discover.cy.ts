@@ -111,7 +111,6 @@ describe('Discover', () => {
           serverId: null,
           profileId: null,
           rootFolder: null,
-          languageProfileId: null,
           tags: null,
           media: {
             downloadStatus: [],
