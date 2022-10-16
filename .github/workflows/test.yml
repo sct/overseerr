@@ -30,7 +30,7 @@ jobs:
 
   build_and_push:
     name: Build & Publish Docker Images
-    if: github.ref == 'refs/heads/develop' && !contains(github.event.head_commit.message, '[skip ci]')
+    if: github.ref == 'refs/heads/test' && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
