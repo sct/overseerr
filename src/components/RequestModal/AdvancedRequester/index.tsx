@@ -86,10 +86,6 @@ const AdvancedRequester = ({
     defaultOverrides?.folder ?? ''
   );
 
-  const [selectedLanguage, setSelectedLanguage] = useState<number>(
-    defaultOverrides?.language ?? -1
-  );
-
   const [selectedTags, setSelectedTags] = useState<number[]>(
     defaultOverrides?.tags ?? []
   );
@@ -205,14 +201,6 @@ const AdvancedRequester = ({
         (!applyOverrides || !defaultOverrides.folder)
       ) {
         setSelectedFolder(defaultFolder.path ?? '');
-      }
-
-      if (
-        defaultLanguage &&
-        defaultLanguage.id !== selectedLanguage &&
-        (!applyOverrides || defaultOverrides.language === null)
-      ) {
-        setSelectedLanguage(defaultLanguage.id);
       }
 
       if (
