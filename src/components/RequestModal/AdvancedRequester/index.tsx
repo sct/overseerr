@@ -42,7 +42,6 @@ export type RequestOverrides = {
   profile?: number;
   folder?: string;
   tags?: number[];
-  language?: number;
   user?: User;
 };
 
@@ -233,7 +232,6 @@ const AdvancedRequester = ({
     defaultOverrides?.server,
     defaultOverrides?.folder,
     defaultOverrides?.profile,
-    defaultOverrides?.language,
     defaultOverrides?.tags,
   ]);
 
