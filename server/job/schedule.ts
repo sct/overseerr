@@ -134,7 +134,7 @@ export const startJobs = (): void => {
     }),
   });
 
-  // Run watchlist sync every 5 minutes
+  // Run image cache cleanup every 5 minutes
   scheduledJobs.push({
     id: 'image-cache-cleanup',
     name: 'Image Cache Cleanup',
