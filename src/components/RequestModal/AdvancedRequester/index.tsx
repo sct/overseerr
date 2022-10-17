@@ -226,10 +226,6 @@ const AdvancedRequester = ({
       setSelectedFolder(defaultOverrides.folder);
     }
 
-    if (defaultOverrides && defaultOverrides.language != null) {
-      setSelectedLanguage(defaultOverrides.language);
-    }
-
     if (defaultOverrides && defaultOverrides.tags != null) {
       setSelectedTags(defaultOverrides.tags);
     }
@@ -248,7 +244,6 @@ const AdvancedRequester = ({
         profile: selectedProfile !== -1 ? selectedProfile : undefined,
         server: selectedServer ?? undefined,
         user: selectedUser ?? undefined,
-        language: selectedLanguage !== -1 ? selectedLanguage : undefined,
         tags: selectedTags,
       });
     }
@@ -257,7 +252,6 @@ const AdvancedRequester = ({
     selectedServer,
     selectedProfile,
     selectedUser,
-    selectedLanguage,
     selectedTags,
   ]);
 
