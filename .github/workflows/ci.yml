@@ -11,7 +11,6 @@ on:
 jobs:
   test:
     name: Lint & Test Build
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-20.04
     container: node:16.17-alpine
     steps:
@@ -56,7 +55,7 @@ jobs:
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/arm/v7
+          platforms: linux/amd64
           push: true
           build-args: |
             COMMIT_TAG=${{ github.sha }}
