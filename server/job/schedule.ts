@@ -1,4 +1,5 @@
 import downloadTracker from '@server/lib/downloadtracker';
+import ImageProxy from '@server/lib/imageproxy';
 import { plexFullScanner, plexRecentScanner } from '@server/lib/scanners/plex';
 import { radarrScanner } from '@server/lib/scanners/radarr';
 import { sonarrScanner } from '@server/lib/scanners/sonarr';
@@ -130,6 +131,22 @@ export const startJobs = (): void => {
         label: 'Jobs',
       });
       downloadTracker.resetDownloadTracker();
+    }),
+  });
+
+  // Run watchlist sync every 5 minutes
+  scheduledJobs.push({
+    id: 'image-cache-cleanup',
+    name: 'Image Cache Cleanup',
+    type: 'process',
+    interval: 'long',
+    cronSchedule: jobs['image-cache-cleanup'].schedule,
+    job: schedule.scheduleJob(jobs['image-cache-cleanup'].schedule, () => {
+      logger.info('Starting scheduled job: Image Cache Cleanup', {
+        label: 'Jobs',
+      });
+      // Clean TMDB image cache
+      ImageProxy.clearCache('tmdb');
     }),
   });
 
