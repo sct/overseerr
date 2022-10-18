@@ -759,7 +759,7 @@
   "components.Settings.applicationTitle": "Application Title",
   "components.Settings.applicationurl": "Application URL",
   "components.Settings.cacheImages": "Enable Image Caching",
-  "components.Settings.cacheImagesTip": "Cache and serve optimized images (requires a significant amount of disk space)",
+  "components.Settings.cacheImagesTip": "Cache externally sourced images (requires a significant amount of disk space)",
   "components.Settings.cancelscan": "Cancel Scan",
   "components.Settings.copied": "Copied API key to clipboard.",
   "components.Settings.csrfProtection": "Enable CSRF Protection",
