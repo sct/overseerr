@@ -2475,29 +2475,44 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      example: cache-id
-                    name:
-                      type: string
-                      example: cache name
-                    stats:
+                type: object
+                properties:
+                  imageCache:
+                    type: object
+                    properties:
+                      tmdb:
+                        type: object
+                        properties:
+                          size:
+                            type: number
+                            example: 123456
+                          imageCount:
+                            type: number
+                            example: 123
+                  apiCaches:
+                    type: array
+                    items:
                       type: object
                       properties:
-                        hits:
-                          type: number
-                        misses:
-                          type: number
-                        keys:
-                          type: number
-                        ksize:
-                          type: number
-                        vsize:
-                          type: number
+                        id:
+                          type: string
+                          example: cache-id
+                        name:
+                          type: string
+                          example: cache name
+                        stats:
+                          type: object
+                          properties:
+                            hits:
+                              type: number
+                            misses:
+                              type: number
+                            keys:
+                              type: number
+                            ksize:
+                              type: number
+                            vsize:
+                              type: number
   /settings/cache/{cacheId}/flush:
     post:
       summary: Flush a specific cache

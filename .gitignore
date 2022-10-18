@@ -64,3 +64,6 @@ cypress/screenshots
 
 # TS Build Info
 tsconfig.tsbuildinfo
+
+# Config Cache Directory
+config/cache
