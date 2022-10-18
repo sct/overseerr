@@ -247,7 +247,8 @@ export type JobId =
   | 'radarr-scan'
   | 'sonarr-scan'
   | 'download-sync'
-  | 'download-sync-reset';
+  | 'download-sync-reset'
+  | 'image-cache-cleanup';
 
 interface AllSettings {
   clientId: string;
@@ -413,6 +414,9 @@ class Settings {
         },
         'download-sync-reset': {
           schedule: '0 0 1 * * *',
+        },
+        'image-cache-cleanup': {
+          schedule: '0 0 5 * * *',
         },
       },
     };
