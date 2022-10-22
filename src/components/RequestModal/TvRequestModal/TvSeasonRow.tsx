@@ -2,7 +2,7 @@ import Badge from '@app/components/Common/Badge';
 import useSettings from '@app/hooks/useSettings';
 import globalMessages from '@app/i18n/globalMessages';
 import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
-import Season from '@server/entity/Season';
+import type Season from '@server/entity/Season';
 import type SeasonRequest from '@server/entity/SeasonRequest';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import type { TvDetails } from '@server/models/Tv';
@@ -17,7 +17,7 @@ const messages = defineMessages({
 interface FutureSeason extends TvSeason {
   upcomingSeasonNumber: number;
   season?: never;
-  seasonRequest?: never;
+  seasonRequest?: SeasonRequest;
   mediaSeason?: never;
 }
 

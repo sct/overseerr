@@ -74,7 +74,14 @@ export interface AddSeriesOptions {
   tags?: number[];
   seriesType: SonarrSeries['seriesType'];
   monitored?: boolean;
+  // could consider to absorb `searchNow` into `searchForMissingEpisodes`
+  // since current implementation uses it as such `searchForMissingEpisodes: options.searchNow`
   searchNow?: boolean;
+  addOptions?: {
+    ignoreEpisodesWithFiles?: boolean;
+    ignoreEpisodesWithoutFiles?: boolean;
+    searchForMissingEpisodes?: boolean;
+  };
 }
 
 export interface LanguageProfile {
@@ -205,7 +212,10 @@ class SonarrAPI extends ServarrBase<{ seriesId: number; episodeId: number }> {
           seriesType: options.seriesType,
           addOptions: {
             ignoreEpisodesWithFiles: true,
-            searchForMissingEpisodes: options.searchNow,
+            ...options.addOptions,
+            searchForMissingEpisodes:
+              // not sure if should update the logic above in L:177
+              options.addOptions?.searchForMissingEpisodes || options.searchNow,
           },
         } as Partial<SonarrSeries>
       );
