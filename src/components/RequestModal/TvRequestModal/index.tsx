@@ -540,13 +540,13 @@ const TvRequestModal = ({
                           className={`${
                             isAllSeasons() ? 'bg-indigo-500' : 'bg-gray-800'
                           } absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out`}
-                        ></span>
+                        />
                         <span
                           aria-hidden="true"
                           className={`${
                             isAllSeasons() ? 'translate-x-5' : 'translate-x-0'
                           } absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow transition-transform duration-200 ease-in-out group-focus:border-blue-300 group-focus:ring`}
-                        ></span>
+                        />
                       </span>
                     </th>
                     <th className="bg-gray-700 bg-opacity-80 px-1 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
@@ -573,10 +573,9 @@ const TvRequestModal = ({
                           sn[is4k ? 'status4k' : 'status'] !==
                             MediaStatus.UNKNOWN
                       );
-
                       return (
                         <TvSeasonRow
-                          key={season.id}
+                          key={`season-${season?.id}`}
                           season={season}
                           seasonRequest={seasonRequest}
                           mediaSeason={mediaSeason}

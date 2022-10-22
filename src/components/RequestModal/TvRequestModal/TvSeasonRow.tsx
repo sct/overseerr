@@ -96,7 +96,7 @@ const TvSeasonRow = ({
                 ? 'bg-indigo-500'
                 : 'bg-gray-700'
             } absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out`}
-          ></span>
+          />
           <span
             aria-hidden="true"
             className={`${
@@ -106,7 +106,7 @@ const TvSeasonRow = ({
                 ? 'translate-x-5'
                 : 'translate-x-0'
             } absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow transition-transform duration-200 ease-in-out group-focus:border-blue-300 group-focus:ring`}
-          ></span>
+          />
         </span>
       </td>
       <td className="whitespace-nowrap px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6">
