@@ -5023,7 +5023,7 @@ paths:
           required: true
           schema:
             type: string
-            enum: [pending, approve, decline]
+            enum: [approve, decline]
       responses:
         '200':
           description: Request status changed
