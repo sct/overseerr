@@ -101,6 +101,7 @@ export interface MainSettings {
   trustProxy: boolean;
   partialRequestsEnabled: boolean;
   locale: string;
+  enableForwardAuth: boolean;
 }
 
 interface PublicSettings {
@@ -124,6 +125,7 @@ export interface FullPublicSettings extends PublicSettings {
   emailEnabled: boolean;
   newPlexLogin: boolean;
   plexLoginEnabled: boolean;
+  enableForwardAuth: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -296,6 +298,7 @@ class Settings {
         trustProxy: false,
         partialRequestsEnabled: true,
         locale: 'en',
+        enableForwardAuth: true,
       },
       plex: {
         name: '',
@@ -501,6 +504,7 @@ class Settings {
       emailEnabled: this.data.notifications.agents.email.enabled,
       newPlexLogin: this.data.main.newPlexLogin,
       plexLoginEnabled: false,
+      enableForwardAuth: this.data.main.enableForwardAuth,
     };
   }
 

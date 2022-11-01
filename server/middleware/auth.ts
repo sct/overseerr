@@ -1,5 +1,6 @@
 import { getRepository } from '@server/datasource';
 import { User } from '@server/entity/User';
+import { getOrCreatePlexUser } from '@server/lib/auth';
 import type {
   Permission,
   PermissionCheckOptions,
@@ -27,6 +28,14 @@ export const checkUser: Middleware = async (req, _res, next) => {
     user = await userRepository.findOne({
       where: { id: req.session.userId },
     });
+  } else if (settings.main.enableForwardAuth) {
+    const plexToken = req.header('X-Plex-Token');
+    if (plexToken) {
+      const maybeUser = await getOrCreatePlexUser(plexToken);
+      if (maybeUser instanceof User) {
+        user = maybeUser;
+      }
+    }
   }
 
   if (user) {
@@ -44,7 +53,20 @@ export const isAuthenticated = (
   permissions?: Permission | Permission[],
   options?: PermissionCheckOptions
 ): Middleware => {
-  const authMiddleware: Middleware = (req, res, next) => {
+  const authMiddleware: Middleware = async (req, res, next) => {
+    if (!req.user) {
+      const settings = getSettings();
+      if (settings.main.enableForwardAuth) {
+        const authToken = req.header('X-Plex-Token');
+        if (authToken) {
+          const user = await getOrCreatePlexUser(authToken);
+          if (user instanceof User) {
+            req.user = user;
+          }
+        }
+      }
+    }
+
     if (!req.user || !req.user.hasPermission(permissions ?? 0, options)) {
       res.status(403).json({
         status: 403,
