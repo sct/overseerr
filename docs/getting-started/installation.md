@@ -29,7 +29,7 @@ docker run -d \
   -e LOG_LEVEL=debug \
   -e TZ=Asia/Tokyo \
   -p 5055:5055 \
-  -v /path/to/appdata/config:/app/config \
+  -v /path/to/appdata/config:/config \
   --restart unless-stopped \
   sctx/overseerr
 ```
@@ -84,7 +84,7 @@ services:
     ports:
       - 5055:5055
     volumes:
-      - /path/to/appdata/config:/app/config
+      - /path/to/appdata/config:/config
     restart: unless-stopped
 ```
 
