@@ -9,14 +9,23 @@ const messages = defineMessages({
 interface DownloadBlockProps {
   downloadItem: DownloadingItem;
   is4k?: boolean;
+  outsideSlideover?: boolean;
 }
 
-const DownloadBlock = ({ downloadItem, is4k = false }: DownloadBlockProps) => {
+const DownloadBlock = ({
+  downloadItem,
+  is4k = false,
+  outsideSlideover = false,
+}: DownloadBlockProps) => {
   const intl = useIntl();
 
   return (
     <div className="p-4">
-      <div className="mb-2 w-56 truncate text-sm sm:w-80 md:w-full">
+      <div
+        className={`mb-2 w-56 truncate text-sm sm:w-80 ${
+          outsideSlideover ? 'md:w-80' : 'md:w-full'
+        }`}
+      >
         {downloadItem.title}
       </div>
       <div className="relative mb-2 h-6 min-w-0 overflow-hidden rounded-full bg-gray-700">

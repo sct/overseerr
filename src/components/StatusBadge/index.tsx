@@ -1,10 +1,11 @@
-import Spinner from '@app/assets/spinner.svg';
 import Badge from '@app/components/Common/Badge';
 import Tooltip from '@app/components/Common/Tooltip';
+import DownloadBlock from '@app/components/DownloadBlock';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { MediaStatus } from '@server/constants/media';
+import type { DownloadingItem } from '@server/lib/downloadtracker';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -17,6 +18,7 @@ const messages = defineMessages({
 
 interface StatusBadgeProps {
   status?: MediaStatus;
+  downloadItem?: DownloadingItem;
   is4k?: boolean;
   inProgress?: boolean;
   plexUrl?: string;
@@ -27,6 +29,7 @@ interface StatusBadgeProps {
 
 const StatusBadge = ({
   status,
+  downloadItem,
   is4k = false,
   inProgress = false,
   plexUrl,
@@ -40,6 +43,10 @@ const StatusBadge = ({
 
   let mediaLink: string | undefined;
   let mediaLinkDescription: string | undefined;
+
+  const calculateDownloadProgress = (media: DownloadingItem) => {
+    return Math.round(((media.size - media.sizeLeft) / media.size) * 100);
+  };
 
   if (
     mediaType &&
@@ -88,18 +95,66 @@ const StatusBadge = ({
   switch (status) {
     case MediaStatus.AVAILABLE:
       return (
-        <Tooltip content={mediaLinkDescription}>
-          <Badge badgeType="success" href={mediaLink}>
-            <div className="flex items-center">
-              <span>
-                {intl.formatMessage(
-                  is4k ? messages.status4k : messages.status,
-                  {
-                    status: intl.formatMessage(globalMessages.available),
-                  }
+        <Tooltip
+          content={
+            inProgress && downloadItem ? (
+              <DownloadBlock
+                downloadItem={downloadItem}
+                is4k={is4k}
+                outsideSlideover
+              />
+            ) : (
+              mediaLinkDescription
+            )
+          }
+        >
+          <Badge
+            badgeType="success"
+            href={mediaLink}
+            className={`${
+              inProgress &&
+              '!bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
+            } overflow-hidden`}
+          >
+            <div
+              className={`${
+                inProgress &&
+                'bg-green-500 transition-all duration-200 ease-in-out'
+              }`}
+              style={{
+                width: `${
+                  downloadItem ? calculateDownloadProgress(downloadItem) : 0
+                }%`,
+              }}
+            >
+              <div className={`flex items-center ${inProgress && 'px-2'}`}>
+                <span>
+                  {intl.formatMessage(
+                    is4k ? messages.status4k : messages.status,
+                    {
+                      status: inProgress
+                        ? intl.formatMessage(globalMessages.processing)
+                        : intl.formatMessage(globalMessages.available),
+                    }
+                  )}
+                </span>
+                {inProgress && (
+                  <>
+                    {mediaType === 'tv' && (
+                      <span className="ml-1">
+                        S{downloadItem?.episode?.seasonNumber}E
+                        {downloadItem?.episode?.episodeNumber}
+                      </span>
+                    )}
+                    <span className="ml-1">
+                      {downloadItem
+                        ? calculateDownloadProgress(downloadItem)
+                        : 0}
+                      %
+                    </span>
+                  </>
                 )}
-              </span>
-              {inProgress && <Spinner className="ml-1 h-3 w-3" />}
+              </div>
             </div>
           </Badge>
         </Tooltip>
@@ -107,20 +162,66 @@ const StatusBadge = ({
 
     case MediaStatus.PARTIALLY_AVAILABLE:
       return (
-        <Tooltip content={mediaLinkDescription}>
-          <Badge badgeType="success" href={mediaLink}>
-            <div className="flex items-center">
-              <span>
-                {intl.formatMessage(
-                  is4k ? messages.status4k : messages.status,
-                  {
-                    status: intl.formatMessage(
-                      globalMessages.partiallyavailable
-                    ),
-                  }
+        <Tooltip
+          content={
+            inProgress && downloadItem ? (
+              <DownloadBlock
+                downloadItem={downloadItem}
+                is4k={is4k}
+                outsideSlideover
+              />
+            ) : (
+              mediaLinkDescription
+            )
+          }
+        >
+          <Badge
+            badgeType="success"
+            href={mediaLink}
+            className={`${
+              inProgress &&
+              '!bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
+            } overflow-hidden`}
+          >
+            <div
+              className={`${
+                inProgress &&
+                'bg-green-500 transition-all duration-200 ease-in-out'
+              }`}
+              style={{
+                width: `${
+                  downloadItem ? calculateDownloadProgress(downloadItem) : 0
+                }%`,
+              }}
+            >
+              <div className={`flex items-center ${inProgress && 'px-2'}`}>
+                <span>
+                  {intl.formatMessage(
+                    is4k ? messages.status4k : messages.status,
+                    {
+                      status: inProgress
+                        ? intl.formatMessage(globalMessages.processing)
+                        : intl.formatMessage(globalMessages.partiallyavailable),
+                    }
+                  )}
+                </span>
+                {inProgress && (
+                  <>
+                    {mediaType === 'tv' && (
+                      <span className="ml-1">
+                        S{downloadItem?.episode?.seasonNumber}E
+                        {downloadItem?.episode?.episodeNumber}
+                      </span>
+                    )}
+                    <span className="ml-1">
+                      {downloadItem
+                        ? calculateDownloadProgress(downloadItem)
+                        : 0}
+                      %
+                    </span>
+                  </>
                 )}
-              </span>
-              {inProgress && <Spinner className="ml-1 h-3 w-3" />}
+              </div>
             </div>
           </Badge>
         </Tooltip>
@@ -128,20 +229,66 @@ const StatusBadge = ({
 
     case MediaStatus.PROCESSING:
       return (
-        <Tooltip content={mediaLinkDescription}>
-          <Badge badgeType="primary" href={mediaLink}>
-            <div className="flex items-center">
-              <span>
-                {intl.formatMessage(
-                  is4k ? messages.status4k : messages.status,
-                  {
-                    status: inProgress
-                      ? intl.formatMessage(globalMessages.processing)
-                      : intl.formatMessage(globalMessages.requested),
-                  }
+        <Tooltip
+          content={
+            inProgress && downloadItem ? (
+              <DownloadBlock
+                downloadItem={downloadItem}
+                is4k={is4k}
+                outsideSlideover
+              />
+            ) : (
+              mediaLinkDescription
+            )
+          }
+        >
+          <Badge
+            badgeType="primary"
+            href={mediaLink}
+            className={`${
+              inProgress &&
+              '!bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
+            } overflow-hidden`}
+          >
+            <div
+              className={`${
+                inProgress &&
+                'bg-indigo-500 transition-all duration-200 ease-in-out'
+              }`}
+              style={{
+                width: `${
+                  downloadItem ? calculateDownloadProgress(downloadItem) : 0
+                }%`,
+              }}
+            >
+              <div className={`flex items-center ${inProgress && 'px-2'}`}>
+                <span>
+                  {intl.formatMessage(
+                    is4k ? messages.status4k : messages.status,
+                    {
+                      status: inProgress
+                        ? intl.formatMessage(globalMessages.processing)
+                        : intl.formatMessage(globalMessages.requested),
+                    }
+                  )}
+                </span>
+                {inProgress && (
+                  <>
+                    {mediaType === 'tv' && (
+                      <span className="ml-1">
+                        S{downloadItem?.episode?.seasonNumber}E
+                        {downloadItem?.episode?.episodeNumber}
+                      </span>
+                    )}
+                    <span className="ml-1">
+                      {downloadItem
+                        ? calculateDownloadProgress(downloadItem)
+                        : 0}
+                      %
+                    </span>
+                  </>
                 )}
-              </span>
-              {inProgress && <Spinner className="ml-1 h-3 w-3" />}
+              </div>
             </div>
           </Badge>
         </Tooltip>

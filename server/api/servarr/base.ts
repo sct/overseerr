@@ -48,6 +48,22 @@ export interface QualityProfile {
   name: string;
 }
 
+interface EpisodeResult {
+  seriesId: number;
+  episodeFileId: number;
+  seasonNumber: number;
+  episodeNumber: number;
+  title: string;
+  airDate: string;
+  airDateUtc: string;
+  overview: string;
+  hasFile: boolean;
+  monitored: boolean;
+  absoluteEpisodeNumber: number;
+  unverifiedSceneNumbering: boolean;
+  id: number;
+}
+
 interface QueueItem {
   size: number;
   title: string;
@@ -61,6 +77,7 @@ interface QueueItem {
   protocol: string;
   downloadClient: string;
   indexer: string;
+  episode: EpisodeResult;
   id: number;
 }
 
@@ -158,8 +175,15 @@ class ServarrBase<QueueItemAppendT> extends ExternalAPI {
   public getQueue = async (): Promise<(QueueItem & QueueItemAppendT)[]> => {
     try {
       const response = await this.axios.get<QueueResponse<QueueItemAppendT>>(
-        `/queue`
+        `/queue`,
+        {
+          params: {
+            includeEpisode: true,
+          },
+        }
       );
+
+      console.log(response.data.records);
 
       return response.data.records;
     } catch (e) {

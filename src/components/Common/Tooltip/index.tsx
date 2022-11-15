@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import type { Config } from 'react-popper-tooltip';
 import { usePopperTooltip } from 'react-popper-tooltip';
 
@@ -20,17 +21,20 @@ const Tooltip = ({ children, content, tooltipConfig }: TooltipProps) => {
   return (
     <>
       {React.cloneElement(children, { ref: setTriggerRef })}
-      {visible && content && (
-        <div
-          ref={setTooltipRef}
-          {...getTooltipProps({
-            className:
-              'z-50 text-sm font-normal bg-gray-800 px-2 py-1 rounded border border-gray-600 shadow text-gray-100',
-          })}
-        >
-          {content}
-        </div>
-      )}
+      {visible &&
+        content &&
+        ReactDOM.createPortal(
+          <div
+            ref={setTooltipRef}
+            {...getTooltipProps({
+              className:
+                'z-50 text-sm absolute font-normal bg-gray-800 px-2 py-1 rounded border border-gray-600 shadow text-gray-100',
+            })}
+          >
+            {content}
+          </div>,
+          document.body
+        )}
     </>
   );
 };

@@ -5,6 +5,13 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { uniqWith } from 'lodash';
 
+interface EpisodeNumberResult {
+  seasonNumber: number;
+  episodeNumber: number;
+  absoluteEpisodeNumber: number;
+  id: number;
+}
+
 export interface DownloadingItem {
   mediaType: MediaType;
   externalId: number;
@@ -14,6 +21,18 @@ export interface DownloadingItem {
   timeLeft: string;
   estimatedCompletionTime: Date;
   title: string;
+  episode: EpisodeNumberResult | undefined;
+}
+export interface DownloadingItemTV {
+  mediaType: MediaType;
+  externalId: number;
+  size: number;
+  sizeLeft: number;
+  status: string;
+  timeLeft: string;
+  estimatedCompletionTime: Date;
+  title: string;
+  episode: EpisodeNumberResult;
 }
 
 class DownloadTracker {
@@ -88,6 +107,7 @@ class DownloadTracker {
               status: item.status,
               timeLeft: item.timeleft,
               title: item.title,
+              episode: undefined,
             }));
 
             if (queueItems.length > 0) {
@@ -164,6 +184,12 @@ class DownloadTracker {
               status: item.status,
               timeLeft: item.timeleft,
               title: item.title,
+              episode: {
+                seasonNumber: item.episode.seasonNumber,
+                episodeNumber: item.episode.episodeNumber,
+                absoluteEpisodeNumber: item.episode.absoluteEpisodeNumber,
+                id: item.episode.id,
+              },
             }));
 
             if (queueItems.length > 0) {

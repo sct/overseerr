@@ -318,6 +318,10 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
           <div className="media-status">
             <StatusBadge
               status={data.mediaInfo?.status}
+              downloadItem={
+                data.mediaInfo?.downloadStatus &&
+                data.mediaInfo?.downloadStatus[0]
+              }
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="tv"
@@ -337,6 +341,10 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               ) && (
                 <StatusBadge
                   status={data.mediaInfo?.status4k}
+                  downloadItem={
+                    data.mediaInfo?.downloadStatus4k &&
+                    data.mediaInfo?.downloadStatus4k[0]
+                  }
                   is4k
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0

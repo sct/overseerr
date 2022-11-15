@@ -128,6 +128,12 @@ const RequestItemError = ({
                         requestData.is4k ? 'status4k' : 'status'
                       ]
                     }
+                    downloadItem={
+                      requestData.media?.downloadStatus4k
+                        ? requestData.media?.downloadStatus4k[0]
+                        : requestData.media?.downloadStatus &&
+                          requestData.media?.downloadStatus[0]
+                    }
                     inProgress={
                       (
                         requestData.media[
@@ -462,6 +468,12 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                 <StatusBadge
                   status={
                     requestData.media[requestData.is4k ? 'status4k' : 'status']
+                  }
+                  downloadItem={
+                    requestData.media?.downloadStatus4k
+                      ? requestData.media?.downloadStatus4k[0]
+                      : requestData.media?.downloadStatus &&
+                        requestData.media?.downloadStatus[0]
                   }
                   inProgress={
                     (

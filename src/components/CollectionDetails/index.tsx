@@ -12,11 +12,12 @@ import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { DownloadIcon } from '@heroicons/react/outline';
 import { MediaStatus } from '@server/constants/media';
+import type { DownloadingItem } from '@server/lib/downloadtracker';
 import type { Collection } from '@server/models/Collection';
 import { uniq } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
@@ -38,6 +39,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const { hasPermission } = useUser();
   const [requestModal, setRequestModal] = useState(false);
   const [is4k, setIs4k] = useState(false);
+  const [downloadStatus, setDownloadStatus] = useState<DownloadingItem[]>([]);
 
   const {
     data,
@@ -50,6 +52,21 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
 
   const { data: genres } =
     useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
+
+  useEffect(() => {
+    const tempArray: DownloadingItem[] = [];
+
+    data?.parts.map((item) =>
+      (item.mediaInfo?.downloadStatus4k ?? []).length > 0
+        ? item.mediaInfo?.downloadStatus4k?.forEach((item) =>
+            tempArray.push(item)
+          )
+        : item.mediaInfo?.downloadStatus?.forEach((item) =>
+            tempArray.push(item)
+          )
+    );
+    setDownloadStatus(tempArray);
+  }, [data?.parts]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -205,6 +222,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
           <div className="media-status">
             <StatusBadge
               status={collectionStatus}
+              downloadItem={downloadStatus[0]}
               inProgress={data.parts.some(
                 (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
               )}
@@ -218,6 +236,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
               ) && (
                 <StatusBadge
                   status={collectionStatus4k}
+                  downloadItem={downloadStatus[0]}
                   is4k
                   inProgress={data.parts.some(
                     (part) =>
