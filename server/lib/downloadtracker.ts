@@ -11,7 +11,6 @@ interface EpisodeNumberResult {
   absoluteEpisodeNumber: number;
   id: number;
 }
-
 export interface DownloadingItem {
   mediaType: MediaType;
   externalId: number;
@@ -23,18 +22,6 @@ export interface DownloadingItem {
   title: string;
   episode: EpisodeNumberResult | undefined;
 }
-export interface DownloadingItemTV {
-  mediaType: MediaType;
-  externalId: number;
-  size: number;
-  sizeLeft: number;
-  status: string;
-  timeLeft: string;
-  estimatedCompletionTime: Date;
-  title: string;
-  episode: EpisodeNumberResult;
-}
-
 class DownloadTracker {
   private radarrServers: Record<number, DownloadingItem[]> = {};
   private sonarrServers: Record<number, DownloadingItem[]> = {};

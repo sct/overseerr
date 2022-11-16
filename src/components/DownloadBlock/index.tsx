@@ -1,4 +1,5 @@
 import Badge from '@app/components/Common/Badge';
+import { Permission, useUser } from '@app/hooks/useUser';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 
@@ -10,14 +11,17 @@ interface DownloadBlockProps {
   downloadItem: DownloadingItem;
   is4k?: boolean;
   outsideSlideover?: boolean;
+  formattedTitle?: string;
 }
 
 const DownloadBlock = ({
   downloadItem,
   is4k = false,
   outsideSlideover = false,
+  formattedTitle,
 }: DownloadBlockProps) => {
   const intl = useIntl();
+  const { hasPermission } = useUser();
 
   return (
     <div className="p-4">
@@ -26,7 +30,15 @@ const DownloadBlock = ({
           outsideSlideover ? 'md:w-80' : 'md:w-full'
         }`}
       >
-        {downloadItem.title}
+        {hasPermission(Permission.ADMIN)
+          ? downloadItem.title
+          : downloadItem.episode
+          ? formattedTitle +
+            ': Season ' +
+            downloadItem?.episode?.seasonNumber +
+            ' Episode ' +
+            downloadItem?.episode?.episodeNumber
+          : formattedTitle}
       </div>
       <div className="relative mb-2 h-6 min-w-0 overflow-hidden rounded-full bg-gray-700">
         <div

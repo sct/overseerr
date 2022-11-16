@@ -40,6 +40,9 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const [requestModal, setRequestModal] = useState(false);
   const [is4k, setIs4k] = useState(false);
   const [downloadStatus, setDownloadStatus] = useState<DownloadingItem[]>([]);
+  const [formattedTitle, setFormattedTitle] = useState<string | undefined>(
+    undefined
+  );
 
   const {
     data,
@@ -66,6 +69,14 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
           )
     );
     setDownloadStatus(tempArray);
+
+    const correctMedia = data?.parts.filter(
+      (e) => (e.mediaInfo?.downloadStatus4k ?? []).length > 0
+    );
+
+    if (correctMedia) {
+      setFormattedTitle(correctMedia[0].title);
+    }
   }, [data?.parts]);
 
   if (!data && !error) {
@@ -223,6 +234,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
             <StatusBadge
               status={collectionStatus}
               downloadItem={downloadStatus[0]}
+              formattedTitle={formattedTitle}
               inProgress={data.parts.some(
                 (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
               )}
@@ -238,6 +250,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
                   status={collectionStatus4k}
                   downloadItem={downloadStatus[0]}
                   is4k
+                  formattedTitle={formattedTitle}
                   inProgress={data.parts.some(
                     (part) =>
                       (part.mediaInfo?.downloadStatus4k ?? []).length > 0

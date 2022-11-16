@@ -403,6 +403,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                     : requestData.media?.downloadStatus &&
                       requestData.media?.downloadStatus[0]
                 }
+                formattedTitle={isMovie(title) ? title.title : title.name}
                 inProgress={
                   (
                     requestData.media[

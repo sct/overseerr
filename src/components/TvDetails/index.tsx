@@ -322,6 +322,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                 data.mediaInfo?.downloadStatus &&
                 data.mediaInfo?.downloadStatus[0]
               }
+              formattedTitle={data.name}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="tv"
@@ -345,6 +346,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                     data.mediaInfo?.downloadStatus4k &&
                     data.mediaInfo?.downloadStatus4k[0]
                   }
+                  formattedTitle={data.name}
                   is4k
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0

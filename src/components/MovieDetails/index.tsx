@@ -309,6 +309,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 data.mediaInfo?.downloadStatus &&
                 data.mediaInfo?.downloadStatus[0]
               }
+              formattedTitle={data.title}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="movie"
@@ -332,6 +333,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                     data.mediaInfo?.downloadStatus4k &&
                     data.mediaInfo?.downloadStatus4k[0]
                   }
+                  formattedTitle={data.title}
                   is4k
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0

@@ -25,6 +25,7 @@ interface StatusBadgeProps {
   serviceUrl?: string;
   tmdbId?: number;
   mediaType?: 'movie' | 'tv';
+  formattedTitle?: string;
 }
 
 const StatusBadge = ({
@@ -36,6 +37,7 @@ const StatusBadge = ({
   serviceUrl,
   tmdbId,
   mediaType,
+  formattedTitle,
 }: StatusBadgeProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
@@ -102,6 +104,7 @@ const StatusBadge = ({
                 downloadItem={downloadItem}
                 is4k={is4k}
                 outsideSlideover
+                formattedTitle={formattedTitle}
               />
             ) : (
               mediaLinkDescription
@@ -169,6 +172,7 @@ const StatusBadge = ({
                 downloadItem={downloadItem}
                 is4k={is4k}
                 outsideSlideover
+                formattedTitle={formattedTitle}
               />
             ) : (
               mediaLinkDescription
@@ -236,6 +240,7 @@ const StatusBadge = ({
                 downloadItem={downloadItem}
                 is4k={is4k}
                 outsideSlideover
+                formattedTitle={formattedTitle}
               />
             ) : (
               mediaLinkDescription

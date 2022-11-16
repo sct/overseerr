@@ -475,6 +475,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                       : requestData.media?.downloadStatus &&
                         requestData.media?.downloadStatus[0]
                   }
+                  formattedTitle={isMovie(title) ? title.title : title.name}
                   inProgress={
                     (
                       requestData.media[
