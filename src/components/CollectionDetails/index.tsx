@@ -57,27 +57,24 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
     useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
 
   useEffect(() => {
-    const tempArray: DownloadingItem[] = [];
-
     data?.parts.map((item) =>
       (item.mediaInfo?.downloadStatus4k ?? []).length > 0
-        ? item.mediaInfo?.downloadStatus4k?.forEach((item) =>
-            tempArray.push(item)
-          )
-        : item.mediaInfo?.downloadStatus?.forEach((item) =>
-            tempArray.push(item)
-          )
-    );
-    setDownloadStatus(tempArray);
-
-    const correctMedia = data?.parts.filter(
-      (e) => (e.mediaInfo?.downloadStatus4k ?? []).length > 0
+        ? setDownloadStatus(item.mediaInfo?.downloadStatus4k ?? [])
+        : (item.mediaInfo?.downloadStatus ?? []).length > 0 &&
+          setDownloadStatus(item.mediaInfo?.downloadStatus ?? [])
     );
 
-    if (correctMedia) {
-      setFormattedTitle(correctMedia[0].title);
+    if (downloadStatus.length > 0) {
+      const correctMedia = data?.parts.filter((e) =>
+        e.mediaInfo?.externalServiceId4k
+          ? e.mediaInfo?.externalServiceId4k === downloadStatus[0].externalId
+          : e.mediaInfo?.externalServiceId === downloadStatus[0].externalId
+      );
+      if (correctMedia) {
+        setFormattedTitle(correctMedia[0].title);
+      }
     }
-  }, [data?.parts]);
+  }, [data?.parts, downloadStatus]);
 
   if (!data && !error) {
     return <LoadingSpinner />;

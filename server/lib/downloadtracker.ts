@@ -20,7 +20,7 @@ export interface DownloadingItem {
   timeLeft: string;
   estimatedCompletionTime: Date;
   title: string;
-  episode: EpisodeNumberResult | undefined;
+  episode?: EpisodeNumberResult;
 }
 class DownloadTracker {
   private radarrServers: Record<number, DownloadingItem[]> = {};
@@ -94,7 +94,6 @@ class DownloadTracker {
               status: item.status,
               timeLeft: item.timeleft,
               title: item.title,
-              episode: undefined,
             }));
 
             if (queueItems.length > 0) {

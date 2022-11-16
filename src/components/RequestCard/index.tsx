@@ -398,7 +398,8 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                   requestData.media[requestData.is4k ? 'status4k' : 'status']
                 }
                 downloadItem={
-                  requestData.media?.downloadStatus4k
+                  requestData.media?.downloadStatus4k &&
+                  (requestData.media?.downloadStatus4k ?? []).length > 0
                     ? requestData.media?.downloadStatus4k[0]
                     : requestData.media?.downloadStatus &&
                       requestData.media?.downloadStatus[0]
