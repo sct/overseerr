@@ -64,13 +64,28 @@ authRoutes.post('/plex', async (req, res, next) => {
       await userRepository.save(user);
     } else {
       const mainUser = await userRepository.findOneOrFail({
-        select: { id: true, plexToken: true, plexId: true },
+        select: { id: true, plexToken: true, plexId: true, email: true },
         where: { id: 1 },
       });
       const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
+      if (!account.id) {
+        logger.error('Plex ID was missing from Plex.tv response', {
+          label: 'API',
+          ip: req.ip,
+          email: account.email,
+          plexUsername: account.username,
+        });
+
+        return next({
+          status: 500,
+          message: 'Something went wrong. Try again.',
+        });
+      }
+
       if (
         account.id === mainUser.plexId ||
+        (account.email === mainUser.email && !mainUser.plexId) ||
         (await mainPlexTv.checkUserAccess(account.id))
       ) {
         if (user) {
