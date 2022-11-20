@@ -183,8 +183,6 @@ class ServarrBase<QueueItemAppendT> extends ExternalAPI {
         }
       );
 
-      console.log(response.data.records);
-
       return response.data.records;
     } catch (e) {
       throw new Error(

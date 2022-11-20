@@ -10,6 +10,7 @@ import PageTitle from '@app/components/Common/PageTitle';
 import type { PlayButtonLink } from '@app/components/Common/PlayButton';
 import PlayButton from '@app/components/Common/PlayButton';
 import Tooltip from '@app/components/Common/Tooltip';
+import DownloadBlock from '@app/components/DownloadBlock';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import IssueModal from '@app/components/IssueModal';
 import ManageSlideOver from '@app/components/ManageSlideOver';
@@ -309,7 +310,18 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 data.mediaInfo?.downloadStatus &&
                 data.mediaInfo?.downloadStatus[0]
               }
-              formattedTitle={data.title}
+              downloadBlock={
+                <ul>
+                  {data.mediaInfo?.downloadStatus?.map((status, index) => (
+                    <li
+                      key={`dl-status-${status.externalId}-${index}`}
+                      className="border-b border-gray-700 last:border-b-0"
+                    >
+                      <DownloadBlock downloadItem={status} title={data.title} />
+                    </li>
+                  ))}
+                </ul>
+              }
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="movie"
@@ -333,7 +345,24 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                     data.mediaInfo?.downloadStatus4k &&
                     data.mediaInfo?.downloadStatus4k[0]
                   }
-                  formattedTitle={data.title}
+                  downloadBlock={
+                    <ul>
+                      {data.mediaInfo?.downloadStatus4k?.map(
+                        (status, index) => (
+                          <li
+                            key={`dl-status-${status.externalId}-${index}`}
+                            className="border-b border-gray-700 last:border-b-0"
+                          >
+                            <DownloadBlock
+                              downloadItem={status}
+                              is4k
+                              title={data.title}
+                            />
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  }
                   is4k
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0

@@ -1,6 +1,6 @@
+import Spinner from '@app/assets/spinner.svg';
 import Badge from '@app/components/Common/Badge';
 import Tooltip from '@app/components/Common/Tooltip';
-import DownloadBlock from '@app/components/DownloadBlock';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
@@ -14,6 +14,7 @@ const messages = defineMessages({
   playonplex: 'Play on Plex',
   openinarr: 'Open in {arr}',
   managemedia: 'Manage {mediaType}',
+  seasonepisodenumber: 'S{seasonNumber}E{episodeNumber}',
 });
 
 interface StatusBadgeProps {
@@ -25,7 +26,7 @@ interface StatusBadgeProps {
   serviceUrl?: string;
   tmdbId?: number;
   mediaType?: 'movie' | 'tv';
-  formattedTitle?: string;
+  downloadBlock?: React.ReactNode;
 }
 
 const StatusBadge = ({
@@ -37,7 +38,7 @@ const StatusBadge = ({
   serviceUrl,
   tmdbId,
   mediaType,
-  formattedTitle,
+  downloadBlock,
 }: StatusBadgeProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
@@ -99,17 +100,12 @@ const StatusBadge = ({
       return (
         <Tooltip
           content={
-            inProgress && downloadItem ? (
-              <DownloadBlock
-                downloadItem={downloadItem}
-                is4k={is4k}
-                outsideSlideover
-                formattedTitle={formattedTitle}
-              />
-            ) : (
-              mediaLinkDescription
-            )
+            inProgress && downloadItem ? downloadBlock : mediaLinkDescription
           }
+          className={`${
+            inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
+          }`}
+          tooltipConfig={{ interactive: true, delayHide: 100 }}
         >
           <Badge
             badgeType="success"
@@ -122,7 +118,7 @@ const StatusBadge = ({
             <div
               className={`${
                 inProgress &&
-                'bg-green-500 transition-all duration-200 ease-in-out'
+                'flex bg-green-500 transition-all duration-200 ease-in-out'
               }`}
               style={{
                 width: `${
@@ -145,16 +141,13 @@ const StatusBadge = ({
                   <>
                     {mediaType === 'tv' && (
                       <span className="ml-1">
-                        S{downloadItem?.episode?.seasonNumber}E
-                        {downloadItem?.episode?.episodeNumber}
+                        {intl.formatMessage(messages.seasonepisodenumber, {
+                          seasonNumber: downloadItem?.episode?.seasonNumber,
+                          episodeNumber: downloadItem?.episode?.episodeNumber,
+                        })}
                       </span>
                     )}
-                    <span className="ml-1">
-                      {downloadItem
-                        ? calculateDownloadProgress(downloadItem)
-                        : 0}
-                      %
-                    </span>
+                    <Spinner className="ml-1 h-3 w-3" />
                   </>
                 )}
               </div>
@@ -167,17 +160,12 @@ const StatusBadge = ({
       return (
         <Tooltip
           content={
-            inProgress && downloadItem ? (
-              <DownloadBlock
-                downloadItem={downloadItem}
-                is4k={is4k}
-                outsideSlideover
-                formattedTitle={formattedTitle}
-              />
-            ) : (
-              mediaLinkDescription
-            )
+            inProgress && downloadItem ? downloadBlock : mediaLinkDescription
           }
+          className={`${
+            inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
+          }`}
+          tooltipConfig={{ interactive: true, delayHide: 100 }}
         >
           <Badge
             badgeType="success"
@@ -190,7 +178,7 @@ const StatusBadge = ({
             <div
               className={`${
                 inProgress &&
-                'bg-green-500 transition-all duration-200 ease-in-out'
+                'flex bg-green-500 transition-all duration-200 ease-in-out'
               }`}
               style={{
                 width: `${
@@ -213,16 +201,13 @@ const StatusBadge = ({
                   <>
                     {mediaType === 'tv' && (
                       <span className="ml-1">
-                        S{downloadItem?.episode?.seasonNumber}E
-                        {downloadItem?.episode?.episodeNumber}
+                        {intl.formatMessage(messages.seasonepisodenumber, {
+                          seasonNumber: downloadItem?.episode?.seasonNumber,
+                          episodeNumber: downloadItem?.episode?.episodeNumber,
+                        })}
                       </span>
                     )}
-                    <span className="ml-1">
-                      {downloadItem
-                        ? calculateDownloadProgress(downloadItem)
-                        : 0}
-                      %
-                    </span>
+                    <Spinner className="ml-1 h-3 w-3" />
                   </>
                 )}
               </div>
@@ -235,17 +220,12 @@ const StatusBadge = ({
       return (
         <Tooltip
           content={
-            inProgress && downloadItem ? (
-              <DownloadBlock
-                downloadItem={downloadItem}
-                is4k={is4k}
-                outsideSlideover
-                formattedTitle={formattedTitle}
-              />
-            ) : (
-              mediaLinkDescription
-            )
+            inProgress && downloadItem ? downloadBlock : mediaLinkDescription
           }
+          className={`${
+            inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
+          }`}
+          tooltipConfig={{ interactive: true, delayHide: 100 }}
         >
           <Badge
             badgeType="primary"
@@ -258,7 +238,7 @@ const StatusBadge = ({
             <div
               className={`${
                 inProgress &&
-                'bg-indigo-500 transition-all duration-200 ease-in-out'
+                'flex bg-indigo-500 transition-all duration-200 ease-in-out'
               }`}
               style={{
                 width: `${
@@ -281,16 +261,13 @@ const StatusBadge = ({
                   <>
                     {mediaType === 'tv' && (
                       <span className="ml-1">
-                        S{downloadItem?.episode?.seasonNumber}E
-                        {downloadItem?.episode?.episodeNumber}
+                        {intl.formatMessage(messages.seasonepisodenumber, {
+                          seasonNumber: downloadItem?.episode?.seasonNumber,
+                          episodeNumber: downloadItem?.episode?.episodeNumber,
+                        })}
                       </span>
                     )}
-                    <span className="ml-1">
-                      {downloadItem
-                        ? calculateDownloadProgress(downloadItem)
-                        : 0}
-                      %
-                    </span>
+                    <Spinner className="ml-1 h-3 w-3" />
                   </>
                 )}
               </div>

@@ -2,6 +2,7 @@ import ButtonWithDropdown from '@app/components/Common/ButtonWithDropdown';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
+import DownloadBlock from '@app/components/DownloadBlock';
 import RequestModal from '@app/components/RequestModal';
 import Slider from '@app/components/Slider';
 import StatusBadge from '@app/components/StatusBadge';
@@ -40,9 +41,6 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const [requestModal, setRequestModal] = useState(false);
   const [is4k, setIs4k] = useState(false);
   const [downloadStatus, setDownloadStatus] = useState<DownloadingItem[]>([]);
-  const [formattedTitle, setFormattedTitle] = useState<string | undefined>(
-    undefined
-  );
 
   const {
     data,
@@ -57,24 +55,20 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
     useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
 
   useEffect(() => {
+    const tempArray: DownloadingItem[] = [];
+
     data?.parts.map((item) =>
       (item.mediaInfo?.downloadStatus4k ?? []).length > 0
-        ? setDownloadStatus(item.mediaInfo?.downloadStatus4k ?? [])
-        : (item.mediaInfo?.downloadStatus ?? []).length > 0 &&
-          setDownloadStatus(item.mediaInfo?.downloadStatus ?? [])
+        ? item.mediaInfo?.downloadStatus4k?.forEach((status) =>
+            tempArray.push(status)
+          )
+        : item.mediaInfo?.downloadStatus?.forEach((status) =>
+            tempArray.push(status)
+          )
     );
 
-    if (downloadStatus.length > 0) {
-      const correctMedia = data?.parts.filter((e) =>
-        e.mediaInfo?.externalServiceId4k
-          ? e.mediaInfo?.externalServiceId4k === downloadStatus[0].externalId
-          : e.mediaInfo?.externalServiceId === downloadStatus[0].externalId
-      );
-      if (correctMedia) {
-        setFormattedTitle(correctMedia[0].title);
-      }
-    }
-  }, [data?.parts, downloadStatus]);
+    setDownloadStatus(tempArray);
+  }, [data?.parts]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -231,7 +225,28 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
             <StatusBadge
               status={collectionStatus}
               downloadItem={downloadStatus[0]}
-              formattedTitle={formattedTitle}
+              downloadBlock={
+                <ul>
+                  {downloadStatus.map((status, index) => (
+                    <li
+                      key={`dl-status-${status.externalId}-${index}`}
+                      className="border-b border-gray-700 last:border-b-0"
+                    >
+                      <DownloadBlock
+                        downloadItem={status}
+                        title={data.parts
+                          .filter(
+                            (item) =>
+                              item.mediaInfo?.externalServiceId ===
+                              status.externalId
+                          )
+                          .map((title) => title.title)
+                          .join('')}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              }
               inProgress={data.parts.some(
                 (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
               )}
@@ -246,8 +261,29 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
                 <StatusBadge
                   status={collectionStatus4k}
                   downloadItem={downloadStatus[0]}
+                  downloadBlock={
+                    <ul>
+                      {downloadStatus.map((status, index) => (
+                        <li
+                          key={`dl-status-${status.externalId}-${index}`}
+                          className="border-b border-gray-700 last:border-b-0"
+                        >
+                          <DownloadBlock
+                            downloadItem={status}
+                            title={data.parts
+                              .filter(
+                                (item) =>
+                                  item.mediaInfo?.externalServiceId4k ===
+                                  status.externalId
+                              )
+                              .map((title) => title.title)
+                              .join('')}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  }
                   is4k
-                  formattedTitle={formattedTitle}
                   inProgress={data.parts.some(
                     (part) =>
                       (part.mediaInfo?.downloadStatus4k ?? []).length > 0

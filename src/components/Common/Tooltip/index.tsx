@@ -7,9 +7,15 @@ type TooltipProps = {
   content: React.ReactNode;
   children: React.ReactElement;
   tooltipConfig?: Partial<Config>;
+  className?: string;
 };
 
-const Tooltip = ({ children, content, tooltipConfig }: TooltipProps) => {
+const Tooltip = ({
+  children,
+  content,
+  tooltipConfig,
+  className,
+}: TooltipProps) => {
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } =
     usePopperTooltip({
       followCursor: true,
@@ -17,6 +23,14 @@ const Tooltip = ({ children, content, tooltipConfig }: TooltipProps) => {
       placement: 'auto-end',
       ...tooltipConfig,
     });
+
+  const tooltipStyle = [
+    'z-50 text-sm absolute font-normal bg-gray-800 px-2 py-1 rounded border border-gray-600 shadow text-gray-100',
+  ];
+
+  if (className) {
+    tooltipStyle.push(className);
+  }
 
   return (
     <>
@@ -27,8 +41,7 @@ const Tooltip = ({ children, content, tooltipConfig }: TooltipProps) => {
           <div
             ref={setTooltipRef}
             {...getTooltipProps({
-              className:
-                'z-50 text-sm absolute font-normal bg-gray-800 px-2 py-1 rounded border border-gray-600 shadow text-gray-100',
+              className: tooltipStyle.join(' '),
             })}
           >
             {content}

@@ -2,6 +2,7 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import ConfirmButton from '@app/components/Common/ConfirmButton';
+import DownloadBlock from '@app/components/DownloadBlock';
 import RequestModal from '@app/components/RequestModal';
 import StatusBadge from '@app/components/StatusBadge';
 import useDeepLinks from '@app/hooks/useDeepLinks';
@@ -476,7 +477,37 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                       : requestData.media?.downloadStatus &&
                         requestData.media?.downloadStatus[0]
                   }
-                  formattedTitle={isMovie(title) ? title.title : title.name}
+                  downloadBlock={
+                    <ul>
+                      {requestData.media?.downloadStatus?.map(
+                        (status, index) => (
+                          <li
+                            key={`dl-status-${status.externalId}-${index}`}
+                            className="border-b border-gray-700 last:border-b-0"
+                          >
+                            <DownloadBlock
+                              downloadItem={status}
+                              title={isMovie(title) ? title.title : title.name}
+                            />
+                          </li>
+                        )
+                      )}
+                      {requestData.media?.downloadStatus4k?.map(
+                        (status, index) => (
+                          <li
+                            key={`dl-status-${status.externalId}-${index}`}
+                            className="border-b border-gray-700 last:border-b-0"
+                          >
+                            <DownloadBlock
+                              downloadItem={status}
+                              is4k
+                              title={isMovie(title) ? title.title : title.name}
+                            />
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  }
                   inProgress={
                     (
                       requestData.media[
