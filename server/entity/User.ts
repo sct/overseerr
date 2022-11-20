@@ -39,7 +39,7 @@ export class User {
     return users.map((u) => u.filter(showFiltered));
   }
 
-  static readonly filteredFields: string[] = ['email'];
+  static readonly filteredFields: string[] = ['email', 'plexId'];
 
   public displayName: string;
 
@@ -73,7 +73,7 @@ export class User {
   @Column({ type: 'integer', default: UserType.PLEX })
   public userType: UserType;
 
-  @Column({ nullable: true, select: false })
+  @Column({ nullable: true, select: true })
   public plexId?: number;
 
   @Column({ nullable: true, select: false })
