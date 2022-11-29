@@ -5,7 +5,7 @@ import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   estimatedtime: 'Estimated {time}',
-  seasonepisodenumber: ': Season {seasonNumber} Episode {episodeNumber}',
+  formattedTitle: '{title}: Season {seasonNumber} Episode {episodeNumber}',
 });
 
 interface DownloadBlockProps {
@@ -22,20 +22,17 @@ const DownloadBlock = ({
   const intl = useIntl();
   const { hasPermission } = useUser();
 
-  const formattedTitle: string =
-    title +
-    intl.formatMessage(messages.seasonepisodenumber, {
-      seasonNumber: downloadItem?.episode?.seasonNumber,
-      episodeNumber: downloadItem?.episode?.episodeNumber,
-    });
-
   return (
     <div className="p-4">
       <div className="mb-2 w-56 truncate text-sm sm:w-80 md:w-full">
         {hasPermission(Permission.ADMIN)
           ? downloadItem.title
           : downloadItem.episode
-          ? formattedTitle
+          ? intl.formatMessage(messages.formattedTitle, {
+              title,
+              seasonNumber: downloadItem?.episode?.seasonNumber,
+              episodeNumber: downloadItem?.episode?.episodeNumber,
+            })
           : title}
       </div>
       <div className="relative mb-2 h-6 min-w-0 overflow-hidden rounded-full bg-gray-700">

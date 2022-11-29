@@ -2,7 +2,6 @@ import ButtonWithDropdown from '@app/components/Common/ButtonWithDropdown';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
-import DownloadBlock from '@app/components/DownloadBlock';
 import RequestModal from '@app/components/RequestModal';
 import Slider from '@app/components/Slider';
 import StatusBadge from '@app/components/StatusBadge';
@@ -13,12 +12,11 @@ import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { DownloadIcon } from '@heroicons/react/outline';
 import { MediaStatus } from '@server/constants/media';
-import type { DownloadingItem } from '@server/lib/downloadtracker';
 import type { Collection } from '@server/models/Collection';
 import { uniq } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
@@ -40,7 +38,6 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const { hasPermission } = useUser();
   const [requestModal, setRequestModal] = useState(false);
   const [is4k, setIs4k] = useState(false);
-  const [downloadStatus, setDownloadStatus] = useState<DownloadingItem[]>([]);
 
   const {
     data,
@@ -54,20 +51,26 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const { data: genres } =
     useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
 
-  useEffect(() => {
-    const tempArray: DownloadingItem[] = [];
+  const [downloadStatus, downloadStatus4k] = useMemo(() => {
+    return [
+      data?.parts.flatMap((item) =>
+        item.mediaInfo?.downloadStatus ? item.mediaInfo?.downloadStatus : []
+      ),
+      data?.parts.flatMap((item) =>
+        item.mediaInfo?.downloadStatus4k ? item.mediaInfo?.downloadStatus4k : []
+      ),
+    ];
+  }, [data?.parts]);
 
-    data?.parts.map((item) =>
-      (item.mediaInfo?.downloadStatus4k ?? []).length > 0
-        ? item.mediaInfo?.downloadStatus4k?.forEach((status) =>
-            tempArray.push(status)
-          )
-        : item.mediaInfo?.downloadStatus?.forEach((status) =>
-            tempArray.push(status)
-          )
-    );
-
-    setDownloadStatus(tempArray);
+  const [titles, titles4k] = useMemo(() => {
+    return [
+      data?.parts
+        .filter((media) => (media.mediaInfo?.downloadStatus ?? []).length > 0)
+        .map((title) => title.title),
+      data?.parts
+        .filter((media) => (media.mediaInfo?.downloadStatus4k ?? []).length > 0)
+        .map((title) => title.title),
+    ];
   }, [data?.parts]);
 
   if (!data && !error) {
@@ -224,29 +227,8 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
           <div className="media-status">
             <StatusBadge
               status={collectionStatus}
-              downloadItem={downloadStatus[0]}
-              downloadBlock={
-                <ul>
-                  {downloadStatus.map((status, index) => (
-                    <li
-                      key={`dl-status-${status.externalId}-${index}`}
-                      className="border-b border-gray-700 last:border-b-0"
-                    >
-                      <DownloadBlock
-                        downloadItem={status}
-                        title={data.parts
-                          .filter(
-                            (item) =>
-                              item.mediaInfo?.externalServiceId ===
-                              status.externalId
-                          )
-                          .map((title) => title.title)
-                          .join('')}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              }
+              downloadItem={downloadStatus}
+              title={titles}
               inProgress={data.parts.some(
                 (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
               )}
@@ -260,29 +242,8 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
               ) && (
                 <StatusBadge
                   status={collectionStatus4k}
-                  downloadItem={downloadStatus[0]}
-                  downloadBlock={
-                    <ul>
-                      {downloadStatus.map((status, index) => (
-                        <li
-                          key={`dl-status-${status.externalId}-${index}`}
-                          className="border-b border-gray-700 last:border-b-0"
-                        >
-                          <DownloadBlock
-                            downloadItem={status}
-                            title={data.parts
-                              .filter(
-                                (item) =>
-                                  item.mediaInfo?.externalServiceId4k ===
-                                  status.externalId
-                              )
-                              .map((title) => title.title)
-                              .join('')}
-                          />
-                        </li>
-                      ))}
-                    </ul>
-                  }
+                  downloadItem={downloadStatus4k}
+                  title={titles4k}
                   is4k
                   inProgress={data.parts.some(
                     (part) =>

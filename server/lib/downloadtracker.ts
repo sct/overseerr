@@ -170,12 +170,7 @@ class DownloadTracker {
               status: item.status,
               timeLeft: item.timeleft,
               title: item.title,
-              episode: {
-                seasonNumber: item.episode.seasonNumber,
-                episodeNumber: item.episode.episodeNumber,
-                absoluteEpisodeNumber: item.episode.absoluteEpisodeNumber,
-                id: item.episode.id,
-              },
+              episode: item.episode,
             }));
 
             if (queueItems.length > 0) {

@@ -77,7 +77,7 @@ interface QueueItem {
   protocol: string;
   downloadClient: string;
   indexer: string;
-  episode: EpisodeResult;
+  episode?: EpisodeResult;
   id: number;
 }
 

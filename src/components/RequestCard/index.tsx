@@ -2,7 +2,6 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import Tooltip from '@app/components/Common/Tooltip';
-import DownloadBlock from '@app/components/DownloadBlock';
 import RequestModal from '@app/components/RequestModal';
 import StatusBadge from '@app/components/StatusBadge';
 import useDeepLinks from '@app/hooks/useDeepLinks';
@@ -399,41 +398,11 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                   requestData.media[requestData.is4k ? 'status4k' : 'status']
                 }
                 downloadItem={
-                  requestData.media?.downloadStatus4k &&
                   (requestData.media?.downloadStatus4k ?? []).length > 0
-                    ? requestData.media?.downloadStatus4k[0]
-                    : requestData.media?.downloadStatus &&
-                      requestData.media?.downloadStatus[0]
+                    ? requestData.media?.downloadStatus4k
+                    : requestData.media?.downloadStatus
                 }
-                downloadBlock={
-                  <ul>
-                    {requestData.media?.downloadStatus?.map((status, index) => (
-                      <li
-                        key={`dl-status-${status.externalId}-${index}`}
-                        className="border-b border-gray-700 last:border-b-0"
-                      >
-                        <DownloadBlock
-                          downloadItem={status}
-                          title={isMovie(title) ? title.title : title.name}
-                        />
-                      </li>
-                    ))}
-                    {requestData.media?.downloadStatus4k?.map(
-                      (status, index) => (
-                        <li
-                          key={`dl-status-${status.externalId}-${index}`}
-                          className="border-b border-gray-700 last:border-b-0"
-                        >
-                          <DownloadBlock
-                            downloadItem={status}
-                            is4k
-                            title={isMovie(title) ? title.title : title.name}
-                          />
-                        </li>
-                      )
-                    )}
-                  </ul>
-                }
+                title={isMovie(title) ? title.title : title.name}
                 inProgress={
                   (
                     requestData.media[
