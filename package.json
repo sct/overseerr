@@ -1,12 +1,12 @@
 {
-  "name": "overseerr",
+  "name": "collectionizr",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "nodemon -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x ts-node -r tsconfig-paths/register --files --project server/tsconfig.json server/index.ts",
     "build:server": "tsc --project server/tsconfig.json && copyfiles -u 2 server/templates/**/*.{html,pug} dist/templates && tsc-alias -p server/tsconfig.json",
     "build:next": "next build",
-    "build": "yarn build:next && yarn build:server",
+    "build": "npm run build:next && npm run build:server",
     "lint": "eslint \"./server/**/*.{ts,tsx}\" \"./src/**/*.{ts,tsx}\" --cache",
     "start": "NODE_ENV=production node dist/index.js",
     "i18n:extract": "extract-messages -l=en -o src/i18n/locale -d en --flat true --overwriteDefault true \"./src/**/!(*.test).{ts,tsx}\"",
@@ -15,17 +15,17 @@
     "migration:run": "ts-node -r tsconfig-paths/register --project server/tsconfig.json ./node_modules/typeorm/cli.js migration:run -d server/datasource.ts",
     "format": "prettier --loglevel warn --write --cache .",
     "format:check": "prettier --check --cache .",
-    "typecheck": "yarn typecheck:server && yarn typecheck:client",
+    "typecheck": "npm run typecheck:server && npm run typecheck:client",
     "typecheck:server": "tsc --project server/tsconfig.json --noEmit",
     "typecheck:client": "tsc --noEmit",
     "prepare": "husky install",
     "cypress:open": "cypress open",
     "cypress:prepare": "ts-node -r tsconfig-paths/register --files --project server/tsconfig.json server/scripts/prepareTestDb.ts",
-    "cypress:build": "yarn build && yarn cypress:prepare"
+    "cypress:build": "npm run build && npm run cypress:prepare"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sct/overseerr.git"
+    "url": "https://github.com/pbrink231/collectionizr.git"
   },
   "license": "MIT",
   "dependencies": {
@@ -43,7 +43,7 @@
     "axios-rate-limit": "1.3.0",
     "bcrypt": "5.0.1",
     "bowser": "2.11.0",
-    "connect-typeorm": "1.1.4",
+    "connect-typeorm": "2.0.0",
     "cookie-parser": "1.4.6",
     "copy-to-clipboard": "3.3.2",
     "country-flag-icons": "1.5.5",
@@ -87,7 +87,7 @@
     "sqlite3": "5.0.11",
     "swagger-ui-express": "4.5.0",
     "swr": "1.3.0",
-    "typeorm": "0.3.7",
+    "typeorm": "0.3.10",
     "web-push": "3.5.0",
     "winston": "3.8.1",
     "winston-daily-rotate-file": "4.7.1",
@@ -227,8 +227,7 @@
           "COMMIT_TAG": "$GIT_SHA"
         },
         "imageNames": [
-          "sctx/overseerr",
-          "ghcr.io/sct/overseerr"
+          "ghcr.io/pbrink231/collectionizr"
         ],
         "platforms": [
           "linux/amd64",

@@ -41,4 +41,4 @@ jobs:
             COMMIT_TAG=${{ github.sha }}
           tags: |
             sctx/overseerr:${{ steps.get_version.outputs.VERSION }}
-            ghcr.io/sct/overseerr:${{ steps.get_version.outputs.VERSION }}
+            ghcr.io/pbrink231/collectionizr:${{ steps.get_version.outputs.VERSION }}

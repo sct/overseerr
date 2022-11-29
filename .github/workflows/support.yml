@@ -20,7 +20,7 @@ jobs:
 
             - [Discord](https://discord.gg/overseerr)
 
-            - [GitHub Discussions](https://github.com/sct/overseerr/discussions)
+            - [GitHub Discussions](https://github.com/pbrink231/collectionizr/discussions)
           close-issue: true
           lock-issue: true
           issue-lock-reason: 'off-topic'

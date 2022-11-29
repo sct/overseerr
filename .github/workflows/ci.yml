@@ -20,13 +20,13 @@ jobs:
       - name: Install dependencies
         env:
           HUSKY: 0
-        run: yarn
+        run: npm ci --legacy-peer-deps
       - name: Lint
-        run: yarn lint
+        run: npm run lint
       - name: Formatting
-        run: yarn format:check
+        run: npm run format:check
       - name: Build
-        run: yarn build
+        run: npm run build
 
   build_and_push:
     name: Build & Publish Docker Images
@@ -69,8 +69,8 @@ jobs:
           tags: |
             sctx/overseerr:develop
             sctx/overseerr:${{ github.sha }}
-            ghcr.io/sct/overseerr:develop
-            ghcr.io/sct/overseerr:${{ github.sha }}
+            ghcr.io/pbrink231/collectionizr:develop
+            ghcr.io/pbrink231/collectionizr:${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
       - # Temporary fix

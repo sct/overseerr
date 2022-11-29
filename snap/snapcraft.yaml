@@ -17,8 +17,8 @@ parts:
   overseerr:
     plugin: nodejs
     nodejs-version: '16.17.0'
-    nodejs-package-manager: 'yarn'
-    nodejs-yarn-version: v1.22.17
+    nodejs-package-manager: 'npm'
+    npm-node-version: v8.19.3
     build-packages:
       - git
       - on arm64:
@@ -37,8 +37,8 @@ parts:
       snapcraftctl pull
       # Get information to determine snap grade and version
       git config --global --add safe.directory /data/parts/overseerr/src
-      #setup yarn.rc
-      echo "--install.frozen-lockfile\n--install.network-timeout 1000000" > .yarnrc
+      #setup npm.rc
+      echo "ci --legacy-peer-deps" > .npmrc
       BRANCH=$(git rev-parse --abbrev-ref HEAD)
       COMMIT=$(git rev-parse HEAD)
       COMMIT_SHORT=$(git rev-parse --short HEAD)
@@ -71,7 +71,7 @@ parts:
       # Set COMMIT_TAG before the build begins
       export COMMIT_TAG=$(cat $SNAPCRAFT_PART_BUILD/commit.txt)
       snapcraftctl build
-      yarn build
+      npm run build
       # Copy files needed for staging
       cp $SNAPCRAFT_PART_BUILD/committag.json $SNAPCRAFT_PART_INSTALL/
       cp -R $SNAPCRAFT_PART_BUILD/.next $SNAPCRAFT_PART_INSTALL/

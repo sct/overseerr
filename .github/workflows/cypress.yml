@@ -17,8 +17,8 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          build: yarn cypress:build
-          start: yarn start
+          build: npm run cypress:build
+          start: npm start
           wait-on: 'http://localhost:5055'
           record: true
         env:

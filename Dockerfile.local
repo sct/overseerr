@@ -3,6 +3,6 @@ FROM node:16.17-alpine
 COPY . /app
 WORKDIR /app
 
-RUN yarn
+RUN npm i --legacy-peer-deps
 
-CMD yarn dev
+CMD npm run dev

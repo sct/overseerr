@@ -4,8 +4,8 @@
 
 #### To-Dos
 
-- [ ] Successful build `yarn build`
-- [ ] Translation keys `yarn i18n:extract`
+- [ ] Successful build `npm build`
+- [ ] Translation keys `npm run i18n:extract`
 - [ ] Database migration (if required)
 
 #### Issues Fixed or Closed
