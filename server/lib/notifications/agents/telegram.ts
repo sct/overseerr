@@ -29,6 +29,122 @@ interface TelegramPhotoPayload {
   disable_notification: boolean;
 }
 
+enum TelegramMessageType {
+  PHOTO = 'PHOTO',
+  TEXT = 'TEXT',
+}
+
+interface TelegramMessageRecipient {
+  name: string;
+  chatId: string;
+  sendSilent: boolean;
+}
+
+class TelegramMessageChain {
+  readonly #endpoints: { [key: string]: string } = {};
+
+  private recipients: TelegramMessageRecipient[] = [];
+
+  private notificationType: Notification;
+  private subject: string;
+  private messageType: TelegramMessageType;
+  private messagePayload: Partial<
+    TelegramMessagePayload | TelegramPhotoPayload
+  >;
+
+  constructor(apiUrl: string, apiKey: string) {
+    this.#endpoints[
+      TelegramMessageType.TEXT
+    ] = `${apiUrl}bot${apiKey}/sendMessage`;
+    this.#endpoints[
+      TelegramMessageType.PHOTO
+    ] = `${apiUrl}bot${apiKey}/sendPhoto`;
+  }
+
+  public initialize(
+    type: Notification,
+    subject: string,
+    payload: Partial<TelegramMessagePayload | TelegramPhotoPayload>
+  ): TelegramMessageChain {
+    this.notificationType = type;
+    this.subject = subject;
+    this.messageType =
+      'photo' in payload ? TelegramMessageType.PHOTO : TelegramMessageType.TEXT;
+    this.messagePayload = payload;
+
+    return this;
+  }
+
+  public addRecipient(
+    chatId: string,
+    sendSilent: boolean,
+    recipient = 'SYSTEM'
+  ): void {
+    this.recipients.push({ name: recipient, chatId, sendSilent });
+  }
+
+  public async execute(): Promise<boolean> {
+    if (this.recipients.length == 0) {
+      return true;
+    }
+    return this.recipients
+      .reduce((current, next) => {
+        return current.then(() => this.sendTo(next));
+      }, Promise.resolve<unknown>(null))
+      .then(() => true);
+  }
+
+  private fallbackToTxtFormat() {
+    this.messageType = TelegramMessageType.TEXT;
+    this.messagePayload = {
+      text: (this.messagePayload as TelegramPhotoPayload).caption,
+      parse_mode: this.messagePayload.parse_mode,
+    } as Partial<TelegramMessagePayload>;
+  }
+
+  private sendTo(recipient: TelegramMessageRecipient): Promise<unknown> {
+    logger.debug(`Sending Telegram notification (${this.messageType})`, {
+      label: 'Notifications',
+      recipient: recipient.name,
+      type: Notification[this.notificationType],
+      subject: this.subject,
+    });
+
+    return axios
+      .post(this.#endpoints[this.messageType], {
+        ...this.messagePayload,
+        chat_id: recipient.chatId,
+        disable_notification: !!recipient.sendSilent,
+      } as TelegramMessagePayload | TelegramPhotoPayload)
+      .catch((e) => {
+        logger.error(
+          `Error sending Telegram notification (${this.messageType})`,
+          {
+            label: 'Notifications',
+            recipient: recipient.name,
+            type: Notification[this.notificationType],
+            subject: this.subject,
+            errorMessage: e.message,
+            response: e.response?.data,
+          }
+        );
+
+        if (
+          TelegramMessageType.PHOTO == this.messageType &&
+          e.response?.data?.description &&
+          e.response.data.description
+            .toLowerCase()
+            .indexOf('wrong file identifier/http url specified') >= 0
+        ) {
+          this.fallbackToTxtFormat();
+          return this.sendTo(recipient);
+        } else {
+          return Promise.reject(e);
+        }
+      });
+  }
+}
+
 class TelegramAgent
   extends BaseAgent<NotificationAgentTelegram>
   implements NotificationAgent
@@ -157,10 +273,12 @@ class TelegramAgent
     payload: NotificationPayload
   ): Promise<boolean> {
     const settings = this.getSettings();
-    const endpoint = `${this.baseUrl}bot${settings.options.botAPI}/${
-      payload.image ? 'sendPhoto' : 'sendMessage'
-    }`;
     const notificationPayload = this.getNotificationPayload(type, payload);
+
+    const sender = new TelegramMessageChain(
+      this.baseUrl,
+      settings.options.botAPI
+    ).initialize(type, payload.subject, notificationPayload);
 
     // Send system notification
     if (
@@ -168,29 +286,10 @@ class TelegramAgent
       hasNotificationType(type, settings.types ?? 0) &&
       settings.options.chatId
     ) {
-      logger.debug('Sending Telegram notification', {
-        label: 'Notifications',
-        type: Notification[type],
-        subject: payload.subject,
-      });
-
-      try {
-        await axios.post(endpoint, {
-          ...notificationPayload,
-          chat_id: settings.options.chatId,
-          disable_notification: !!settings.options.sendSilently,
-        } as TelegramMessagePayload | TelegramPhotoPayload);
-      } catch (e) {
-        logger.error('Error sending Telegram notification', {
-          label: 'Notifications',
-          type: Notification[type],
-          subject: payload.subject,
-          errorMessage: e.message,
-          response: e.response?.data,
-        });
-
-        return false;
-      }
+      sender.addRecipient(
+        settings.options.chatId,
+        settings.options.sendSilently
+      );
     }
 
     if (payload.notifyUser) {
@@ -202,32 +301,11 @@ class TelegramAgent
         payload.notifyUser.settings?.telegramChatId &&
         payload.notifyUser.settings.telegramChatId !== settings.options.chatId
       ) {
-        logger.debug('Sending Telegram notification', {
-          label: 'Notifications',
-          recipient: payload.notifyUser.displayName,
-          type: Notification[type],
-          subject: payload.subject,
-        });
-
-        try {
-          await axios.post(endpoint, {
-            ...notificationPayload,
-            chat_id: payload.notifyUser.settings.telegramChatId,
-            disable_notification:
-              !!payload.notifyUser.settings.telegramSendSilently,
-          } as TelegramMessagePayload | TelegramPhotoPayload);
-        } catch (e) {
-          logger.error('Error sending Telegram notification', {
-            label: 'Notifications',
-            recipient: payload.notifyUser.displayName,
-            type: Notification[type],
-            subject: payload.subject,
-            errorMessage: e.message,
-            response: e.response?.data,
-          });
-
-          return false;
-        }
+        sender.addRecipient(
+          payload.notifyUser.settings.telegramChatId,
+          payload.notifyUser.settings.telegramSendSilently ?? false,
+          payload.notifyUser.displayName
+        );
       }
     }
 
@@ -235,51 +313,29 @@ class TelegramAgent
       const userRepository = getRepository(User);
       const users = await userRepository.find();
 
-      await Promise.all(
-        users
-          .filter(
-            (user) =>
-              user.settings?.hasNotificationType(
-                NotificationAgentKey.TELEGRAM,
-                type
-              ) && shouldSendAdminNotification(type, user, payload)
-          )
-          .map(async (user) => {
-            if (
-              user.settings?.telegramChatId &&
-              user.settings.telegramChatId !== settings.options.chatId
-            ) {
-              logger.debug('Sending Telegram notification', {
-                label: 'Notifications',
-                recipient: user.displayName,
-                type: Notification[type],
-                subject: payload.subject,
-              });
-
-              try {
-                await axios.post(endpoint, {
-                  ...notificationPayload,
-                  chat_id: user.settings.telegramChatId,
-                  disable_notification: !!user.settings?.telegramSendSilently,
-                } as TelegramMessagePayload | TelegramPhotoPayload);
-              } catch (e) {
-                logger.error('Error sending Telegram notification', {
-                  label: 'Notifications',
-                  recipient: user.displayName,
-                  type: Notification[type],
-                  subject: payload.subject,
-                  errorMessage: e.message,
-                  response: e.response?.data,
-                });
-
-                return false;
-              }
-            }
-          })
-      );
+      users
+        .filter(
+          (user) =>
+            user.settings?.hasNotificationType(
+              NotificationAgentKey.TELEGRAM,
+              type
+            ) && shouldSendAdminNotification(type, user, payload)
+        )
+        .forEach((user) => {
+          if (
+            user.settings?.telegramChatId &&
+            user.settings.telegramChatId !== settings.options.chatId
+          ) {
+            sender.addRecipient(
+              user.settings.telegramChatId,
+              user.settings?.telegramSendSilently ?? false,
+              user.displayName
+            );
+          }
+        });
     }
 
-    return true;
+    return sender.execute().catch(() => false);
   }
 }
 
