@@ -1051,7 +1051,7 @@ components:
         status:
           type: number
           example: 0
-          description: Availability of the media. 1 = UNKNOWN, 2 = PENDING, 3 = PROCESSING, 4 = PARTIAL, 5 = AVAILABLE
+          description: Availability of the media. 1 = `UNKNOWN`, 2 = `PENDING`, 3 = `PROCESSING`, 4 = `PARTIALLY_AVAILABLE`, 5 = `AVAILABLE`
         requests:
           type: array
           readOnly: true
