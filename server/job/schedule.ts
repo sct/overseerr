@@ -113,7 +113,9 @@ export const startJobs = (): void => {
     interval: 'long',
     cronSchedule: jobs['availability-sync'].schedule,
     job: schedule.scheduleJob(jobs['availability-sync'].schedule, () => {
-      logger.info('Starting scheduled job: Media Availability Sync', { label: 'Jobs' });
+      logger.info('Starting scheduled job: Media Availability Sync', {
+        label: 'Jobs',
+      });
       availabilitySync.run();
     }),
     running: () => availabilitySync.running,
