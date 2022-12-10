@@ -11,6 +11,7 @@ import { User } from '@server/entity/User';
 import type { RadarrSettings, SonarrSettings } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import { In } from 'typeorm';
 
 class AvailabilitySync {
   public running = false;
@@ -40,103 +41,119 @@ class AvailabilitySync {
     try {
       const mediaRepository = getRepository(Media);
       const seasonRepository = getRepository(Season);
-      const availableMedia = await mediaRepository.find({
-        where: [
-          {
-            status: MediaStatus.AVAILABLE,
-          },
-          {
-            status: MediaStatus.PARTIALLY_AVAILABLE,
-          },
-          {
-            status4k: MediaStatus.AVAILABLE,
-          },
-          {
-            status4k: MediaStatus.PARTIALLY_AVAILABLE,
-          },
-        ],
-      });
 
-      for (const media of availableMedia) {
+      /*
+       * We cannot immediately delete media items, because it would invalidate our page iteration.
+       * This could be fixed by using a transaction with a "READ COMMITTED" isolation level, but this is unavailable in SQLite
+       */
+      const mediaToDelete: number[] = [];
+
+      const pageSize = 50;
+      for await (const mediaPage of this.loadAvailableMediaPaginated(
+        pageSize
+      )) {
         if (!this.running) {
           throw new Error('Job aborted');
         }
 
-        const mediaExists = await this.mediaExists(media);
+        for (const media of mediaPage) {
+          const mediaExists = await this.mediaExists(media);
 
-        if (!mediaExists) {
-          logger.debug(
-            `Removing media id: ${media.tmdbId} because it doesn't appear in any of the libraries anymore`,
-            {
-              label: 'AvailabilitySync',
-            }
-          );
-          await mediaRepository.delete(media.id);
-          continue;
-        }
-
-        if (media.mediaType === 'tv') {
-          // ok, the show itself exists, but do all it's seasons?
-
-          const seasons = await seasonRepository.find({
-            where: [
-              { status: MediaStatus.AVAILABLE, media: { id: media.id } },
-              { status4k: MediaStatus.AVAILABLE, media: { id: media.id } },
-            ],
-          });
-
-          let didDeleteSeasons = false;
-          for (const season of seasons) {
-            const seasonExists = await this.seasonExists(media, season);
-
-            if (!seasonExists) {
-              logger.debug(
-                `Removing ${season.seasonNumber} for media id: ${media.tmdbId} because it doesn't appear in any of the libraries anymore`,
-                {
-                  label: 'AvailabilitySync',
-                }
-              );
-              await seasonRepository.delete(season.id);
-              didDeleteSeasons = true;
-            }
+          if (!mediaExists) {
+            logger.debug(
+              `Deferring removal of media id: ${media.tmdbId} because it doesn't appear in any of the libraries anymore`,
+              { label: 'AvailabilitySync' }
+            );
+            mediaToDelete.push(media.id);
+            continue;
           }
 
-          if (didDeleteSeasons) {
-            if (
-              media.status === MediaStatus.AVAILABLE ||
-              media.status4k === MediaStatus.AVAILABLE
-            ) {
-              logger.debug(
-                `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted some of it's seasons`,
-                {
-                  label: 'AvailabilitySync',
-                }
-              );
-              if (media.status === MediaStatus.AVAILABLE) {
-                await mediaRepository.update(media.id, {
-                  status: MediaStatus.PARTIALLY_AVAILABLE,
-                });
+          if (media.mediaType === 'tv') {
+            // ok, the show itself exists, but do all it's seasons?
+
+            const seasons = await seasonRepository.find({
+              where: [
+                { status: MediaStatus.AVAILABLE, media: { id: media.id } },
+                { status4k: MediaStatus.AVAILABLE, media: { id: media.id } },
+              ],
+            });
+
+            let didDeleteSeasons = false;
+            for (const season of seasons) {
+              const seasonExists = await this.seasonExists(media, season);
+
+              if (!seasonExists) {
+                logger.debug(
+                  `Removing ${season.seasonNumber} for media id: ${media.tmdbId} because it doesn't appear in any of the libraries anymore`,
+                  { label: 'AvailabilitySync' }
+                );
+                await seasonRepository.delete(season.id);
+                didDeleteSeasons = true;
               }
-              if (media.status4k === MediaStatus.AVAILABLE) {
-                await mediaRepository.update(media.id, {
-                  status4k: MediaStatus.PARTIALLY_AVAILABLE,
-                });
+            }
+
+            if (didDeleteSeasons) {
+              if (
+                media.status === MediaStatus.AVAILABLE ||
+                media.status4k === MediaStatus.AVAILABLE
+              ) {
+                logger.debug(
+                  `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted some of it's seasons`,
+                  { label: 'AvailabilitySync' }
+                );
+                if (media.status === MediaStatus.AVAILABLE) {
+                  await mediaRepository.update(media.id, {
+                    status: MediaStatus.PARTIALLY_AVAILABLE,
+                  });
+                }
+                if (media.status4k === MediaStatus.AVAILABLE) {
+                  await mediaRepository.update(media.id, {
+                    status4k: MediaStatus.PARTIALLY_AVAILABLE,
+                  });
+                }
               }
             }
           }
         }
       }
+
+      // After we have processed all media items we can execute our deferred deletions
+      await mediaRepository.delete({ id: In(mediaToDelete) });
     } catch (ex) {
       logger.error('Failed to complete availability sync', {
         errorMessage: ex.message,
         label: 'AvailabilitySync',
       });
     } finally {
-      logger.debug(`Availability sync complete`, {
-        label: 'AvailabilitySync',
-      });
+      logger.debug(`Availability sync complete`, { label: 'AvailabilitySync' });
       this.running = false;
     }
+  }
+
+  private async *loadAvailableMediaPaginated(pageSize: number) {
+    let offset = 0;
+    const mediaRepository = getRepository(Media);
+    const whereOptions = [
+      { status: MediaStatus.AVAILABLE },
+      { status: MediaStatus.PARTIALLY_AVAILABLE },
+      { status4k: MediaStatus.AVAILABLE },
+      { status4k: MediaStatus.PARTIALLY_AVAILABLE },
+    ];
+
+    let mediaPage = await mediaRepository.find({
+      where: whereOptions,
+      skip: offset,
+      take: pageSize,
+    });
+    do {
+      yield mediaPage;
+      offset += pageSize;
+      mediaPage = await mediaRepository.find({
+        where: whereOptions,
+        skip: offset,
+        take: pageSize,
+      });
+    } while (mediaPage.length > 0);
   }
 
   private async mediaExists(media: Media): Promise<boolean> {

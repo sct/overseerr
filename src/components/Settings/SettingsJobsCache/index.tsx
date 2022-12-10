@@ -98,8 +98,8 @@ type JobModalState = {
 type JobModalAction =
   | { type: 'set'; hours?: number; minutes?: number; seconds?: number }
   | {
-    type: 'close';
-  }
+      type: 'close';
+    }
   | { type: 'open'; job?: Job };
 
 const jobModalReducer = (
@@ -417,7 +417,7 @@ const SettingsJobs = () => {
                       value={Math.floor(
                         (new Date(job.nextExecutionTime).getTime() -
                           Date.now()) /
-                        1000
+                          1000
                       )}
                       updateIntervalInSeconds={1}
                       numeric="auto"
