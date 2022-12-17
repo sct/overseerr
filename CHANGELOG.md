@@ -1,3 +1,17 @@
+# [1.31.0](https://github.com/sct/overseerr/compare/v1.30.1...v1.31.0) (2022-12-17)
+
+
+### Bug Fixes
+
+* **api:** handle auth for accounts where the plex id may have been set to null ([#3125](https://github.com/sct/overseerr/issues/3125)) ([15e2469](https://github.com/sct/overseerr/commit/15e246929bdbc2b7b5bdab7a84bd7882b79d5cb1))
+* improved PTR scrolling performance ([#3095](https://github.com/sct/overseerr/issues/3095)) ([07ec3ef](https://github.com/sct/overseerr/commit/07ec3efbcaf669de7ccde4421c1112bfd23675d6))
+
+
+### Features
+
+* custom image proxy ([#3056](https://github.com/sct/overseerr/issues/3056)) ([500cd1f](https://github.com/sct/overseerr/commit/500cd1f872942923d2b9c3b835e6329e335d4a3f))
+* **lang:** add Croatian display language ([#3041](https://github.com/sct/overseerr/issues/3041)) ([64aab6d](https://github.com/sct/overseerr/commit/64aab6dd8240e191026512733b34cc046b6e508a))
+
 ## [1.30.1](https://github.com/sct/overseerr/compare/v1.30.0...v1.30.1) (2022-10-15)
 
 
