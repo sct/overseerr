@@ -41,6 +41,7 @@ interface DiscoverMovieOptions {
   originalLanguage?: string;
   genre?: number;
   studio?: number;
+  keywords?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -440,6 +441,7 @@ class TheMovieDb extends ExternalAPI {
     originalLanguage,
     genre,
     studio,
+    keywords,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
@@ -454,6 +456,7 @@ class TheMovieDb extends ExternalAPI {
           'primary_release_date.lte': primaryReleaseDateLte,
           with_genres: genre,
           with_companies: studio,
+          with_keywords: keywords,
         },
       });
 

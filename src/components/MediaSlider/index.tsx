@@ -27,12 +27,14 @@ interface MediaSliderProps {
   linkUrl?: string;
   sliderKey: string;
   hideWhenEmpty?: boolean;
+  extraParams?: string;
 }
 
 const MediaSlider = ({
   title,
   url,
   linkUrl,
+  extraParams,
   sliderKey,
   hideWhenEmpty = false,
 }: MediaSliderProps) => {
@@ -43,7 +45,9 @@ const MediaSlider = ({
         return null;
       }
 
-      return `${url}?page=${pageIndex + 1}`;
+      return `${url}?page=${pageIndex + 1}${
+        extraParams ? `&${extraParams}` : ''
+      }`;
     },
     {
       initialSize: 2,

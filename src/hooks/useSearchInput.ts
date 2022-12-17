@@ -15,7 +15,7 @@ const extraEncodes: [RegExp, string][] = [
   [/\*/g, '%2A'],
 ];
 
-const encodeURIExtraParams = (string: string): string => {
+export const encodeURIExtraParams = (string: string): string => {
   let finalString = encodeURIComponent(string);
 
   extraEncodes.forEach((encode) => {

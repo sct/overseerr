@@ -55,6 +55,7 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       language: req.locale ?? (req.query.language as string),
       genre: req.query.genre ? Number(req.query.genre) : undefined,
       studio: req.query.studio ? Number(req.query.studio) : undefined,
+      keywords: req.query.keywords as string,
     });
 
     const media = await Media.getRelatedMedia(

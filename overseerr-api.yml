@@ -1780,6 +1780,31 @@ components:
         message:
           type: string
           example: A comment
+    DiscoverSlider:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        type:
+          type: number
+          example: 1
+        title:
+          type: string
+          nullable: true
+        isBuiltIn:
+          type: boolean
+        enabled:
+          type: boolean
+        data:
+          type: string
+          example: '1234'
+          nullable: true
+      required:
+        - type
+        - enabled
+        - title
+        - data
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -3042,6 +3067,55 @@ paths:
       responses:
         '204':
           description: Test notification attempted
+  /settings/discover:
+    get:
+      summary: Get all discover sliders
+      description: Returns all discovery sliders. Built-in and custom made.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned all discovery sliders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscoverSlider'
+    post:
+      summary: Batch update all sliders
+      description: |
+        Batch update all sliders at once. Should also be used for creation. Will only update sliders provided
+        and will not delete any sliders not present in the request. If a slider is missing a required field,
+        it will be ignored.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DiscoverSlider'
+      responses:
+        '200':
+          description: Returned all newly updated discovery sliders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscoverSlider'
+  /settings/discover/reset:
+    get:
+      summary: Reset all discover sliders
+      description: Resets all discovery sliders to the default values.
+      tags:
+        - settings
+      responses:
+        '204':
+          description: All sliders reset to defaults
   /settings/about:
     get:
       summary: Get server stats
@@ -3890,6 +3964,11 @@ paths:
           schema:
             type: number
             example: 1
+        - in: query
+          name: keywords
+          schema:
+            type: string
+            example: 1,2
       responses:
         '200':
           description: Results

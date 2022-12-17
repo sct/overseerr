@@ -1,3 +1,5 @@
+import { defineMessages } from 'react-intl';
+
 type AvailableColors =
   | 'black'
   | 'red'
@@ -61,3 +63,18 @@ export const genreColorMap: Record<number, [string, string]> = {
   10767: colorTones.lightgreen, // Talk
   10768: colorTones.darkred, // War & Politics
 };
+
+export const sliderTitles = defineMessages({
+  recentrequests: 'Recent Requests',
+  popularmovies: 'Popular Movies',
+  populartv: 'Popular Series',
+  upcomingtv: 'Upcoming Series',
+  recentlyAdded: 'Recently Added',
+  upcoming: 'Upcoming Movies',
+  trending: 'Trending',
+  plexwatchlist: 'Your Plex Watchlist',
+  moviegenres: 'Movie Genres',
+  tvgenres: 'Series Genres',
+  studios: 'Studios',
+  networks: 'Networks',
+});

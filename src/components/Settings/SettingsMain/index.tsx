@@ -7,6 +7,7 @@ import LanguageSelector from '@app/components/LanguageSelector';
 import RegionSelector from '@app/components/RegionSelector';
 import CopyButton from '@app/components/Settings/CopyButton';
 import SettingsBadge from '@app/components/Settings/SettingsBadge';
+import DiscoverCustomization from '@app/components/Settings/SettingsMain/DiscoverCustomization';
 import type { AvailableLocale } from '@app/context/LanguageContext';
 import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
@@ -450,6 +451,13 @@ const SettingsMain = () => {
           }}
         </Formik>
       </div>
+      <div className="mb-6">
+        <h3 className="heading">Discover Customization</h3>
+        <p className="description">
+          Customize how your users see the discover page.
+        </p>
+      </div>
+      <DiscoverCustomization />
     </>
   );
 };
