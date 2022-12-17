@@ -152,6 +152,9 @@ class Media {
   public tautulliUrl?: string;
   public tautulliUrl4k?: string;
 
+  @Column({ default: false })
+  public isBlacklistedFromRequest?: boolean;
+
   constructor(init?: Partial<Media>) {
     Object.assign(this, init);
   }
