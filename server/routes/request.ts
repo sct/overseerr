@@ -448,6 +448,7 @@ requestRoutes.put<{ requestId: string }>(
 
 requestRoutes.delete('/:requestId', async (req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
+  const mediaRepository = getRepository(Media);
 
   try {
     const request = await requestRepository.findOneOrFail({
@@ -467,6 +468,11 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
     }
 
     await requestRepository.remove(request);
+
+    // If the user also asked to blacklist the media, do that now
+    await mediaRepository.update(request.media.id, {
+      isBlacklistedFromRequest: req.query.blacklistMedia?.toString() === 'true',
+    });
 
     return res.status(204).send();
   } catch (e) {

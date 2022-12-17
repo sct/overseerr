@@ -4747,6 +4747,12 @@ paths:
           example: '1'
           schema:
             type: string
+        - in: query
+          name: blacklistMedia
+          schema:
+            type: boolean
+            default: false
+            example: false
       responses:
         '204':
           description: Succesfully removed request
