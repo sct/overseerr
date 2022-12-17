@@ -2,11 +2,13 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import ConfirmButton from '@app/components/Common/ConfirmButton';
+import DeleteModal from '@app/components/RequestList/RequestItem/DeleteModal';
 import RequestModal from '@app/components/RequestModal';
 import StatusBadge from '@app/components/StatusBadge';
 import useDeepLinks from '@app/hooks/useDeepLinks';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
+import { Transition } from '@headlessui/react';
 import {
   CheckIcon,
   PencilIcon,
@@ -274,6 +276,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
@@ -359,6 +362,25 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
           setShowEditModal(false);
         }}
       />
+      <Transition
+        as="div"
+        enter="opacity-0 transition duration-300"
+        enterFrom="opacity-0"
+        enterTo="opacity-100"
+        leave="opacity-100 transition duration-300"
+        leaveFrom="opacity-100"
+        leaveTo="opacity-0"
+        show={showDeleteModal}
+      >
+        <DeleteModal
+          selectedRequestId={request.id}
+          onCancel={() => setShowDeleteModal(false)}
+          onComplete={() => {
+            revalidateList();
+            setShowDeleteModal(false);
+          }}
+        />
+      </Transition>
       <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
         {title.backdropPath && (
           <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
@@ -600,14 +622,14 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
             )}
           {requestData.status !== MediaRequestStatus.PENDING &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
-              <ConfirmButton
-                onClick={() => deleteRequest()}
-                confirmText={intl.formatMessage(globalMessages.areyousure)}
+              <Button
+                onClick={() => setShowDeleteModal(true)}
+                buttonType="danger"
                 className="w-full"
               >
                 <TrashIcon />
                 <span>{intl.formatMessage(messages.deleterequest)}</span>
-              </ConfirmButton>
+              </Button>
             )}
           {requestData.status === MediaRequestStatus.PENDING &&
             hasPermission(Permission.MANAGE_REQUESTS) && (
