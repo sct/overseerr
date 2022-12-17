@@ -23,6 +23,7 @@ import {
   AfterInsert,
   AfterRemove,
   AfterUpdate,
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -462,6 +463,26 @@ export class MediaRequest {
 
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
+  }
+
+  @BeforeInsert()
+  public async checkIfBlacklisted(): Promise<void> {
+    const mediaRepository = getRepository(Media);
+    const media = await mediaRepository.findOne({
+      where: { id: this.media.id },
+    });
+    if (!media) {
+      logger.error('Media data not found', {
+        label: 'Media Request',
+        requestId: this.id,
+        mediaId: this.media.id,
+      });
+      return;
+    }
+
+    if (media.isBlacklistedFromRequest) {
+      this.status = MediaRequestStatus.DECLINED;
+    }
   }
 
   @AfterUpdate()
