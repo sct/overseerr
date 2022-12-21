@@ -8,6 +8,7 @@ import RecentRequestsSlider from '@app/components/Discover/RecentRequestsSlider'
 import StudioSlider from '@app/components/Discover/StudioSlider';
 import TvGenreSlider from '@app/components/Discover/TvGenreSlider';
 import MediaSlider from '@app/components/MediaSlider';
+import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
 import { DiscoverSliderType } from '@server/constants/discover';
 import type DiscoverSlider from '@server/entity/DiscoverSlider';
 import { defineMessages, useIntl } from 'react-intl';
@@ -111,7 +112,26 @@ const Discover = () => {
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
                 url="/api/v1/discover/movies"
-                extraParams={`keywords=${slider.data}`}
+                extraParams={
+                  slider.data
+                    ? `keywords=${encodeURIExtraParams(slider.data)}`
+                    : ''
+                }
+                linkUrl={`/discover/movies/keyword?keywords=${slider.data}`}
+              />
+            );
+          case DiscoverSliderType.TMDB_TV_KEYWORD:
+            return (
+              <MediaSlider
+                sliderKey={`custom-slider-${slider.id}`}
+                title={slider.title ?? ''}
+                url="/api/v1/discover/tv"
+                extraParams={
+                  slider.data
+                    ? `keywords=${encodeURIExtraParams(slider.data)}`
+                    : ''
+                }
+                linkUrl={`/discover/tv/keyword?keywords=${slider.data}`}
               />
             );
           case DiscoverSliderType.TMDB_MOVIE_GENRE:
@@ -120,6 +140,44 @@ const Discover = () => {
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
                 url={`/api/v1/discover/movies/genre/${slider.data}`}
+                linkUrl={`/discover/movies/genre/${slider.data}`}
+              />
+            );
+          case DiscoverSliderType.TMDB_TV_GENRE:
+            return (
+              <MediaSlider
+                sliderKey={`custom-slider-${slider.id}`}
+                title={slider.title ?? ''}
+                url={`/api/v1/discover/tv/genre/${slider.data}`}
+                linkUrl={`/discover/tv/genre/${slider.data}`}
+              />
+            );
+          case DiscoverSliderType.TMDB_STUDIO:
+            return (
+              <MediaSlider
+                sliderKey={`custom-slider-${slider.id}`}
+                title={slider.title ?? ''}
+                url={`/api/v1/discover/movies/studio/${slider.data}`}
+                linkUrl={`/discover/movies/studio/${slider.data}`}
+              />
+            );
+          case DiscoverSliderType.TMDB_NETWORK:
+            return (
+              <MediaSlider
+                sliderKey={`custom-slider-${slider.id}`}
+                title={slider.title ?? ''}
+                url={`/api/v1/discover/tv/network/${slider.data}`}
+                linkUrl={`/discover/tv/network/${slider.data}`}
+              />
+            );
+          case DiscoverSliderType.TMDB_SEARCH:
+            return (
+              <MediaSlider
+                sliderKey={`custom-slider-${slider.id}`}
+                title={slider.title ?? ''}
+                url="/api/v1/search"
+                extraParams={`query=${slider.data}`}
+                linkUrl={`/search?query=${slider.data}`}
               />
             );
         }

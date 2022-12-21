@@ -6,6 +6,7 @@ import type {
   TmdbExternalIdResponse,
   TmdbGenre,
   TmdbGenresResult,
+  TmdbKeyword,
   TmdbLanguage,
   TmdbMovieDetails,
   TmdbNetwork,
@@ -68,6 +69,7 @@ interface DiscoverTvOptions {
   originalLanguage?: string;
   genre?: number;
   network?: number;
+  keywords?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -476,6 +478,7 @@ class TheMovieDb extends ExternalAPI {
     originalLanguage,
     genre,
     network,
+    keywords,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
@@ -490,6 +493,7 @@ class TheMovieDb extends ExternalAPI {
           include_null_first_air_dates: includeEmptyReleaseDate,
           with_genres: genre,
           with_networks: network,
+          with_keywords: keywords,
         },
       });
 
@@ -875,6 +879,24 @@ class TheMovieDb extends ExternalAPI {
       return tvGenres;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch TV genres: ${e.message}`);
+    }
+  }
+
+  public async getKeywordDetails({
+    keywordId,
+  }: {
+    keywordId: number;
+  }): Promise<TmdbKeyword> {
+    try {
+      const data = await this.get<TmdbKeyword>(
+        `/keyword/${keywordId}`,
+        undefined,
+        86400 // 24 hours
+      );
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch keyword: ${e.message}`);
     }
   }
 }

@@ -112,9 +112,19 @@ const DiscoverCustomization = () => {
   ): string | undefined => {
     switch (slider.type) {
       case DiscoverSliderType.TMDB_MOVIE_KEYWORD:
-        return 'TMDB Movie Keyword';
+        return intl.formatMessage(sliderTitles.tmdbmoviekeyword);
+      case DiscoverSliderType.TMDB_TV_KEYWORD:
+        return intl.formatMessage(sliderTitles.tmdbtvkeyword);
       case DiscoverSliderType.TMDB_MOVIE_GENRE:
-        return 'TMDB Movie Genre';
+        return intl.formatMessage(sliderTitles.tmdbmoviegenre);
+      case DiscoverSliderType.TMDB_TV_GENRE:
+        return intl.formatMessage(sliderTitles.tmdbtvgenre);
+      case DiscoverSliderType.TMDB_STUDIO:
+        return intl.formatMessage(sliderTitles.tmdbstudio);
+      case DiscoverSliderType.TMDB_NETWORK:
+        return intl.formatMessage(sliderTitles.tmdbnetwork);
+      case DiscoverSliderType.TMDB_SEARCH:
+        return intl.formatMessage(sliderTitles.tmdbsearch);
       default:
         return undefined;
     }
@@ -136,6 +146,10 @@ const DiscoverCustomization = () => {
               subtitle={getSliderSubtitle(slider)}
               data={slider.data}
               enabled={slider.enabled}
+              isBuiltIn={slider.isBuiltIn}
+              onDelete={() => {
+                mutate();
+              }}
               onEnable={() => {
                 const tempSliders = sliders.slice();
                 tempSliders[index].enabled = !tempSliders[index].enabled;
@@ -163,15 +177,8 @@ const DiscoverCustomization = () => {
             />
           ))}
           <CreateSlider
-            onCreate={(sliderType, title, data) => {
-              const newSliders = sliders.slice();
-              newSliders.push({
-                type: sliderType,
-                title,
-                data,
-                enabled: true,
-              });
-              setSliders(newSliders);
+            onCreate={() => {
+              mutate();
             }}
           />
         </div>

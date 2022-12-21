@@ -77,4 +77,11 @@ export const sliderTitles = defineMessages({
   tvgenres: 'Series Genres',
   studios: 'Studios',
   networks: 'Networks',
+  tmdbmoviekeyword: 'TMDB Movie Keyword',
+  tmdbtvkeyword: 'TMDB Series Keyword',
+  tmdbmoviegenre: 'TMDB Movie Genre',
+  tmdbtvgenre: 'TMDB Series Genre',
+  tmdbnetwork: 'TMDB Network',
+  tmdbstudio: 'TMDB Studio',
+  tmdbsearch: 'TMDB Search',
 });
