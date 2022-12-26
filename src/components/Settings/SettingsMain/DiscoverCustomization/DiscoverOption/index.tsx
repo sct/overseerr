@@ -12,6 +12,8 @@ import { useToasts } from 'react-toast-notifications';
 const messages = defineMessages({
   deletesuccess: 'Sucessfully deleted slider.',
   deletefail: 'Failed to delete slider.',
+  remove: 'Remove',
+  enable: 'Toggle Visibility',
 });
 
 const Position = {
@@ -109,7 +111,13 @@ const DiscoverOption = ({
   });
 
   return (
-    <div className="relative w-full" {...dragProps} {...dropProps} ref={ref}>
+    <div
+      className="relative w-full"
+      {...dragProps}
+      {...dropProps}
+      ref={ref}
+      data-testid="discover-option"
+    >
       {hoverPosition === Position.Above && (
         <div
           className={`absolute -top-1 left-0 w-full border-t-2 border-indigo-500`}
@@ -140,11 +148,11 @@ const DiscoverOption = ({
               onClick={() => deleteSlider()}
             >
               <XIcon />
-              <span>Remove</span>
+              <span>{intl.formatMessage(messages.remove)}</span>
             </Button>
           </div>
         )}
-        <Tooltip content="Enable">
+        <Tooltip content={intl.formatMessage(messages.enable)}>
           <div>
             <SlideCheckbox
               onClick={() => {

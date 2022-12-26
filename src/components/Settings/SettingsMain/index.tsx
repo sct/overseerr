@@ -56,6 +56,9 @@ const messages = defineMessages({
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   partialRequestsEnabled: 'Allow Partial Series Requests',
   locale: 'Display Language',
+  discovercustomization: 'Discover Customization',
+  discovercustomizationDescription:
+    'Customize how your users see the discover page.',
 });
 
 const SettingsMain = () => {
@@ -452,9 +455,11 @@ const SettingsMain = () => {
         </Formik>
       </div>
       <div className="mb-6">
-        <h3 className="heading">Discover Customization</h3>
+        <h3 className="heading" data-testid="discover-customization">
+          {intl.formatMessage(messages.discovercustomization)}
+        </h3>
         <p className="description">
-          Customize how your users see the discover page.
+          {intl.formatMessage(messages.discovercustomizationDescription)}
         </p>
       </div>
       <DiscoverCustomization />
