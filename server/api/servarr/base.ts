@@ -48,22 +48,6 @@ export interface QualityProfile {
   name: string;
 }
 
-interface EpisodeResult {
-  seriesId: number;
-  episodeFileId: number;
-  seasonNumber: number;
-  episodeNumber: number;
-  title: string;
-  airDate: string;
-  airDateUtc: string;
-  overview: string;
-  hasFile: boolean;
-  monitored: boolean;
-  absoluteEpisodeNumber: number;
-  unverifiedSceneNumbering: boolean;
-  id: number;
-}
-
 interface QueueItem {
   size: number;
   title: string;
@@ -77,7 +61,6 @@ interface QueueItem {
   protocol: string;
   downloadClient: string;
   indexer: string;
-  episode?: EpisodeResult;
   id: number;
 }
 

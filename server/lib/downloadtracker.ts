@@ -22,6 +22,7 @@ export interface DownloadingItem {
   title: string;
   episode?: EpisodeNumberResult;
 }
+
 class DownloadTracker {
   private radarrServers: Record<number, DownloadingItem[]> = {};
   private sonarrServers: Record<number, DownloadingItem[]> = {};

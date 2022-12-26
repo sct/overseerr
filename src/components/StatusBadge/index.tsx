@@ -96,30 +96,45 @@ const StatusBadge = ({
     }
   }
 
+  const tooltipContent = downloadItem ? (
+    <ul>
+      {downloadItem.map((status, index) => (
+        <li
+          key={`dl-status-${status.externalId}-${index}`}
+          className="border-b border-gray-700 last:border-b-0"
+        >
+          <DownloadBlock
+            downloadItem={status}
+            title={Array.isArray(title) ? title[index] : title}
+            is4k={is4k}
+          />
+        </li>
+      ))}
+    </ul>
+  ) : (
+    mediaLinkDescription
+  );
+
+  const badgeDownloadProgress = (
+    <div
+      className={`
+      absolute top-0 left-0 z-10 flex h-full ${
+        status === MediaStatus.PROCESSING ? 'bg-indigo-500' : 'bg-green-500'
+      } transition-all duration-200 ease-in-out
+    `}
+      style={{
+        width: `${
+          downloadItem ? calculateDownloadProgress(downloadItem[0]) : 0
+        }%`,
+      }}
+    />
+  );
+
   switch (status) {
     case MediaStatus.AVAILABLE:
       return (
         <Tooltip
-          content={
-            inProgress && downloadItem ? (
-              <ul>
-                {downloadItem.map((status, index) => (
-                  <li
-                    key={`dl-status-${status.externalId}-${index}`}
-                    className="border-b border-gray-700 last:border-b-0"
-                  >
-                    <DownloadBlock
-                      downloadItem={status}
-                      title={Array.isArray(title) ? title[index] : title}
-                      is4k={is4k}
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              mediaLinkDescription
-            )
-          }
+          content={inProgress && tooltipContent}
           className={`${
             inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
           }`}
@@ -130,45 +145,38 @@ const StatusBadge = ({
             href={mediaLink}
             className={`${
               inProgress &&
-              '!bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
+              'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
+            {inProgress && badgeDownloadProgress}
             <div
-              className={`${
-                inProgress &&
-                'flex bg-green-500 transition-all duration-200 ease-in-out'
+              className={`relative z-20 flex items-center ${
+                inProgress && 'px-2'
               }`}
-              style={{
-                width: `${
-                  downloadItem ? calculateDownloadProgress(downloadItem[0]) : 0
-                }%`,
-              }}
             >
-              <div className={`flex items-center ${inProgress && 'px-2'}`}>
-                <span>
-                  {intl.formatMessage(
-                    is4k ? messages.status4k : messages.status,
-                    {
-                      status: inProgress
-                        ? intl.formatMessage(globalMessages.processing)
-                        : intl.formatMessage(globalMessages.available),
-                    }
-                  )}
-                </span>
-                {inProgress && (
-                  <>
-                    {mediaType === 'tv' && (
-                      <span className="ml-1">
-                        {intl.formatMessage(messages.seasonepisodenumber, {
-                          seasonNumber: downloadItem[0].episode?.seasonNumber,
-                          episodeNumber: downloadItem[0].episode?.episodeNumber,
-                        })}
-                      </span>
-                    )}
-                    <Spinner className="ml-1 h-3 w-3" />
-                  </>
+              <span>
+                {intl.formatMessage(
+                  is4k ? messages.status4k : messages.status,
+                  {
+                    status: inProgress
+                      ? intl.formatMessage(globalMessages.processing)
+                      : intl.formatMessage(globalMessages.available),
+                  }
                 )}
-              </div>
+              </span>
+              {inProgress && (
+                <>
+                  {mediaType === 'tv' && (
+                    <span className="ml-1">
+                      {intl.formatMessage(messages.seasonepisodenumber, {
+                        seasonNumber: downloadItem[0].episode?.seasonNumber,
+                        episodeNumber: downloadItem[0].episode?.episodeNumber,
+                      })}
+                    </span>
+                  )}
+                  <Spinner className="ml-1 h-3 w-3" />
+                </>
+              )}
             </div>
           </Badge>
         </Tooltip>
@@ -177,26 +185,7 @@ const StatusBadge = ({
     case MediaStatus.PARTIALLY_AVAILABLE:
       return (
         <Tooltip
-          content={
-            inProgress && downloadItem ? (
-              <ul>
-                {downloadItem.map((status, index) => (
-                  <li
-                    key={`dl-status-${status.externalId}-${index}`}
-                    className="border-b border-gray-700 last:border-b-0"
-                  >
-                    <DownloadBlock
-                      downloadItem={status}
-                      title={Array.isArray(title) ? title[index] : title}
-                      is4k={is4k}
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              mediaLinkDescription
-            )
-          }
+          content={inProgress && tooltipContent}
           className={`${
             inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
           }`}
@@ -207,45 +196,38 @@ const StatusBadge = ({
             href={mediaLink}
             className={`${
               inProgress &&
-              '!bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
+              'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
+            {inProgress && badgeDownloadProgress}
             <div
-              className={`${
-                inProgress &&
-                'flex bg-green-500 transition-all duration-200 ease-in-out'
+              className={`relative z-20 flex items-center ${
+                inProgress && 'px-2'
               }`}
-              style={{
-                width: `${
-                  downloadItem ? calculateDownloadProgress(downloadItem[0]) : 0
-                }%`,
-              }}
             >
-              <div className={`flex items-center ${inProgress && 'px-2'}`}>
-                <span>
-                  {intl.formatMessage(
-                    is4k ? messages.status4k : messages.status,
-                    {
-                      status: inProgress
-                        ? intl.formatMessage(globalMessages.processing)
-                        : intl.formatMessage(globalMessages.partiallyavailable),
-                    }
-                  )}
-                </span>
-                {inProgress && (
-                  <>
-                    {mediaType === 'tv' && (
-                      <span className="ml-1">
-                        {intl.formatMessage(messages.seasonepisodenumber, {
-                          seasonNumber: downloadItem[0].episode?.seasonNumber,
-                          episodeNumber: downloadItem[0].episode?.episodeNumber,
-                        })}
-                      </span>
-                    )}
-                    <Spinner className="ml-1 h-3 w-3" />
-                  </>
+              <span>
+                {intl.formatMessage(
+                  is4k ? messages.status4k : messages.status,
+                  {
+                    status: inProgress
+                      ? intl.formatMessage(globalMessages.processing)
+                      : intl.formatMessage(globalMessages.partiallyavailable),
+                  }
                 )}
-              </div>
+              </span>
+              {inProgress && (
+                <>
+                  {mediaType === 'tv' && (
+                    <span className="ml-1">
+                      {intl.formatMessage(messages.seasonepisodenumber, {
+                        seasonNumber: downloadItem[0].episode?.seasonNumber,
+                        episodeNumber: downloadItem[0].episode?.episodeNumber,
+                      })}
+                    </span>
+                  )}
+                  <Spinner className="ml-1 h-3 w-3" />
+                </>
+              )}
             </div>
           </Badge>
         </Tooltip>
@@ -254,26 +236,7 @@ const StatusBadge = ({
     case MediaStatus.PROCESSING:
       return (
         <Tooltip
-          content={
-            inProgress && downloadItem ? (
-              <ul>
-                {downloadItem.map((status, index) => (
-                  <li
-                    key={`dl-status-${status.externalId}-${index}`}
-                    className="border-b border-gray-700 last:border-b-0"
-                  >
-                    <DownloadBlock
-                      downloadItem={status}
-                      title={Array.isArray(title) ? title[index] : title}
-                      is4k={is4k}
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              mediaLinkDescription
-            )
-          }
+          content={inProgress && tooltipContent}
           className={`${
             inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
           }`}
@@ -284,45 +247,38 @@ const StatusBadge = ({
             href={mediaLink}
             className={`${
               inProgress &&
-              '!bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
+              'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
+            {inProgress && badgeDownloadProgress}
             <div
-              className={`${
-                inProgress &&
-                'flex bg-indigo-500 transition-all duration-200 ease-in-out'
+              className={`relative z-20 flex items-center ${
+                inProgress && 'px-2'
               }`}
-              style={{
-                width: `${
-                  downloadItem ? calculateDownloadProgress(downloadItem[0]) : 0
-                }%`,
-              }}
             >
-              <div className={`flex items-center ${inProgress && 'px-2'}`}>
-                <span>
-                  {intl.formatMessage(
-                    is4k ? messages.status4k : messages.status,
-                    {
-                      status: inProgress
-                        ? intl.formatMessage(globalMessages.processing)
-                        : intl.formatMessage(globalMessages.requested),
-                    }
-                  )}
-                </span>
-                {inProgress && (
-                  <>
-                    {mediaType === 'tv' && (
-                      <span className="ml-1">
-                        {intl.formatMessage(messages.seasonepisodenumber, {
-                          seasonNumber: downloadItem[0].episode?.seasonNumber,
-                          episodeNumber: downloadItem[0].episode?.episodeNumber,
-                        })}
-                      </span>
-                    )}
-                    <Spinner className="ml-1 h-3 w-3" />
-                  </>
+              <span>
+                {intl.formatMessage(
+                  is4k ? messages.status4k : messages.status,
+                  {
+                    status: inProgress
+                      ? intl.formatMessage(globalMessages.processing)
+                      : intl.formatMessage(globalMessages.requested),
+                  }
                 )}
-              </div>
+              </span>
+              {inProgress && (
+                <>
+                  {mediaType === 'tv' && (
+                    <span className="ml-1">
+                      {intl.formatMessage(messages.seasonepisodenumber, {
+                        seasonNumber: downloadItem[0].episode?.seasonNumber,
+                        episodeNumber: downloadItem[0].episode?.episodeNumber,
+                      })}
+                    </span>
+                  )}
+                  <Spinner className="ml-1 h-3 w-3" />
+                </>
+              )}
             </div>
           </Badge>
         </Tooltip>
