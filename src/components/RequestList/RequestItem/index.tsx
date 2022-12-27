@@ -463,6 +463,12 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   status={
                     requestData.media[requestData.is4k ? 'status4k' : 'status']
                   }
+                  downloadItem={
+                    requestData.media?.downloadStatus4k
+                      ? requestData.media?.downloadStatus4k
+                      : requestData.media?.downloadStatus
+                  }
+                  title={isMovie(title) ? title.title : title.name}
                   inProgress={
                     (
                       requestData.media[
