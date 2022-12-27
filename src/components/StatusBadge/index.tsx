@@ -96,7 +96,7 @@ const StatusBadge = ({
     }
   }
 
-  const tooltipContent = downloadItem ? (
+  const tooltipContent = (
     <ul>
       {downloadItem.map((status, index) => (
         <li
@@ -111,8 +111,6 @@ const StatusBadge = ({
         </li>
       ))}
     </ul>
-  ) : (
-    mediaLinkDescription
   );
 
   const badgeDownloadProgress = (
@@ -134,11 +132,13 @@ const StatusBadge = ({
     case MediaStatus.AVAILABLE:
       return (
         <Tooltip
-          content={inProgress && tooltipContent}
+          content={inProgress ? tooltipContent : mediaLinkDescription}
           className={`${
             inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
-          tooltipConfig={{ interactive: true, delayHide: 100 }}
+          tooltipConfig={{
+            ...(inProgress && { interactive: true, delayHide: 100 }),
+          }}
         >
           <Badge
             badgeType="success"
@@ -185,11 +185,13 @@ const StatusBadge = ({
     case MediaStatus.PARTIALLY_AVAILABLE:
       return (
         <Tooltip
-          content={inProgress && tooltipContent}
+          content={inProgress ? tooltipContent : mediaLinkDescription}
           className={`${
             inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
-          tooltipConfig={{ interactive: true, delayHide: 100 }}
+          tooltipConfig={{
+            ...(inProgress && { interactive: true, delayHide: 100 }),
+          }}
         >
           <Badge
             badgeType="success"
@@ -236,18 +238,20 @@ const StatusBadge = ({
     case MediaStatus.PROCESSING:
       return (
         <Tooltip
-          content={inProgress && tooltipContent}
+          content={inProgress ? tooltipContent : mediaLinkDescription}
           className={`${
             inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
-          tooltipConfig={{ interactive: true, delayHide: 100 }}
+          tooltipConfig={{
+            ...(inProgress && { interactive: true, delayHide: 100 }),
+          }}
         >
           <Badge
             badgeType="primary"
             href={mediaLink}
             className={`${
               inProgress &&
-              'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
+              'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:overflow-hidden hover:!bg-gray-700'
             } overflow-hidden`}
           >
             {inProgress && badgeDownloadProgress}
