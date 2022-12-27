@@ -26,13 +26,6 @@ const PlexWatchlistSlider = () => {
     revalidateOnMount: true,
   });
 
-  // user?.userType === UserType.PLEX &&
-  // (!watchlistItems ||
-  //   !!watchlistItems.results.length ||
-  //   user.settings?.watchlistSyncMovies ||
-  //   user.settings?.watchlistSyncTv) &&
-  // !watchlistError
-
   if (
     (user?.userType !== UserType.PLEX &&
       watchlistItems &&
