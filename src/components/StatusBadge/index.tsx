@@ -136,7 +136,7 @@ const StatusBadge = ({
         <Tooltip
           content={inProgress && tooltipContent}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
+            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{ interactive: true, delayHide: 100 }}
         >
@@ -187,7 +187,7 @@ const StatusBadge = ({
         <Tooltip
           content={inProgress && tooltipContent}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
+            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{ interactive: true, delayHide: 100 }}
         >
@@ -238,7 +238,7 @@ const StatusBadge = ({
         <Tooltip
           content={inProgress && tooltipContent}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-scroll sm:block'
+            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{ interactive: true, delayHide: 100 }}
         >
