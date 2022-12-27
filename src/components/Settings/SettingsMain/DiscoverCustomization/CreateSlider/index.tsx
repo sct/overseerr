@@ -24,6 +24,7 @@ const messages = defineMessages({
   needresults: 'You need to have at least 1 result to create a slider.',
   validationDatarequired: 'You must provide a data value.',
   validationTitlerequired: 'You must provide a title.',
+  addcustomslider: 'Add Custom Slider',
 });
 
 type CreateSliderProps = {
@@ -152,10 +153,10 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
         );
 
         return (
-          <Form>
+          <Form data-testid="create-discover-option-form">
             <div className="flex flex-col space-y-2 rounded border-2 border-dashed border-gray-700 bg-gray-800 px-2 py-2 text-gray-100">
               <span className="text-overseerr text-xl font-semibold">
-                Add Custom Slider
+                {intl.formatMessage(messages.addcustomslider)}
               </span>
               <Field as="select" id="sliderType" name="sliderType">
                 {options.map((option) => (

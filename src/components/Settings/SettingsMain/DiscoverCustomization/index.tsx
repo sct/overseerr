@@ -199,6 +199,7 @@ const DiscoverCustomization = () => {
               type="submit"
               disabled={!hasChanged()}
               onClick={() => updateSliders()}
+              data-testid="discover-customize-submit"
             >
               <SaveIcon />
               <span>{intl.formatMessage(globalMessages.save)}</span>

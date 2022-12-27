@@ -1,5 +1,6 @@
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
+import { sliderTitles } from '@app/components/Discover/constants';
 import MovieGenreSlider from '@app/components/Discover/MovieGenreSlider';
 import NetworkSlider from '@app/components/Discover/NetworkSlider';
 import PlexWatchlistSlider from '@app/components/Discover/PlexWatchlistSlider';
@@ -16,14 +17,6 @@ import useSWR from 'swr';
 
 const messages = defineMessages({
   discover: 'Discover',
-  recentrequests: 'Recent Requests',
-  popularmovies: 'Popular Movies',
-  populartv: 'Popular Series',
-  upcomingtv: 'Upcoming Series',
-  recentlyAdded: 'Recently Added',
-  upcoming: 'Upcoming Movies',
-  trending: 'Trending',
-  plexwatchlist: 'Your Plex Watchlist',
   emptywatchlist:
     'Media added to your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink> will appear here.',
 });
@@ -57,7 +50,7 @@ const Discover = () => {
             return (
               <MediaSlider
                 sliderKey="trending"
-                title={intl.formatMessage(messages.trending)}
+                title={intl.formatMessage(sliderTitles.trending)}
                 url="/api/v1/discover/trending"
                 linkUrl="/discover/trending"
               />
@@ -66,7 +59,7 @@ const Discover = () => {
             return (
               <MediaSlider
                 sliderKey="popular-movies"
-                title={intl.formatMessage(messages.popularmovies)}
+                title={intl.formatMessage(sliderTitles.popularmovies)}
                 url="/api/v1/discover/movies"
                 linkUrl="/discover/movies"
               />
@@ -77,7 +70,7 @@ const Discover = () => {
             return (
               <MediaSlider
                 sliderKey="upcoming"
-                title={intl.formatMessage(messages.upcoming)}
+                title={intl.formatMessage(sliderTitles.upcoming)}
                 linkUrl="/discover/movies/upcoming"
                 url="/api/v1/discover/movies/upcoming"
               />
@@ -88,7 +81,7 @@ const Discover = () => {
             return (
               <MediaSlider
                 sliderKey="popular-tv"
-                title={intl.formatMessage(messages.populartv)}
+                title={intl.formatMessage(sliderTitles.populartv)}
                 url="/api/v1/discover/tv"
                 linkUrl="/discover/tv"
               />
@@ -99,7 +92,7 @@ const Discover = () => {
             return (
               <MediaSlider
                 sliderKey="upcoming-tv"
-                title={intl.formatMessage(messages.upcomingtv)}
+                title={intl.formatMessage(sliderTitles.upcomingtv)}
                 url="/api/v1/discover/tv/upcoming"
                 linkUrl="/discover/tv/upcoming"
               />
