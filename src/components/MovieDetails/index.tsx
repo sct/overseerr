@@ -18,6 +18,7 @@ import PersonCard from '@app/components/PersonCard';
 import RequestButton from '@app/components/RequestButton';
 import Slider from '@app/components/Slider';
 import StatusBadge from '@app/components/StatusBadge';
+import useDeepLinks from '@app/hooks/useDeepLinks';
 import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
@@ -123,29 +124,12 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     setShowManager(router.query.manage == '1' ? true : false);
   }, [router.query.manage]);
 
-  const [plexUrl, setPlexUrl] = useState(data?.mediaInfo?.plexUrl);
-  const [plexUrl4k, setPlexUrl4k] = useState(data?.mediaInfo?.plexUrl4k);
-
-  useEffect(() => {
-    if (data) {
-      if (
-        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-        (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
-      ) {
-        setPlexUrl(data.mediaInfo?.iOSPlexUrl);
-        setPlexUrl4k(data.mediaInfo?.iOSPlexUrl4k);
-      } else {
-        setPlexUrl(data.mediaInfo?.plexUrl);
-        setPlexUrl4k(data.mediaInfo?.plexUrl4k);
-      }
-    }
-  }, [
-    data,
-    data?.mediaInfo?.iOSPlexUrl,
-    data?.mediaInfo?.iOSPlexUrl4k,
-    data?.mediaInfo?.plexUrl,
-    data?.mediaInfo?.plexUrl4k,
-  ]);
+  const { plexUrl, plexUrl4k } = useDeepLinks({
+    plexUrl: data?.mediaInfo?.plexUrl,
+    plexUrl4k: data?.mediaInfo?.plexUrl4k,
+    iOSPlexUrl: data?.mediaInfo?.iOSPlexUrl,
+    iOSPlexUrl4k: data?.mediaInfo?.iOSPlexUrl4k,
+  });
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -321,10 +305,12 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
           <div className="media-status">
             <StatusBadge
               status={data.mediaInfo?.status}
+              downloadItem={data.mediaInfo?.downloadStatus}
+              title={data.title}
               inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="movie"
-              plexUrl={data.mediaInfo?.plexUrl}
+              plexUrl={plexUrl}
               serviceUrl={data.mediaInfo?.serviceUrl}
             />
             {settings.currentSettings.movie4kEnabled &&
@@ -340,13 +326,15 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               ) && (
                 <StatusBadge
                   status={data.mediaInfo?.status4k}
+                  downloadItem={data.mediaInfo?.downloadStatus4k}
+                  title={data.title}
                   is4k
                   inProgress={
                     (data.mediaInfo?.downloadStatus4k ?? []).length > 0
                   }
                   tmdbId={data.mediaInfo?.tmdbId}
                   mediaType="movie"
-                  plexUrl={data.mediaInfo?.plexUrl4k}
+                  plexUrl={plexUrl4k}
                   serviceUrl={data.mediaInfo?.serviceUrl4k}
                 />
               )}

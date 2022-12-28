@@ -1,4 +1,5 @@
 import downloadTracker from '@server/lib/downloadtracker';
+import ImageProxy from '@server/lib/imageproxy';
 import { plexFullScanner, plexRecentScanner } from '@server/lib/scanners/plex';
 import { radarrScanner } from '@server/lib/scanners/radarr';
 import { sonarrScanner } from '@server/lib/scanners/sonarr';
@@ -63,7 +64,7 @@ export const startJobs = (): void => {
     id: 'plex-watchlist-sync',
     name: 'Plex Watchlist Sync',
     type: 'process',
-    interval: 'long',
+    interval: 'short',
     cronSchedule: jobs['plex-watchlist-sync'].schedule,
     job: schedule.scheduleJob(jobs['plex-watchlist-sync'].schedule, () => {
       logger.info('Starting scheduled job: Plex Watchlist Sync', {
@@ -130,6 +131,22 @@ export const startJobs = (): void => {
         label: 'Jobs',
       });
       downloadTracker.resetDownloadTracker();
+    }),
+  });
+
+  // Run image cache cleanup every 5 minutes
+  scheduledJobs.push({
+    id: 'image-cache-cleanup',
+    name: 'Image Cache Cleanup',
+    type: 'process',
+    interval: 'long',
+    cronSchedule: jobs['image-cache-cleanup'].schedule,
+    job: schedule.scheduleJob(jobs['image-cache-cleanup'].schedule, () => {
+      logger.info('Starting scheduled job: Image Cache Cleanup', {
+        label: 'Jobs',
+      });
+      // Clean TMDB image cache
+      ImageProxy.clearCache('tmdb');
     }),
   });
 
