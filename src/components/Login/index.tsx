@@ -47,7 +47,7 @@ const Login = () => {
       </div>
       <div className="relative z-50 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div
-          className="flex flex-col space-y-4 bg-gray-800 bg-opacity-50 p-4 shadow sm:rounded-lg "
+          className="flex flex-col bg-gray-800 bg-opacity-50 p-4 shadow sm:rounded-lg "
           style={{ backdropFilter: 'blur(5px)' }}
         >
           <>
@@ -77,61 +77,17 @@ const Login = () => {
             {settings.currentSettings.plexLoginEnabled && (
               <PlexLogin onError={(msg) => setError(msg)} />
             )}
+            {settings.currentSettings.plexLoginEnabled &&
+              settings.currentSettings.localLogin && (
+                <div className="relative flex items-center py-4">
+                  <div className="flex-grow border-t border-gray-500"></div>
+                  <span className="mx-4 flex-shrink text-gray-400">or</span>
+                  <div className="flex-grow border-t border-gray-500"></div>
+                </div>
+              )}
             {settings.currentSettings.localLogin && (
               <LocalLogin onError={(msg) => setError(msg)} />
             )}
-            {/* <Accordion single atLeastOne>
-              {({ openIndexes, handleClick, AccordionContent }) => (
-                <>
-                  {settings.currentSettings.plexLoginEnabled && (
-                    <>
-                      <button
-                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 focus:outline-none sm:rounded-t-lg ${
-                          openIndexes.includes(0) && 'text-indigo-500'
-                        } ${
-                          settings.currentSettings.localLogin &&
-                          'hover:cursor-pointer hover:bg-gray-700'
-                        }`}
-                        onClick={() => handleClick(0)}
-                        disabled={!settings.currentSettings.localLogin}
-                      >
-                        {intl.formatMessage(messages.signinwithplex)}
-                      </button>
-                      <AccordionContent isOpen={openIndexes.includes(0)}>
-                        <div className="px-10 py-8">
-                          <PlexLoginButton
-                            isProcessing={isProcessing}
-                            onAuthToken={(authToken) => setAuthToken(authToken)}
-                          />
-                        </div>
-                      </AccordionContent>
-                    </>
-                  )}
-                  {settings.currentSettings.localLogin && (
-                    <div>
-                      <button
-                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700 focus:outline-none ${
-                          openIndexes.includes(1)
-                            ? 'text-indigo-500'
-                            : 'sm:rounded-b-lg'
-                        }`}
-                        onClick={() => handleClick(1)}
-                      >
-                        {intl.formatMessage(messages.signinwithoverseerr, {
-                          applicationTitle:
-                            settings.currentSettings.applicationTitle,
-                        })}
-                      </button>
-                      <AccordionContent isOpen={openIndexes.includes(1)}>
-                        <div className="px-10 py-8">
-                          <LocalLogin revalidate={revalidate} />
-                        </div>
-                      </AccordionContent>
-                    </div>
-                  )}
-                </>
-              )}
-            </Accordion> */}
           </>
         </div>
       </div>
