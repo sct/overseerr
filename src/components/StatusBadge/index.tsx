@@ -251,7 +251,7 @@ const StatusBadge = ({
             href={mediaLink}
             className={`${
               inProgress &&
-              'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:overflow-hidden hover:!bg-gray-700'
+              'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
             {inProgress && badgeDownloadProgress}
