@@ -95,6 +95,7 @@ describe('Discover Customization', () => {
 
     cy.wait('@discoverSlider');
     cy.wait('@getDiscoverSliders');
+    cy.wait(1000);
 
     cy.get('[data-testid=discover-option]')
       .first()
@@ -140,6 +141,7 @@ describe('Discover Customization', () => {
 
     cy.wait('@discoverSlider');
     cy.wait('@getDiscoverSliders');
+    cy.wait(1000);
 
     cy.get('[data-testid=discover-option]')
       .first()
