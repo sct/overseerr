@@ -5,14 +5,6 @@ import { Router } from 'express';
 
 const discoverSettingRoutes = Router();
 
-discoverSettingRoutes.get('/', async (_req, res) => {
-  const sliderRepository = getRepository(DiscoverSlider);
-
-  const sliders = await sliderRepository.find({ order: { order: 'ASC' } });
-
-  return res.json(sliders);
-});
-
 discoverSettingRoutes.post('/', async (req, res) => {
   const sliderRepository = getRepository(DiscoverSlider);
 

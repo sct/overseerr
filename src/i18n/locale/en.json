@@ -732,7 +732,7 @@
   "components.Settings.SettingsMain.csrfProtectionHoverTip": "Do NOT enable this setting unless you understand what you are doing!",
   "components.Settings.SettingsMain.csrfProtectionTip": "Set external API access to read-only (requires HTTPS)",
   "components.Settings.SettingsMain.discovercustomization": "Discover Customization",
-  "components.Settings.SettingsMain.discovercustomizationDescription": "Customize how your users see the discover page.",
+  "components.Settings.SettingsMain.discovercustomizationDescription": "Add or remove sliders on the Discover page.",
   "components.Settings.SettingsMain.general": "General",
   "components.Settings.SettingsMain.generalsettings": "General Settings",
   "components.Settings.SettingsMain.generalsettingsDescription": "Configure global and default settings for Overseerr.",

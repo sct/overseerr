@@ -58,7 +58,7 @@ const messages = defineMessages({
   locale: 'Display Language',
   discovercustomization: 'Discover Customization',
   discovercustomizationDescription:
-    'Customize how your users see the discover page.',
+    'Add or remove sliders on the Discover page.',
 });
 
 const SettingsMain = () => {
