@@ -76,85 +76,84 @@ const LocalLogin = ({ onError }: LocalLoginProps) => {
     >
       {({ errors, touched, isSubmitting, isValid }) => {
         return (
-          <>
-            <Form>
-              <div>
-                <label htmlFor="email" className="text-label">
-                  {intl.formatMessage(messages.email)}
-                </label>
-                <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
-                  <div className="form-input-field">
-                    <Field
-                      id="email"
-                      name="email"
-                      type="text"
-                      inputMode="email"
-                      data-testid="email"
-                    />
-                  </div>
-                  {errors.email &&
-                    touched.email &&
-                    typeof errors.email === 'string' && (
-                      <div className="error">{errors.email}</div>
-                    )}
+          <Form>
+            <div>
+              <label htmlFor="email" className="text-label">
+                {intl.formatMessage(messages.email)}
+              </label>
+              <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
+                <div className="form-input-field">
+                  <Field
+                    id="email"
+                    name="email"
+                    type="text"
+                    inputMode="email"
+                    data-testid="email"
+                  />
                 </div>
-                <label htmlFor="password" className="text-label">
-                  {intl.formatMessage(messages.password)}
-                </label>
-                <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
-                  <div className="form-input-field">
-                    <SensitiveInput
-                      as="field"
-                      id="password"
-                      name="password"
-                      type="password"
-                      autoComplete="current-password"
-                      data-testid="password"
-                      data-1pignore="false"
-                      data-lpignore="false"
-                      data-bwignore="false"
-                    />
-                  </div>
-                  {errors.password &&
-                    touched.password &&
-                    typeof errors.password === 'string' && (
-                      <div className="error">{errors.password}</div>
-                    )}
-                </div>
-              </div>
-              <div className="mt-8 border-t border-gray-700 pt-5">
-                <div className="flex flex-row-reverse justify-between">
-                  <span className="inline-flex rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      type="submit"
-                      disabled={isSubmitting || !isValid}
-                      data-testid="local-signin-button"
-                    >
-                      <ArrowLeftOnRectangleIcon />
-                      <span>
-                        {isSubmitting
-                          ? intl.formatMessage(messages.signingin)
-                          : intl.formatMessage(messages.signin)}
-                      </span>
-                    </Button>
-                  </span>
-                  {passwordResetEnabled && (
-                    <span className="inline-flex rounded-md shadow-sm">
-                      <Link href="/resetpassword" passHref>
-                        <Button as="a" buttonType="ghost">
-                          <LifebuoyIcon />
-                          <span>
-                            {intl.formatMessage(messages.forgotpassword)}
-                          </span>
-                        </Button>
-                      </Link>
-                    </span>
+                {errors.email &&
+                  touched.email &&
+                  typeof errors.email === 'string' && (
+                    <div className="error">{errors.email}</div>
                   )}
-                </div>
               </div>
-            </Form>
-          </>
+              <label htmlFor="password" className="text-label">
+                {intl.formatMessage(messages.password)}
+              </label>
+              <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
+                <div className="form-input-field">
+                  <SensitiveInput
+                    as="field"
+                    id="password"
+                    name="password"
+                    type="password"
+                    autoComplete="current-password"
+                    data-testid="password"
+                    data-1pignore="false"
+                    data-lpignore="false"
+                    data-bwignore="false"
+                  />
+                      
+                </div>
+                {errors.password &&
+                  touched.password &&
+                  typeof errors.password === 'string' && (
+                    <div className="error">{errors.password}</div>
+                  )}
+              </div>
+            </div>
+            <div className="mt-8 border-t border-gray-700 pt-5">
+              <div className="flex flex-row-reverse justify-between">
+                <span className="inline-flex rounded-md shadow-sm">
+                  <Button
+                    buttonType="primary"
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                    data-testid="local-signin-button"
+                  >
+                    <LoginIcon />
+                    <span>
+                      {isSubmitting
+                        ? intl.formatMessage(messages.signingin)
+                        : intl.formatMessage(messages.signin)}
+                    </span>
+                  </Button>
+                </span>
+                {passwordResetEnabled && (
+                  <span className="inline-flex rounded-md shadow-sm">
+                    <Link href="/resetpassword" passHref>
+                      <Button as="a" buttonType="ghost">
+                        <SupportIcon />
+                        <span>
+                          {intl.formatMessage(messages.forgotpassword)}
+                        </span>
+                      </Button>
+                    </Link>
+                  </span>
+                )}
+              </div>
+            </div>
+          </Form>
         );
       }}
     </Formik>
