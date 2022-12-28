@@ -27,11 +27,12 @@ const PlexWatchlistSlider = () => {
   });
 
   if (
-    (user?.userType !== UserType.PLEX &&
-      watchlistItems &&
+    user?.userType !== UserType.PLEX ||
+    (watchlistItems &&
       watchlistItems.results.length === 0 &&
-      !watchlistError) ||
-    (!user?.settings?.watchlistSyncMovies && !user?.settings?.watchlistSyncTv)
+      !user?.settings?.watchlistSyncMovies &&
+      !user?.settings?.watchlistSyncTv) ||
+    watchlistError
   ) {
     return null;
   }

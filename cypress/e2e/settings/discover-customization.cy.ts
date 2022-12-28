@@ -1,9 +1,10 @@
 describe('Discover Customization', () => {
   beforeEach(() => {
     cy.loginAsAdmin();
+    cy.intercept('/api/v1/settings/discover').as('getDiscoverSliders');
   });
 
-  it.skip('show the discover customization settings', () => {
+  it('show the discover customization settings', () => {
     cy.visit('/settings');
 
     cy.get('[data-testid=discover-customization]')
@@ -18,7 +19,7 @@ describe('Discover Customization', () => {
     );
   });
 
-  it.skip('can drag to re-order elements and save to persist the changes', () => {
+  it('can drag to re-order elements and save to persist the changes', () => {
     let dataTransfer = new DataTransfer();
     cy.visit('/settings');
 
@@ -37,6 +38,7 @@ describe('Discover Customization', () => {
       .should('contain', 'Recently Added');
 
     cy.get('[data-testid=discover-customize-submit').click();
+    cy.wait('@getDiscoverSliders');
 
     cy.reload();
 
@@ -61,10 +63,12 @@ describe('Discover Customization', () => {
       .should('contain', 'Recent Requests');
 
     cy.get('[data-testid=discover-customize-submit').click();
+    cy.wait('@getDiscoverSliders');
   });
 
   it('can create a new discover option and remove it', () => {
     cy.visit('/settings');
+    cy.intercept('/api/v1/settings/discover/*').as('discoverSlider');
 
     const sliderTitle = 'Custom Keyword Slider';
 
@@ -88,6 +92,9 @@ describe('Discover Customization', () => {
       .find('[data-testid=title-card]');
 
     cy.get('[data-testid=create-discover-option-form]').submit();
+
+    cy.wait('@discoverSlider');
+    cy.wait('@getDiscoverSliders');
 
     cy.get('[data-testid=discover-option]')
       .first()
@@ -114,6 +121,7 @@ describe('Discover Customization', () => {
       .click();
 
     cy.get('[data-testid=discover-customize-submit').click();
+    cy.wait('@getDiscoverSliders');
 
     cy.visit('/');
 
@@ -129,6 +137,9 @@ describe('Discover Customization', () => {
       .find('button')
       .should('contain', 'Remove')
       .click();
+
+    cy.wait('@discoverSlider');
+    cy.wait('@getDiscoverSliders');
 
     cy.get('[data-testid=discover-option]')
       .first()

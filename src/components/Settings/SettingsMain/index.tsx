@@ -189,7 +189,7 @@ const SettingsMain = () => {
             setFieldValue,
           }) => {
             return (
-              <Form className="section">
+              <Form className="section" data-testid="settings-main-form">
                 {userHasPermission(Permission.ADMIN) && (
                   <div className="form-row">
                     <label htmlFor="apiKey" className="text-label">
