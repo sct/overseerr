@@ -18,6 +18,12 @@ const messages = defineMessages({
   resettodefault: 'Reset to Default',
   resetwarning:
     'Reset all sliders to default. This will also delete any custom sliders!',
+  updatesuccess: 'Updated discover customization settings.',
+  updatefailed:
+    'Something went wrong updating the discover customization settings.',
+  resetsuccess: 'Sucessfully reset discover customization settings.',
+  resetfailed:
+    'Something went wrong resetting the discover customization settings.',
 });
 
 const DiscoverCustomization = () => {
@@ -40,13 +46,13 @@ const DiscoverCustomization = () => {
     try {
       await axios.post('/api/v1/settings/discover', sliders);
 
-      addToast('Yay', {
+      addToast(intl.formatMessage(messages.updatesuccess), {
         appearance: 'success',
         autoDismiss: true,
       });
       mutate();
     } catch (e) {
-      addToast('Yikes?', {
+      addToast(intl.formatMessage(messages.updatefailed), {
         appearance: 'error',
         autoDismiss: true,
       });
@@ -57,13 +63,13 @@ const DiscoverCustomization = () => {
     try {
       await axios.get('/api/v1/settings/discover/reset');
 
-      addToast('Yay', {
+      addToast(intl.formatMessage(messages.resetsuccess), {
         appearance: 'success',
         autoDismiss: true,
       });
       mutate();
     } catch (e) {
-      addToast('Yikes?', {
+      addToast(intl.formatMessage(messages.resetfailed), {
         appearance: 'error',
         autoDismiss: true,
       });
