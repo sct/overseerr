@@ -1,61 +1,26 @@
-import Accordion from '@app/components/Common/Accordion';
 import ImageFader from '@app/components/Common/ImageFader';
 import PageTitle from '@app/components/Common/PageTitle';
 import LanguagePicker from '@app/components/Layout/LanguagePicker';
 import LocalLogin from '@app/components/Login/LocalLogin';
-import PlexLoginButton from '@app/components/PlexLoginButton';
+import PlexLogin from '@app/components/Login/PlexLogin';
 import useSettings from '@app/hooks/useSettings';
-import { useUser } from '@app/hooks/useUser';
 import { Transition } from '@headlessui/react';
-import { XCircleIcon } from '@heroicons/react/24/solid';
+import { XCircleIcon } from '@heroicons/react/solid';
+import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/dist/client/router';
-import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
 const messages = defineMessages({
   signin: 'Sign In',
   signinheader: 'Sign in to continue',
-  signinwithplex: 'Use your Plex account',
-  signinwithoverseerr: 'Use your {applicationTitle} account',
 });
 
 const Login = () => {
   const intl = useIntl();
   const [error, setError] = useState('');
-  const [isProcessing, setProcessing] = useState(false);
-  const [authToken, setAuthToken] = useState<string | undefined>(undefined);
-  const { revalidate } = useUser();
-  const router = useRouter();
   const settings = useSettings();
-
-  // Effect that is triggered when the `authToken` comes back from the Plex OAuth
-  // We take the token and attempt to sign in. If we get a success message, we will
-  // ask swr to revalidate the user which _should_ come back with a valid user.
-  useEffect(() => {
-    const login = async () => {
-      setProcessing(true);
-      try {
-        const response = await axios.post('/api/v1/auth/plex', { authToken });
-
-        if (response.data?.id) {
-          const user = await revalidate();
-
-          if (user) {
-            router.push('/');
-          }
-        }
-      } catch (e) {
-        setError(e.response.data.message);
-        setAuthToken(undefined);
-        setProcessing(false);
-      }
-    };
-    if (authToken) {
-      login();
-    }
-  }, [authToken, revalidate, router]);
 
   const { data: backdrops } = useSWR<string[]>('/api/v1/backdrops', {
     refreshInterval: 0,
@@ -84,7 +49,7 @@ const Login = () => {
       </div>
       <div className="relative z-50 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div
-          className="bg-gray-800 bg-opacity-50 shadow sm:rounded-lg"
+          className="flex flex-col space-y-4 bg-gray-800 bg-opacity-50 p-4 shadow sm:rounded-lg "
           style={{ backdropFilter: 'blur(5px)' }}
         >
           <>
@@ -111,7 +76,13 @@ const Login = () => {
                 </div>
               </div>
             </Transition>
-            <Accordion single atLeastOne>
+            {settings.currentSettings.plexLoginEnabled && (
+              <PlexLogin onError={(msg) => setError(msg)} />
+            )}
+            {settings.currentSettings.localLogin && (
+              <LocalLogin onError={(msg) => setError(msg)} />
+            )}
+            {/* <Accordion single atLeastOne>
               {({ openIndexes, handleClick, AccordionContent }) => (
                 <>
                   {settings.currentSettings.plexLoginEnabled && (
@@ -162,7 +133,7 @@ const Login = () => {
                   )}
                 </>
               )}
-            </Accordion>
+            </Accordion> */}
           </>
         </div>
       </div>

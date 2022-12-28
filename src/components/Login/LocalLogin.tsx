@@ -1,6 +1,8 @@
 import Button from '@app/components/Common/Button';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import useSettings from '@app/hooks/useSettings';
+import { useUser } from '@app/hooks/useUser';
+import { LoginIcon, SupportIcon } from '@heroicons/react/outline';
 import {
   ArrowLeftOnRectangleIcon,
   LifebuoyIcon,
@@ -8,7 +10,7 @@ import {
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
@@ -23,14 +25,15 @@ const messages = defineMessages({
   forgotpassword: 'Forgot Password?',
 });
 
-interface LocalLoginProps {
-  revalidate: () => void;
-}
+type LocalLoginProps = {
+  onError: (errorMessage: string) => void;
+};
 
-const LocalLogin = ({ revalidate }: LocalLoginProps) => {
+const LocalLogin = ({ onError }: LocalLoginProps) => {
   const intl = useIntl();
+  const router = useRouter();
+  const { revalidate } = useUser();
   const settings = useSettings();
-  const [loginError, setLoginError] = useState<string | null>(null);
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -54,14 +57,20 @@ const LocalLogin = ({ revalidate }: LocalLoginProps) => {
       validationSchema={LoginSchema}
       onSubmit={async (values) => {
         try {
-          await axios.post('/api/v1/auth/local', {
+          const response = await axios.post('/api/v1/auth/local', {
             email: values.email,
             password: values.password,
           });
+
+          if (response.data?.id) {
+            const user = await revalidate();
+
+            if (user) {
+              router.push('/');
+            }
+          }
         } catch (e) {
-          setLoginError(intl.formatMessage(messages.loginerror));
-        } finally {
-          revalidate();
+          onError(intl.formatMessage(messages.loginerror));
         }
       }}
     >
@@ -112,11 +121,6 @@ const LocalLogin = ({ revalidate }: LocalLoginProps) => {
                       <div className="error">{errors.password}</div>
                     )}
                 </div>
-                {loginError && (
-                  <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
-                    <div className="error">{loginError}</div>
-                  </div>
-                )}
               </div>
               <div className="mt-8 border-t border-gray-700 pt-5">
                 <div className="flex flex-row-reverse justify-between">
