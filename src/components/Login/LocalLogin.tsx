@@ -76,7 +76,7 @@ const LocalLogin = ({ onError }: LocalLoginProps) => {
     >
       {({ errors, touched, isSubmitting, isValid }) => {
         return (
-          <Form>
+          <Form data-testid="local-login-form">
             <div>
               <label htmlFor="email" className="text-label">
                 {intl.formatMessage(messages.email)}
