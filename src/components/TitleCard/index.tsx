@@ -129,8 +129,10 @@ const TitleCard = ({
           />
           <div className="absolute left-0 right-0 flex items-center justify-between p-2">
             <div
-              className={`pointer-events-none z-40 rounded-full shadow ${
-                mediaType === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
+              className={`pointer-events-none z-40 rounded-full border bg-opacity-80 shadow ${
+                mediaType === 'movie'
+                  ? 'border-blue-500 bg-blue-600'
+                  : 'border-purple-600 bg-purple-600'
               }`}
             >
               <div className="flex h-4 items-center px-2 py-2 text-center text-xs font-medium uppercase tracking-wider text-white sm:h-5">
@@ -142,17 +144,17 @@ const TitleCard = ({
             <div className="pointer-events-none z-40">
               {(currentStatus === MediaStatus.AVAILABLE ||
                 currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
-                <div className="flex h-4 w-4 items-center justify-center rounded-full bg-green-400 text-white shadow sm:h-5 sm:w-5">
+                <div className="flex h-4 w-4 items-center justify-center rounded-full border border-green-500 bg-green-500 bg-opacity-80 text-green-100 shadow sm:h-5 sm:w-5">
                   <CheckIcon className="h-3 w-3 sm:h-4 sm:w-4" />
                 </div>
               )}
               {currentStatus === MediaStatus.PENDING && (
-                <div className="flex h-4 w-4 items-center justify-center rounded-full bg-yellow-500 text-white shadow sm:h-5 sm:w-5">
+                <div className="flex h-4 w-4 items-center justify-center rounded-full border border-yellow-500 bg-yellow-500 bg-opacity-80 text-yellow-100 shadow sm:h-5 sm:w-5">
                   <BellIcon className="h-3 w-3 sm:h-4 sm:w-4" />
                 </div>
               )}
               {currentStatus === MediaStatus.PROCESSING && (
-                <div className="flex h-4 w-4 items-center justify-center rounded-full bg-indigo-500 text-white shadow sm:h-5 sm:w-5">
+                <div className="flex h-4 w-4 items-center justify-center rounded-full border border-indigo-500 bg-indigo-500 bg-opacity-80 text-indigo-100 shadow sm:h-5 sm:w-5">
                   {inProgress ? (
                     <Spinner className="h-3 w-3" />
                   ) : (
