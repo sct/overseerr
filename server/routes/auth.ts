@@ -199,6 +199,10 @@ authRoutes.get('/plex/unlink', isAuthenticated(), async (req, res, next) => {
 
     const user = await userRepository.findOneByOrFail({ id: req.user.id });
 
+    if (!user.isLocalUser) {
+      throw new Error('User must have a local password set to unlink Plex.');
+    }
+
     user.plexId = null;
     user.plexToken = null;
     user.avatar = gravatarUrl(user.email, { default: 'mm', size: 200 });

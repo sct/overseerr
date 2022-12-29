@@ -198,7 +198,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     const initialized = response.data.initialized;
 
     if (!initialized) {
-      if (!router.pathname.match(/(setup|login\/plex)/)) {
+      if (!router.pathname.match(/(setup|login\/plex|loading)/)) {
         ctx.res.writeHead(307, {
           Location: '/setup',
         });

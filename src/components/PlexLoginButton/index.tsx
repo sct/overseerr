@@ -21,6 +21,7 @@ type PlexLoginButtonProps = Pick<
   onError?: (message: string) => void;
   textOverride?: string;
   svgIcon?: React.ReactNode;
+  disabled?: boolean;
 };
 
 const PlexLoginButton = ({
@@ -31,6 +32,7 @@ const PlexLoginButton = ({
   buttonType = 'plex',
   buttonSize,
   svgIcon,
+  disabled,
 }: PlexLoginButtonProps) => {
   const intl = useIntl();
   const [loading, setLoading] = useState(false);
@@ -56,7 +58,7 @@ const PlexLoginButton = ({
           plexOAuth.preparePopup();
           setTimeout(() => getPlexLogin(), 1500);
         }}
-        disabled={loading || isProcessing}
+        disabled={loading || isProcessing || disabled}
         buttonType={buttonType}
         buttonSize={buttonSize}
       >
