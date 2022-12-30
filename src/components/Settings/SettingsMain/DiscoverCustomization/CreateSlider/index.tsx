@@ -3,11 +3,14 @@ import Tooltip from '@app/components/Common/Tooltip';
 import { sliderTitles } from '@app/components/Discover/constants';
 import MediaSlider from '@app/components/MediaSlider';
 import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
+import type { TmdbKeywordSearchResponse } from '@server/api/themoviedb/interfaces';
 import { DiscoverSliderType } from '@server/constants/discover';
+import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useCallback, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import AsyncSelect from 'react-select/async';
 import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
 
@@ -25,6 +28,8 @@ const messages = defineMessages({
   validationDatarequired: 'You must provide a data value.',
   validationTitlerequired: 'You must provide a title.',
   addcustomslider: 'Add Custom Slider',
+  searchKeywords: 'Search keywords…',
+  seachGenres: 'Search genres…',
 });
 
 type CreateSliderProps = {
@@ -60,6 +65,44 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
     },
     [setResultCount]
   );
+
+  const loadKeywordOptions = async (inputValue: string) => {
+    const results = await axios.get<TmdbKeywordSearchResponse>(
+      '/api/v1/search/keyword',
+      {
+        params: {
+          query: inputValue,
+        },
+      }
+    );
+
+    return results.data.results.map((result) => ({
+      label: result.name,
+      value: result.id,
+    }));
+  };
+
+  const loadMovieGenreOptions = async () => {
+    const results = await axios.get<GenreSliderItem[]>(
+      '/api/v1/discover/genreslider/movie'
+    );
+
+    return results.data.map((result) => ({
+      label: result.name,
+      value: result.id,
+    }));
+  };
+
+  const loadTvGenreOptions = async () => {
+    const results = await axios.get<GenreSliderItem[]>(
+      '/api/v1/discover/genreslider/tv'
+    );
+
+    return results.data.map((result) => ({
+      label: result.name,
+      value: result.id,
+    }));
+  };
 
   const options: CreateOption[] = [
     {
@@ -147,10 +190,74 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
         }
       }}
     >
-      {({ values, isValid, isSubmitting, errors, touched }) => {
+      {({ values, isValid, isSubmitting, errors, touched, setFieldValue }) => {
         const activeOption = options.find(
           (option) => option.type === Number(values.sliderType)
         );
+
+        let dataInput: React.ReactNode;
+
+        switch (activeOption?.type) {
+          case DiscoverSliderType.TMDB_MOVIE_KEYWORD:
+          case DiscoverSliderType.TMDB_TV_KEYWORD:
+            dataInput = (
+              <AsyncSelect
+                key="keyword-select"
+                isMulti
+                className="react-select-container"
+                classNamePrefix="react-select"
+                loadOptions={loadKeywordOptions}
+                placeholder={intl.formatMessage(messages.searchKeywords)}
+                onChange={(value) => {
+                  const keywords = value.map((item) => item.value).join(',');
+
+                  setFieldValue('data', keywords);
+                }}
+              />
+            );
+            break;
+          case DiscoverSliderType.TMDB_MOVIE_GENRE:
+            dataInput = (
+              <AsyncSelect
+                key="movie-genre-select"
+                className="react-select-container"
+                classNamePrefix="react-select"
+                defaultOptions
+                cacheOptions
+                loadOptions={loadMovieGenreOptions}
+                placeholder={intl.formatMessage(messages.seachGenres)}
+                onChange={(value) => {
+                  setFieldValue('data', value?.value);
+                }}
+              />
+            );
+            break;
+          case DiscoverSliderType.TMDB_TV_GENRE:
+            dataInput = (
+              <AsyncSelect
+                key="tv-genre-select"
+                className="react-select-container"
+                classNamePrefix="react-select"
+                defaultOptions
+                cacheOptions
+                loadOptions={loadTvGenreOptions}
+                placeholder={intl.formatMessage(messages.seachGenres)}
+                onChange={(value) => {
+                  setFieldValue('data', value?.value);
+                }}
+              />
+            );
+            break;
+          default:
+            dataInput = (
+              <Field
+                type="text"
+                name="data"
+                id="data"
+                placeholder={activeOption?.dataPlaceholderText}
+              />
+            );
+        }
 
         return (
           <Form data-testid="create-discover-option-form">
@@ -176,12 +283,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 typeof errors.title === 'string' && (
                   <div className="error">{errors.title}</div>
                 )}
-              <Field
-                type="text"
-                name="data"
-                id="data"
-                placeholder={activeOption?.dataPlaceholderText}
-              />
+              {dataInput}
               {errors.data &&
                 touched.data &&
                 typeof errors.data === 'string' && (

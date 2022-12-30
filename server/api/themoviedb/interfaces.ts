@@ -428,3 +428,7 @@ export interface TmdbWatchProviderDetails {
   provider_id: number;
   provider_name: string;
 }
+
+export interface TmdbKeywordSearchResponse extends TmdbPaginatedResponse {
+  results: TmdbKeyword[];
+}

@@ -7,6 +7,7 @@ import type {
   TmdbGenre,
   TmdbGenresResult,
   TmdbKeyword,
+  TmdbKeywordSearchResponse,
   TmdbLanguage,
   TmdbMovieDetails,
   TmdbNetwork,
@@ -891,12 +892,37 @@ class TheMovieDb extends ExternalAPI {
       const data = await this.get<TmdbKeyword>(
         `/keyword/${keywordId}`,
         undefined,
-        86400 // 24 hours
+        604800 // 7 days
       );
 
       return data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch keyword: ${e.message}`);
+    }
+  }
+
+  public async searchKeyword({
+    query,
+    page = 1,
+  }: {
+    query: string;
+    page?: number;
+  }): Promise<TmdbKeywordSearchResponse> {
+    try {
+      const data = await this.get<TmdbKeywordSearchResponse>(
+        '/search/keyword',
+        {
+          params: {
+            query,
+            page,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to search keyword: ${e.message}`);
     }
   }
 }

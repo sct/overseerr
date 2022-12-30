@@ -417,6 +417,10 @@
   .react-select-container .react-select__input-container {
     @apply text-white;
   }
+
+  .react-select-container .react-select__single-value {
+    @apply text-sm text-gray-100;
+  }
 }
 
 @layer utilities {

@@ -714,6 +714,8 @@
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.providetmdbnetwork": "Provide TMDB Network ID",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.providetmdbsearch": "Provide a search query",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.providetmdbstudio": "Provide TMDB Studio ID",
+  "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.seachGenres": "Search genres…",
+  "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.searchKeywords": "Search keywords…",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.slidernameplaceholder": "Slider Name",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.validationDatarequired": "You must provide a data value.",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.validationTitlerequired": "You must provide a title.",
