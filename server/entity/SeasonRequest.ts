@@ -1,8 +1,11 @@
 import { MediaRequestStatus } from '@server/constants/media';
+import { getRepository } from '@server/datasource';
 import {
+  AfterRemove,
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -23,6 +26,7 @@ class SeasonRequest {
   @ManyToOne(() => MediaRequest, (request) => request.seasons, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn()
   public request: MediaRequest;
 
   @CreateDateColumn()
@@ -33,6 +37,25 @@ class SeasonRequest {
 
   constructor(init?: Partial<SeasonRequest>) {
     Object.assign(this, init);
+  }
+
+  @AfterRemove()
+  public async handleRemoveParent(): Promise<void> {
+    const mediaRequestRepository = getRepository(MediaRequest);
+    const requestToBeDeleted = await mediaRequestRepository.findOneOrFail({
+      where: { id: this.request.id },
+      // relations: { seasons: true },
+    });
+
+    // if(requestToBeDeleted.seasons.length === 0) {
+    //   mediaRequestRepository.delete({id: this.request.id})
+    // }
+    console.log('FINDORFAIL', { requestToBeDeleted });
+    console.log('WITHOUTFINDORFAIL', { request: this.request });
+
+    if (requestToBeDeleted.seasons.length === 0) {
+      await mediaRequestRepository.delete({ id: this.request.id });
+    }
   }
 }
 
