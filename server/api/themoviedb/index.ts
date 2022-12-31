@@ -3,6 +3,7 @@ import cacheManager from '@server/lib/cache';
 import { sortBy } from 'lodash';
 import type {
   TmdbCollection,
+  TmdbCompanySearchResponse,
   TmdbExternalIdResponse,
   TmdbGenre,
   TmdbGenresResult,
@@ -923,6 +924,31 @@ class TheMovieDb extends ExternalAPI {
       return data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to search keyword: ${e.message}`);
+    }
+  }
+
+  public async searchCompany({
+    query,
+    page = 1,
+  }: {
+    query: string;
+    page?: number;
+  }): Promise<TmdbCompanySearchResponse> {
+    try {
+      const data = await this.get<TmdbCompanySearchResponse>(
+        '/search/company',
+        {
+          params: {
+            query,
+            page,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to search companies: ${e.message}`);
     }
   }
 }

@@ -79,4 +79,27 @@ searchRoutes.get('/keyword', async (req, res, next) => {
   }
 });
 
+searchRoutes.get('/company', async (req, res, next) => {
+  const tmdb = new TheMovieDb();
+
+  try {
+    const results = await tmdb.searchCompany({
+      query: req.query.query as string,
+      page: Number(req.query.page),
+    });
+
+    return res.status(200).json(results);
+  } catch (e) {
+    logger.debug('Something went wrong retrieving company search results', {
+      label: 'API',
+      errorMessage: e.message,
+      query: req.query.query,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve company search results.',
+    });
+  }
+});
+
 export default searchRoutes;

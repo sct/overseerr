@@ -3,7 +3,10 @@ import Tooltip from '@app/components/Common/Tooltip';
 import { sliderTitles } from '@app/components/Discover/constants';
 import MediaSlider from '@app/components/MediaSlider';
 import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
-import type { TmdbKeywordSearchResponse } from '@server/api/themoviedb/interfaces';
+import type {
+  TmdbCompanySearchResponse,
+  TmdbKeywordSearchResponse,
+} from '@server/api/themoviedb/interfaces';
 import { DiscoverSliderType } from '@server/constants/discover';
 import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
 import axios from 'axios';
@@ -30,6 +33,8 @@ const messages = defineMessages({
   addcustomslider: 'Add Custom Slider',
   searchKeywords: 'Search keywords…',
   seachGenres: 'Search genres…',
+  searchStudios: 'Search studios…',
+  nooptionsmessage: 'Starting typing to search.',
 });
 
 type CreateSliderProps = {
@@ -69,6 +74,21 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
   const loadKeywordOptions = async (inputValue: string) => {
     const results = await axios.get<TmdbKeywordSearchResponse>(
       '/api/v1/search/keyword',
+      {
+        params: {
+          query: inputValue,
+        },
+      }
+    );
+
+    return results.data.results.map((result) => ({
+      label: result.name,
+      value: result.id,
+    }));
+  };
+  const loadCompanyOptions = async (inputValue: string) => {
+    const results = await axios.get<TmdbCompanySearchResponse>(
+      '/api/v1/search/company',
       {
         params: {
           query: inputValue,
@@ -206,6 +226,9 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 isMulti
                 className="react-select-container"
                 classNamePrefix="react-select"
+                noOptionsMessage={() =>
+                  intl.formatMessage(messages.nooptionsmessage)
+                }
                 loadOptions={loadKeywordOptions}
                 placeholder={intl.formatMessage(messages.searchKeywords)}
                 onChange={(value) => {
@@ -242,6 +265,22 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 cacheOptions
                 loadOptions={loadTvGenreOptions}
                 placeholder={intl.formatMessage(messages.seachGenres)}
+                onChange={(value) => {
+                  setFieldValue('data', value?.value);
+                }}
+              />
+            );
+            break;
+          case DiscoverSliderType.TMDB_STUDIO:
+            dataInput = (
+              <AsyncSelect
+                key="studio-select"
+                className="react-select-container"
+                classNamePrefix="react-select"
+                defaultOptions
+                cacheOptions
+                loadOptions={loadCompanyOptions}
+                placeholder={intl.formatMessage(messages.searchStudios)}
                 onChange={(value) => {
                   setFieldValue('data', value?.value);
                 }}

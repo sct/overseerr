@@ -432,3 +432,14 @@ export interface TmdbWatchProviderDetails {
 export interface TmdbKeywordSearchResponse extends TmdbPaginatedResponse {
   results: TmdbKeyword[];
 }
+
+// We have production companies, but the company search results return less data
+export interface TmdbCompany {
+  id: number;
+  logo_path?: string;
+  name: string;
+}
+
+export interface TmdbCompanySearchResponse extends TmdbPaginatedResponse {
+  results: TmdbCompany[];
+}

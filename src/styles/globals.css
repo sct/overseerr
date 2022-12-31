@@ -421,6 +421,10 @@
   .react-select-container .react-select__single-value {
     @apply text-sm text-gray-100;
   }
+
+  .react-select-container .react-select__placeholder {
+    @apply text-sm text-gray-500;
+  }
 }
 
 @layer utilities {
