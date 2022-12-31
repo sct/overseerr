@@ -10,6 +10,10 @@ discoverSettingRoutes.post('/', async (req, res) => {
 
   const sliders = req.body as DiscoverSlider[];
 
+  if (!Array.isArray(sliders)) {
+    return res.status(400).json({ message: 'Invalid request body.' });
+  }
+
   for (let x = 0; x < sliders.length; x++) {
     const slider = sliders[x];
     const existingSlider = await sliderRepository.findOne({
