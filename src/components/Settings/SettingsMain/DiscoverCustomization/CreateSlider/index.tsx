@@ -89,7 +89,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
     }));
   }, 100);
 
-  const loadCompanyOptions = async (inputValue: string) => {
+  const loadCompanyOptions = debounce(async (inputValue: string) => {
     const results = await axios.get<TmdbCompanySearchResponse>(
       '/api/v1/search/company',
       {
@@ -103,7 +103,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
       label: result.name,
       value: result.id,
     }));
-  };
+  }, 100);
 
   const loadMovieGenreOptions = async () => {
     const results = await axios.get<GenreSliderItem[]>(
