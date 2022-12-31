@@ -185,32 +185,101 @@ class AvailabilitySync {
     const ratingKey = media.ratingKey;
     const ratingKey4k = media.ratingKey4k;
 
+    const mediaStatus =
+      media.status === MediaStatus.AVAILABLE ||
+      media.status === MediaStatus.PARTIALLY_AVAILABLE;
+
+    const mediaStatus4k =
+      media.status4k === MediaStatus.AVAILABLE ||
+      media.status4k === MediaStatus.PARTIALLY_AVAILABLE;
+
+    if (media.tmdbId === 8010) {
+      console.log({ media });
+    }
+
     if (!ratingKey && !ratingKey4k) {
       return false;
     }
 
+    let existsInPlex = false;
+    let existsInPlex4k = false;
+
     try {
+      // if (media.mediaType === 'movie') {
+      //   return true;
+      // }
+
       if (ratingKey && ratingKey4k) {
         const meta = await this.plexClient?.getMetadata(ratingKey);
         const meta4k = await this.plexClient?.getMetadata(ratingKey4k);
-        return !!meta && !!meta4k;
-      } else if (ratingKey) {
+        // console.log({ meta });
+
+        if (meta && meta4k) {
+          existsInPlex = true;
+          existsInPlex4k = true;
+        }
+      }
+      if (ratingKey) {
         const meta = await this.plexClient?.getMetadata(ratingKey);
-        return !!meta;
-      } else if (ratingKey4k) {
-        const meta = await this.plexClient?.getMetadata(ratingKey4k);
-        return !!meta;
-      } else {
-        return false;
+        // return !!meta;
+        if (meta) {
+          // console.log('IS THIS WORKING');
+          existsInPlex = true;
+        }
+      }
+      if (ratingKey4k) {
+        const meta4k = await this.plexClient?.getMetadata(ratingKey4k);
+        // return !!meta;
+        if (meta4k) {
+          existsInPlex4k = true;
+        }
       }
     } catch (ex) {
       // TODO: oof, not the nicest way of handling this, but plex-api does not leave us with any other options...
       if (!ex.message.includes('response code: 404')) {
         throw ex;
       }
-
-      return false;
     }
+
+    // if (
+    //   media.status ===
+    //     (MediaStatus.AVAILABLE || MediaStatus.PARTIALLY_AVAILABLE) &&
+    //   media.status4k ===
+    //     (MediaStatus.AVAILABLE || MediaStatus.PARTIALLY_AVAILABLE)
+    // ) {
+    //   if (existsInPlex && existsInPlex4k) {
+    //     return true;
+    //   }
+    // }
+    // if (
+    //   media.status ===
+    //   (MediaStatus.AVAILABLE || MediaStatus.PARTIALLY_AVAILABLE)
+    // ) {
+    //   if (!existsInPlex) {
+    //     return false;
+    //   }
+    // }
+
+    // if (
+    //   media.status4k ===
+    //   (MediaStatus.AVAILABLE || MediaStatus.PARTIALLY_AVAILABLE)
+    // ) {
+    //   if (!existsInPlex4k) {
+    //     return false;
+    //   }
+    // }
+
+    if (existsInPlex && existsInPlex4k) {
+      return true;
+    } else if (!existsInPlex && existsInPlex4k && mediaStatus) {
+      return false;
+    } else if (existsInPlex && !existsInPlex4k && mediaStatus4k) {
+      return false;
+    } else {
+      return true;
+    }
+
+    // return false;
   }
 
   private async seasonExistsInPlex(media: Media, season: Season) {
@@ -520,9 +589,9 @@ class AvailabilitySync {
           await seasonRequestRepository.remove(seasonToBeDeleted);
         }
 
-        if (media.status === MediaStatus.AVAILABLE) {
+        if (season.status === MediaStatus.AVAILABLE) {
           logger.debug(
-            `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted some of it's seasons`,
+            `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted one of it's seasons`,
             { label: 'AvailabilitySync' }
           );
           await mediaRepository.update(media.id, {
@@ -565,9 +634,9 @@ class AvailabilitySync {
           await seasonRequestRepository.remove(seasonToBeDeleted4k);
         }
 
-        if (media.status4k === MediaStatus.AVAILABLE) {
+        if (season.status4k === MediaStatus.AVAILABLE) {
           logger.debug(
-            `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted some of it's seasons`,
+            `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted one of it's seasons`,
             { label: 'AvailabilitySync' }
           );
           await mediaRepository.update(media.id, {
