@@ -11,6 +11,7 @@ import { DiscoverSliderType } from '@server/constants/discover';
 import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
+import { debounce } from 'lodash';
 import { useCallback, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import AsyncSelect from 'react-select/async';
@@ -34,7 +35,8 @@ const messages = defineMessages({
   searchKeywords: 'Search keywords…',
   seachGenres: 'Search genres…',
   searchStudios: 'Search studios…',
-  nooptionsmessage: 'Starting typing to search.',
+  starttyping: 'Starting typing to search.',
+  nooptions: 'No results.',
 });
 
 type CreateSliderProps = {
@@ -71,12 +73,12 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
     [setResultCount]
   );
 
-  const loadKeywordOptions = async (inputValue: string) => {
+  const loadKeywordOptions = debounce(async (inputValue: string) => {
     const results = await axios.get<TmdbKeywordSearchResponse>(
       '/api/v1/search/keyword',
       {
         params: {
-          query: inputValue,
+          query: encodeURIExtraParams(inputValue),
         },
       }
     );
@@ -85,13 +87,14 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
       label: result.name,
       value: result.id,
     }));
-  };
+  }, 100);
+
   const loadCompanyOptions = async (inputValue: string) => {
     const results = await axios.get<TmdbCompanySearchResponse>(
       '/api/v1/search/company',
       {
         params: {
-          query: inputValue,
+          query: encodeURIExtraParams(inputValue),
         },
       }
     );
@@ -223,11 +226,14 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
             dataInput = (
               <AsyncSelect
                 key="keyword-select"
+                inputId="data"
                 isMulti
                 className="react-select-container"
                 classNamePrefix="react-select"
-                noOptionsMessage={() =>
-                  intl.formatMessage(messages.nooptionsmessage)
+                noOptionsMessage={({ inputValue }) =>
+                  inputValue === ''
+                    ? intl.formatMessage(messages.starttyping)
+                    : intl.formatMessage(messages.nooptions)
                 }
                 loadOptions={loadKeywordOptions}
                 placeholder={intl.formatMessage(messages.searchKeywords)}

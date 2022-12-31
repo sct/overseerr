@@ -69,6 +69,7 @@ describe('Discover Customization', () => {
   it('can create a new discover option and remove it', () => {
     cy.visit('/settings');
     cy.intercept('/api/v1/settings/discover/*').as('discoverSlider');
+    cy.intercept('/api/v1/search/keyword*').as('searchKeyword');
 
     const sliderTitle = 'Custom Keyword Slider';
 
@@ -76,15 +77,15 @@ describe('Discover Customization', () => {
 
     cy.get('#title').type(sliderTitle);
     // First confirm that an invalid keyword doesn't allow us to submit anything
-    cy.get('#data').type('invalidkeyword');
+    cy.get('#data').type('invalidkeyword{enter}', { delay: 100 });
+    cy.wait('@searchKeyword');
 
     cy.get('[data-testid=create-discover-option-form]')
       .find('button')
       .should('be.disabled');
 
-    // Anime Keyword, for testing!
     cy.get('#data').clear();
-    cy.get('#data').type('210024');
+    cy.get('#data').type('time travel{enter}', { delay: 100 });
 
     // Confirming we have some results
     cy.contains('.slider-header', sliderTitle)
