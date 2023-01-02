@@ -32,8 +32,6 @@ class AvailabilitySync {
     this.sonarrServers = settings.sonarr.filter((server) => server.syncEnabled);
     await this.initPlexClient();
 
-    // console.log({ sonarSeasons: this.sonarrSeasonsCache });
-
     if (!this.plexClient) {
       return;
     }
@@ -80,8 +78,6 @@ class AvailabilitySync {
                 { status4k: MediaStatus.AVAILABLE, media: { id: media.id } },
               ],
             });
-
-            // console.log('season REPOSITORY', { seasons });
 
             let didDeleteSeasons = false;
             for (const season of seasons) {
@@ -166,178 +162,13 @@ class AvailabilitySync {
     } while (mediaPage.length > 0);
   }
 
-  private async initPlexClient() {
-    const userRepository = getRepository(User);
-    const admin = await userRepository.findOne({
-      select: { id: true, plexToken: true },
-      where: { id: 1 },
-    });
-
-    if (!admin) {
-      logger.warning('No admin configured. Availability sync skipped.');
-      return;
-    }
-
-    this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
-  }
-
-  private async mediaExistsInPlex(media: Media): Promise<boolean> {
-    const ratingKey = media.ratingKey;
-    const ratingKey4k = media.ratingKey4k;
-
-    const mediaStatus =
-      media.status === MediaStatus.AVAILABLE ||
-      media.status === MediaStatus.PARTIALLY_AVAILABLE;
-
-    const mediaStatus4k =
-      media.status4k === MediaStatus.AVAILABLE ||
-      media.status4k === MediaStatus.PARTIALLY_AVAILABLE;
-
-    if (media.tmdbId === 8010) {
-      console.log({ media });
-    }
-
-    if (!ratingKey && !ratingKey4k) {
-      return false;
-    }
-
-    let existsInPlex = false;
-    let existsInPlex4k = false;
-
-    try {
-      // if (media.mediaType === 'movie') {
-      //   return true;
-      // }
-
-      if (ratingKey && ratingKey4k) {
-        const meta = await this.plexClient?.getMetadata(ratingKey);
-        const meta4k = await this.plexClient?.getMetadata(ratingKey4k);
-        // console.log({ meta });
-
-        if (meta && meta4k) {
-          existsInPlex = true;
-          existsInPlex4k = true;
-        }
-      }
-      if (ratingKey) {
-        const meta = await this.plexClient?.getMetadata(ratingKey);
-        // return !!meta;
-        if (meta) {
-          // console.log('IS THIS WORKING');
-          existsInPlex = true;
-        }
-      }
-      if (ratingKey4k) {
-        const meta4k = await this.plexClient?.getMetadata(ratingKey4k);
-        // return !!meta;
-        if (meta4k) {
-          existsInPlex4k = true;
-        }
-      }
-    } catch (ex) {
-      // TODO: oof, not the nicest way of handling this, but plex-api does not leave us with any other options...
-      if (!ex.message.includes('response code: 404')) {
-        throw ex;
-      }
-    }
-
-    // if (
-    //   media.status ===
-    //     (MediaStatus.AVAILABLE || MediaStatus.PARTIALLY_AVAILABLE) &&
-    //   media.status4k ===
-    //     (MediaStatus.AVAILABLE || MediaStatus.PARTIALLY_AVAILABLE)
-    // ) {
-    //   if (existsInPlex && existsInPlex4k) {
-    //     return true;
-    //   }
-    // }
-    // if (
-    //   media.status ===
-    //   (MediaStatus.AVAILABLE || MediaStatus.PARTIALLY_AVAILABLE)
-    // ) {
-    //   if (!existsInPlex) {
-    //     return false;
-    //   }
-    // }
-
-    // if (
-    //   media.status4k ===
-    //   (MediaStatus.AVAILABLE || MediaStatus.PARTIALLY_AVAILABLE)
-    // ) {
-    //   if (!existsInPlex4k) {
-    //     return false;
-    //   }
-    // }
-
-    if (existsInPlex && existsInPlex4k) {
-      return true;
-    } else if (!existsInPlex && existsInPlex4k && mediaStatus) {
-      return false;
-    } else if (existsInPlex && !existsInPlex4k && mediaStatus4k) {
-      return false;
-    } else {
-      return true;
-    }
-
-    // return false;
-  }
-
-  private async seasonExistsInPlex(media: Media, season: Season) {
-    const ratingKey = media.ratingKey;
-    const ratingKey4k = media.ratingKey4k;
-
-    let seasonMeta;
-    let seasonMeta4k;
-
-    if (!ratingKey && !ratingKey4k) {
-      return false;
-    }
-
-    if (ratingKey) {
-      const children =
-        this.plexSeasonsCache[ratingKey] ??
-        (await this.plexClient?.getChildrenMetadata(ratingKey)) ??
-        [];
-      this.plexSeasonsCache[ratingKey] = children;
-      // console.log({ seasonsCache: this.plexSeasonsCache[ratingKey] });
-      seasonMeta = children?.find(
-        (child) => child.index === season.seasonNumber
-      );
-    }
-
-    if (ratingKey4k) {
-      const children4k =
-        this.plexSeasonsCache[ratingKey4k] ??
-        (await this.plexClient?.getChildrenMetadata(ratingKey4k)) ??
-        [];
-      this.plexSeasonsCache[ratingKey4k] = children4k;
-      // console.log({ seasonsCache4k: this.plexSeasonsCache[ratingKey4k] });
-      seasonMeta4k = children4k?.find(
-        (child) => child.index === season.seasonNumber
-      );
-    }
-
-    if (ratingKey && ratingKey4k) {
-      return !!seasonMeta && !!seasonMeta4k;
-    } else if (ratingKey) {
-      return !!seasonMeta;
-    } else if (ratingKey4k) {
-      return !!seasonMeta4k;
-    } else {
-      return false;
-    }
-  }
-
-  private async mediaExistsInRadarr(media: Media): Promise<boolean> {
+  private async mediaExistsInRadarr(
+    media: Media,
+    existsInPlex: boolean,
+    existsInPlex4k: boolean
+  ): Promise<boolean> {
     const mediaRepository = getRepository(Media);
     const requestRepository = getRepository(MediaRequest);
-
-    const request = await requestRepository.findOne({
-      where: { media: { id: media.id }, is4k: false },
-    });
-    const request4k = await requestRepository.findOne({
-      where: { media: { id: media.id }, is4k: true },
-    });
 
     let existsInRadarr = true;
     let existsInRadarr4k = true;
@@ -349,31 +180,48 @@ class AvailabilitySync {
       });
       const meta = await api.getMovieByTmdbId(media.tmdbId);
 
-      // console.log({ radarrserver: server.id });
-      // console.log({ radarrport: server.port });
-      // console.log({ is4K: server.is4k });
-
       //check if both exist or if a single non-4k or 4k exists
-      //if only a single non-4k or 4k exists, then change entity columns accordingly
       //if both do not exist we will return false
 
-      // console.log({ status: media.status });
       if (!server.is4k && !meta.id) {
         existsInRadarr = false;
       }
-      // console.log({ status4k: media.status4k });
+
       if (server.is4k && !meta.id) {
         existsInRadarr4k = false;
       }
     }
+
+    const request = await requestRepository.findOne({
+      where: { media: { id: media.id }, is4k: existsInRadarr ? true : false },
+    });
+
     if (existsInRadarr && existsInRadarr4k) {
       return true;
     }
 
-    if (!existsInRadarr && existsInRadarr4k) {
+    if (!existsInRadarr && existsInPlex) {
+      return true;
+    }
+
+    if (!existsInRadarr4k && existsInPlex4k) {
+      return true;
+    }
+
+    //if only a single non-4k or 4k exists, then change entity columns accordingly
+    //media request will then be deleted
+
+    console.log({
+      plex: existsInPlex,
+      plex4k: existsInPlex4k,
+      existsInRadarr,
+      existsInRadarr4k,
+    });
+
+    if (!existsInRadarr && existsInRadarr4k && !existsInPlex) {
       if (media.status !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tmdbId} does not exist in your non-4k radarr instance so we will change it's status to unknown`,
+          `${media.tmdbId} does not exist in your non-4k radarr and plex instance so we will change it's status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await mediaRepository.update(media.id, {
@@ -387,10 +235,10 @@ class AvailabilitySync {
       }
       return true;
     }
-    if (existsInRadarr && !existsInRadarr4k) {
+    if (existsInRadarr && !existsInRadarr4k && !existsInPlex4k) {
       if (media.status4k !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tmdbId} does not exist in your 4k radarr instance so we will change it's status to unknown`,
+          `${media.tmdbId} does not exist in your 4k radarr and plex instance so we will change it's status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await mediaRepository.update(media.id, {
@@ -400,7 +248,7 @@ class AvailabilitySync {
           externalServiceSlug4k: null,
           ratingKey4k: null,
         });
-        await requestRepository.delete({ id: request4k?.id });
+        await requestRepository.delete({ id: request?.id });
       }
       return true;
     }
@@ -408,20 +256,16 @@ class AvailabilitySync {
     return false;
   }
 
-  private async mediaExistsInSonarr(media: Media): Promise<boolean> {
+  private async mediaExistsInSonarr(
+    media: Media,
+    existsInPlex: boolean,
+    existsInPlex4k: boolean
+  ): Promise<boolean> {
     if (!media.tvdbId) {
       return false;
     }
 
     const mediaRepository = getRepository(Media);
-    // const requestRepository = getRepository(MediaRequest);
-
-    // const request = await requestRepository.findOne({
-    //   where: { media: { id: media.id }, is4k: false },
-    // });
-    // const request4k = await requestRepository.findOne({
-    //   where: { media: { id: media.id }, is4k: true },
-    // });
 
     let existsInSonarr = true;
     let existsInSonarr4k = true;
@@ -434,19 +278,15 @@ class AvailabilitySync {
 
       const meta = await api.getSeriesByTvdbId(media.tvdbId);
 
-      // console.log({ sonarrserver: server.id });
-      // console.log({ sonarrport: server.port });
-      // console.log({ is4K: server.is4k });
-
       this.sonarrSeasonsCache[`${server.id}-${media.tvdbId}`] = meta.seasons;
-      // console.log({
-      //   seasonsCache: this.sonarrSeasonsCache[`${server.id}-${media.tvdbId}`],
-      // });
-      // console.log({ status4k: media.status4k });
+
+      //check if both exist or if a single non-4k or 4k exists
+      //if both do not exist we will return false
+
       if (!server.is4k && !meta.id) {
         existsInSonarr = false;
       }
-      // console.log({ status: media.status });
+
       if (server.is4k && !meta.id) {
         existsInSonarr4k = false;
       }
@@ -456,10 +296,20 @@ class AvailabilitySync {
       return true;
     }
 
-    if (!existsInSonarr && existsInSonarr4k) {
+    if (!existsInSonarr && existsInPlex) {
+      return true;
+    }
+
+    if (!existsInSonarr4k && existsInPlex4k) {
+      return true;
+    }
+
+    //if only a single non-4k or 4k exists, then change entity columns accordingly
+
+    if (!existsInSonarr && existsInSonarr4k && !existsInPlex) {
       if (media.status !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tmdbId} does not exist in your non-4k sonarr instance so we will change it's status to unknown`,
+          `${media.tmdbId} does not exist in your non-4k sonarr and plex instance so we will change it's status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await mediaRepository.update(media.id, {
@@ -469,15 +319,14 @@ class AvailabilitySync {
           externalServiceSlug: null,
           ratingKey: null,
         });
-        // requestRepository.delete({ id: request?.id });
       }
       return true;
     }
 
-    if (existsInSonarr && !existsInSonarr4k) {
+    if (existsInSonarr && !existsInSonarr4k && !existsInPlex4k) {
       if (media.status4k !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tmdbId} does not exist in your 4k sonarr instance so we will change it's status to unknown`,
+          `${media.tmdbId} does not exist in your 4k sonarr and plex instance so we will change it's status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await mediaRepository.update(media.id, {
@@ -487,14 +336,18 @@ class AvailabilitySync {
           externalServiceSlug4k: null,
           ratingKey4k: null,
         });
-        // requestRepository.delete({ id: request4k?.id });
       }
       return true;
     }
     return false;
   }
 
-  private async seasonExistsInSonarr(media: Media, season: Season) {
+  private async seasonExistsInSonarr(
+    media: Media,
+    season: Season,
+    seasonExistsInPlex: boolean,
+    seasonExistsInPlex4k: boolean
+  ) {
     if (!media.tvdbId) {
       return false;
     }
@@ -505,26 +358,12 @@ class AvailabilitySync {
     const mediaRepository = getRepository(Media);
     const seasonRepository = getRepository(Season);
     const seasonRequestRepository = getRepository(SeasonRequest);
-    // const requestRepository = getRepository(MediaRequest);
-
-    // const seasonRequest4k = await requestRepository.findOne({
-    //   where: { media: { id: media.id }, is4k: true },
-    // });
-
-    // const deletableRequests = seasonRequest?.seasons.length === 0
-
-    // await requestRepository.delete({
-    //   media: { id: media.id, seasons: Not(In([])) },
-    // });
 
     for (const server of this.sonarrServers) {
       const api = new SonarrAPI({
         apiKey: server.apiKey,
         url: SonarrAPI.buildUrl(server, '/api/v3'),
       });
-
-      // console.log({ server: server.id });
-      // console.log({ media: media.tvdbId });
 
       const seasons =
         this.sonarrSeasonsCache[`${server.id}-${media.tvdbId}`] ??
@@ -536,37 +375,43 @@ class AvailabilitySync {
           monitored && season.seasonNumber === seasonNumber
       );
 
-      // console.log({ status4k: media.status4k });
       if (!server.is4k && !hasMonitoredSeason) {
         seasonExistsInSonarr = false;
       }
-      // console.log({ status: media.status });
+
       if (server.is4k && !hasMonitoredSeason) {
         seasonExistsInSonarr4k = false;
       }
     }
 
-    // const mediaRequest = await requestRepository.findOne({
-    //   where: {
-    //     media: { id: media.id },
-    //     is4k: seasonExistsInSonarr ? true : false,
-    //   },
-    // });
-
     if (seasonExistsInSonarr && seasonExistsInSonarr4k) {
       return true;
     }
 
-    if (!seasonExistsInSonarr && seasonExistsInSonarr4k) {
+    if (!seasonExistsInSonarr && seasonExistsInPlex) {
+      return true;
+    }
+
+    if (!seasonExistsInSonarr4k && seasonExistsInPlex4k) {
+      return true;
+    }
+
+    //if season does not exist, we will change status to unknown and delete related season request
+    //if parent media request is empty, parent is automatically deleted
+
+    if (
+      !seasonExistsInSonarr &&
+      seasonExistsInSonarr4k &&
+      !seasonExistsInPlex
+    ) {
       if (season.status !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tvdbId}, season: ${season.seasonNumber} does not exist in your non-4k sonarr instance so we will change it's status to unknown`,
+          `${media.tvdbId}, season: ${season.seasonNumber} does not exist in your non-4k sonarr and plex instance so we will change it's status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await seasonRepository.update(season.id, {
           status: MediaStatus.UNKNOWN,
         });
-        // console.log('non-4k', { mediaRequest });
 
         const seasonToBeDeleted = await seasonRequestRepository.findOne({
           relations: {
@@ -602,16 +447,19 @@ class AvailabilitySync {
       return true;
     }
 
-    if (seasonExistsInSonarr && !seasonExistsInSonarr4k) {
+    if (
+      seasonExistsInSonarr &&
+      !seasonExistsInSonarr4k &&
+      !seasonExistsInPlex4k
+    ) {
       if (season.status4k !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tvdbId}, season: ${season.seasonNumber} does not exist in your 4k sonarr instance so we will change it's status to unknown`,
+          `${media.tvdbId}, season: ${season.seasonNumber} does not exist in your 4k sonarr and plex instance so we will change it's status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await seasonRepository.update(season.id, {
           status4k: MediaStatus.UNKNOWN,
         });
-        // console.log('4k', { mediaRequest });
 
         const seasonToBeDeleted4k = await seasonRequestRepository.findOne({
           relations: {
@@ -650,58 +498,167 @@ class AvailabilitySync {
     return false;
   }
 
-  private async seasonExists(media: Media, season: Season): Promise<boolean> {
-    if (await this.seasonExistsInPlex(media, season)) {
+  private async mediaExists(media: Media): Promise<boolean> {
+    const ratingKey = media.ratingKey;
+    const ratingKey4k = media.ratingKey4k;
+
+    if (!ratingKey && !ratingKey4k) {
+      return false;
+    }
+
+    let existsInPlex = false;
+    let existsInPlex4k = false;
+
+    //check each plex instance to see if media exists
+
+    try {
+      if (ratingKey) {
+        const meta = await this.plexClient?.getMetadata(ratingKey);
+        if (meta) {
+          existsInPlex = true;
+        }
+      }
+      if (ratingKey4k) {
+        const meta4k = await this.plexClient?.getMetadata(ratingKey4k);
+        if (meta4k) {
+          existsInPlex4k = true;
+        }
+      }
+    } catch (ex) {
+      // TODO: oof, not the nicest way of handling this, but plex-api does not leave us with any other options...
+      if (!ex.message.includes('response code: 404')) {
+        throw ex;
+      }
+    }
+
+    //here we check if both exist
+
+    if (existsInPlex && existsInPlex4k) {
       return true;
     }
 
-    const existsInSonarr = await this.seasonExistsInSonarr(media, season);
+    //we then check radarr or sonarr has that specific media. If not, then we will move to delete
+
+    if (media.mediaType === 'tv') {
+      const existsInSonarr = await this.mediaExistsInSonarr(
+        media,
+        existsInPlex,
+        existsInPlex4k
+      );
+
+      if (existsInSonarr) {
+        logger.warn(
+          `${media.tmdbId} exists in at least one sonarr or plex instance, so we'll assume it's still supposed to exist.`,
+          {
+            label: 'AvailabilitySync',
+          }
+        );
+
+        return true;
+      }
+    }
+
+    if (media.mediaType === 'movie') {
+      const existsInRadarr = await this.mediaExistsInRadarr(
+        media,
+        existsInPlex,
+        existsInPlex4k
+      );
+
+      if (existsInRadarr) {
+        logger.warn(
+          `${media.tmdbId} exists in at least one radarr or plex instance, so we'll assume it's still supposed to exist.`,
+          {
+            label: 'AvailabilitySync',
+          }
+        );
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private async seasonExists(media: Media, season: Season) {
+    const ratingKey = media.ratingKey;
+    const ratingKey4k = media.ratingKey4k;
+
+    if (!ratingKey && !ratingKey4k) {
+      return false;
+    }
+
+    let seasonExistsInPlex = false;
+    let seasonExistsInPlex4k = false;
+
+    if (ratingKey) {
+      const children =
+        this.plexSeasonsCache[ratingKey] ??
+        (await this.plexClient?.getChildrenMetadata(ratingKey)) ??
+        [];
+      this.plexSeasonsCache[ratingKey] = children;
+      const seasonMeta = children?.find(
+        (child) => child.index === season.seasonNumber
+      );
+
+      if (seasonMeta) {
+        seasonExistsInPlex = true;
+      }
+    }
+
+    if (ratingKey4k) {
+      const children4k =
+        this.plexSeasonsCache[ratingKey4k] ??
+        (await this.plexClient?.getChildrenMetadata(ratingKey4k)) ??
+        [];
+      this.plexSeasonsCache[ratingKey4k] = children4k;
+      const seasonMeta4k = children4k?.find(
+        (child) => child.index === season.seasonNumber
+      );
+
+      if (seasonMeta4k) {
+        seasonExistsInPlex4k = true;
+      }
+    }
+
+    if (seasonExistsInPlex && seasonExistsInPlex4k) {
+      return true;
+    }
+
+    const existsInSonarr = await this.seasonExistsInSonarr(
+      media,
+      season,
+      seasonExistsInPlex,
+      seasonExistsInPlex4k
+    );
+
     if (existsInSonarr) {
       logger.warn(
-        `${media.tvdbId}, season: ${season.seasonNumber} exists in at least one sonarr instance but is missing from plex, so we'll assume it's still supposed to exist.`,
+        `${media.tvdbId}, season: ${season.seasonNumber} exists in at least one sonarr or plex instance, so we'll assume it's still supposed to exist.`,
         {
           label: 'AvailabilitySync',
         }
       );
+
       return true;
     }
+
     return false;
   }
 
-  private async mediaExists(media: Media): Promise<boolean> {
-    // console.log({ media });
+  private async initPlexClient() {
+    const userRepository = getRepository(User);
+    const admin = await userRepository.findOne({
+      select: { id: true, plexToken: true },
+      where: { id: 1 },
+    });
 
-    if (await this.mediaExistsInPlex(media)) {
-      return true;
+    if (!admin) {
+      logger.warning('No admin configured. Availability sync skipped.');
+      return;
     }
 
-    if (media.mediaType === 'movie') {
-      const existsInRadarr = await this.mediaExistsInRadarr(media);
-      if (existsInRadarr) {
-        logger.warn(
-          `${media.tmdbId} exists in at least one radarr instance but is missing from plex, so we'll assume it's still supposed to exist.`,
-          {
-            label: 'AvailabilitySync',
-          }
-        );
-        return true;
-      }
-    }
-
-    if (media.mediaType === 'tv') {
-      const existsInSonarr = await this.mediaExistsInSonarr(media);
-      if (existsInSonarr) {
-        logger.warn(
-          `${media.tmdbId} exists in at least one sonarr instance but is missing from plex, so we'll assume it's still supposed to exist.`,
-          {
-            label: 'AvailabilitySync',
-          }
-        );
-        return true;
-      }
-    }
-
-    return false;
+    this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
   }
 }
 
