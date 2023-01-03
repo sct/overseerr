@@ -784,12 +784,13 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                 )}
               </div>
             )}
-            {data.originalName && data.originalLanguage !== locale.slice(0, 2) && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.originaltitle)}</span>
-                <span className="media-fact-value">{data.originalName}</span>
-              </div>
-            )}
+            {data.originalName &&
+              data.originalLanguage !== locale.slice(0, 2) && (
+                <div className="media-fact">
+                  <span>{intl.formatMessage(messages.originaltitle)}</span>
+                  <span className="media-fact-value">{data.originalName}</span>
+                </div>
+              )}
             {data.keywords.some(
               (keyword) => keyword.id === ANIME_KEYWORD_ID
             ) && (
