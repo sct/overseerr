@@ -600,6 +600,17 @@ components:
         name:
           type: string
           example: Adventure
+    Company:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        logo_path:
+          type: string
+          nullable: true
+        name:
+          type: string
     ProductionCompany:
       type: object
       properties:
@@ -1780,6 +1791,31 @@ components:
         message:
           type: string
           example: A comment
+    DiscoverSlider:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        type:
+          type: number
+          example: 1
+        title:
+          type: string
+          nullable: true
+        isBuiltIn:
+          type: boolean
+        enabled:
+          type: boolean
+        data:
+          type: string
+          example: '1234'
+          nullable: true
+      required:
+        - type
+        - enabled
+        - title
+        - data
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -3042,6 +3078,104 @@ paths:
       responses:
         '204':
           description: Test notification attempted
+  /settings/discover:
+    get:
+      summary: Get all discover sliders
+      description: Returns all discovery sliders. Built-in and custom made.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned all discovery sliders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscoverSlider'
+    post:
+      summary: Batch update all sliders.
+      description: |
+        Batch update all sliders at once. Should also be used for creation. Will only update sliders provided
+        and will not delete any sliders not present in the request. If a slider is missing a required field,
+        it will be ignored. Requires the `ADMIN` permission.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DiscoverSlider'
+      responses:
+        '200':
+          description: Returned all newly updated discovery sliders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DiscoverSlider'
+  /settings/discover/{sliderId}:
+    delete:
+      summary: Delete slider by ID
+      description: Deletes the slider with the provided sliderId. Requires the `ADMIN` permission.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: sliderId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Slider successfully deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoverSlider'
+  /settings/discover/add:
+    post:
+      summary: Add a new slider
+      description: |
+        Add a single slider and return the newly created slider. Requires the `ADMIN` permission.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: 'New Slider'
+                type:
+                  type: number
+                  example: 1
+                data:
+                  type: string
+                  example: '1'
+      responses:
+        '200':
+          description: Returns newly added discovery slider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoverSlider'
+  /settings/discover/reset:
+    get:
+      summary: Reset all discover sliders
+      description: Resets all discovery sliders to the default values. Requires the `ADMIN` permission.
+      tags:
+        - settings
+      responses:
+        '204':
+          description: All sliders reset to defaults
   /settings/about:
     get:
       summary: Get server stats
@@ -3936,6 +4070,86 @@ paths:
                         - $ref: '#/components/schemas/MovieResult'
                         - $ref: '#/components/schemas/TvResult'
                         - $ref: '#/components/schemas/PersonResult'
+  /search/keyword:
+    get:
+      summary: Search for keywords
+      description: Returns a list of TMDB keywords matching the search query
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+            example: 'christmas'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Keyword'
+  /search/company:
+    get:
+      summary: Search for companies
+      description: Returns a list of TMDB companies matching the search query. (Will not return origin country)
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+            example: 'Disney'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Company'
   /discover/movies:
     get:
       summary: Discover movies
@@ -3964,6 +4178,11 @@ paths:
           schema:
             type: number
             example: 1
+        - in: query
+          name: keywords
+          schema:
+            type: string
+            example: 1,2
       responses:
         '200':
           description: Results
@@ -4193,6 +4412,11 @@ paths:
           schema:
             type: number
             example: 1
+        - in: query
+          name: keywords
+          schema:
+            type: string
+            example: 1,2
       responses:
         '200':
           description: Results

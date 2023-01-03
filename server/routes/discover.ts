@@ -1,5 +1,6 @@
 import PlexTvAPI from '@server/api/plextv';
 import TheMovieDb from '@server/api/themoviedb';
+import type { TmdbKeyword } from '@server/api/themoviedb/interfaces';
 import { MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
@@ -48,6 +49,7 @@ const discoverRoutes = Router();
 
 discoverRoutes.get('/movies', async (req, res, next) => {
   const tmdb = createTmdbWithRegionLanguage(req.user);
+  const keywords = req.query.keywords as string;
 
   try {
     const data = await tmdb.getDiscoverMovies({
@@ -55,16 +57,29 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       language: req.locale ?? (req.query.language as string),
       genre: req.query.genre ? Number(req.query.genre) : undefined,
       studio: req.query.studio ? Number(req.query.studio) : undefined,
+      keywords,
     });
 
     const media = await Media.getRelatedMedia(
       data.results.map((result) => result.id)
     );
 
+    let keywordData: TmdbKeyword[] = [];
+    if (keywords) {
+      const splitKeywords = keywords.split(',');
+
+      keywordData = await Promise.all(
+        splitKeywords.map(async (keywordId) => {
+          return await tmdb.getKeywordDetails({ keywordId: Number(keywordId) });
+        })
+      );
+    }
+
     return res.status(200).json({
       page: data.page,
       totalPages: data.total_pages,
       totalResults: data.total_results,
+      keywords: keywordData,
       results: data.results.map((result) =>
         mapMovieResult(
           result,
@@ -294,6 +309,7 @@ discoverRoutes.get('/movies/upcoming', async (req, res, next) => {
 
 discoverRoutes.get('/tv', async (req, res, next) => {
   const tmdb = createTmdbWithRegionLanguage(req.user);
+  const keywords = req.query.keywords as string;
 
   try {
     const data = await tmdb.getDiscoverTv({
@@ -301,16 +317,29 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       language: req.locale ?? (req.query.language as string),
       genre: req.query.genre ? Number(req.query.genre) : undefined,
       network: req.query.network ? Number(req.query.network) : undefined,
+      keywords,
     });
 
     const media = await Media.getRelatedMedia(
       data.results.map((result) => result.id)
     );
 
+    let keywordData: TmdbKeyword[] = [];
+    if (keywords) {
+      const splitKeywords = keywords.split(',');
+
+      keywordData = await Promise.all(
+        splitKeywords.map(async (keywordId) => {
+          return await tmdb.getKeywordDetails({ keywordId: Number(keywordId) });
+        })
+      );
+    }
+
     return res.status(200).json({
       page: data.page,
       totalPages: data.total_pages,
       totalResults: data.total_results,
+      keywords: keywordData,
       results: data.results.map((result) =>
         mapTvResult(
           result,

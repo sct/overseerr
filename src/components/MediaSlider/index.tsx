@@ -27,14 +27,18 @@ interface MediaSliderProps {
   linkUrl?: string;
   sliderKey: string;
   hideWhenEmpty?: boolean;
+  extraParams?: string;
+  onNewTitles?: (titleCount: number) => void;
 }
 
 const MediaSlider = ({
   title,
   url,
   linkUrl,
+  extraParams,
   sliderKey,
   hideWhenEmpty = false,
+  onNewTitles,
 }: MediaSliderProps) => {
   const settings = useSettings();
   const { data, error, setSize, size } = useSWRInfinite<MixedResult>(
@@ -43,7 +47,9 @@ const MediaSlider = ({
         return null;
       }
 
-      return `${url}?page=${pageIndex + 1}`;
+      return `${url}?page=${pageIndex + 1}${
+        extraParams ? `&${extraParams}` : ''
+      }`;
     },
     {
       initialSize: 2,
@@ -72,7 +78,13 @@ const MediaSlider = ({
     ) {
       setSize(size + 1);
     }
-  }, [titles, setSize, size, data]);
+
+    if (onNewTitles) {
+      // We aren't reporting all titles. We just want to know if there are any titles
+      // at all for our purposes.
+      onNewTitles(titles.length);
+    }
+  }, [titles, setSize, size, data, onNewTitles]);
 
   if (hideWhenEmpty && (data?.[0].results ?? []).length === 0) {
     return null;
