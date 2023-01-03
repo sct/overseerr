@@ -372,26 +372,27 @@ const IssueDetails = () => {
                   <span>{intl.formatMessage(messages.playonplex)}</span>
                 </Button>
               )}
-              {issueData?.media.serviceUrl && hasPermission(Permission.ADMIN) && (
-                <Button
-                  as="a"
-                  href={issueData?.media.serviceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full"
-                  buttonType="ghost"
-                >
-                  <ServerIcon />
-                  <span>
-                    {intl.formatMessage(messages.openinarr, {
-                      arr:
-                        issueData.media.mediaType === MediaType.MOVIE
-                          ? 'Radarr'
-                          : 'Sonarr',
-                    })}
-                  </span>
-                </Button>
-              )}
+              {issueData?.media.serviceUrl &&
+                hasPermission(Permission.ADMIN) && (
+                  <Button
+                    as="a"
+                    href={issueData?.media.serviceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full"
+                    buttonType="ghost"
+                  >
+                    <ServerIcon />
+                    <span>
+                      {intl.formatMessage(messages.openinarr, {
+                        arr:
+                          issueData.media.mediaType === MediaType.MOVIE
+                            ? 'Radarr'
+                            : 'Sonarr',
+                      })}
+                    </span>
+                  </Button>
+                )}
               {issueData?.media.plexUrl4k && (
                 <Button
                   as="a"
@@ -641,26 +642,27 @@ const IssueDetails = () => {
                 <span>{intl.formatMessage(messages.play4konplex)}</span>
               </Button>
             )}
-            {issueData?.media.serviceUrl4k && hasPermission(Permission.ADMIN) && (
-              <Button
-                as="a"
-                href={issueData?.media.serviceUrl4k}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full"
-                buttonType="ghost"
-              >
-                <ServerIcon />
-                <span>
-                  {intl.formatMessage(messages.openin4karr, {
-                    arr:
-                      issueData.media.mediaType === MediaType.MOVIE
-                        ? 'Radarr'
-                        : 'Sonarr',
-                  })}
-                </span>
-              </Button>
-            )}
+            {issueData?.media.serviceUrl4k &&
+              hasPermission(Permission.ADMIN) && (
+                <Button
+                  as="a"
+                  href={issueData?.media.serviceUrl4k}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full"
+                  buttonType="ghost"
+                >
+                  <ServerIcon />
+                  <span>
+                    {intl.formatMessage(messages.openin4karr, {
+                      arr:
+                        issueData.media.mediaType === MediaType.MOVIE
+                          ? 'Radarr'
+                          : 'Sonarr',
+                    })}
+                  </span>
+                </Button>
+              )}
           </div>
         </div>
       </div>
