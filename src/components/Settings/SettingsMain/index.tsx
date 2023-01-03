@@ -7,6 +7,7 @@ import LanguageSelector from '@app/components/LanguageSelector';
 import RegionSelector from '@app/components/RegionSelector';
 import CopyButton from '@app/components/Settings/CopyButton';
 import SettingsBadge from '@app/components/Settings/SettingsBadge';
+import DiscoverCustomization from '@app/components/Settings/SettingsMain/DiscoverCustomization';
 import type { AvailableLocale } from '@app/context/LanguageContext';
 import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
@@ -55,6 +56,9 @@ const messages = defineMessages({
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   partialRequestsEnabled: 'Allow Partial Series Requests',
   locale: 'Display Language',
+  discovercustomization: 'Discover Customization',
+  discovercustomizationDescription:
+    'Add or remove sliders on the Discover page.',
 });
 
 const SettingsMain = () => {
@@ -185,7 +189,7 @@ const SettingsMain = () => {
             setFieldValue,
           }) => {
             return (
-              <Form className="section">
+              <Form className="section" data-testid="settings-main-form">
                 {userHasPermission(Permission.ADMIN) && (
                   <div className="form-row">
                     <label htmlFor="apiKey" className="text-label">
@@ -450,6 +454,15 @@ const SettingsMain = () => {
           }}
         </Formik>
       </div>
+      <div className="mb-6">
+        <h3 className="heading" data-testid="discover-customization">
+          {intl.formatMessage(messages.discovercustomization)}
+        </h3>
+        <p className="description">
+          {intl.formatMessage(messages.discovercustomizationDescription)}
+        </p>
+      </div>
+      <DiscoverCustomization />
     </>
   );
 };
