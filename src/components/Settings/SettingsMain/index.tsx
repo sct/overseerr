@@ -13,8 +13,8 @@ import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
-import { SaveIcon } from '@heroicons/react/outline';
-import { RefreshIcon } from '@heroicons/react/solid';
+import { ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import type { UserSettingsGeneralResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import type { MainSettings } from '@server/lib/settings';
 import axios from 'axios';
@@ -215,7 +215,7 @@ const SettingsMain = () => {
                           }}
                           className="input-action"
                         >
-                          <RefreshIcon />
+                          <ArrowPathIcon />
                         </button>
                       </div>
                     </div>
@@ -439,7 +439,7 @@ const SettingsMain = () => {
                         type="submit"
                         disabled={isSubmitting || !isValid}
                       >
-                        <SaveIcon />
+                        <ArrowDownOnSquareIcon />
                         <span>
                           {isSubmitting
                             ? intl.formatMessage(globalMessages.saving)

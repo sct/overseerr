@@ -31,13 +31,13 @@ import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
 import { Disclosure, Transition } from '@headlessui/react';
 import {
-  ArrowCircleRightIcon,
+  ArrowRightCircleIcon,
   CogIcon,
-  ExclamationIcon,
+  ExclamationTriangleIcon,
   FilmIcon,
   PlayIcon,
-} from '@heroicons/react/outline';
-import { ChevronUpIcon } from '@heroicons/react/solid';
+} from '@heroicons/react/24/outline';
+import { ChevronUpIcon } from '@heroicons/react/24/solid';
 import type { RTRating } from '@server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { IssueStatus } from '@server/constants/issue';
@@ -404,7 +404,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                   onClick={() => setShowIssueModal(true)}
                   className="ml-2 first:ml-0"
                 >
-                  <ExclamationIcon />
+                  <ExclamationTriangleIcon />
                 </Button>
               </Tooltip>
             )}
@@ -476,7 +476,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                 <Link href={`/tv/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                    <ArrowCircleRightIcon className="ml-1.5 inline-block h-5 w-5" />
+                    <ArrowRightCircleIcon className="ml-1.5 inline-block h-5 w-5" />
                   </a>
                 </Link>
               </div>
@@ -951,7 +951,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
             <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
-                <ArrowCircleRightIcon />
+                <ArrowRightCircleIcon />
               </a>
             </Link>
           </div>
