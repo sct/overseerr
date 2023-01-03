@@ -56,7 +56,7 @@
     "express-rate-limit": "6.7.0",
     "express-session": "1.17.3",
     "formik": "2.2.9",
-    "gravatar-url": "3.1.0",
+    "gravatar-url": "4.0.1",
     "intl": "1.2.5",
     "lodash": "4.17.21",
     "next": "12.3.4",
