@@ -44,14 +44,7 @@ class SeasonRequest {
     const mediaRequestRepository = getRepository(MediaRequest);
     const requestToBeDeleted = await mediaRequestRepository.findOneOrFail({
       where: { id: this.request.id },
-      // relations: { seasons: true },
     });
-
-    // if(requestToBeDeleted.seasons.length === 0) {
-    //   mediaRequestRepository.delete({id: this.request.id})
-    // }
-    console.log('FINDORFAIL', { requestToBeDeleted });
-    console.log('WITHOUTFINDORFAIL', { request: this.request });
 
     if (requestToBeDeleted.seasons.length === 0) {
       await mediaRequestRepository.delete({ id: this.request.id });
