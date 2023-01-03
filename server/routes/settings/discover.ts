@@ -25,9 +25,14 @@ discoverSettingRoutes.post('/', async (req, res) => {
     if (existingSlider && slider.id) {
       existingSlider.enabled = slider.enabled;
       existingSlider.order = x;
-      existingSlider.title = slider.title;
-      existingSlider.data = slider.data;
-      existingSlider.type = slider.type;
+
+      // Only allow changes to the following when the slider is not built in
+      if (!existingSlider.isBuiltIn) {
+        existingSlider.title = slider.title;
+        existingSlider.data = slider.data;
+        existingSlider.type = slider.type;
+      }
+
       await sliderRepository.save(existingSlider);
     } else {
       const newSlider = new DiscoverSlider({
@@ -77,7 +82,7 @@ discoverSettingRoutes.delete('/:sliderId', async (req, res, next) => {
 
   try {
     const slider = await sliderRepository.findOneOrFail({
-      where: { id: Number(req.params.sliderId) },
+      where: { id: Number(req.params.sliderId), isBuiltIn: false },
     });
 
     await sliderRepository.remove(slider);
@@ -88,7 +93,7 @@ discoverSettingRoutes.delete('/:sliderId', async (req, res, next) => {
       label: 'API',
       errorMessage: e.message,
     });
-    next({ status: 404, message: 'Slider not found.' });
+    next({ status: 404, message: 'Slider not found or cannot be deleted.' });
   }
 });
 
