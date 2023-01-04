@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useLockBodyScroll } from '@app/hooks/useLockBodyScroll';
 import { Transition } from '@headlessui/react';
-import { XIcon } from '@heroicons/react/outline';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
@@ -83,7 +83,7 @@ const SlideOver = ({
                           className="text-gray-200 transition duration-150 ease-in-out hover:text-white"
                           onClick={() => onClose()}
                         >
-                          <XIcon className="h-6 w-6" />
+                          <XMarkIcon className="h-6 w-6" />
                         </button>
                       </div>
                     </div>

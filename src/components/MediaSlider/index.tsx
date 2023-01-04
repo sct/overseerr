@@ -3,7 +3,7 @@ import PersonCard from '@app/components/PersonCard';
 import Slider from '@app/components/Slider';
 import TitleCard from '@app/components/TitleCard';
 import useSettings from '@app/hooks/useSettings';
-import { ArrowCircleRightIcon } from '@heroicons/react/outline';
+import { ArrowRightCircleIcon } from '@heroicons/react/24/outline';
 import { MediaStatus } from '@server/constants/media';
 import type {
   MovieResult,
@@ -151,7 +151,7 @@ const MediaSlider = ({
           <Link href={linkUrl}>
             <a className="slider-title">
               <span>{title}</span>
-              <ArrowCircleRightIcon />
+              <ArrowRightCircleIcon />
             </a>
           </Link>
         ) : (
