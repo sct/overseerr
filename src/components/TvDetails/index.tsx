@@ -38,7 +38,7 @@ import {
   FilmIcon,
   PlayIcon,
 } from '@heroicons/react/24/outline';
-import { ChevronUpIcon } from '@heroicons/react/24/solid';
+import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import type { RTRating } from '@server/api/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { IssueStatus } from '@server/constants/issue';
@@ -193,7 +193,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
   }
 
   const seasonCount = data.seasons.filter(
-    (season) => season.seasonNumber !== 0
+    (season) => season.seasonNumber !== 0 && season.episodeCount !== 0
   ).length;
 
   if (seasonCount) {
@@ -221,25 +221,37 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     );
   }
 
-  const isComplete =
-    seasonCount <=
-    (
-      data.mediaInfo?.seasons.filter(
-        (season) =>
-          season.status === MediaStatus.AVAILABLE ||
-          season.status === MediaStatus.PARTIALLY_AVAILABLE
-      ) ?? []
-    ).length;
+  const getAllRequestedSeasons = (is4k: boolean): number[] => {
+    const requestedSeasons = (data?.mediaInfo?.requests ?? [])
+      .filter(
+        (request) =>
+          request.is4k === is4k &&
+          request.status !== MediaRequestStatus.DECLINED
+      )
+      .reduce((requestedSeasons, request) => {
+        return [
+          ...requestedSeasons,
+          ...request.seasons.map((sr) => sr.seasonNumber),
+        ];
+      }, [] as number[]);
 
-  const is4kComplete =
-    seasonCount <=
-    (
-      data.mediaInfo?.seasons.filter(
+    const availableSeasons = (data?.mediaInfo?.seasons ?? [])
+      .filter(
         (season) =>
-          season.status4k === MediaStatus.AVAILABLE ||
-          season.status4k === MediaStatus.PARTIALLY_AVAILABLE
-      ) ?? []
-    ).length;
+          (season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
+            season[is4k ? 'status4k' : 'status'] ===
+              MediaStatus.PARTIALLY_AVAILABLE ||
+            season[is4k ? 'status4k' : 'status'] === MediaStatus.PROCESSING) &&
+          !requestedSeasons.includes(season.seasonNumber)
+      )
+      .map((season) => season.seasonNumber);
+
+    return [...requestedSeasons, ...availableSeasons];
+  };
+
+  const isComplete = seasonCount <= getAllRequestedSeasons(false).length;
+
+  const is4kComplete = seasonCount <= getAllRequestedSeasons(true).length;
 
   const streamingProviders =
     data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
@@ -539,6 +551,10 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                     ) && r.is4k
                 );
 
+                if (season.episodeCount === 0) {
+                  return null;
+                }
+
                 return (
                   <Disclosure key={`season-discoslure-${season.seasonNumber}`}>
                     {({ open }) => (
@@ -709,7 +725,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                                 </div>
                               </>
                             )}
-                          <ChevronUpIcon
+                          <ChevronDownIcon
                             className={`${
                               open ? 'rotate-180 transform' : ''
                             } h-6 w-6 text-gray-500`}
