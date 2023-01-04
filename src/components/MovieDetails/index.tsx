@@ -9,6 +9,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import type { PlayButtonLink } from '@app/components/Common/PlayButton';
 import PlayButton from '@app/components/Common/PlayButton';
+import Tag from '@app/components/Common/Tag';
 import Tooltip from '@app/components/Common/Tooltip';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import IssueModal from '@app/components/IssueModal';
@@ -452,6 +453,20 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 </Link>
               </div>
             </>
+          )}
+          {data.keywords.length > 0 && (
+            <div className="mt-6">
+              {data.keywords.map((keyword) => (
+                <Link
+                  href={`/discover/movies/keyword?keywords=${keyword.id}`}
+                  key={`keyword-id-${keyword.id}`}
+                >
+                  <a className="mb-2 mr-2 inline-flex last:mr-0">
+                    <Tag content={keyword.name} />
+                  </a>
+                </Link>
+              ))}
+            </div>
           )}
         </div>
         <div className="media-overview-right">

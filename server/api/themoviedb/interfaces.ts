@@ -171,6 +171,9 @@ export interface TmdbMovieDetails {
     id: number;
     results?: { [iso_3166_1: string]: TmdbWatchProviders };
   };
+  keywords: {
+    keywords: TmdbKeyword[];
+  };
 }
 
 export interface TmdbVideo {

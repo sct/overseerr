@@ -242,7 +242,7 @@ class TheMovieDb extends ExternalAPI {
           params: {
             language,
             append_to_response:
-              'credits,external_ids,videos,release_dates,watch/providers',
+              'credits,external_ids,videos,keywords,release_dates,watch/providers',
           },
         },
         43200
