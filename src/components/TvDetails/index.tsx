@@ -224,20 +224,16 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
   const isComplete =
     seasonCount <=
     (
-      data.mediaInfo?.seasons.filter(
-        (season) =>
-          season.status === MediaStatus.AVAILABLE ||
-          season.status === MediaStatus.PARTIALLY_AVAILABLE
+      data.mediaInfo?.requests.filter(
+        (requests) => !requests.is4k && requests.seasons
       ) ?? []
     ).length;
 
   const is4kComplete =
     seasonCount <=
     (
-      data.mediaInfo?.seasons.filter(
-        (season) =>
-          season.status4k === MediaStatus.AVAILABLE ||
-          season.status4k === MediaStatus.PARTIALLY_AVAILABLE
+      data.mediaInfo?.requests.filter(
+        (requests) => requests.is4k && requests.seasons
       ) ?? []
     ).length;
 
@@ -811,12 +807,13 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                 )}
               </div>
             )}
-            {data.originalName && data.originalLanguage !== locale.slice(0, 2) && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.originaltitle)}</span>
-                <span className="media-fact-value">{data.originalName}</span>
-              </div>
-            )}
+            {data.originalName &&
+              data.originalLanguage !== locale.slice(0, 2) && (
+                <div className="media-fact">
+                  <span>{intl.formatMessage(messages.originaltitle)}</span>
+                  <span className="media-fact-value">{data.originalName}</span>
+                </div>
+              )}
             {data.keywords.some(
               (keyword) => keyword.id === ANIME_KEYWORD_ID
             ) && (
