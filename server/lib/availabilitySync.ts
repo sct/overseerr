@@ -64,7 +64,7 @@ class AvailabilitySync {
 
             if (!mediaExists) {
               logger.debug(
-                `Queueing media id: ${media.tmdbId} for removal because it doesn't appear in any of the libraries anymore`,
+                `Queueing media id: ${media.tmdbId} for removal because it doesn't appear in any library`,
                 { label: 'AvailabilitySync' }
               );
               mediaToDelete.push(media.id);
@@ -86,7 +86,7 @@ class AvailabilitySync {
 
                 if (!seasonExists) {
                   logger.debug(
-                    `Removing season ${season.seasonNumber} for media id: ${media.tmdbId} because it doesn't appear in any library`,
+                    `Removing season ${season.seasonNumber}, media id: ${media.tmdbId} because it doesn't appear in any library`,
                     { label: 'AvailabilitySync' }
                   );
                   await seasonRepository.delete(season.id);
@@ -100,7 +100,7 @@ class AvailabilitySync {
                   media.status4k === MediaStatus.AVAILABLE
                 ) {
                   logger.debug(
-                    `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted some of it's seasons`,
+                    `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted some of its seasons`,
                     { label: 'AvailabilitySync' }
                   );
                   if (media.status === MediaStatus.AVAILABLE) {
@@ -221,7 +221,7 @@ class AvailabilitySync {
     if (!existsInRadarr && existsInRadarr4k && !existsInPlex) {
       if (media.status !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tmdbId} does not exist in your non-4k radarr and plex instance so we will change it's status to unknown`,
+          `${media.tmdbId} does not exist in your non-4k radarr and plex instance. We will change its status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await mediaRepository.update(media.id, {
@@ -232,16 +232,13 @@ class AvailabilitySync {
           ratingKey: null,
         });
         await requestRepository.delete({ id: request?.id });
-        return true;
-      } else {
-        return true;
       }
     }
 
     if (existsInRadarr && !existsInRadarr4k && !existsInPlex4k) {
       if (media.status4k !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tmdbId} does not exist in your 4k radarr and plex instance so we will change it's status to unknown`,
+          `${media.tmdbId} does not exist in your 4k radarr and plex instance. We will change its status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await mediaRepository.update(media.id, {
@@ -252,13 +249,14 @@ class AvailabilitySync {
           ratingKey4k: null,
         });
         await requestRepository.delete({ id: request?.id });
-        return true;
-      } else {
-        return true;
       }
     }
 
-    return false;
+    if (existsInRadarr || existsInRadarr4k) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private async mediaExistsInSonarr(
@@ -271,6 +269,8 @@ class AvailabilitySync {
     }
 
     const mediaRepository = getRepository(Media);
+    const requestRepository = getRepository(MediaRequest);
+    const seasonRepository = getRepository(Season);
 
     let existsInSonarr = true;
     let existsInSonarr4k = true;
@@ -297,6 +297,10 @@ class AvailabilitySync {
       }
     }
 
+    const request = await requestRepository.findOne({
+      where: { media: { id: media.id }, is4k: existsInSonarr ? true : false },
+    });
+
     if (existsInSonarr && existsInSonarr4k) {
       return true;
     }
@@ -310,12 +314,12 @@ class AvailabilitySync {
     }
 
     //if only a single non-4k or 4k exists, then change entity columns accordingly
-    //media request deletion will be handled in sonarr season checker function
+    //related media request will then be deleted
 
     if (!existsInSonarr && existsInSonarr4k && !existsInPlex) {
       if (media.status !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tmdbId} does not exist in your non-4k sonarr and plex instance so we will change it's status to unknown`,
+          `${media.tmdbId} does not exist in your non-4k sonarr and plex instance. We will change its status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await mediaRepository.update(media.id, {
@@ -325,16 +329,18 @@ class AvailabilitySync {
           externalServiceSlug: null,
           ratingKey: null,
         });
-        return true;
-      } else {
-        return true;
+        await seasonRepository.update(
+          { media: { id: media.id } },
+          { status: MediaStatus.UNKNOWN }
+        );
+        await requestRepository.delete({ id: request?.id });
       }
     }
 
     if (existsInSonarr && !existsInSonarr4k && !existsInPlex4k) {
       if (media.status4k !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tmdbId} does not exist in your 4k sonarr and plex instance so we will change it's status to unknown`,
+          `${media.tmdbId} does not exist in your 4k sonarr and plex instance. We will change its status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await mediaRepository.update(media.id, {
@@ -344,12 +350,19 @@ class AvailabilitySync {
           externalServiceSlug4k: null,
           ratingKey4k: null,
         });
-        return true;
-      } else {
-        return true;
+        await seasonRepository.update(
+          { media: { id: media.id } },
+          { status4k: MediaStatus.UNKNOWN }
+        );
+        await requestRepository.delete({ id: request?.id });
       }
     }
-    return false;
+
+    if (existsInSonarr || existsInSonarr4k) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private async seasonExistsInSonarr(
@@ -416,7 +429,7 @@ class AvailabilitySync {
     ) {
       if (season.status !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tvdbId}, season: ${season.seasonNumber} does not exist in your non-4k sonarr and plex instance so we will change it's status to unknown`,
+          `${media.tvdbId}, season: ${season.seasonNumber} does not exist in your non-4k sonarr and plex instance. We will change its status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await seasonRepository.update(season.id, {
@@ -446,16 +459,13 @@ class AvailabilitySync {
 
         if (season.status === MediaStatus.AVAILABLE) {
           logger.debug(
-            `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted one of it's seasons`,
+            `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted one of its seasons`,
             { label: 'AvailabilitySync' }
           );
           await mediaRepository.update(media.id, {
             status: MediaStatus.PARTIALLY_AVAILABLE,
           });
         }
-        return true;
-      } else {
-        return true;
       }
     }
 
@@ -466,7 +476,7 @@ class AvailabilitySync {
     ) {
       if (season.status4k !== MediaStatus.UNKNOWN) {
         logger.debug(
-          `${media.tvdbId}, season: ${season.seasonNumber} does not exist in your 4k sonarr and plex instance so we will change it's status to unknown`,
+          `${media.tvdbId}, season: ${season.seasonNumber} does not exist in your 4k sonarr and plex instance. We will change its status to unknown`,
           { label: 'AvailabilitySync' }
         );
         await seasonRepository.update(season.id, {
@@ -496,20 +506,21 @@ class AvailabilitySync {
 
         if (season.status4k === MediaStatus.AVAILABLE) {
           logger.debug(
-            `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted one of it's seasons`,
+            `Marking media id: ${media.tmdbId} as PARTIALLY_AVAILABLE because we deleted one of its seasons`,
             { label: 'AvailabilitySync' }
           );
           await mediaRepository.update(media.id, {
             status4k: MediaStatus.PARTIALLY_AVAILABLE,
           });
         }
-        return true;
-      } else {
-        return true;
       }
     }
 
-    return false;
+    if (seasonExistsInSonarr || seasonExistsInSonarr4k) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   private async mediaExists(media: Media): Promise<boolean> {
@@ -565,7 +576,7 @@ class AvailabilitySync {
 
       if (existsInRadarr) {
         logger.warn(
-          `${media.tmdbId} exists in at least one radarr or plex instance, so media deletion will be prevented.`,
+          `${media.tmdbId} exists in at least one radarr or plex instance. Media will be updated.`,
           {
             label: 'AvailabilitySync',
           }
@@ -586,7 +597,7 @@ class AvailabilitySync {
 
       if (existsInSonarr) {
         logger.warn(
-          `${media.tmdbId} exists in at least one sonarr or plex instance, so media deletion will be prevented.`,
+          `${media.tmdbId} exists in at least one sonarr or plex instance. Media will be updated.`,
           {
             label: 'AvailabilitySync',
           }
@@ -653,7 +664,7 @@ class AvailabilitySync {
 
     if (existsInSonarr) {
       logger.warn(
-        `${media.tvdbId}, season: ${season.seasonNumber} exists in at least one sonarr or plex instance, so media deletion will be prevented.`,
+        `${media.tvdbId}, season: ${season.seasonNumber} exists in at least one sonarr or plex instance. Media deletion will be prevented.`,
         {
           label: 'AvailabilitySync',
         }
