@@ -1,9 +1,5 @@
-import {
-  BellIcon,
-  CheckIcon,
-  ClockIcon,
-  MinusSmallIcon,
-} from '@heroicons/react/24/solid';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
+import { BellIcon, ClockIcon, MinusSmallIcon } from '@heroicons/react/24/solid';
 import { MediaStatus } from '@server/constants/media';
 
 interface StatusBadgeMiniProps {
@@ -22,7 +18,7 @@ const StatusBadgeMini = ({ status, is4k = false }: StatusBadgeMiniProps) => {
       break;
     case MediaStatus.AVAILABLE:
       badgeStyle.push('bg-green-500 ring-green-400');
-      indicatorIcon = <CheckIcon />;
+      indicatorIcon = <CheckCircleIcon />;
       break;
     case MediaStatus.PENDING:
       badgeStyle.push('bg-yellow-500 ring-yellow-400');
