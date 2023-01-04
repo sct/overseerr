@@ -232,7 +232,9 @@ const TvRequestModal = ({
 
   const getAllSeasons = (): number[] => {
     return (data?.seasons ?? [])
-      .filter((season) => (season.seasonNumber && season.episodeCount) !== 0)
+      .filter(
+        (season) => season.seasonNumber !== 0 && season.episodeCount !== 0
+      )
       .map((season) => season.seasonNumber);
   };
 
@@ -557,7 +559,7 @@ const TvRequestModal = ({
                   {data?.seasons
                     .filter(
                       (season) =>
-                        (season.seasonNumber && season.episodeCount) !== 0
+                        season.seasonNumber !== 0 && season.episodeCount !== 0
                     )
                     .map((season) => {
                       const seasonRequest = getSeasonRequest(
