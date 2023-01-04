@@ -169,14 +169,63 @@ class AvailabilitySync {
     } while (mediaPage.length > 0);
   }
 
+  private async mediaUpdater(
+    is4k: boolean,
+    isSonarr: boolean,
+    existsInArr: boolean,
+    media: Media
+  ): Promise<void> {
+    const mediaRepository = getRepository(Media);
+    const requestRepository = getRepository(MediaRequest);
+
+    const request = await requestRepository.findOne({
+      where: { media: { id: media.id }, is4k: existsInArr ? true : false },
+    });
+
+    logger.debug(
+      `${media.tmdbId} does not exist in your ${is4k ? '4k' : 'non-4k'} ${
+        isSonarr ? 'sonarr' : 'radarr'
+      } and plex instance. We will change its status to unknown`,
+      { label: 'AvailabilitySync' }
+    );
+    await mediaRepository.update(
+      media.id,
+      is4k
+        ? {
+            status4k: MediaStatus.UNKNOWN,
+            serviceId4k: null,
+            externalServiceId4k: null,
+            externalServiceSlug4k: null,
+            ratingKey4k: null,
+          }
+        : {
+            status: MediaStatus.UNKNOWN,
+            serviceId: null,
+            externalServiceId: null,
+            externalServiceSlug: null,
+            ratingKey: null,
+          }
+    );
+
+    if (isSonarr) {
+      const seasonRepository = getRepository(Season);
+
+      await seasonRepository?.update(
+        { media: { id: media.id } },
+        is4k
+          ? { status4k: MediaStatus.UNKNOWN }
+          : { status: MediaStatus.UNKNOWN }
+      );
+    }
+
+    await requestRepository.delete({ id: request?.id });
+  }
+
   private async mediaExistsInRadarr(
     media: Media,
     existsInPlex: boolean,
     existsInPlex4k: boolean
   ): Promise<boolean> {
-    const mediaRepository = getRepository(Media);
-    const requestRepository = getRepository(MediaRequest);
-
     let existsInRadarr = true;
     let existsInRadarr4k = true;
 
@@ -199,10 +248,6 @@ class AvailabilitySync {
       }
     }
 
-    const request = await requestRepository.findOne({
-      where: { media: { id: media.id }, is4k: existsInRadarr ? true : false },
-    });
-
     if (existsInRadarr && existsInRadarr4k) {
       return true;
     }
@@ -220,35 +265,13 @@ class AvailabilitySync {
 
     if (!existsInRadarr && existsInRadarr4k && !existsInPlex) {
       if (media.status !== MediaStatus.UNKNOWN) {
-        logger.debug(
-          `${media.tmdbId} does not exist in your non-4k radarr and plex instance. We will change its status to unknown`,
-          { label: 'AvailabilitySync' }
-        );
-        await mediaRepository.update(media.id, {
-          status: MediaStatus.UNKNOWN,
-          serviceId: null,
-          externalServiceId: null,
-          externalServiceSlug: null,
-          ratingKey: null,
-        });
-        await requestRepository.delete({ id: request?.id });
+        this.mediaUpdater(false, false, true, media);
       }
     }
 
     if (existsInRadarr && !existsInRadarr4k && !existsInPlex4k) {
       if (media.status4k !== MediaStatus.UNKNOWN) {
-        logger.debug(
-          `${media.tmdbId} does not exist in your 4k radarr and plex instance. We will change its status to unknown`,
-          { label: 'AvailabilitySync' }
-        );
-        await mediaRepository.update(media.id, {
-          status4k: MediaStatus.UNKNOWN,
-          serviceId4k: null,
-          externalServiceId4k: null,
-          externalServiceSlug4k: null,
-          ratingKey4k: null,
-        });
-        await requestRepository.delete({ id: request?.id });
+        this.mediaUpdater(true, false, false, media);
       }
     }
 
@@ -267,10 +290,6 @@ class AvailabilitySync {
     if (!media.tvdbId) {
       return false;
     }
-
-    const mediaRepository = getRepository(Media);
-    const requestRepository = getRepository(MediaRequest);
-    const seasonRepository = getRepository(Season);
 
     let existsInSonarr = true;
     let existsInSonarr4k = true;
@@ -297,10 +316,6 @@ class AvailabilitySync {
       }
     }
 
-    const request = await requestRepository.findOne({
-      where: { media: { id: media.id }, is4k: existsInSonarr ? true : false },
-    });
-
     if (existsInSonarr && existsInSonarr4k) {
       return true;
     }
@@ -318,43 +333,13 @@ class AvailabilitySync {
 
     if (!existsInSonarr && existsInSonarr4k && !existsInPlex) {
       if (media.status !== MediaStatus.UNKNOWN) {
-        logger.debug(
-          `${media.tmdbId} does not exist in your non-4k sonarr and plex instance. We will change its status to unknown`,
-          { label: 'AvailabilitySync' }
-        );
-        await mediaRepository.update(media.id, {
-          status: MediaStatus.UNKNOWN,
-          serviceId: null,
-          externalServiceId: null,
-          externalServiceSlug: null,
-          ratingKey: null,
-        });
-        await seasonRepository.update(
-          { media: { id: media.id } },
-          { status: MediaStatus.UNKNOWN }
-        );
-        await requestRepository.delete({ id: request?.id });
+        this.mediaUpdater(false, true, true, media);
       }
     }
 
     if (existsInSonarr && !existsInSonarr4k && !existsInPlex4k) {
       if (media.status4k !== MediaStatus.UNKNOWN) {
-        logger.debug(
-          `${media.tmdbId} does not exist in your 4k sonarr and plex instance. We will change its status to unknown`,
-          { label: 'AvailabilitySync' }
-        );
-        await mediaRepository.update(media.id, {
-          status4k: MediaStatus.UNKNOWN,
-          serviceId4k: null,
-          externalServiceId4k: null,
-          externalServiceSlug4k: null,
-          ratingKey4k: null,
-        });
-        await seasonRepository.update(
-          { media: { id: media.id } },
-          { status4k: MediaStatus.UNKNOWN }
-        );
-        await requestRepository.delete({ id: request?.id });
+        this.mediaUpdater(true, true, false, media);
       }
     }
 
