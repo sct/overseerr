@@ -33,7 +33,7 @@ const messages = defineMessages({
   validationTitlerequired: 'You must provide a title.',
   addcustomslider: 'Add Custom Slider',
   searchKeywords: 'Search keywords…',
-  seachGenres: 'Search genres…',
+  searchGenres: 'Search genres…',
   searchStudios: 'Search studios…',
   starttyping: 'Starting typing to search.',
   nooptions: 'No results.',
@@ -254,9 +254,9 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 defaultOptions
                 cacheOptions
                 loadOptions={loadMovieGenreOptions}
-                placeholder={intl.formatMessage(messages.seachGenres)}
+                placeholder={intl.formatMessage(messages.searchGenres)}
                 onChange={(value) => {
-                  setFieldValue('data', value?.value);
+                  setFieldValue('data', value?.value.toString());
                 }}
               />
             );
@@ -270,9 +270,9 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 defaultOptions
                 cacheOptions
                 loadOptions={loadTvGenreOptions}
-                placeholder={intl.formatMessage(messages.seachGenres)}
+                placeholder={intl.formatMessage(messages.searchGenres)}
                 onChange={(value) => {
-                  setFieldValue('data', value?.value);
+                  setFieldValue('data', value?.value.toString());
                 }}
               />
             );
@@ -288,7 +288,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 loadOptions={loadCompanyOptions}
                 placeholder={intl.formatMessage(messages.searchStudios)}
                 onChange={(value) => {
-                  setFieldValue('data', value?.value);
+                  setFieldValue('data', value?.value.toString());
                 }}
               />
             );

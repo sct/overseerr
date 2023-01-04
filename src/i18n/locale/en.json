@@ -717,7 +717,7 @@
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.providetmdbnetwork": "Provide TMDB Network ID",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.providetmdbsearch": "Provide a search query",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.providetmdbstudio": "Provide TMDB Studio ID",
-  "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.seachGenres": "Search genres…",
+  "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.searchGenres": "Search genres…",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.searchKeywords": "Search keywords…",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.searchStudios": "Search studios…",
   "components.Settings.SettingsMain.DiscoverCustomization.CreateSlider.slidernameplaceholder": "Slider Name",
