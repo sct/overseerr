@@ -256,7 +256,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 loadOptions={loadMovieGenreOptions}
                 placeholder={intl.formatMessage(messages.seachGenres)}
                 onChange={(value) => {
-                  setFieldValue('data', value?.value);
+                  setFieldValue('data', value?.value.toString());
                 }}
               />
             );
@@ -272,7 +272,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 loadOptions={loadTvGenreOptions}
                 placeholder={intl.formatMessage(messages.seachGenres)}
                 onChange={(value) => {
-                  setFieldValue('data', value?.value);
+                  setFieldValue('data', value?.value.toString());
                 }}
               />
             );
@@ -288,7 +288,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                 loadOptions={loadCompanyOptions}
                 placeholder={intl.formatMessage(messages.searchStudios)}
                 onChange={(value) => {
-                  setFieldValue('data', value?.value);
+                  setFieldValue('data', value?.value.toString());
                 }}
               />
             );
