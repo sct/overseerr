@@ -6,8 +6,8 @@ import type { AvailableLocale } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
 import { useUser } from '@app/hooks/useUser';
-import { MenuAlt2Icon } from '@heroicons/react/outline';
-import { ArrowLeftIcon } from '@heroicons/react/solid';
+import { Bars3BottomLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowLeftIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -76,7 +76,7 @@ const Layout = ({ children }: LayoutProps) => {
             onClick={() => setSidebarOpen(true)}
             data-testid="sidebar-toggle"
           >
-            <MenuAlt2Icon className="h-6 w-6" />
+            <Bars3BottomLeftIcon className="h-6 w-6" />
           </button>
           <div className="flex flex-1 items-center justify-between pr-4 md:pr-4 md:pl-4">
             <button

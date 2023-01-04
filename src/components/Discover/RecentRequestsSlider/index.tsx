@@ -1,7 +1,7 @@
 import { sliderTitles } from '@app/components/Discover/constants';
 import RequestCard from '@app/components/RequestCard';
 import Slider from '@app/components/Slider';
-import { ArrowCircleRightIcon } from '@heroicons/react/outline';
+import { ArrowRightCircleIcon } from '@heroicons/react/24/outline';
 import type { RequestResultsResponse } from '@server/interfaces/api/requestInterfaces';
 import Link from 'next/link';
 import { useIntl } from 'react-intl';
@@ -27,7 +27,7 @@ const RecentRequestsSlider = () => {
         <Link href="/requests?filter=all">
           <a className="slider-title">
             <span>{intl.formatMessage(sliderTitles.recentrequests)}</span>
-            <ArrowCircleRightIcon />
+            <ArrowRightCircleIcon />
           </a>
         </Link>
       </div>

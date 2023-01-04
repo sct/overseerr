@@ -5,7 +5,10 @@ import { sliderTitles } from '@app/components/Discover/constants';
 import CreateSlider from '@app/components/Settings/SettingsMain/DiscoverCustomization/CreateSlider';
 import DiscoverOption from '@app/components/Settings/SettingsMain/DiscoverCustomization/DiscoverOption';
 import globalMessages from '@app/i18n/globalMessages';
-import { RefreshIcon, SaveIcon } from '@heroicons/react/solid';
+import {
+  ArrowDownOnSquareIcon,
+  ArrowPathIcon,
+} from '@heroicons/react/24/solid';
 import { DiscoverSliderType } from '@server/constants/discover';
 import type DiscoverSlider from '@server/entity/DiscoverSlider';
 import axios from 'axios';
@@ -194,7 +197,7 @@ const DiscoverCustomization = () => {
           <span className="ml-3 inline-flex rounded-md shadow-sm">
             <Tooltip content={intl.formatMessage(messages.resetwarning)}>
               <Button buttonType="default" onClick={() => resetSliders()}>
-                <RefreshIcon />
+                <ArrowPathIcon />
                 <span>{intl.formatMessage(messages.resettodefault)}</span>
               </Button>
             </Tooltip>
@@ -207,7 +210,7 @@ const DiscoverCustomization = () => {
               onClick={() => updateSliders()}
               data-testid="discover-customize-submit"
             >
-              <SaveIcon />
+              <ArrowDownOnSquareIcon />
               <span>{intl.formatMessage(globalMessages.save)}</span>
             </Button>
           </span>

@@ -2,7 +2,7 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import SlideCheckbox from '@app/components/Common/SlideCheckbox';
 import Tooltip from '@app/components/Common/Tooltip';
-import { MenuIcon, XIcon } from '@heroicons/react/solid';
+import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-aria';
@@ -135,7 +135,7 @@ const DiscoverOption = ({
           isDragging ? 'opacity-0' : 'opacity-100'
         }`}
       >
-        <MenuIcon className="h-6 w-6" />
+        <Bars3Icon className="h-6 w-6" />
 
         <span className="flex-1">{title}</span>
         {subtitle && <Badge>{subtitle}</Badge>}
@@ -147,7 +147,7 @@ const DiscoverOption = ({
               buttonSize="sm"
               onClick={() => deleteSlider()}
             >
-              <XIcon />
+              <XMarkIcon />
               <span>{intl.formatMessage(messages.remove)}</span>
             </Button>
           </div>

@@ -9,8 +9,9 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { withProperties } from '@app/utils/typeHelpers';
 import { Transition } from '@headlessui/react';
-import { DownloadIcon } from '@heroicons/react/outline';
-import { BellIcon, CheckIcon, ClockIcon } from '@heroicons/react/solid';
+import { CheckCircleIcon } from '@heroicons/react/20/solid';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { BellIcon, ClockIcon } from '@heroicons/react/24/solid';
 import { MediaStatus } from '@server/constants/media';
 import type { MediaType } from '@server/models/Search';
 import Link from 'next/link';
@@ -145,7 +146,7 @@ const TitleCard = ({
               {(currentStatus === MediaStatus.AVAILABLE ||
                 currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
                 <div className="flex h-4 w-4 items-center justify-center rounded-full border border-green-500 bg-green-500 bg-opacity-80 text-green-100 shadow sm:h-5 sm:w-5">
-                  <CheckIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <CheckCircleIcon className="h-3 w-3 sm:h-4 sm:w-4" />
                 </div>
               )}
               {currentStatus === MediaStatus.PENDING && (
@@ -258,7 +259,7 @@ const TitleCard = ({
                       }}
                       className="h-7 w-full"
                     >
-                      <DownloadIcon />
+                      <ArrowDownTrayIcon />
                       <span>{intl.formatMessage(globalMessages.request)}</span>
                     </Button>
                   )}

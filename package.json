@@ -34,7 +34,7 @@
     "@formatjs/intl-pluralrules": "5.1.8",
     "@formatjs/intl-utils": "3.8.4",
     "@headlessui/react": "1.7.7",
-    "@heroicons/react": "1.0.6",
+    "@heroicons/react": "2.0.13",
     "@supercharge/request-ip": "1.2.0",
     "@svgr/webpack": "6.5.1",
     "@tanem/react-nprogress": "5.0.22",

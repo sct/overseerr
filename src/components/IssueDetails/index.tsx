@@ -13,12 +13,12 @@ import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { Transition } from '@headlessui/react';
 import {
-  ChatIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
   CheckCircleIcon,
   PlayIcon,
   ServerIcon,
-} from '@heroicons/react/outline';
-import { RefreshIcon } from '@heroicons/react/solid';
+} from '@heroicons/react/24/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaType } from '@server/constants/media';
 import type Issue from '@server/entity/Issue';
@@ -510,7 +510,7 @@ const IssueDetails = () => {
                                     }
                                   }}
                                 >
-                                  <RefreshIcon />
+                                  <ArrowPathIcon />
                                   <span>
                                     {intl.formatMessage(
                                       values.message
@@ -529,7 +529,7 @@ const IssueDetails = () => {
                               !isValid || isSubmitting || !values.message
                             }
                           >
-                            <ChatIcon />
+                            <ChatBubbleOvalLeftEllipsisIcon />
                             <span>
                               {intl.formatMessage(messages.leavecomment)}
                             </span>
