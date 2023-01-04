@@ -1,7 +1,5 @@
 import Alert from '@app/components/Common/Alert';
-import Badge from '@app/components/Common/Badge';
 import Modal from '@app/components/Common/Modal';
-import type { RequestOverrides } from '@app/components/RequestModal/AdvancedRequester';
 import AdvancedRequester from '@app/components/RequestModal/AdvancedRequester';
 import QuotaDisplay from '@app/components/RequestModal/QuotaDisplay';
 import SearchByNameModal from '@app/components/RequestModal/SearchByNameModal';
@@ -10,16 +8,19 @@ import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
-import type { MediaRequest } from '@server/entity/MediaRequest';
-import type SeasonRequest from '@server/entity/SeasonRequest';
-import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import { Permission } from '@server/lib/permissions';
-import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
+import TvSeasonRow from './TvSeasonRow';
+
+import type { RequestOverrides } from '@app/components/RequestModal/AdvancedRequester';
+import type { MediaRequest } from '@server/entity/MediaRequest';
+import type SeasonRequest from '@server/entity/SeasonRequest';
+import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
+import type { TvDetails } from '@server/models/Tv';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
@@ -40,8 +41,6 @@ const messages = defineMessages({
   selectseason: 'Select Season(s)',
   season: 'Season',
   numberofepisodes: '# of Episodes',
-  seasonnumber: 'Season {number}',
-  extras: 'Extras',
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request for <strong>{title}</strong> edited successfully!',
   requestApproved: 'Request for <strong>{title}</strong> approved!',
@@ -231,9 +230,14 @@ const TvRequestModal = ({
   };
 
   const getAllSeasons = (): number[] => {
+    let upcomingSeasonNumber = 1;
     return (data?.seasons ?? [])
       .filter((season) => season.seasonNumber !== 0)
-      .map((season) => season.seasonNumber);
+      .map((season) => {
+        upcomingSeasonNumber = season.seasonNumber + 1;
+        return season.seasonNumber;
+      })
+      .concat(upcomingSeasonNumber);
   };
 
   const getAllRequestedSeasons = (): number[] => {
@@ -355,6 +359,9 @@ const TvRequestModal = ({
 
     return seasonRequest;
   };
+
+  const lastSeason = data?.seasons[data?.seasons.length - 1];
+  const upcomingSeasonNumber = (lastSeason?.seasonNumber ?? 0) + 1;
 
   const isOwner = editRequest && editRequest.requestedBy.id === user?.id;
 
@@ -533,13 +540,13 @@ const TvRequestModal = ({
                           className={`${
                             isAllSeasons() ? 'bg-indigo-500' : 'bg-gray-800'
                           } absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out`}
-                        ></span>
+                        />
                         <span
                           aria-hidden="true"
                           className={`${
                             isAllSeasons() ? 'translate-x-5' : 'translate-x-0'
                           } absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow transition-transform duration-200 ease-in-out group-focus:border-blue-300 group-focus:ring`}
-                        ></span>
+                        />
                       </span>
                     </th>
                     <th className="bg-gray-700 bg-opacity-80 px-1 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
@@ -567,121 +574,55 @@ const TvRequestModal = ({
                             MediaStatus.UNKNOWN
                       );
                       return (
-                        <tr key={`season-${season.id}`}>
-                          <td
-                            className={`whitespace-nowrap px-4 py-4 text-sm font-medium leading-5 text-gray-100 ${
-                              !settings.currentSettings
-                                .partialRequestsEnabled && 'hidden'
-                            }`}
-                          >
-                            <span
-                              role="checkbox"
-                              tabIndex={0}
-                              aria-checked={
-                                !!mediaSeason ||
-                                (!!seasonRequest &&
-                                  !editingSeasons.includes(
-                                    season.seasonNumber
-                                  )) ||
-                                isSelectedSeason(season.seasonNumber)
-                              }
-                              onClick={() => toggleSeason(season.seasonNumber)}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter' || e.key === 'Space') {
-                                  toggleSeason(season.seasonNumber);
-                                }
-                              }}
-                              className={`relative inline-flex h-5 w-10 flex-shrink-0 cursor-pointer items-center justify-center pt-2 focus:outline-none ${
-                                mediaSeason ||
-                                (quota?.tv.limit &&
-                                  currentlyRemaining <= 0 &&
-                                  !isSelectedSeason(season.seasonNumber)) ||
-                                (!!seasonRequest &&
-                                  !editingSeasons.includes(season.seasonNumber))
-                                  ? 'opacity-50'
-                                  : ''
-                              }`}
-                            >
-                              <span
-                                aria-hidden="true"
-                                className={`${
-                                  !!mediaSeason ||
-                                  (!!seasonRequest &&
-                                    !editingSeasons.includes(
-                                      season.seasonNumber
-                                    )) ||
-                                  isSelectedSeason(season.seasonNumber)
-                                    ? 'bg-indigo-500'
-                                    : 'bg-gray-700'
-                                } absolute mx-auto h-4 w-9 rounded-full transition-colors duration-200 ease-in-out`}
-                              ></span>
-                              <span
-                                aria-hidden="true"
-                                className={`${
-                                  !!mediaSeason ||
-                                  (!!seasonRequest &&
-                                    !editingSeasons.includes(
-                                      season.seasonNumber
-                                    )) ||
-                                  isSelectedSeason(season.seasonNumber)
-                                    ? 'translate-x-5'
-                                    : 'translate-x-0'
-                                } absolute left-0 inline-block h-5 w-5 transform rounded-full border border-gray-200 bg-white shadow transition-transform duration-200 ease-in-out group-focus:border-blue-300 group-focus:ring`}
-                              ></span>
-                            </span>
-                          </td>
-                          <td className="whitespace-nowrap px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6">
-                            {season.seasonNumber === 0
-                              ? intl.formatMessage(messages.extras)
-                              : intl.formatMessage(messages.seasonnumber, {
-                                  number: season.seasonNumber,
-                                })}
-                          </td>
-                          <td className="whitespace-nowrap px-5 py-4 text-sm leading-5 text-gray-200 md:px-6">
-                            {season.episodeCount}
-                          </td>
-                          <td className="whitespace-nowrap py-4 pr-2 text-sm leading-5 text-gray-200 md:px-6">
-                            {!seasonRequest && !mediaSeason && (
-                              <Badge>
-                                {intl.formatMessage(
-                                  globalMessages.notrequested
-                                )}
-                              </Badge>
-                            )}
-                            {!mediaSeason &&
-                              seasonRequest?.status ===
-                                MediaRequestStatus.PENDING && (
-                                <Badge badgeType="warning">
-                                  {intl.formatMessage(globalMessages.pending)}
-                                </Badge>
-                              )}
-                            {((!mediaSeason &&
-                              seasonRequest?.status ===
-                                MediaRequestStatus.APPROVED) ||
-                              mediaSeason?.[is4k ? 'status4k' : 'status'] ===
-                                MediaStatus.PROCESSING) && (
-                              <Badge badgeType="primary">
-                                {intl.formatMessage(globalMessages.requested)}
-                              </Badge>
-                            )}
-                            {mediaSeason?.[is4k ? 'status4k' : 'status'] ===
-                              MediaStatus.PARTIALLY_AVAILABLE && (
-                              <Badge badgeType="success">
-                                {intl.formatMessage(
-                                  globalMessages.partiallyavailable
-                                )}
-                              </Badge>
-                            )}
-                            {mediaSeason?.[is4k ? 'status4k' : 'status'] ===
-                              MediaStatus.AVAILABLE && (
-                              <Badge badgeType="success">
-                                {intl.formatMessage(globalMessages.available)}
-                              </Badge>
-                            )}
-                          </td>
-                        </tr>
+                        <TvSeasonRow
+                          key={`season-${season?.id}`}
+                          season={season}
+                          seasonRequest={seasonRequest}
+                          mediaSeason={mediaSeason}
+                          editingSeasons={editingSeasons}
+                          isSelectedSeason={isSelectedSeason}
+                          toggleSeason={toggleSeason}
+                          quota={quota}
+                          currentlyRemaining={currentlyRemaining}
+                          is4k={is4k}
+                        />
                       );
                     })}
+                  <TvSeasonRow
+                    upcomingSeasonNumber={upcomingSeasonNumber}
+                    // xz: these are just comments for PR, will remove them before merging
+                    //
+                    // this will make the overseerr UI not very accurate
+                    // while there is only one season,
+                    // upcomingSeasonNumber will be === 2
+                    // but when the series will have 2 seasons
+                    // upcomingSeasonNumber will become 3
+                    // and then the future season option will not be checked anymore
+                    // but thats just entirely on overseerr UI,
+                    // because on sonarr side, the series is already monitored
+                    // which by their definition, all future series will be
+                    // automatically downloaded when available
+                    // we already have presidence of such a behaviour when:
+                    // 1. request series on overseerr
+                    // 2. delete series on sonarr
+                    // 3. overseerr series request metadata still exist
+                    //
+                    // so another option is that if we query sonarr/api/series/:id
+                    // and use sonarr monitoring value to populate the future season toggle value
+                    // but maybe we dont want to query every time,
+                    // so maybe this could be cached in overseerr db
+                    // but that means we will need to have a scheduled job to update all series' sonarr metadata
+                    // and probably a manuall trigger as well
+                    //
+                    // options options options!
+                    seasonRequest={getSeasonRequest(upcomingSeasonNumber)}
+                    editingSeasons={editingSeasons}
+                    isSelectedSeason={isSelectedSeason}
+                    toggleSeason={toggleSeason}
+                    quota={quota}
+                    currentlyRemaining={currentlyRemaining}
+                    is4k={is4k}
+                  />
                 </tbody>
               </table>
             </div>
