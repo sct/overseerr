@@ -1,3 +1,4 @@
+import Spinner from '@app/assets/spinner.svg';
 import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { BellIcon, ClockIcon, MinusSmallIcon } from '@heroicons/react/24/solid';
 import { MediaStatus } from '@server/constants/media';
@@ -5,29 +6,38 @@ import { MediaStatus } from '@server/constants/media';
 interface StatusBadgeMiniProps {
   status: MediaStatus;
   is4k?: boolean;
+  inProgress?: boolean;
 }
 
-const StatusBadgeMini = ({ status, is4k = false }: StatusBadgeMiniProps) => {
-  const badgeStyle = ['w-5 rounded-full p-0.5 text-white ring-1'];
+const StatusBadgeMini = ({
+  status,
+  is4k = false,
+  inProgress = false,
+}: StatusBadgeMiniProps) => {
+  const badgeStyle = ['w-5 rounded-full p-0.5 ring-1 bg-opacity-80'];
   let indicatorIcon: React.ReactNode;
 
   switch (status) {
     case MediaStatus.PROCESSING:
-      badgeStyle.push('bg-indigo-500 ring-indigo-400');
+      badgeStyle.push('bg-indigo-500 ring-indigo-400 text-indigo-100');
       indicatorIcon = <ClockIcon />;
       break;
     case MediaStatus.AVAILABLE:
-      badgeStyle.push('bg-green-500 ring-green-400');
+      badgeStyle.push('bg-green-500 ring-green-400 text-green-100');
       indicatorIcon = <CheckCircleIcon />;
       break;
     case MediaStatus.PENDING:
-      badgeStyle.push('bg-yellow-500 ring-yellow-400');
+      badgeStyle.push('bg-yellow-500 ring-yellow-400 text-yellow-100');
       indicatorIcon = <BellIcon />;
       break;
     case MediaStatus.PARTIALLY_AVAILABLE:
-      badgeStyle.push('bg-green-500 ring-green-400');
+      badgeStyle.push('bg-green-500 ring-green-400 text-green-100');
       indicatorIcon = <MinusSmallIcon />;
       break;
+  }
+
+  if (inProgress) {
+    indicatorIcon = <Spinner />;
   }
 
   return (

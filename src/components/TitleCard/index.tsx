@@ -1,6 +1,7 @@
 import Spinner from '@app/assets/spinner.svg';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
+import StatusBadgeMini from '@app/components/Common/StatusBadgeMini';
 import RequestModal from '@app/components/RequestModal';
 import ErrorCard from '@app/components/TitleCard/ErrorCard';
 import Placeholder from '@app/components/TitleCard/Placeholder';
@@ -9,9 +10,7 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { withProperties } from '@app/utils/typeHelpers';
 import { Transition } from '@headlessui/react';
-import { CheckCircleIcon } from '@heroicons/react/20/solid';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-import { BellIcon, ClockIcon } from '@heroicons/react/24/solid';
 import { MediaStatus } from '@server/constants/media';
 import type { MediaType } from '@server/models/Search';
 import Link from 'next/link';
@@ -142,28 +141,14 @@ const TitleCard = ({
                   : intl.formatMessage(globalMessages.tvshow)}
               </div>
             </div>
-            <div className="pointer-events-none z-40">
-              {(currentStatus === MediaStatus.AVAILABLE ||
-                currentStatus === MediaStatus.PARTIALLY_AVAILABLE) && (
-                <div className="flex h-4 w-4 items-center justify-center rounded-full border border-green-500 bg-green-500 bg-opacity-80 text-green-100 shadow sm:h-5 sm:w-5">
-                  <CheckCircleIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                </div>
-              )}
-              {currentStatus === MediaStatus.PENDING && (
-                <div className="flex h-4 w-4 items-center justify-center rounded-full border border-yellow-500 bg-yellow-500 bg-opacity-80 text-yellow-100 shadow sm:h-5 sm:w-5">
-                  <BellIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                </div>
-              )}
-              {currentStatus === MediaStatus.PROCESSING && (
-                <div className="flex h-4 w-4 items-center justify-center rounded-full border border-indigo-500 bg-indigo-500 bg-opacity-80 text-indigo-100 shadow sm:h-5 sm:w-5">
-                  {inProgress ? (
-                    <Spinner className="h-3 w-3" />
-                  ) : (
-                    <ClockIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                  )}
-                </div>
-              )}
-            </div>
+            {currentStatus && (
+              <div className="pointer-events-none z-40">
+                <StatusBadgeMini
+                  status={currentStatus}
+                  inProgress={inProgress}
+                />
+              </div>
+            )}
           </div>
           <Transition
             as={Fragment}
