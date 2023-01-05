@@ -129,7 +129,7 @@ const TitleCard = ({
           />
           <div className="absolute left-0 right-0 flex items-center justify-between p-2">
             <div
-              className={`pointer-events-none z-40 rounded-full border bg-opacity-80 shadow ${
+              className={`pointer-events-none z-40 rounded-full border bg-opacity-80 shadow-md ${
                 mediaType === 'movie'
                   ? 'border-blue-500 bg-blue-600'
                   : 'border-purple-600 bg-purple-600'
@@ -142,10 +142,11 @@ const TitleCard = ({
               </div>
             </div>
             {currentStatus && (
-              <div className="pointer-events-none z-40">
+              <div className="pointer-events-none z-40 flex items-center">
                 <StatusBadgeMini
                   status={currentStatus}
                   inProgress={inProgress}
+                  shrink
                 />
               </div>
             )}
