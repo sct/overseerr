@@ -499,7 +499,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
             <div className="mt-6">
               {data.keywords.map((keyword) => (
                 <Link
-                  href={`/discover/movies/keyword?keywords=${keyword.id}`}
+                  href={`/discover/tv/keyword?keywords=${keyword.id}`}
                   key={`keyword-id-${keyword.id}`}
                 >
                   <a className="mb-2 mr-2 inline-flex last:mr-0">
