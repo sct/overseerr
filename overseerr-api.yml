@@ -1050,6 +1050,8 @@ components:
           nullable: true
         status:
           type: number
+          example: 0
+          description: Availability of the media. 1 = `UNKNOWN`, 2 = `PENDING`, 3 = `PROCESSING`, 4 = `PARTIALLY_AVAILABLE`, 5 = `AVAILABLE`
         requests:
           type: array
           readOnly: true
@@ -5021,7 +5023,7 @@ paths:
           required: true
           schema:
             type: string
-            enum: [pending, approve, decline, available]
+            enum: [approve, decline]
       responses:
         '200':
           description: Request status changed
