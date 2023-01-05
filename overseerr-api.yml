@@ -26,6 +26,8 @@ tags:
     description: Endpoints related to retrieving movies and their details.
   - name: tv
     description: Endpoints related to retrieving TV series and their details.
+  - name: keyword
+    description: Endpoints related to getting keywords and their details.
   - name: person
     description: Endpoints related to retrieving person details.
   - name: media
@@ -6143,6 +6145,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Issue'
+  /keyword/{keywordId}:
+    get:
+      summary: Get keyword
+      description: |
+        Returns a single keyword in JSON format.
+      tags:
+        - keyword
+      parameters:
+        - in: path
+          name: keywordId
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        '200':
+          description: Keyword returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Keyword'
 security:
   - cookieAuth: []
   - apiKey: []

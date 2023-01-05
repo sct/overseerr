@@ -1,6 +1,11 @@
+import Button from '@app/components/Common/Button';
+import ConfirmButton from '@app/components/Common/ConfirmButton';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
+import Tooltip from '@app/components/Common/Tooltip';
 import { sliderTitles } from '@app/components/Discover/constants';
+import CreateSlider from '@app/components/Discover/CreateSlider';
+import DiscoverSliderEdit from '@app/components/Discover/DiscoverSliderEdit';
 import MovieGenreSlider from '@app/components/Discover/MovieGenreSlider';
 import NetworkSlider from '@app/components/Discover/NetworkSlider';
 import PlexWatchlistSlider from '@app/components/Discover/PlexWatchlistSlider';
@@ -10,22 +15,96 @@ import StudioSlider from '@app/components/Discover/StudioSlider';
 import TvGenreSlider from '@app/components/Discover/TvGenreSlider';
 import MediaSlider from '@app/components/MediaSlider';
 import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
+import { Permission, useUser } from '@app/hooks/useUser';
+import globalMessages from '@app/i18n/globalMessages';
+import {
+  ArrowDownOnSquareIcon,
+  ArrowPathIcon,
+  ArrowUturnLeftIcon,
+  PencilIcon,
+} from '@heroicons/react/24/solid';
 import { DiscoverSliderType } from '@server/constants/discover';
 import type DiscoverSlider from '@server/entity/DiscoverSlider';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 
 const messages = defineMessages({
   discover: 'Discover',
   emptywatchlist:
     'Media added to your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink> will appear here.',
+  resettodefault: 'Reset to Default',
+  resetwarning:
+    'Reset all sliders to default. This will also delete any custom sliders!',
+  updatesuccess: 'Updated discover customization settings.',
+  updatefailed:
+    'Something went wrong updating the discover customization settings.',
+  resetsuccess: 'Sucessfully reset discover customization settings.',
+  resetfailed:
+    'Something went wrong resetting the discover customization settings.',
+  customizediscover: 'Customize Discover',
+  cancelchanges: 'Cancel Changes',
 });
 
 const Discover = () => {
   const intl = useIntl();
-  const { data: discoverData, error: discoverError } = useSWR<DiscoverSlider[]>(
-    '/api/v1/settings/discover'
-  );
+  const { hasPermission } = useUser();
+  const { addToast } = useToasts();
+  const {
+    data: discoverData,
+    error: discoverError,
+    mutate,
+  } = useSWR<DiscoverSlider[]>('/api/v1/settings/discover');
+  const [sliders, setSliders] = useState<Partial<DiscoverSlider>[]>([]);
+  const [isEditing, setIsEditing] = useState(false);
+
+  // We need to sync the state here so that we can modify the changes locally without commiting
+  // anything to the server until the user decides to save the changes
+  useEffect(() => {
+    if (discoverData && !isEditing) {
+      setSliders(discoverData);
+    }
+  }, [discoverData, isEditing]);
+
+  const hasChanged = () => !Object.is(discoverData, sliders);
+
+  const updateSliders = async () => {
+    try {
+      await axios.post('/api/v1/settings/discover', sliders);
+
+      addToast(intl.formatMessage(messages.updatesuccess), {
+        appearance: 'success',
+        autoDismiss: true,
+      });
+      setIsEditing(false);
+      mutate();
+    } catch (e) {
+      addToast(intl.formatMessage(messages.updatefailed), {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    }
+  };
+
+  const resetSliders = async () => {
+    try {
+      await axios.get('/api/v1/settings/discover/reset');
+
+      addToast(intl.formatMessage(messages.resetsuccess), {
+        appearance: 'success',
+        autoDismiss: true,
+      });
+      setIsEditing(false);
+      mutate();
+    } catch (e) {
+      addToast(intl.formatMessage(messages.resetfailed), {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    }
+  };
 
   if (!discoverData && !discoverError) {
     return <LoadingSpinner />;
@@ -34,20 +113,83 @@ const Discover = () => {
   return (
     <>
       <PageTitle title={intl.formatMessage(messages.discover)} />
-      {discoverData?.map((slider) => {
-        if (!slider.enabled) {
-          return null;
-        }
+      {hasPermission(Permission.ADMIN) && (
+        <>
+          {isEditing ? (
+            <>
+              <div className="my-6 flex justify-end">
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
+                  <Button
+                    buttonType="default"
+                    onClick={() => setIsEditing(false)}
+                  >
+                    <ArrowUturnLeftIcon />
+                    <span>{intl.formatMessage(messages.cancelchanges)}</span>
+                  </Button>
+                </span>
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
+                  <Tooltip content={intl.formatMessage(messages.resetwarning)}>
+                    <ConfirmButton
+                      onClick={() => resetSliders()}
+                      confirmText={intl.formatMessage(
+                        globalMessages.areyousure
+                      )}
+                    >
+                      <ArrowPathIcon />
+                      <span>{intl.formatMessage(messages.resettodefault)}</span>
+                    </ConfirmButton>
+                  </Tooltip>
+                </span>
+                <span className="ml-3 inline-flex rounded-md shadow-sm">
+                  <Button
+                    buttonType="primary"
+                    type="submit"
+                    disabled={!hasChanged()}
+                    onClick={() => updateSliders()}
+                    data-testid="discover-customize-submit"
+                  >
+                    <ArrowDownOnSquareIcon />
+                    <span>{intl.formatMessage(globalMessages.save)}</span>
+                  </Button>
+                </span>
+              </div>
+              <CreateSlider
+                onCreate={async () => {
+                  const newSliders = await mutate();
+
+                  if (newSliders) {
+                    setSliders(newSliders);
+                  }
+                }}
+              />
+            </>
+          ) : (
+            <div className="my-6 flex justify-end">
+              <span className="ml-3 inline-flex rounded-md shadow-sm">
+                <Button buttonType="default" onClick={() => setIsEditing(true)}>
+                  <PencilIcon />
+                  <span>{intl.formatMessage(messages.customizediscover)}</span>
+                </Button>
+              </span>
+            </div>
+          )}
+        </>
+      )}
+      {(isEditing ? sliders : discoverData)?.map((slider, index) => {
+        let sliderComponent: React.ReactNode;
 
         switch (slider.type) {
           case DiscoverSliderType.RECENTLY_ADDED:
-            return <RecentlyAddedSlider />;
+            sliderComponent = <RecentlyAddedSlider />;
+            break;
           case DiscoverSliderType.RECENT_REQUESTS:
-            return <RecentRequestsSlider />;
+            sliderComponent = <RecentRequestsSlider />;
+            break;
           case DiscoverSliderType.PLEX_WATCHLIST:
-            return <PlexWatchlistSlider />;
+            sliderComponent = <PlexWatchlistSlider />;
+            break;
           case DiscoverSliderType.TRENDING:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey="trending"
                 title={intl.formatMessage(sliderTitles.trending)}
@@ -55,8 +197,9 @@ const Discover = () => {
                 linkUrl="/discover/trending"
               />
             );
+            break;
           case DiscoverSliderType.POPULAR_MOVIES:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey="popular-movies"
                 title={intl.formatMessage(sliderTitles.popularmovies)}
@@ -64,10 +207,12 @@ const Discover = () => {
                 linkUrl="/discover/movies"
               />
             );
+            break;
           case DiscoverSliderType.MOVIE_GENRES:
-            return <MovieGenreSlider />;
+            sliderComponent = <MovieGenreSlider />;
+            break;
           case DiscoverSliderType.UPCOMING_MOVIES:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey="upcoming"
                 title={intl.formatMessage(sliderTitles.upcoming)}
@@ -75,10 +220,12 @@ const Discover = () => {
                 url="/api/v1/discover/movies/upcoming"
               />
             );
+            break;
           case DiscoverSliderType.STUDIOS:
-            return <StudioSlider />;
+            sliderComponent = <StudioSlider />;
+            break;
           case DiscoverSliderType.POPULAR_TV:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey="popular-tv"
                 title={intl.formatMessage(sliderTitles.populartv)}
@@ -86,10 +233,12 @@ const Discover = () => {
                 linkUrl="/discover/tv"
               />
             );
+            break;
           case DiscoverSliderType.TV_GENRES:
-            return <TvGenreSlider />;
+            sliderComponent = <TvGenreSlider />;
+            break;
           case DiscoverSliderType.UPCOMING_TV:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey="upcoming-tv"
                 title={intl.formatMessage(sliderTitles.upcomingtv)}
@@ -97,10 +246,12 @@ const Discover = () => {
                 linkUrl="/discover/tv/upcoming"
               />
             );
+            break;
           case DiscoverSliderType.NETWORKS:
-            return <NetworkSlider />;
+            sliderComponent = <NetworkSlider />;
+            break;
           case DiscoverSliderType.TMDB_MOVIE_KEYWORD:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
@@ -113,8 +264,9 @@ const Discover = () => {
                 linkUrl={`/discover/movies/keyword?keywords=${slider.data}`}
               />
             );
+            break;
           case DiscoverSliderType.TMDB_TV_KEYWORD:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
@@ -127,8 +279,9 @@ const Discover = () => {
                 linkUrl={`/discover/tv/keyword?keywords=${slider.data}`}
               />
             );
+            break;
           case DiscoverSliderType.TMDB_MOVIE_GENRE:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
@@ -136,8 +289,9 @@ const Discover = () => {
                 linkUrl={`/discover/movies/genre/${slider.data}`}
               />
             );
+            break;
           case DiscoverSliderType.TMDB_TV_GENRE:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
@@ -145,8 +299,9 @@ const Discover = () => {
                 linkUrl={`/discover/tv/genre/${slider.data}`}
               />
             );
+            break;
           case DiscoverSliderType.TMDB_STUDIO:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
@@ -154,8 +309,9 @@ const Discover = () => {
                 linkUrl={`/discover/movies/studio/${slider.data}`}
               />
             );
+            break;
           case DiscoverSliderType.TMDB_NETWORK:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
@@ -163,8 +319,9 @@ const Discover = () => {
                 linkUrl={`/discover/tv/network/${slider.data}`}
               />
             );
+            break;
           case DiscoverSliderType.TMDB_SEARCH:
-            return (
+            sliderComponent = (
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
@@ -173,7 +330,60 @@ const Discover = () => {
                 linkUrl={`/search?query=${slider.data}`}
               />
             );
+            break;
         }
+
+        if (isEditing) {
+          return (
+            <DiscoverSliderEdit
+              key={`discover-slider-${slider.id}-edit`}
+              slider={slider}
+              onDelete={async () => {
+                const newSliders = await mutate();
+
+                if (newSliders) {
+                  setSliders(newSliders);
+                }
+              }}
+              onEnable={() => {
+                const tempSliders = sliders.slice();
+                tempSliders[index].enabled = !tempSliders[index].enabled;
+                setSliders(tempSliders);
+              }}
+              onPositionUpdate={(updatedItemId, position) => {
+                const originalPosition = sliders.findIndex(
+                  (item) => item.id === updatedItemId
+                );
+                const originalItem = sliders[originalPosition];
+
+                const tempSliders = sliders.slice();
+
+                tempSliders.splice(originalPosition, 1);
+                tempSliders.splice(
+                  position === 'Above' && index > originalPosition
+                    ? Math.max(index - 1, 0)
+                    : index,
+                  0,
+                  originalItem
+                );
+
+                setSliders(tempSliders);
+              }}
+            >
+              {sliderComponent}
+            </DiscoverSliderEdit>
+          );
+        }
+
+        if (!slider.enabled) {
+          return null;
+        }
+
+        return (
+          <div key={`discover-slider-${slider.id}`} className="mt-6">
+            {sliderComponent}
+          </div>
+        );
       })}
     </>
   );

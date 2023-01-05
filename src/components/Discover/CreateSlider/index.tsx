@@ -31,7 +31,7 @@ const messages = defineMessages({
   needresults: 'You need to have at least 1 result to create a slider.',
   validationDatarequired: 'You must provide a data value.',
   validationTitlerequired: 'You must provide a title.',
-  addcustomslider: 'Add Custom Slider',
+  addcustomslider: 'Create Custom Slider',
   searchKeywords: 'Search keywords…',
   searchGenres: 'Search genres…',
   searchStudios: 'Search studios…',
@@ -306,71 +306,75 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
 
         return (
           <Form data-testid="create-discover-option-form">
-            <div className="flex flex-col space-y-2 rounded border-2 border-dashed border-gray-700 bg-gray-800 px-2 py-2 text-gray-100">
-              <span className="text-overseerr text-xl font-semibold">
-                {intl.formatMessage(messages.addcustomslider)}
-              </span>
-              <Field as="select" id="sliderType" name="sliderType">
-                {options.map((option) => (
-                  <option value={option.type} key={`type-${option.type}`}>
-                    {option.title}
-                  </option>
-                ))}
-              </Field>
-              <Field
-                type="text"
-                name="title"
-                id="title"
-                placeholder={activeOption?.titlePlaceholderText}
-              />
-              {errors.title &&
-                touched.title &&
-                typeof errors.title === 'string' && (
-                  <div className="error">{errors.title}</div>
-                )}
-              {dataInput}
-              {errors.data &&
-                touched.data &&
-                typeof errors.data === 'string' && (
-                  <div className="error">{errors.data}</div>
-                )}
-              <div className="flex-1"></div>
-              {resultCount === 0 ? (
-                <Tooltip content={intl.formatMessage(messages.needresults)}>
+            <div className="mb-6 rounded-lg bg-gray-800">
+              <div className="rounded-t-lg border-t border-l border-r border-gray-800 bg-gray-900 p-4">
+                <span className="text-overseerr text-xl font-semibold">
+                  {intl.formatMessage(messages.addcustomslider)}
+                </span>
+              </div>
+              <div className="flex flex-col space-y-2 p-4 text-gray-100">
+                <Field as="select" id="sliderType" name="sliderType">
+                  {options.map((option) => (
+                    <option value={option.type} key={`type-${option.type}`}>
+                      {option.title}
+                    </option>
+                  ))}
+                </Field>
+                <Field
+                  type="text"
+                  name="title"
+                  id="title"
+                  placeholder={activeOption?.titlePlaceholderText}
+                />
+                {errors.title &&
+                  touched.title &&
+                  typeof errors.title === 'string' && (
+                    <div className="error">{errors.title}</div>
+                  )}
+                {dataInput}
+                {errors.data &&
+                  touched.data &&
+                  typeof errors.data === 'string' && (
+                    <div className="error">{errors.data}</div>
+                  )}
+                <div className="flex-1"></div>
+                {resultCount === 0 ? (
+                  <Tooltip content={intl.formatMessage(messages.needresults)}>
+                    <div>
+                      <Button buttonType="primary" buttonSize="sm" disabled>
+                        {intl.formatMessage(messages.addSlider)}
+                      </Button>
+                    </div>
+                  </Tooltip>
+                ) : (
                   <div>
-                    <Button buttonType="primary" buttonSize="sm" disabled>
+                    <Button
+                      buttonType="primary"
+                      buttonSize="sm"
+                      disabled={isSubmitting || !isValid}
+                    >
                       {intl.formatMessage(messages.addSlider)}
                     </Button>
                   </div>
-                </Tooltip>
-              ) : (
-                <div>
-                  <Button
-                    buttonType="primary"
-                    buttonSize="sm"
-                    disabled={isSubmitting || !isValid}
-                  >
-                    {intl.formatMessage(messages.addSlider)}
-                  </Button>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            <div className="relative px-4 pb-4">
               {activeOption && values.title && values.data && (
-                <MediaSlider
-                  sliderKey={`preview-${values.title}`}
-                  title={values.title}
-                  url={activeOption?.dataUrl.replace(
-                    '$value',
-                    encodeURIExtraParams(values.data)
-                  )}
-                  extraParams={activeOption.params?.replace(
-                    '$value',
-                    encodeURIExtraParams(values.data)
-                  )}
-                  onNewTitles={updateResultCount}
-                />
+                <div className="relative px-4 pb-4">
+                  <MediaSlider
+                    sliderKey={`preview-${values.title}`}
+                    title={values.title}
+                    url={activeOption?.dataUrl.replace(
+                      '$value',
+                      encodeURIExtraParams(values.data)
+                    )}
+                    extraParams={activeOption.params?.replace(
+                      '$value',
+                      encodeURIExtraParams(values.data)
+                    )}
+                    onNewTitles={updateResultCount}
+                  />
+                </div>
               )}
             </div>
           </Form>

@@ -278,6 +278,27 @@ router.get('/backdrops', async (req, res, next) => {
   }
 });
 
+router.get('/keyword/:keywordId', async (req, res, next) => {
+  const tmdb = createTmdbWithRegionLanguage();
+
+  try {
+    const result = await tmdb.getKeywordDetails({
+      keywordId: Number(req.params.keywordId),
+    });
+
+    return res.status(200).json(result);
+  } catch (e) {
+    logger.debug('Something went wrong retrieving keyword data', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve keyword data.',
+    });
+  }
+});
+
 router.get('/', (_req, res) => {
   return res.status(200).json({
     api: 'Overseerr API',
