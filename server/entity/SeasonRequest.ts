@@ -5,7 +5,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -26,7 +25,6 @@ class SeasonRequest {
   @ManyToOne(() => MediaRequest, (request) => request.seasons, {
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
   public request: MediaRequest;
 
   @CreateDateColumn()

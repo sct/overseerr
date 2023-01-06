@@ -206,6 +206,9 @@ class AvailabilitySync {
     const requestRepository = getRepository(MediaRequest);
 
     const request = await requestRepository.findOne({
+      relations: {
+        media: true,
+      },
       where: { media: { id: media.id }, is4k: is4k ? true : false },
     });
 

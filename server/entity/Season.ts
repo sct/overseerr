@@ -3,7 +3,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -25,7 +24,6 @@ class Season {
   public status4k: MediaStatus;
 
   @ManyToOne(() => Media, (media) => media.seasons, { onDelete: 'CASCADE' })
-  @JoinColumn()
   public media: Promise<Media>;
 
   @CreateDateColumn()

@@ -26,7 +26,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -378,7 +377,6 @@ export class MediaRequest {
     eager: true,
     onDelete: 'CASCADE',
   })
-  @JoinColumn()
   public media: Media;
 
   @ManyToOne(() => User, (user) => user.requests, {
