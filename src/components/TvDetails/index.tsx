@@ -503,7 +503,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                   key={`keyword-id-${keyword.id}`}
                 >
                   <a className="mb-2 mr-2 inline-flex last:mr-0">
-                    <Tag content={keyword.name} />
+                    <Tag>{keyword.name}</Tag>
                   </a>
                 </Link>
               ))}

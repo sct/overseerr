@@ -5,15 +5,20 @@ describe('Discover Customization', () => {
   });
 
   it('show the discover customization settings', () => {
-    cy.visit('/settings');
+    cy.visit('/');
 
-    cy.get('[data-testid=discover-customization]')
-      .should('contain', 'Discover Customization')
+    cy.get('[data-testid=discover-start-editing]').click();
+
+    cy.get('[data-testid=create-slider-header')
+      .should('contain', 'Create New Slider')
       .scrollIntoView();
 
     // There should be some built in options
-    cy.get('[data-testid=discover-option]').should('contain', 'Recently Added');
-    cy.get('[data-testid=discover-option]').should(
+    cy.get('[data-testid=discover-slider-edit-mode]').should(
+      'contain',
+      'Recently Added'
+    );
+    cy.get('[data-testid=discover-slider-edit-mode]').should(
       'contain',
       'Recent Requests'
     );
@@ -21,19 +26,21 @@ describe('Discover Customization', () => {
 
   it('can drag to re-order elements and save to persist the changes', () => {
     let dataTransfer = new DataTransfer();
-    cy.visit('/settings');
+    cy.visit('/');
 
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-start-editing]').click();
+
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .first()
       .trigger('dragstart', { dataTransfer });
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .eq(1)
       .trigger('drop', { dataTransfer });
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .eq(1)
       .trigger('dragend', { dataTransfer });
 
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .eq(1)
       .should('contain', 'Recently Added');
 
@@ -42,23 +49,25 @@ describe('Discover Customization', () => {
 
     cy.reload();
 
+    cy.get('[data-testid=discover-start-editing]').click();
+
     dataTransfer = new DataTransfer();
 
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .eq(1)
       .should('contain', 'Recently Added');
 
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .first()
       .trigger('dragstart', { dataTransfer });
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .eq(1)
       .trigger('drop', { dataTransfer });
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .eq(1)
       .trigger('dragend', { dataTransfer });
 
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .eq(1)
       .should('contain', 'Recent Requests');
 
@@ -67,9 +76,11 @@ describe('Discover Customization', () => {
   });
 
   it('can create a new discover option and remove it', () => {
-    cy.visit('/settings');
+    cy.visit('/');
     cy.intercept('/api/v1/settings/discover/*').as('discoverSlider');
     cy.intercept('/api/v1/search/keyword*').as('searchKeyword');
+
+    cy.get('[data-testid=discover-start-editing]').click();
 
     const sliderTitle = 'Custom Keyword Slider';
 
@@ -98,14 +109,16 @@ describe('Discover Customization', () => {
     cy.wait('@getDiscoverSliders');
     cy.wait(1000);
 
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .first()
       .should('contain', sliderTitle);
 
     // Make sure its still there even if we reload
     cy.reload();
 
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-start-editing]').click();
+
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .first()
       .should('contain', sliderTitle);
 
@@ -114,10 +127,10 @@ describe('Discover Customization', () => {
 
     cy.get('.slider-header').should('not.contain', sliderTitle);
 
-    cy.visit('/settings');
+    cy.get('[data-testid=discover-start-editing]').click();
 
     // Enable it, and check again
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .first()
       .find('[role="checkbox"]')
       .click();
@@ -131,20 +144,19 @@ describe('Discover Customization', () => {
       .next('[data-testid=media-slider]')
       .find('[data-testid=title-card]');
 
-    cy.visit('/settings');
+    cy.get('[data-testid=discover-start-editing]').click();
 
     // let's delete it and confirm its deleted.
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .first()
-      .find('button')
-      .should('contain', 'Remove')
+      .find('[data-testid=discover-slider-remove-button]')
       .click();
 
     cy.wait('@discoverSlider');
     cy.wait('@getDiscoverSliders');
     cy.wait(1000);
 
-    cy.get('[data-testid=discover-option]')
+    cy.get('[data-testid=discover-slider-edit-mode]')
       .first()
       .should('not.contain', sliderTitle);
   });
