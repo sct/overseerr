@@ -183,10 +183,12 @@ const DiscoverSliderEdit = ({
           className={`absolute -bottom-2 left-0 w-full border-t-4 border-indigo-500`}
         />
       )}
-      <div className="flex w-full items-center space-x-2 rounded-t-lg border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-gray-400">
-        <Bars3Icon className="h-6 w-6" />
-        <div>{getSliderTitle(slider)}</div>
-        <div className="flex-1 pl-2">
+      <div className="flex w-full flex-col rounded-t-lg border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-gray-400 md:flex-row md:items-center md:space-x-2">
+        <div className="mb-4 flex space-x-2 md:mb-0">
+          <Bars3Icon className="h-6 w-6" />
+          <div>{getSliderTitle(slider)}</div>
+        </div>
+        <div className="pointer-events-none mb-4 flex-1 md:mb-0">
           {(slider.type === DiscoverSliderType.TMDB_MOVIE_KEYWORD ||
             slider.type === DiscoverSliderType.TMDB_TV_KEYWORD) && (
             <div className="flex space-x-2">
@@ -224,55 +226,57 @@ const DiscoverSliderEdit = ({
             <Tag iconSvg={<MagnifyingGlassIcon />}>{slider.data}</Tag>
           )}
         </div>
-        {!slider.isBuiltIn && (
-          <>
-            {!isEditing ? (
+        <div className="flex items-center space-x-2">
+          {!slider.isBuiltIn && (
+            <>
+              {!isEditing ? (
+                <Button
+                  buttonType="warning"
+                  buttonSize="sm"
+                  onClick={() => {
+                    setIsEditing(true);
+                  }}
+                >
+                  <PencilIcon />
+                  <span>{intl.formatMessage(globalMessages.edit)}</span>
+                </Button>
+              ) : (
+                <Button
+                  buttonType="default"
+                  buttonSize="sm"
+                  onClick={() => {
+                    setIsEditing(false);
+                  }}
+                >
+                  <ArrowUturnLeftIcon />
+                  <span>{intl.formatMessage(globalMessages.cancel)}</span>
+                </Button>
+              )}
               <Button
-                buttonType="warning"
+                data-testid="discover-slider-remove-button"
+                buttonType="danger"
                 buttonSize="sm"
                 onClick={() => {
-                  setIsEditing(true);
+                  deleteSlider();
                 }}
               >
-                <PencilIcon />
-                <span>{intl.formatMessage(globalMessages.edit)}</span>
+                <XMarkIcon />
+                <span>{intl.formatMessage(messages.remove)}</span>
               </Button>
-            ) : (
-              <Button
-                buttonType="default"
-                buttonSize="sm"
-                onClick={() => {
-                  setIsEditing(false);
-                }}
-              >
-                <ArrowUturnLeftIcon />
-                <span>{intl.formatMessage(globalMessages.cancel)}</span>
-              </Button>
-            )}
-            <Button
-              data-testid="discover-slider-remove-button"
-              buttonType="danger"
-              buttonSize="sm"
-              onClick={() => {
-                deleteSlider();
-              }}
-            >
-              <XMarkIcon />
-              <span>{intl.formatMessage(messages.remove)}</span>
-            </Button>
-          </>
-        )}
-        <div className="pl-4">
-          <Tooltip content={intl.formatMessage(messages.enable)}>
-            <div>
-              <SlideCheckbox
-                onClick={() => {
-                  onEnable();
-                }}
-                checked={slider.enabled}
-              />
-            </div>
-          </Tooltip>
+            </>
+          )}
+          <div className="flex-1 pl-4 text-right">
+            <Tooltip content={intl.formatMessage(messages.enable)}>
+              <div>
+                <SlideCheckbox
+                  onClick={() => {
+                    onEnable();
+                  }}
+                  checked={slider.enabled}
+                />
+              </div>
+            </Tooltip>
+          </div>
         </div>
       </div>
       {isEditing ? (
@@ -286,11 +290,7 @@ const DiscoverSliderEdit = ({
           />
         </div>
       ) : (
-        <div
-          className={`pointer-events-none p-4 ${
-            !slider.enabled ? 'opacity-50' : ''
-          }`}
-        >
+        <div className={`p-4 ${!slider.enabled ? 'opacity-50' : ''}`}>
           {children}
         </div>
       )}

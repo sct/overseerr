@@ -119,44 +119,36 @@ const Discover = () => {
         <>
           {isEditing ? (
             <>
-              <div className="my-6 flex justify-end">
-                <span className="ml-3 inline-flex rounded-md shadow-sm">
-                  <Button
-                    buttonType="default"
-                    onClick={() => setIsEditing(false)}
+              <div className="my-6 flex flex-col justify-end space-y-2 md:flex-row md:space-y-0 md:space-x-3">
+                <Button
+                  buttonType="default"
+                  onClick={() => setIsEditing(false)}
+                >
+                  <ArrowUturnLeftIcon />
+                  <span>{intl.formatMessage(messages.stopediting)}</span>
+                </Button>
+                <Tooltip content={intl.formatMessage(messages.resetwarning)}>
+                  <ConfirmButton
+                    onClick={() => resetSliders()}
+                    confirmText={intl.formatMessage(globalMessages.areyousure)}
                   >
-                    <ArrowUturnLeftIcon />
-                    <span>{intl.formatMessage(messages.stopediting)}</span>
-                  </Button>
-                </span>
-                <span className="ml-3 inline-flex rounded-md shadow-sm">
-                  <Tooltip content={intl.formatMessage(messages.resetwarning)}>
-                    <ConfirmButton
-                      onClick={() => resetSliders()}
-                      confirmText={intl.formatMessage(
-                        globalMessages.areyousure
-                      )}
-                    >
-                      <ArrowPathIcon />
-                      <span>{intl.formatMessage(messages.resettodefault)}</span>
-                    </ConfirmButton>
-                  </Tooltip>
-                </span>
-                <span className="ml-3 inline-flex rounded-md shadow-sm">
-                  <Button
-                    buttonType="primary"
-                    type="submit"
-                    disabled={!hasChanged()}
-                    onClick={() => updateSliders()}
-                    data-testid="discover-customize-submit"
-                  >
-                    <ArrowDownOnSquareIcon />
-                    <span>{intl.formatMessage(globalMessages.save)}</span>
-                  </Button>
-                </span>
+                    <ArrowPathIcon />
+                    <span>{intl.formatMessage(messages.resettodefault)}</span>
+                  </ConfirmButton>
+                </Tooltip>
+                <Button
+                  buttonType="primary"
+                  type="submit"
+                  disabled={!hasChanged()}
+                  onClick={() => updateSliders()}
+                  data-testid="discover-customize-submit"
+                >
+                  <ArrowDownOnSquareIcon />
+                  <span>{intl.formatMessage(globalMessages.save)}</span>
+                </Button>
               </div>
               <div className="mb-6 rounded-lg bg-gray-800">
-                <div className="flex items-center space-x-2 border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-lg font-semibold text-gray-400">
+                <div className="flex items-center space-x-2 rounded-t-lg border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-lg font-semibold text-gray-400">
                   <PlusIcon className="w-6" />
                   <span data-testid="create-slider-header">
                     {intl.formatMessage(messages.createnewslider)}
