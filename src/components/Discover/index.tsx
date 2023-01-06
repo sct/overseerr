@@ -46,7 +46,7 @@ const messages = defineMessages({
   resetfailed:
     'Something went wrong resetting the discover customization settings.',
   customizediscover: 'Customize Discover',
-  cancelchanges: 'Cancel Changes',
+  stopediting: 'Stop Editing',
 });
 
 const Discover = () => {
@@ -125,7 +125,7 @@ const Discover = () => {
                     onClick={() => setIsEditing(false)}
                   >
                     <ArrowUturnLeftIcon />
-                    <span>{intl.formatMessage(messages.cancelchanges)}</span>
+                    <span>{intl.formatMessage(messages.stopediting)}</span>
                   </Button>
                 </span>
                 <span className="ml-3 inline-flex rounded-md shadow-sm">

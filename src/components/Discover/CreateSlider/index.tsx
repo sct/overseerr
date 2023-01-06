@@ -31,7 +31,9 @@ const messages = defineMessages({
   providetmdbnetwork: 'Provide TMDB Network ID',
   addsuccess: 'Created new slider and saved discover customization settings.',
   addfail: 'Failed to create new slider.',
-  needresults: 'You need to have at least 1 result to create a slider.',
+  editsuccess: 'Edited slider and saved discover customization settings.',
+  editfail: 'Failed to edit slider.',
+  needresults: 'You need to have at least 1 result.',
   validationDatarequired: 'You must provide a data value.',
   validationTitlerequired: 'You must provide a title.',
   addcustomslider: 'Create Custom Slider',
@@ -309,17 +311,25 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
             });
           }
 
-          addToast(intl.formatMessage(messages.addsuccess), {
-            appearance: 'success',
-            autoDismiss: true,
-          });
+          addToast(
+            intl.formatMessage(
+              slider ? messages.editsuccess : messages.addsuccess
+            ),
+            {
+              appearance: 'success',
+              autoDismiss: true,
+            }
+          );
           onCreate();
           resetForm();
         } catch (e) {
-          addToast(intl.formatMessage(messages.addfail), {
-            appearance: 'error',
-            autoDismiss: true,
-          });
+          addToast(
+            intl.formatMessage(slider ? messages.editfail : messages.addfail),
+            {
+              appearance: 'error',
+              autoDismiss: true,
+            }
+          );
         }
       }}
     >
