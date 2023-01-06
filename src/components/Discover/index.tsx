@@ -22,6 +22,7 @@ import {
   ArrowPathIcon,
   ArrowUturnLeftIcon,
   PencilIcon,
+  PlusIcon,
 } from '@heroicons/react/24/solid';
 import { DiscoverSliderType } from '@server/constants/discover';
 import type DiscoverSlider from '@server/entity/DiscoverSlider';
@@ -153,15 +154,23 @@ const Discover = () => {
                   </Button>
                 </span>
               </div>
-              <CreateSlider
-                onCreate={async () => {
-                  const newSliders = await mutate();
+              <div className="mb-6 rounded-lg bg-gray-800">
+                <div className="flex items-center space-x-2 border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-lg font-semibold text-gray-400">
+                  <PlusIcon className="w-6" />
+                  <span>Create New Slider</span>
+                </div>
+                <div className="p-4">
+                  <CreateSlider
+                    onCreate={async () => {
+                      const newSliders = await mutate();
 
-                  if (newSliders) {
-                    setSliders(newSliders);
-                  }
-                }}
-              />
+                      if (newSliders) {
+                        setSliders(newSliders);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
             </>
           ) : (
             <div className="my-6 flex justify-end">

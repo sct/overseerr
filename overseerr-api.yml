@@ -3123,6 +3123,35 @@ paths:
                 items:
                   $ref: '#/components/schemas/DiscoverSlider'
   /settings/discover/{sliderId}:
+    put:
+      summary: Update a single slider
+      description: |
+        Updates a single slider and return the newly updated slider. Requires the `ADMIN` permission.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: 'Slider Title'
+                type:
+                  type: number
+                  example: 1
+                data:
+                  type: string
+                  example: '1'
+      responses:
+        '200':
+          description: Returns newly added discovery slider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoverSlider'
     delete:
       summary: Delete slider by ID
       description: Deletes the slider with the provided sliderId. Requires the `ADMIN` permission.

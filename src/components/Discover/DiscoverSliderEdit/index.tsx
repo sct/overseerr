@@ -1,9 +1,20 @@
 import Button from '@app/components/Common/Button';
 import SlideCheckbox from '@app/components/Common/SlideCheckbox';
+import Tag from '@app/components/Common/Tag';
 import Tooltip from '@app/components/Common/Tooltip';
+import CompanyTag from '@app/components/CompanyTag';
 import { sliderTitles } from '@app/components/Discover/constants';
+import CreateSlider from '@app/components/Discover/CreateSlider';
+import GenreTag from '@app/components/GenreTag';
 import KeywordTag from '@app/components/KeywordTag';
-import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/solid';
+import globalMessages from '@app/i18n/globalMessages';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowUturnLeftIcon,
+  Bars3Icon,
+  PencilIcon,
+  XMarkIcon,
+} from '@heroicons/react/24/solid';
 import { DiscoverSliderType } from '@server/constants/discover';
 import type DiscoverSlider from '@server/entity/DiscoverSlider';
 import axios from 'axios';
@@ -45,6 +56,7 @@ const DiscoverSliderEdit = ({
 }: DiscoverSliderEditProps) => {
   const intl = useIntl();
   const { addToast } = useToasts();
+  const [isEditing, setIsEditing] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [hoverPosition, setHoverPosition] = useState<keyof typeof Position>(
     Position.None
@@ -185,9 +197,57 @@ const DiscoverSliderEdit = ({
               ))}
             </div>
           )}
+          {(slider.type === DiscoverSliderType.TMDB_NETWORK ||
+            slider.type === DiscoverSliderType.TMDB_STUDIO) && (
+            <CompanyTag
+              type={
+                slider.type === DiscoverSliderType.TMDB_STUDIO
+                  ? 'studio'
+                  : 'network'
+              }
+              companyId={Number(slider.data)}
+            />
+          )}
+          {(slider.type === DiscoverSliderType.TMDB_TV_GENRE ||
+            slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE) && (
+            <GenreTag
+              type={
+                slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE
+                  ? 'movie'
+                  : 'tv'
+              }
+              genreId={Number(slider.data)}
+            />
+          )}
+          {slider.type === DiscoverSliderType.TMDB_SEARCH && (
+            <Tag iconSvg={<MagnifyingGlassIcon />}>{slider.data}</Tag>
+          )}
         </div>
         {!slider.isBuiltIn && (
-          <div className="px-2">
+          <>
+            {!isEditing ? (
+              <Button
+                buttonType="warning"
+                buttonSize="sm"
+                onClick={() => {
+                  setIsEditing(true);
+                }}
+              >
+                <PencilIcon />
+                <span>{intl.formatMessage(globalMessages.edit)}</span>
+              </Button>
+            ) : (
+              <Button
+                buttonType="default"
+                buttonSize="sm"
+                onClick={() => {
+                  setIsEditing(false);
+                }}
+              >
+                <ArrowUturnLeftIcon />
+                <span>{intl.formatMessage(globalMessages.cancel)}</span>
+              </Button>
+            )}
             <Button
               buttonType="danger"
               buttonSize="sm"
@@ -198,26 +258,40 @@ const DiscoverSliderEdit = ({
               <XMarkIcon />
               <span>{intl.formatMessage(messages.remove)}</span>
             </Button>
-          </div>
+          </>
         )}
-        <Tooltip content={intl.formatMessage(messages.enable)}>
-          <div>
-            <SlideCheckbox
-              onClick={() => {
-                onEnable();
-              }}
-              checked={slider.enabled}
-            />
-          </div>
-        </Tooltip>
+        <div className="pl-4">
+          <Tooltip content={intl.formatMessage(messages.enable)}>
+            <div>
+              <SlideCheckbox
+                onClick={() => {
+                  onEnable();
+                }}
+                checked={slider.enabled}
+              />
+            </div>
+          </Tooltip>
+        </div>
       </div>
-      <div
-        className={`pointer-events-none p-4 ${
-          !slider.enabled ? 'opacity-50' : ''
-        }`}
-      >
-        {children}
-      </div>
+      {isEditing ? (
+        <div className="p-4">
+          <CreateSlider
+            onCreate={() => {
+              onDelete();
+              setIsEditing(false);
+            }}
+            slider={slider}
+          />
+        </div>
+      ) : (
+        <div
+          className={`pointer-events-none p-4 ${
+            !slider.enabled ? 'opacity-50' : ''
+          }`}
+        >
+          {children}
+        </div>
+      )}
     </div>
   );
 };
