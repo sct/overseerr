@@ -47,6 +47,7 @@ const messages = defineMessages({
     'Something went wrong resetting the discover customization settings.',
   customizediscover: 'Customize Discover',
   stopediting: 'Stop Editing',
+  createnewslider: 'Create New Slider',
 });
 
 const Discover = () => {
@@ -158,7 +159,7 @@ const Discover = () => {
                 <div className="flex items-center space-x-2 border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-lg font-semibold text-gray-400">
                   <PlusIcon className="w-6" />
                   <span data-testid="create-slider-header">
-                    Create New Slider
+                    {intl.formatMessage(messages.createnewslider)}
                   </span>
                 </div>
                 <div className="p-4">

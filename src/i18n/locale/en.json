@@ -50,6 +50,7 @@
   "components.Discover.StudioSlider.studios": "Studios",
   "components.Discover.TvGenreList.seriesgenres": "Series Genres",
   "components.Discover.TvGenreSlider.tvgenres": "Series Genres",
+  "components.Discover.createnewslider": "Create New Slider",
   "components.Discover.customizediscover": "Customize Discover",
   "components.Discover.discover": "Discover",
   "components.Discover.discovermovies": "Popular Movies",
