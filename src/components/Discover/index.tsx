@@ -157,7 +157,9 @@ const Discover = () => {
               <div className="mb-6 rounded-lg bg-gray-800">
                 <div className="flex items-center space-x-2 border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-lg font-semibold text-gray-400">
                   <PlusIcon className="w-6" />
-                  <span>Create New Slider</span>
+                  <span data-testid="create-slider-header">
+                    Create New Slider
+                  </span>
                 </div>
                 <div className="p-4">
                   <CreateSlider
@@ -175,7 +177,11 @@ const Discover = () => {
           ) : (
             <div className="my-6 flex justify-end">
               <span className="ml-3 inline-flex rounded-md shadow-sm">
-                <Button buttonType="default" onClick={() => setIsEditing(true)}>
+                <Button
+                  buttonType="default"
+                  onClick={() => setIsEditing(true)}
+                  data-testid="discover-start-editing"
+                >
                   <PencilIcon />
                   <span>{intl.formatMessage(messages.customizediscover)}</span>
                 </Button>

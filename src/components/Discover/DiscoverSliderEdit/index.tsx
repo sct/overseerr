@@ -165,6 +165,7 @@ const DiscoverSliderEdit = ({
   return (
     <div
       key={`discover-slider-${slider.id}-editing`}
+      data-testid="discover-slider-edit-mode"
       className={`relative mb-4 rounded-lg bg-gray-800 shadow-md ${
         isDragging ? 'opacity-0' : 'opacity-100'
       }`}
@@ -249,6 +250,7 @@ const DiscoverSliderEdit = ({
               </Button>
             )}
             <Button
+              data-testid="discover-slider-remove-button"
               buttonType="danger"
               buttonSize="sm"
               onClick={() => {
