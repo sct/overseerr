@@ -77,6 +77,37 @@ discoverSettingRoutes.get('/reset', async (_req, res) => {
   return res.status(204).send();
 });
 
+discoverSettingRoutes.put('/:sliderId', async (req, res, next) => {
+  const sliderRepository = getRepository(DiscoverSlider);
+
+  const slider = req.body as DiscoverSlider;
+
+  try {
+    const existingSlider = await sliderRepository.findOneOrFail({
+      where: {
+        id: Number(req.params.sliderId),
+      },
+    });
+
+    // Only allow changes to the following when the slider is not built in
+    if (!existingSlider.isBuiltIn) {
+      existingSlider.title = slider.title;
+      existingSlider.data = slider.data;
+      existingSlider.type = slider.type;
+    }
+
+    await sliderRepository.save(existingSlider);
+
+    return res.status(200).json(existingSlider);
+  } catch (e) {
+    logger.error('Something went wrong updating a slider.', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 404, message: 'Slider not found or cannot be updated.' });
+  }
+});
+
 discoverSettingRoutes.delete('/:sliderId', async (req, res, next) => {
   const sliderRepository = getRepository(DiscoverSlider);
 

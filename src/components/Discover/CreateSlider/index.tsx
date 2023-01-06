@@ -5,14 +5,16 @@ import MediaSlider from '@app/components/MediaSlider';
 import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
 import type {
   TmdbCompanySearchResponse,
+  TmdbGenre,
   TmdbKeywordSearchResponse,
 } from '@server/api/themoviedb/interfaces';
 import { DiscoverSliderType } from '@server/constants/discover';
+import type DiscoverSlider from '@server/entity/DiscoverSlider';
 import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
+import type { Keyword, ProductionCompany } from '@server/models/common';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
-import { debounce } from 'lodash';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import AsyncSelect from 'react-select/async';
 import { useToasts } from 'react-toast-notifications';
@@ -20,6 +22,7 @@ import * as Yup from 'yup';
 
 const messages = defineMessages({
   addSlider: 'Add Slider',
+  editSlider: 'Edit Slider',
   slidernameplaceholder: 'Slider Name',
   providetmdbkeywordid: 'Provide a TMDB Keyword ID',
   providetmdbgenreid: 'Provide a TMDB Genre ID',
@@ -28,10 +31,12 @@ const messages = defineMessages({
   providetmdbnetwork: 'Provide TMDB Network ID',
   addsuccess: 'Created new slider and saved discover customization settings.',
   addfail: 'Failed to create new slider.',
-  needresults: 'You need to have at least 1 result to create a slider.',
+  editsuccess: 'Edited slider and saved discover customization settings.',
+  editfail: 'Failed to edit slider.',
+  needresults: 'You need to have at least 1 result.',
   validationDatarequired: 'You must provide a data value.',
   validationTitlerequired: 'You must provide a title.',
-  addcustomslider: 'Add Custom Slider',
+  addcustomslider: 'Create Custom Slider',
   searchKeywords: 'Search keywords…',
   searchGenres: 'Search genres…',
   searchStudios: 'Search studios…',
@@ -41,6 +46,7 @@ const messages = defineMessages({
 
 type CreateSliderProps = {
   onCreate: () => void;
+  slider?: Partial<DiscoverSlider>;
 };
 
 type CreateOption = {
@@ -52,10 +58,96 @@ type CreateOption = {
   dataPlaceholderText: string;
 };
 
-const CreateSlider = ({ onCreate }: CreateSliderProps) => {
+const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
   const intl = useIntl();
   const { addToast } = useToasts();
   const [resultCount, setResultCount] = useState(0);
+  const [defaultDataValue, setDefaultDataValue] = useState<
+    { label: string; value: number }[] | null
+  >(null);
+
+  useEffect(() => {
+    if (slider) {
+      const loadDefaultKeywords = async (): Promise<void> => {
+        if (!slider.data) {
+          return;
+        }
+
+        const keywords = await Promise.all(
+          slider.data.split(',').map(async (keywordId) => {
+            const keyword = await axios.get<Keyword>(
+              `/api/v1/keyword/${keywordId}`
+            );
+
+            return keyword.data;
+          })
+        );
+
+        setDefaultDataValue(
+          keywords.map((keyword) => ({
+            label: keyword.name,
+            value: keyword.id,
+          }))
+        );
+      };
+
+      const loadDefaultGenre = async (): Promise<void> => {
+        if (!slider.data) {
+          return;
+        }
+
+        const response = await axios.get<TmdbGenre[]>(
+          `/api/v1/genres/${
+            slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE ? 'movie' : 'tv'
+          }`
+        );
+
+        const genre = response.data.find(
+          (genre) => genre.id === Number(slider.data)
+        );
+
+        setDefaultDataValue([
+          {
+            label: genre?.name ?? '',
+            value: genre?.id ?? 0,
+          },
+        ]);
+      };
+
+      const loadDefaultCompany = async (): Promise<void> => {
+        if (!slider.data) {
+          return;
+        }
+
+        const response = await axios.get<ProductionCompany>(
+          `/api/v1/studio/${slider.data}`
+        );
+
+        const studio = response.data;
+
+        setDefaultDataValue([
+          {
+            label: studio.name ?? '',
+            value: studio.id ?? 0,
+          },
+        ]);
+      };
+
+      switch (slider.type) {
+        case DiscoverSliderType.TMDB_MOVIE_KEYWORD:
+        case DiscoverSliderType.TMDB_TV_KEYWORD:
+          loadDefaultKeywords();
+          break;
+        case DiscoverSliderType.TMDB_MOVIE_GENRE:
+        case DiscoverSliderType.TMDB_TV_GENRE:
+          loadDefaultGenre();
+          break;
+        case DiscoverSliderType.TMDB_STUDIO:
+          loadDefaultCompany();
+          break;
+      }
+    }
+  }, [slider]);
 
   const CreateSliderSchema = Yup.object().shape({
     title: Yup.string().required(
@@ -73,7 +165,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
     [setResultCount]
   );
 
-  const loadKeywordOptions = debounce(async (inputValue: string) => {
+  const loadKeywordOptions = async (inputValue: string) => {
     const results = await axios.get<TmdbKeywordSearchResponse>(
       '/api/v1/search/keyword',
       {
@@ -87,9 +179,13 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
       label: result.name,
       value: result.id,
     }));
-  }, 100);
+  };
 
-  const loadCompanyOptions = debounce(async (inputValue: string) => {
+  const loadCompanyOptions = async (inputValue: string) => {
+    if (inputValue === '') {
+      return [];
+    }
+
     const results = await axios.get<TmdbCompanySearchResponse>(
       '/api/v1/search/company',
       {
@@ -103,7 +199,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
       label: result.name,
       value: result.id,
     }));
-  }, 100);
+  };
 
   const loadMovieGenreOptions = async () => {
     const results = await axios.get<GenreSliderItem[]>(
@@ -184,32 +280,56 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
 
   return (
     <Formik
-      initialValues={{
-        sliderType: DiscoverSliderType.TMDB_MOVIE_KEYWORD,
-        title: '',
-        data: '',
-      }}
+      initialValues={
+        slider
+          ? {
+              sliderType: slider.type,
+              title: slider.title,
+              data: slider.data,
+            }
+          : {
+              sliderType: DiscoverSliderType.TMDB_MOVIE_KEYWORD,
+              title: '',
+              data: '',
+            }
+      }
       validationSchema={CreateSliderSchema}
       enableReinitialize
       onSubmit={async (values, { resetForm }) => {
         try {
-          await axios.post('/api/v1/settings/discover/add', {
-            type: Number(values.sliderType),
-            title: values.title,
-            data: values.data,
-          });
+          if (slider) {
+            await axios.put(`/api/v1/settings/discover/${slider.id}`, {
+              type: Number(values.sliderType),
+              title: values.title,
+              data: values.data,
+            });
+          } else {
+            await axios.post('/api/v1/settings/discover/add', {
+              type: Number(values.sliderType),
+              title: values.title,
+              data: values.data,
+            });
+          }
 
-          addToast(intl.formatMessage(messages.addsuccess), {
-            appearance: 'success',
-            autoDismiss: true,
-          });
+          addToast(
+            intl.formatMessage(
+              slider ? messages.editsuccess : messages.addsuccess
+            ),
+            {
+              appearance: 'success',
+              autoDismiss: true,
+            }
+          );
           onCreate();
           resetForm();
         } catch (e) {
-          addToast(intl.formatMessage(messages.addfail), {
-            appearance: 'error',
-            autoDismiss: true,
-          });
+          addToast(
+            intl.formatMessage(slider ? messages.editfail : messages.addfail),
+            {
+              appearance: 'error',
+              autoDismiss: true,
+            }
+          );
         }
       }}
     >
@@ -225,7 +345,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
           case DiscoverSliderType.TMDB_TV_KEYWORD:
             dataInput = (
               <AsyncSelect
-                key="keyword-select"
+                key={`keyword-select-${defaultDataValue}`}
                 inputId="data"
                 isMulti
                 className="react-select-container"
@@ -235,6 +355,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                     ? intl.formatMessage(messages.starttyping)
                     : intl.formatMessage(messages.nooptions)
                 }
+                defaultValue={defaultDataValue}
                 loadOptions={loadKeywordOptions}
                 placeholder={intl.formatMessage(messages.searchKeywords)}
                 onChange={(value) => {
@@ -248,9 +369,10 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
           case DiscoverSliderType.TMDB_MOVIE_GENRE:
             dataInput = (
               <AsyncSelect
-                key="movie-genre-select"
+                key={`movie-genre-select-${defaultDataValue}`}
                 className="react-select-container"
                 classNamePrefix="react-select"
+                defaultValue={defaultDataValue?.[0]}
                 defaultOptions
                 cacheOptions
                 loadOptions={loadMovieGenreOptions}
@@ -264,9 +386,10 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
           case DiscoverSliderType.TMDB_TV_GENRE:
             dataInput = (
               <AsyncSelect
-                key="tv-genre-select"
+                key={`tv-genre-select-${defaultDataValue}}`}
                 className="react-select-container"
                 classNamePrefix="react-select"
+                defaultValue={defaultDataValue?.[0]}
                 defaultOptions
                 cacheOptions
                 loadOptions={loadTvGenreOptions}
@@ -280,9 +403,10 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
           case DiscoverSliderType.TMDB_STUDIO:
             dataInput = (
               <AsyncSelect
-                key="studio-select"
+                key={`studio-select-${defaultDataValue}`}
                 className="react-select-container"
                 classNamePrefix="react-select"
+                defaultValue={defaultDataValue?.[0]}
                 defaultOptions
                 cacheOptions
                 loadOptions={loadCompanyOptions}
@@ -306,10 +430,7 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
 
         return (
           <Form data-testid="create-discover-option-form">
-            <div className="flex flex-col space-y-2 rounded border-2 border-dashed border-gray-700 bg-gray-800 px-2 py-2 text-gray-100">
-              <span className="text-overseerr text-xl font-semibold">
-                {intl.formatMessage(messages.addcustomslider)}
-              </span>
+            <div className="flex flex-col space-y-2 text-gray-100">
               <Field as="select" id="sliderType" name="sliderType">
                 {options.map((option) => (
                   <option value={option.type} key={`type-${option.type}`}>
@@ -350,14 +471,16 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                     buttonSize="sm"
                     disabled={isSubmitting || !isValid}
                   >
-                    {intl.formatMessage(messages.addSlider)}
+                    {intl.formatMessage(
+                      slider ? messages.editSlider : messages.addSlider
+                    )}
                   </Button>
                 </div>
               )}
             </div>
 
-            <div className="relative px-4 pb-4">
-              {activeOption && values.title && values.data && (
+            {activeOption && values.title && values.data && (
+              <div className="relative py-4">
                 <MediaSlider
                   sliderKey={`preview-${values.title}`}
                   title={values.title}
@@ -371,8 +494,8 @@ const CreateSlider = ({ onCreate }: CreateSliderProps) => {
                   )}
                   onNewTitles={updateResultCount}
                 />
-              )}
-            </div>
+              </div>
+            )}
           </Form>
         );
       }}

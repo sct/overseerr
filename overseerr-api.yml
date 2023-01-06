@@ -26,6 +26,8 @@ tags:
     description: Endpoints related to retrieving movies and their details.
   - name: tv
     description: Endpoints related to retrieving TV series and their details.
+  - name: keyword
+    description: Endpoints related to getting keywords and their details.
   - name: person
     description: Endpoints related to retrieving person details.
   - name: media
@@ -3121,6 +3123,35 @@ paths:
                 items:
                   $ref: '#/components/schemas/DiscoverSlider'
   /settings/discover/{sliderId}:
+    put:
+      summary: Update a single slider
+      description: |
+        Updates a single slider and return the newly updated slider. Requires the `ADMIN` permission.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: 'Slider Title'
+                type:
+                  type: number
+                  example: 1
+                data:
+                  type: string
+                  example: '1'
+      responses:
+        '200':
+          description: Returns newly added discovery slider
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoverSlider'
     delete:
       summary: Delete slider by ID
       description: Deletes the slider with the provided sliderId. Requires the `ADMIN` permission.
@@ -6143,6 +6174,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Issue'
+  /keyword/{keywordId}:
+    get:
+      summary: Get keyword
+      description: |
+        Returns a single keyword in JSON format.
+      tags:
+        - keyword
+      parameters:
+        - in: path
+          name: keywordId
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        '200':
+          description: Keyword returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Keyword'
 security:
   - cookieAuth: []
   - apiKey: []
