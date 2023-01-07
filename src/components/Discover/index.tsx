@@ -17,6 +17,7 @@ import MediaSlider from '@app/components/MediaSlider';
 import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
+import { Transition } from '@headlessui/react';
 import {
   ArrowDownOnSquareIcon,
   ArrowPathIcon,
@@ -117,70 +118,85 @@ const Discover = () => {
       <PageTitle title={intl.formatMessage(messages.discover)} />
       {hasPermission(Permission.ADMIN) && (
         <>
-          {isEditing ? (
-            <>
-              <div className="my-6 flex flex-col justify-end space-y-2 md:flex-row md:space-y-0 md:space-x-3">
-                <Button
-                  buttonType="default"
-                  onClick={() => setIsEditing(false)}
-                >
-                  <ArrowUturnLeftIcon />
-                  <span>{intl.formatMessage(messages.stopediting)}</span>
-                </Button>
-                <Tooltip content={intl.formatMessage(messages.resetwarning)}>
-                  <ConfirmButton
-                    onClick={() => resetSliders()}
-                    confirmText={intl.formatMessage(globalMessages.areyousure)}
-                  >
-                    <ArrowPathIcon />
-                    <span>{intl.formatMessage(messages.resettodefault)}</span>
-                  </ConfirmButton>
-                </Tooltip>
-                <Button
-                  buttonType="primary"
-                  type="submit"
-                  disabled={!hasChanged()}
-                  onClick={() => updateSliders()}
-                  data-testid="discover-customize-submit"
-                >
-                  <ArrowDownOnSquareIcon />
-                  <span>{intl.formatMessage(globalMessages.save)}</span>
-                </Button>
+          {isEditing && (
+            <div className="my-6 rounded-lg bg-gray-800">
+              <div className="flex items-center space-x-2 rounded-t-lg border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-lg font-semibold text-gray-400">
+                <PlusIcon className="w-6" />
+                <span data-testid="create-slider-header">
+                  {intl.formatMessage(messages.createnewslider)}
+                </span>
               </div>
-              <div className="mb-6 rounded-lg bg-gray-800">
-                <div className="flex items-center space-x-2 rounded-t-lg border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-lg font-semibold text-gray-400">
-                  <PlusIcon className="w-6" />
-                  <span data-testid="create-slider-header">
-                    {intl.formatMessage(messages.createnewslider)}
-                  </span>
-                </div>
-                <div className="p-4">
-                  <CreateSlider
-                    onCreate={async () => {
-                      const newSliders = await mutate();
+              <div className="p-4">
+                <CreateSlider
+                  onCreate={async () => {
+                    const newSliders = await mutate();
 
-                      if (newSliders) {
-                        setSliders(newSliders);
-                      }
-                    }}
-                  />
-                </div>
+                    if (newSliders) {
+                      setSliders(newSliders);
+                    }
+                  }}
+                />
               </div>
-            </>
-          ) : (
-            <div className="my-6 flex justify-end">
-              <span className="ml-3 inline-flex rounded-md shadow-sm">
-                <Button
-                  buttonType="default"
-                  onClick={() => setIsEditing(true)}
-                  data-testid="discover-start-editing"
-                >
-                  <PencilIcon />
-                  <span>{intl.formatMessage(messages.customizediscover)}</span>
-                </Button>
-              </span>
             </div>
           )}
+          <Transition
+            show={!isEditing}
+            enter="transition-opacity duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+            className="fixed bottom-8 right-8 z-50 flex items-center"
+          >
+            <button
+              onClick={() => setIsEditing(true)}
+              data-testid="discover-start-editing"
+              className="h-12 w-12 rounded-full border border-gray-600 bg-gray-700 bg-opacity-80 p-3 text-gray-400 shadow transition-all hover:bg-opacity-100"
+            >
+              <PencilIcon className="h-full w-full" />
+            </button>
+          </Transition>
+          <Transition
+            show={isEditing}
+            enter="transition transform duration-300"
+            enterFrom="opacity-0 translate-y-6"
+            enterTo="opacity-100 translate-y-0"
+            leave="transition duration-300 transform"
+            leaveFrom="opacity-100 translate-y-0"
+            leaveTo="opacity-0 translate-y-6"
+            className="fixed bottom-0 right-0 left-0 z-50 flex flex-col items-center justify-end space-x-0 space-y-2 border-t border-gray-700 bg-gray-800 bg-opacity-80 p-4 backdrop-blur sm:flex-row sm:space-y-0 sm:space-x-3"
+          >
+            <Button
+              buttonType="default"
+              onClick={() => setIsEditing(false)}
+              className="w-full sm:w-auto"
+            >
+              <ArrowUturnLeftIcon />
+              <span>{intl.formatMessage(messages.stopediting)}</span>
+            </Button>
+            <Tooltip content={intl.formatMessage(messages.resetwarning)}>
+              <ConfirmButton
+                onClick={() => resetSliders()}
+                confirmText={intl.formatMessage(globalMessages.areyousure)}
+                className="w-full sm:w-auto"
+              >
+                <ArrowPathIcon />
+                <span>{intl.formatMessage(messages.resettodefault)}</span>
+              </ConfirmButton>
+            </Tooltip>
+            <Button
+              buttonType="primary"
+              type="submit"
+              disabled={!hasChanged()}
+              onClick={() => updateSliders()}
+              data-testid="discover-customize-submit"
+              className="w-full sm:w-auto"
+            >
+              <ArrowDownOnSquareIcon />
+              <span>{intl.formatMessage(globalMessages.save)}</span>
+            </Button>
+          </Transition>
         </>
       )}
       {(isEditing ? sliders : discoverData)?.map((slider, index) => {
