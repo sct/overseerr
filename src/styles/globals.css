@@ -68,7 +68,7 @@
   }
 
   .slider-header {
-    @apply relative mb-4 flex;
+    @apply relative mt-6 mb-4 flex;
   }
 
   .slider-title {
