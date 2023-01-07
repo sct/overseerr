@@ -404,9 +404,7 @@ const Discover = () => {
         }
 
         return (
-          <div key={`discover-slider-${slider.id}`} className="mt-6">
-            {sliderComponent}
-          </div>
+          <div key={`discover-slider-${slider.id}`}>{sliderComponent}</div>
         );
       })}
     </>
