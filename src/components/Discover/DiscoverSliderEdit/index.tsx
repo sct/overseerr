@@ -290,7 +290,7 @@ const DiscoverSliderEdit = ({
           />
         </div>
       ) : (
-        <div className={`p-4 ${!slider.enabled ? 'opacity-50' : ''}`}>
+        <div className={`-mt-6 p-4 ${!slider.enabled ? 'opacity-50' : ''}`}>
           {children}
         </div>
       )}
