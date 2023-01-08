@@ -184,48 +184,52 @@ const DiscoverSliderEdit = ({
         />
       )}
       <div className="flex w-full flex-col rounded-t-lg border-t border-l border-r border-gray-800 bg-gray-900 p-4 text-gray-400 md:flex-row md:items-center md:space-x-2">
-        <div className="mb-4 flex space-x-2 md:mb-0">
+        <div
+          className={`${slider.data ? 'mb-4' : 'mb-0'} flex space-x-2 md:mb-0`}
+        >
           <Bars3Icon className="h-6 w-6" />
           <div>{getSliderTitle(slider)}</div>
         </div>
-        <div className="pointer-events-none mb-4 flex-1 md:mb-0">
-          {(slider.type === DiscoverSliderType.TMDB_MOVIE_KEYWORD ||
-            slider.type === DiscoverSliderType.TMDB_TV_KEYWORD) && (
-            <div className="flex space-x-2">
-              {slider.data?.split(',').map((keywordId) => (
-                <KeywordTag
-                  key={`slider-keywords-${slider.id}-${keywordId}`}
-                  keywordId={Number(keywordId)}
-                />
-              ))}
-            </div>
-          )}
-          {(slider.type === DiscoverSliderType.TMDB_NETWORK ||
-            slider.type === DiscoverSliderType.TMDB_STUDIO) && (
-            <CompanyTag
-              type={
-                slider.type === DiscoverSliderType.TMDB_STUDIO
-                  ? 'studio'
-                  : 'network'
-              }
-              companyId={Number(slider.data)}
-            />
-          )}
-          {(slider.type === DiscoverSliderType.TMDB_TV_GENRE ||
-            slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE) && (
-            <GenreTag
-              type={
-                slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE
-                  ? 'movie'
-                  : 'tv'
-              }
-              genreId={Number(slider.data)}
-            />
-          )}
-          {slider.type === DiscoverSliderType.TMDB_SEARCH && (
-            <Tag iconSvg={<MagnifyingGlassIcon />}>{slider.data}</Tag>
-          )}
-        </div>
+        {slider.data && (
+          <div className="pointer-events-none mb-4 flex-1 md:mb-0">
+            {(slider.type === DiscoverSliderType.TMDB_MOVIE_KEYWORD ||
+              slider.type === DiscoverSliderType.TMDB_TV_KEYWORD) && (
+              <div className="flex space-x-2">
+                {slider.data?.split(',').map((keywordId) => (
+                  <KeywordTag
+                    key={`slider-keywords-${slider.id}-${keywordId}`}
+                    keywordId={Number(keywordId)}
+                  />
+                ))}
+              </div>
+            )}
+            {(slider.type === DiscoverSliderType.TMDB_NETWORK ||
+              slider.type === DiscoverSliderType.TMDB_STUDIO) && (
+              <CompanyTag
+                type={
+                  slider.type === DiscoverSliderType.TMDB_STUDIO
+                    ? 'studio'
+                    : 'network'
+                }
+                companyId={Number(slider.data)}
+              />
+            )}
+            {(slider.type === DiscoverSliderType.TMDB_TV_GENRE ||
+              slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE) && (
+              <GenreTag
+                type={
+                  slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE
+                    ? 'movie'
+                    : 'tv'
+                }
+                genreId={Number(slider.data)}
+              />
+            )}
+            {slider.type === DiscoverSliderType.TMDB_SEARCH && (
+              <Tag iconSvg={<MagnifyingGlassIcon />}>{slider.data}</Tag>
+            )}
+          </div>
+        )}
         <div className="flex items-center space-x-2">
           {!slider.isBuiltIn && (
             <>
@@ -265,7 +269,7 @@ const DiscoverSliderEdit = ({
               </Button>
             </>
           )}
-          <div className="flex-1 pl-4 text-right">
+          <div className="absolute top-4 right-4 flex-1 pl-4 text-right md:relative md:top-0 md:right-0">
             <Tooltip content={intl.formatMessage(messages.enable)}>
               <div>
                 <SlideCheckbox
