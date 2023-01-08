@@ -13,12 +13,12 @@ import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { Transition } from '@headlessui/react';
 import {
-  ChatIcon,
+  ChatBubbleOvalLeftEllipsisIcon,
   CheckCircleIcon,
   PlayIcon,
   ServerIcon,
-} from '@heroicons/react/outline';
-import { RefreshIcon } from '@heroicons/react/solid';
+} from '@heroicons/react/24/outline';
+import { ArrowPathIcon } from '@heroicons/react/24/solid';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaType } from '@server/constants/media';
 import type Issue from '@server/entity/Issue';
@@ -372,26 +372,27 @@ const IssueDetails = () => {
                   <span>{intl.formatMessage(messages.playonplex)}</span>
                 </Button>
               )}
-              {issueData?.media.serviceUrl && hasPermission(Permission.ADMIN) && (
-                <Button
-                  as="a"
-                  href={issueData?.media.serviceUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full"
-                  buttonType="ghost"
-                >
-                  <ServerIcon />
-                  <span>
-                    {intl.formatMessage(messages.openinarr, {
-                      arr:
-                        issueData.media.mediaType === MediaType.MOVIE
-                          ? 'Radarr'
-                          : 'Sonarr',
-                    })}
-                  </span>
-                </Button>
-              )}
+              {issueData?.media.serviceUrl &&
+                hasPermission(Permission.ADMIN) && (
+                  <Button
+                    as="a"
+                    href={issueData?.media.serviceUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full"
+                    buttonType="ghost"
+                  >
+                    <ServerIcon />
+                    <span>
+                      {intl.formatMessage(messages.openinarr, {
+                        arr:
+                          issueData.media.mediaType === MediaType.MOVIE
+                            ? 'Radarr'
+                            : 'Sonarr',
+                      })}
+                    </span>
+                  </Button>
+                )}
               {issueData?.media.plexUrl4k && (
                 <Button
                   as="a"
@@ -509,7 +510,7 @@ const IssueDetails = () => {
                                     }
                                   }}
                                 >
-                                  <RefreshIcon />
+                                  <ArrowPathIcon />
                                   <span>
                                     {intl.formatMessage(
                                       values.message
@@ -528,7 +529,7 @@ const IssueDetails = () => {
                               !isValid || isSubmitting || !values.message
                             }
                           >
-                            <ChatIcon />
+                            <ChatBubbleOvalLeftEllipsisIcon />
                             <span>
                               {intl.formatMessage(messages.leavecomment)}
                             </span>
@@ -641,26 +642,27 @@ const IssueDetails = () => {
                 <span>{intl.formatMessage(messages.play4konplex)}</span>
               </Button>
             )}
-            {issueData?.media.serviceUrl4k && hasPermission(Permission.ADMIN) && (
-              <Button
-                as="a"
-                href={issueData?.media.serviceUrl4k}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full"
-                buttonType="ghost"
-              >
-                <ServerIcon />
-                <span>
-                  {intl.formatMessage(messages.openin4karr, {
-                    arr:
-                      issueData.media.mediaType === MediaType.MOVIE
-                        ? 'Radarr'
-                        : 'Sonarr',
-                  })}
-                </span>
-              </Button>
-            )}
+            {issueData?.media.serviceUrl4k &&
+              hasPermission(Permission.ADMIN) && (
+                <Button
+                  as="a"
+                  href={issueData?.media.serviceUrl4k}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="w-full"
+                  buttonType="ghost"
+                >
+                  <ServerIcon />
+                  <span>
+                    {intl.formatMessage(messages.openin4karr, {
+                      arr:
+                        issueData.media.mediaType === MediaType.MOVIE
+                          ? 'Radarr'
+                          : 'Sonarr',
+                    })}
+                  </span>
+                </Button>
+              )}
           </div>
         </div>
       </div>

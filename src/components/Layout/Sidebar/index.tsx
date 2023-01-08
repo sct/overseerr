@@ -5,11 +5,11 @@ import { Transition } from '@headlessui/react';
 import {
   ClockIcon,
   CogIcon,
-  ExclamationIcon,
+  ExclamationTriangleIcon,
   SparklesIcon,
   UsersIcon,
-  XIcon,
-} from '@heroicons/react/outline';
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { Fragment, useRef } from 'react';
@@ -56,7 +56,7 @@ const SidebarLinks: SidebarLinkProps[] = [
     href: '/issues',
     messagesKey: 'issues',
     svgIcon: (
-      <ExclamationIcon className="mr-3 h-6 w-6 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300" />
+      <ExclamationTriangleIcon className="mr-3 h-6 w-6 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300" />
     ),
     activeRegExp: /^\/issues/,
     requiredPermission: [
@@ -126,7 +126,7 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                       aria-label="Close sidebar"
                       onClick={() => setClosed()}
                     >
-                      <XIcon className="h-6 w-6 text-white" />
+                      <XMarkIcon className="h-6 w-6 text-white" />
                     </button>
                   </div>
                   <div

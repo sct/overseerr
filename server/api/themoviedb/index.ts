@@ -3,9 +3,12 @@ import cacheManager from '@server/lib/cache';
 import { sortBy } from 'lodash';
 import type {
   TmdbCollection,
+  TmdbCompanySearchResponse,
   TmdbExternalIdResponse,
   TmdbGenre,
   TmdbGenresResult,
+  TmdbKeyword,
+  TmdbKeywordSearchResponse,
   TmdbLanguage,
   TmdbMovieDetails,
   TmdbNetwork,
@@ -41,6 +44,7 @@ interface DiscoverMovieOptions {
   originalLanguage?: string;
   genre?: number;
   studio?: number;
+  keywords?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -67,6 +71,7 @@ interface DiscoverTvOptions {
   originalLanguage?: string;
   genre?: number;
   network?: number;
+  keywords?: string;
   sortBy?:
     | 'popularity.asc'
     | 'popularity.desc'
@@ -237,7 +242,7 @@ class TheMovieDb extends ExternalAPI {
           params: {
             language,
             append_to_response:
-              'credits,external_ids,videos,release_dates,watch/providers',
+              'credits,external_ids,videos,keywords,release_dates,watch/providers',
           },
         },
         43200
@@ -440,6 +445,7 @@ class TheMovieDb extends ExternalAPI {
     originalLanguage,
     genre,
     studio,
+    keywords,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
@@ -454,6 +460,7 @@ class TheMovieDb extends ExternalAPI {
           'primary_release_date.lte': primaryReleaseDateLte,
           with_genres: genre,
           with_companies: studio,
+          with_keywords: keywords,
         },
       });
 
@@ -473,6 +480,7 @@ class TheMovieDb extends ExternalAPI {
     originalLanguage,
     genre,
     network,
+    keywords,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
@@ -487,6 +495,7 @@ class TheMovieDb extends ExternalAPI {
           include_null_first_air_dates: includeEmptyReleaseDate,
           with_genres: genre,
           with_networks: network,
+          with_keywords: keywords,
         },
       });
 
@@ -872,6 +881,74 @@ class TheMovieDb extends ExternalAPI {
       return tvGenres;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch TV genres: ${e.message}`);
+    }
+  }
+
+  public async getKeywordDetails({
+    keywordId,
+  }: {
+    keywordId: number;
+  }): Promise<TmdbKeyword> {
+    try {
+      const data = await this.get<TmdbKeyword>(
+        `/keyword/${keywordId}`,
+        undefined,
+        604800 // 7 days
+      );
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch keyword: ${e.message}`);
+    }
+  }
+
+  public async searchKeyword({
+    query,
+    page = 1,
+  }: {
+    query: string;
+    page?: number;
+  }): Promise<TmdbKeywordSearchResponse> {
+    try {
+      const data = await this.get<TmdbKeywordSearchResponse>(
+        '/search/keyword',
+        {
+          params: {
+            query,
+            page,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to search keyword: ${e.message}`);
+    }
+  }
+
+  public async searchCompany({
+    query,
+    page = 1,
+  }: {
+    query: string;
+    page?: number;
+  }): Promise<TmdbCompanySearchResponse> {
+    try {
+      const data = await this.get<TmdbCompanySearchResponse>(
+        '/search/company',
+        {
+          params: {
+            query,
+            page,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to search companies: ${e.message}`);
     }
   }
 }

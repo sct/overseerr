@@ -10,12 +10,12 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
 import {
+  ArrowPathIcon,
   CheckIcon,
   PencilIcon,
-  RefreshIcon,
   TrashIcon,
-  XIcon,
-} from '@heroicons/react/solid';
+  XMarkIcon,
+} from '@heroicons/react/24/solid';
 import { MediaRequestStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { MovieDetails } from '@server/models/Movie';
@@ -41,6 +41,7 @@ const messages = defineMessages({
   cancelRequest: 'Cancel Request',
   tmdbid: 'TMDB ID',
   tvdbid: 'TheTVDB ID',
+  unknowntitle: 'Unknown Title',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -130,6 +131,12 @@ const RequestItemError = ({
                         requestData.is4k ? 'status4k' : 'status'
                       ]
                     }
+                    downloadItem={
+                      requestData.media[
+                        requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
+                      ]
+                    }
+                    title={intl.formatMessage(messages.unknowntitle)}
                     inProgress={
                       (
                         requestData.media[
@@ -140,6 +147,7 @@ const RequestItemError = ({
                       ).length > 0
                     }
                     is4k={requestData.is4k}
+                    mediaType={requestData.type}
                     plexUrl={requestData.is4k ? plexUrl4k : plexUrl}
                     serviceUrl={
                       requestData.is4k
@@ -485,6 +493,12 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   status={
                     requestData.media[requestData.is4k ? 'status4k' : 'status']
                   }
+                  downloadItem={
+                    requestData.media[
+                      requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
+                    ]
+                  }
+                  title={isMovie(title) ? title.title : title.name}
                   inProgress={
                     (
                       requestData.media[
@@ -609,7 +623,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                 disabled={isRetrying}
                 onClick={() => retryRequest()}
               >
-                <RefreshIcon
+                <ArrowPathIcon
                   className={isRetrying ? 'animate-spin' : ''}
                   style={{ animationDirection: 'reverse' }}
                 />
@@ -650,7 +664,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                     buttonType="danger"
                     onClick={() => modifyRequest('decline')}
                   >
-                    <XIcon />
+                    <XMarkIcon />
                     <span>{intl.formatMessage(globalMessages.decline)}</span>
                   </Button>
                 </span>
@@ -680,7 +694,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                 confirmText={intl.formatMessage(globalMessages.areyousure)}
                 className="w-full"
               >
-                <XIcon />
+                <XMarkIcon />
                 <span>{intl.formatMessage(messages.cancelRequest)}</span>
               </ConfirmButton>
             )}

@@ -4,6 +4,8 @@ import type {
   TmdbMovieResult,
   TmdbTvResult,
 } from '@server/api/themoviedb/interfaces';
+import { getRepository } from '@server/datasource';
+import DiscoverSlider from '@server/entity/DiscoverSlider';
 import type { StatusResponse } from '@server/interfaces/api/settingsInterfaces';
 import { Permission } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
@@ -101,6 +103,13 @@ router.get('/settings/public', async (req, res) => {
   } else {
     return res.status(200).json(settings.fullPublicSettings);
   }
+});
+router.get('/settings/discover', isAuthenticated(), async (_req, res) => {
+  const sliderRepository = getRepository(DiscoverSlider);
+
+  const sliders = await sliderRepository.find({ order: { order: 'ASC' } });
+
+  return res.json(sliders);
 });
 router.use('/settings', isAuthenticated(Permission.ADMIN), settingsRoutes);
 router.use('/search', isAuthenticated(), searchRoutes);
@@ -265,6 +274,27 @@ router.get('/backdrops', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Unable to retrieve backdrops.',
+    });
+  }
+});
+
+router.get('/keyword/:keywordId', async (req, res, next) => {
+  const tmdb = createTmdbWithRegionLanguage();
+
+  try {
+    const result = await tmdb.getKeywordDetails({
+      keywordId: Number(req.params.keywordId),
+    });
+
+    return res.status(200).json(result);
+  } catch (e) {
+    logger.debug('Something went wrong retrieving keyword data', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve keyword data.',
     });
   }
 });
