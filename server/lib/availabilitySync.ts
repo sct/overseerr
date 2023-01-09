@@ -525,10 +525,6 @@ class AvailabilitySync {
     const ratingKey = media.ratingKey;
     const ratingKey4k = media.ratingKey4k;
 
-    if (!ratingKey && !ratingKey4k) {
-      return false;
-    }
-
     let existsInPlex = false;
     let existsInPlex4k = false;
 
@@ -611,10 +607,6 @@ class AvailabilitySync {
   private async seasonExists(media: Media, season: Season) {
     const ratingKey = media.ratingKey;
     const ratingKey4k = media.ratingKey4k;
-
-    if (!ratingKey && !ratingKey4k) {
-      return false;
-    }
 
     let seasonExistsInPlex = false;
     let seasonExistsInPlex4k = false;
