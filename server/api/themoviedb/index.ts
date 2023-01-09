@@ -35,6 +35,24 @@ interface SingleSearchOptions extends SearchOptions {
   year?: number;
 }
 
+export type SortOptions =
+  | 'popularity.asc'
+  | 'popularity.desc'
+  | 'release_date.asc'
+  | 'release_date.desc'
+  | 'revenue.asc'
+  | 'revenue.desc'
+  | 'primary_release_date.asc'
+  | 'primary_release_date.desc'
+  | 'original_title.asc'
+  | 'original_title.desc'
+  | 'vote_average.asc'
+  | 'vote_average.desc'
+  | 'vote_count.asc'
+  | 'vote_count.desc'
+  | 'first_air_date.asc'
+  | 'first_air_date.desc';
+
 interface DiscoverMovieOptions {
   page?: number;
   includeAdult?: boolean;
@@ -42,24 +60,10 @@ interface DiscoverMovieOptions {
   primaryReleaseDateGte?: string;
   primaryReleaseDateLte?: string;
   originalLanguage?: string;
-  genre?: number;
-  studio?: number;
+  genre?: string;
+  studio?: string;
   keywords?: string;
-  sortBy?:
-    | 'popularity.asc'
-    | 'popularity.desc'
-    | 'release_date.asc'
-    | 'release_date.desc'
-    | 'revenue.asc'
-    | 'revenue.desc'
-    | 'primary_release_date.asc'
-    | 'primary_release_date.desc'
-    | 'original_title.asc'
-    | 'original_title.desc'
-    | 'vote_average.asc'
-    | 'vote_average.desc'
-    | 'vote_count.asc'
-    | 'vote_count.desc';
+  sortBy?: SortOptions;
 }
 
 interface DiscoverTvOptions {
@@ -72,15 +76,7 @@ interface DiscoverTvOptions {
   genre?: number;
   network?: number;
   keywords?: string;
-  sortBy?:
-    | 'popularity.asc'
-    | 'popularity.desc'
-    | 'vote_average.asc'
-    | 'vote_average.desc'
-    | 'vote_count.asc'
-    | 'vote_count.desc'
-    | 'first_air_date.asc'
-    | 'first_air_date.desc';
+  sortBy?: SortOptions;
 }
 
 class TheMovieDb extends ExternalAPI {
@@ -448,6 +444,16 @@ class TheMovieDb extends ExternalAPI {
     keywords,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
+      const defaultFutureDate = new Date(
+        Date.now() + 1000 * 60 * 60 * 24 * (365 * 1.5)
+      )
+        .toISOString()
+        .split('T')[0];
+
+      const defaultPastDate = new Date('1900-01-01')
+        .toISOString()
+        .split('T')[0];
+
       const data = await this.get<TmdbSearchMovieResponse>('/discover/movie', {
         params: {
           sort_by: sortBy,
@@ -455,9 +461,22 @@ class TheMovieDb extends ExternalAPI {
           include_adult: includeAdult,
           language,
           region: this.region,
-          with_original_language: originalLanguage ?? this.originalLanguage,
-          'primary_release_date.gte': primaryReleaseDateGte,
-          'primary_release_date.lte': primaryReleaseDateLte,
+          with_original_language:
+            originalLanguage && originalLanguage !== 'all'
+              ? originalLanguage
+              : originalLanguage === 'all'
+              ? undefined
+              : this.originalLanguage,
+          // Set our release date values, but check if one is set and not the other,
+          // so we can force a past date or a future date. TMDB Requires both values if one is set!
+          'primary_release_date.gte':
+            !primaryReleaseDateGte && primaryReleaseDateLte
+              ? defaultPastDate
+              : primaryReleaseDateGte,
+          'primary_release_date.lte':
+            !primaryReleaseDateLte && primaryReleaseDateGte
+              ? defaultFutureDate
+              : primaryReleaseDateLte,
           with_genres: genre,
           with_companies: studio,
           with_keywords: keywords,
@@ -483,15 +502,38 @@ class TheMovieDb extends ExternalAPI {
     keywords,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
+      const defaultFutureDate = new Date(
+        Date.now() + 1000 * 60 * 60 * 24 * (365 * 1.5)
+      )
+        .toISOString()
+        .split('T')[0];
+
+      const defaultPastDate = new Date('1900-01-01')
+        .toISOString()
+        .split('T')[0];
+
       const data = await this.get<TmdbSearchTvResponse>('/discover/tv', {
         params: {
           sort_by: sortBy,
           page,
           language,
           region: this.region,
-          'first_air_date.gte': firstAirDateGte,
-          'first_air_date.lte': firstAirDateLte,
-          with_original_language: originalLanguage ?? this.originalLanguage,
+          // Set our release date values, but check if one is set and not the other,
+          // so we can force a past date or a future date. TMDB Requires both values if one is set!
+          'first_air_date.gte':
+            !firstAirDateGte && firstAirDateLte
+              ? defaultPastDate
+              : firstAirDateGte,
+          'first_air_date.lte':
+            !firstAirDateLte && firstAirDateGte
+              ? defaultFutureDate
+              : firstAirDateLte,
+          with_original_language:
+            originalLanguage && originalLanguage !== 'all'
+              ? originalLanguage
+              : originalLanguage === 'all'
+              ? undefined
+              : this.originalLanguage,
           include_null_first_air_dates: includeEmptyReleaseDate,
           with_genres: genre,
           with_networks: network,

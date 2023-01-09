@@ -4130,7 +4130,7 @@ paths:
         - in: query
           name: genre
           schema:
-            type: number
+            type: string
             example: 18
         - in: query
           name: studio
@@ -4142,6 +4142,21 @@ paths:
           schema:
             type: string
             example: 1,2
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            example: popularity.desc
+        - in: query
+          name: primaryReleaseDateGte
+          schema:
+            type: string
+            example: 2022-01-01
+        - in: query
+          name: primaryReleaseDateLte
+          schema:
+            type: string
+            example: 2023-01-01
       responses:
         '200':
           description: Results
@@ -4376,6 +4391,21 @@ paths:
           schema:
             type: string
             example: 1,2
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            example: popularity.desc
+        - in: query
+          name: firstAirDateGte
+          schema:
+            type: string
+            example: 2022-01-01
+        - in: query
+          name: firstAirDateLte
+          schema:
+            type: string
+            example: 2023-01-01
       responses:
         '200':
           description: Results

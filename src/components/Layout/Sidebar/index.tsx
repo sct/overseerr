@@ -6,7 +6,9 @@ import {
   ClockIcon,
   CogIcon,
   ExclamationTriangleIcon,
+  FilmIcon,
   SparklesIcon,
+  TvIcon,
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -17,6 +19,8 @@ import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   dashboard: 'Discover',
+  browsemovies: 'Movies',
+  browsetv: 'Series',
   requests: 'Requests',
   issues: 'Issues',
   users: 'Users',
@@ -44,7 +48,19 @@ const SidebarLinks: SidebarLinkProps[] = [
     href: '/',
     messagesKey: 'dashboard',
     svgIcon: <SparklesIcon className="mr-3 h-6 w-6" />,
-    activeRegExp: /^\/(discover\/?(movies|tv)?)?$/,
+    activeRegExp: /^\/(discover\/?)?$/,
+  },
+  {
+    href: '/discover/movies',
+    messagesKey: 'browsemovies',
+    svgIcon: <FilmIcon className="mr-3 h-6 w-6" />,
+    activeRegExp: /^\/discover\/movies$/,
+  },
+  {
+    href: '/discover/tv',
+    messagesKey: 'browsetv',
+    svgIcon: <TvIcon className="mr-3 h-6 w-6" />,
+    activeRegExp: /^\/discover\/tv$/,
   },
   {
     href: '/requests',

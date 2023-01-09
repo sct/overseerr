@@ -1,4 +1,5 @@
 import PlexTvAPI from '@server/api/plextv';
+import type { SortOptions } from '@server/api/themoviedb';
 import TheMovieDb from '@server/api/themoviedb';
 import type { TmdbKeyword } from '@server/api/themoviedb/interfaces';
 import { MediaType } from '@server/constants/media';
@@ -54,9 +55,21 @@ discoverRoutes.get('/movies', async (req, res, next) => {
   try {
     const data = await tmdb.getDiscoverMovies({
       page: Number(req.query.page),
+      sortBy: req.query.sortBy as SortOptions,
       language: req.locale ?? (req.query.language as string),
-      genre: req.query.genre ? Number(req.query.genre) : undefined,
-      studio: req.query.studio ? Number(req.query.studio) : undefined,
+      originalLanguage: req.query.language as string,
+      genre: req.query.genre as string,
+      studio: req.query.studio as string,
+      primaryReleaseDateLte: req.query.primaryReleaseDateLte
+        ? new Date(req.query.primaryReleaseDateLte as string)
+            .toISOString()
+            .split('T')[0]
+        : undefined,
+      primaryReleaseDateGte: req.query.primaryReleaseDateGte
+        ? new Date(req.query.primaryReleaseDateGte as string)
+            .toISOString()
+            .split('T')[0]
+        : undefined,
       keywords,
     });
 
@@ -178,7 +191,7 @@ discoverRoutes.get<{ genreId: string }>(
       const data = await tmdb.getDiscoverMovies({
         page: Number(req.query.page),
         language: req.locale ?? (req.query.language as string),
-        genre: Number(req.params.genreId),
+        genre: req.params.genreId as string,
       });
 
       const media = await Media.getRelatedMedia(
@@ -225,7 +238,7 @@ discoverRoutes.get<{ studioId: string }>(
       const data = await tmdb.getDiscoverMovies({
         page: Number(req.query.page),
         language: req.locale ?? (req.query.language as string),
-        studio: Number(req.params.studioId),
+        studio: req.params.studioId as string,
       });
 
       const media = await Media.getRelatedMedia(
@@ -314,9 +327,21 @@ discoverRoutes.get('/tv', async (req, res, next) => {
   try {
     const data = await tmdb.getDiscoverTv({
       page: Number(req.query.page),
+      sortBy: req.query.sortBy as SortOptions,
       language: req.locale ?? (req.query.language as string),
       genre: req.query.genre ? Number(req.query.genre) : undefined,
       network: req.query.network ? Number(req.query.network) : undefined,
+      firstAirDateLte: req.query.firstAirDateLte
+        ? new Date(req.query.firstAirDateLte as string)
+            .toISOString()
+            .split('T')[0]
+        : undefined,
+      firstAirDateGte: req.query.firstAirDateGte
+        ? new Date(req.query.firstAirDateGte as string)
+            .toISOString()
+            .split('T')[0]
+        : undefined,
+      originalLanguage: req.query.language as string,
       keywords,
     });
 
@@ -672,7 +697,9 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
 
       await Promise.all(
         genres.map(async (genre) => {
-          const genreData = await tmdb.getDiscoverMovies({ genre: genre.id });
+          const genreData = await tmdb.getDiscoverMovies({
+            genre: genre.id.toString(),
+          });
 
           mappedGenres.push({
             id: genre.id,

@@ -5822,7 +5822,7 @@ dateformat@^3.0.0:
   resolved "https://registry.yarnpkg.com/dateformat/-/dateformat-3.0.3.tgz#a6e37499a4d9a9cf85ef5872044d62901c9889ae"
   integrity sha512-jyCETtSl3VMZMWeRo7iY1FL19ges1t55hMo5yaam4Jrsm5EPL89UQkoQRyiI+Yf4k8r2ZpdngkV8hr1lIdjb3Q==
 
-dayjs@^1.10.4:
+dayjs@^1.10.4, dayjs@^1.11.7:
   version "1.11.7"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.7.tgz#4b296922642f70999544d1144a2c25730fce63e2"
   integrity sha512-+Yw9U6YO5TQohxLcIkrXBeY73WP3ejHWVvx8XCk3gxvQDCTEmS48ZrSZCKciI7Bhl/uCMyxYtE9UqRILmFphkQ==
@@ -11304,6 +11304,11 @@ react-spring@9.6.1:
     "@react-spring/web" "~9.6.1"
     "@react-spring/zdog" "~9.6.1"
 
+react-tailwindcss-datepicker@^1.3.2:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/react-tailwindcss-datepicker/-/react-tailwindcss-datepicker-1.3.2.tgz#166d5dbbeaa642070be9a4dd8bd3d3bf041205c4"
+  integrity sha512-gG4s4daboLyI3PyUffAIQLCoD2fLnUCzeqRGgfwGW7a+IeQLODMnZuS4dnzBzaXzdCADtG60YxiYNqrVZRC64w==
+
 react-toast-notifications@2.5.1:
   version "2.5.1"
   resolved "https://registry.yarnpkg.com/react-toast-notifications/-/react-toast-notifications-2.5.1.tgz#30216eedb5608ec69719a818b9a2e09283e90074"
@@ -13579,3 +13584,8 @@ yup@0.32.11:
     nanoclone "^0.2.1"
     property-expr "^2.0.4"
     toposort "^2.0.2"
+
+zod@^3.20.2:
+  version "3.20.2"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.20.2.tgz#068606642c8f51b3333981f91c0a8ab37dfc2807"
+  integrity sha512-1MzNQdAvO+54H+EaK5YpyEy0T+Ejo/7YLHS93G3RnYWh5gaotGHwGeN/ZO687qEDU2y4CdStQYXVHIgrUl5UVQ==
