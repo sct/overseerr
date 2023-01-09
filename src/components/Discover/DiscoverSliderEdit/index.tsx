@@ -190,46 +190,48 @@ const DiscoverSliderEdit = ({
           <Bars3Icon className="h-6 w-6" />
           <div>{getSliderTitle(slider)}</div>
         </div>
-        {slider.data && (
-          <div className="pointer-events-none mb-4 flex-1 md:mb-0">
-            {(slider.type === DiscoverSliderType.TMDB_MOVIE_KEYWORD ||
-              slider.type === DiscoverSliderType.TMDB_TV_KEYWORD) && (
-              <div className="flex space-x-2">
-                {slider.data?.split(',').map((keywordId) => (
-                  <KeywordTag
-                    key={`slider-keywords-${slider.id}-${keywordId}`}
-                    keywordId={Number(keywordId)}
-                  />
-                ))}
-              </div>
-            )}
-            {(slider.type === DiscoverSliderType.TMDB_NETWORK ||
-              slider.type === DiscoverSliderType.TMDB_STUDIO) && (
-              <CompanyTag
-                type={
-                  slider.type === DiscoverSliderType.TMDB_STUDIO
-                    ? 'studio'
-                    : 'network'
-                }
-                companyId={Number(slider.data)}
-              />
-            )}
-            {(slider.type === DiscoverSliderType.TMDB_TV_GENRE ||
-              slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE) && (
-              <GenreTag
-                type={
-                  slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE
-                    ? 'movie'
-                    : 'tv'
-                }
-                genreId={Number(slider.data)}
-              />
-            )}
-            {slider.type === DiscoverSliderType.TMDB_SEARCH && (
-              <Tag iconSvg={<MagnifyingGlassIcon />}>{slider.data}</Tag>
-            )}
-          </div>
-        )}
+        <div
+          className={`pointer-events-none ${
+            slider.data ? 'mb-4' : ''
+          } flex-1 md:mb-0`}
+        >
+          {(slider.type === DiscoverSliderType.TMDB_MOVIE_KEYWORD ||
+            slider.type === DiscoverSliderType.TMDB_TV_KEYWORD) && (
+            <div className="flex space-x-2">
+              {slider.data?.split(',').map((keywordId) => (
+                <KeywordTag
+                  key={`slider-keywords-${slider.id}-${keywordId}`}
+                  keywordId={Number(keywordId)}
+                />
+              ))}
+            </div>
+          )}
+          {(slider.type === DiscoverSliderType.TMDB_NETWORK ||
+            slider.type === DiscoverSliderType.TMDB_STUDIO) && (
+            <CompanyTag
+              type={
+                slider.type === DiscoverSliderType.TMDB_STUDIO
+                  ? 'studio'
+                  : 'network'
+              }
+              companyId={Number(slider.data)}
+            />
+          )}
+          {(slider.type === DiscoverSliderType.TMDB_TV_GENRE ||
+            slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE) && (
+            <GenreTag
+              type={
+                slider.type === DiscoverSliderType.TMDB_MOVIE_GENRE
+                  ? 'movie'
+                  : 'tv'
+              }
+              genreId={Number(slider.data)}
+            />
+          )}
+          {slider.type === DiscoverSliderType.TMDB_SEARCH && (
+            <Tag iconSvg={<MagnifyingGlassIcon />}>{slider.data}</Tag>
+          )}
+        </div>
         <div className="flex items-center space-x-2">
           {!slider.isBuiltIn && (
             <>
