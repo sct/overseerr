@@ -3,7 +3,10 @@ import Header from '@app/components/Common/Header';
 import ListView from '@app/components/Common/ListView';
 import PageTitle from '@app/components/Common/PageTitle';
 import type { FilterOptions } from '@app/components/Discover/constants';
-import { prepareFilterValues } from '@app/components/Discover/constants';
+import {
+  countActiveFilters,
+  prepareFilterValues,
+} from '@app/components/Discover/constants';
 import FilterSlideover from '@app/components/Discover/FilterSlideover';
 import useDiscover from '@app/hooks/useDiscover';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
@@ -119,9 +122,7 @@ const DiscoverTv = () => {
               <FunnelIcon />
               <span>
                 {intl.formatMessage(messages.activefilters, {
-                  count: Object.keys(preparedFilters).filter(
-                    (k) => k !== 'sortBy'
-                  ).length,
+                  count: countActiveFilters(preparedFilters),
                 })}
               </span>
             </Button>

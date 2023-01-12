@@ -22,6 +22,7 @@ import { mapNetwork } from '@server/models/Tv';
 import { isMovie, isPerson } from '@server/utils/typeHelpers';
 import { Router } from 'express';
 import { sortBy } from 'lodash';
+import { z } from 'zod';
 
 export const createTmdbWithRegionLanguage = (user?: User): TheMovieDb => {
   const settings = getSettings();
@@ -48,29 +49,50 @@ export const createTmdbWithRegionLanguage = (user?: User): TheMovieDb => {
 
 const discoverRoutes = Router();
 
+const QueryFilterOptions = z.object({
+  page: z.coerce.string().optional(),
+  sortBy: z.coerce.string().optional(),
+  primaryReleaseDateGte: z.coerce.string().optional(),
+  primaryReleaseDateLte: z.coerce.string().optional(),
+  firstAirDateGte: z.coerce.string().optional(),
+  firstAirDateLte: z.coerce.string().optional(),
+  studio: z.coerce.string().optional(),
+  genre: z.coerce.string().optional(),
+  keywords: z.coerce.string().optional(),
+  language: z.coerce.string().optional(),
+  withRuntimeGte: z.coerce.string().optional(),
+  withRuntimeLte: z.coerce.string().optional(),
+  voteAverageGte: z.coerce.string().optional(),
+  voteAverageLte: z.coerce.string().optional(),
+  network: z.coerce.string().optional(),
+});
+
+export type FilterOptions = z.infer<typeof QueryFilterOptions>;
+
 discoverRoutes.get('/movies', async (req, res, next) => {
   const tmdb = createTmdbWithRegionLanguage(req.user);
-  const keywords = req.query.keywords as string;
 
   try {
+    const query = QueryFilterOptions.parse(req.query);
+    const keywords = query.keywords;
     const data = await tmdb.getDiscoverMovies({
-      page: Number(req.query.page),
-      sortBy: req.query.sortBy as SortOptions,
-      language: req.locale ?? (req.query.language as string),
-      originalLanguage: req.query.language as string,
-      genre: req.query.genre as string,
-      studio: req.query.studio as string,
-      primaryReleaseDateLte: req.query.primaryReleaseDateLte
-        ? new Date(req.query.primaryReleaseDateLte as string)
-            .toISOString()
-            .split('T')[0]
+      page: Number(query.page),
+      sortBy: query.sortBy as SortOptions,
+      language: req.locale ?? query.language,
+      originalLanguage: query.language,
+      genre: query.genre,
+      studio: query.studio,
+      primaryReleaseDateLte: query.primaryReleaseDateLte
+        ? new Date(query.primaryReleaseDateLte).toISOString().split('T')[0]
         : undefined,
-      primaryReleaseDateGte: req.query.primaryReleaseDateGte
-        ? new Date(req.query.primaryReleaseDateGte as string)
-            .toISOString()
-            .split('T')[0]
+      primaryReleaseDateGte: query.primaryReleaseDateGte
+        ? new Date(query.primaryReleaseDateGte).toISOString().split('T')[0]
         : undefined,
       keywords,
+      withRuntimeGte: query.withRuntimeGte,
+      withRuntimeLte: query.withRuntimeLte,
+      voteAverageGte: query.voteAverageGte,
+      voteAverageLte: query.voteAverageLte,
     });
 
     const media = await Media.getRelatedMedia(
@@ -322,27 +344,28 @@ discoverRoutes.get('/movies/upcoming', async (req, res, next) => {
 
 discoverRoutes.get('/tv', async (req, res, next) => {
   const tmdb = createTmdbWithRegionLanguage(req.user);
-  const keywords = req.query.keywords as string;
 
   try {
+    const query = QueryFilterOptions.parse(req.query);
+    const keywords = query.keywords;
     const data = await tmdb.getDiscoverTv({
-      page: Number(req.query.page),
-      sortBy: req.query.sortBy as SortOptions,
-      language: req.locale ?? (req.query.language as string),
-      genre: req.query.genre ? Number(req.query.genre) : undefined,
-      network: req.query.network ? Number(req.query.network) : undefined,
-      firstAirDateLte: req.query.firstAirDateLte
-        ? new Date(req.query.firstAirDateLte as string)
-            .toISOString()
-            .split('T')[0]
+      page: Number(query.page),
+      sortBy: query.sortBy as SortOptions,
+      language: req.locale ?? query.language,
+      genre: query.genre ? Number(query.genre) : undefined,
+      network: query.network ? Number(query.network) : undefined,
+      firstAirDateLte: query.firstAirDateLte
+        ? new Date(query.firstAirDateLte).toISOString().split('T')[0]
         : undefined,
-      firstAirDateGte: req.query.firstAirDateGte
-        ? new Date(req.query.firstAirDateGte as string)
-            .toISOString()
-            .split('T')[0]
+      firstAirDateGte: query.firstAirDateGte
+        ? new Date(query.firstAirDateGte).toISOString().split('T')[0]
         : undefined,
-      originalLanguage: req.query.language as string,
+      originalLanguage: query.language,
       keywords,
+      withRuntimeGte: query.withRuntimeGte,
+      withRuntimeLte: query.withRuntimeLte,
+      voteAverageGte: query.voteAverageGte,
+      voteAverageLte: query.voteAverageLte,
     });
 
     const media = await Media.getRelatedMedia(

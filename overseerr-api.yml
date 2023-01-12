@@ -4157,6 +4157,26 @@ paths:
           schema:
             type: string
             example: 2023-01-01
+        - in: query
+          name: withRuntimeGte
+          schema:
+            type: number
+            example: 60
+        - in: query
+          name: withRuntimeLte
+          schema:
+            type: number
+            example: 120
+        - in: query
+          name: voteAverageGte
+          schema:
+            type: number
+            example: 7
+        - in: query
+          name: voteAverageLte
+          schema:
+            type: number
+            example: 10
       responses:
         '200':
           description: Results
@@ -4406,6 +4426,26 @@ paths:
           schema:
             type: string
             example: 2023-01-01
+        - in: query
+          name: withRuntimeGte
+          schema:
+            type: number
+            example: 60
+        - in: query
+          name: withRuntimeLte
+          schema:
+            type: number
+            example: 120
+        - in: query
+          name: voteAverageGte
+          schema:
+            type: number
+            example: 7
+        - in: query
+          name: voteAverageLte
+          schema:
+            type: number
+            example: 10
       responses:
         '200':
           description: Results

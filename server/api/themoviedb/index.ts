@@ -59,6 +59,10 @@ interface DiscoverMovieOptions {
   language?: string;
   primaryReleaseDateGte?: string;
   primaryReleaseDateLte?: string;
+  withRuntimeGte?: string;
+  withRuntimeLte?: string;
+  voteAverageGte?: string;
+  voteAverageLte?: string;
   originalLanguage?: string;
   genre?: string;
   studio?: string;
@@ -71,6 +75,10 @@ interface DiscoverTvOptions {
   language?: string;
   firstAirDateGte?: string;
   firstAirDateLte?: string;
+  withRuntimeGte?: string;
+  withRuntimeLte?: string;
+  voteAverageGte?: string;
+  voteAverageLte?: string;
   includeEmptyReleaseDate?: boolean;
   originalLanguage?: string;
   genre?: number;
@@ -442,6 +450,10 @@ class TheMovieDb extends ExternalAPI {
     genre,
     studio,
     keywords,
+    withRuntimeGte,
+    withRuntimeLte,
+    voteAverageGte,
+    voteAverageLte,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const defaultFutureDate = new Date(
@@ -480,6 +492,10 @@ class TheMovieDb extends ExternalAPI {
           with_genres: genre,
           with_companies: studio,
           with_keywords: keywords,
+          'with_runtime.gte': withRuntimeGte,
+          'with_runtime.lte': withRuntimeLte,
+          'vote_average.gte': voteAverageGte,
+          'vote_average.lte': voteAverageLte,
         },
       });
 
@@ -500,6 +516,10 @@ class TheMovieDb extends ExternalAPI {
     genre,
     network,
     keywords,
+    withRuntimeGte,
+    withRuntimeLte,
+    voteAverageGte,
+    voteAverageLte,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const defaultFutureDate = new Date(
@@ -538,6 +558,10 @@ class TheMovieDb extends ExternalAPI {
           with_genres: genre,
           with_networks: network,
           with_keywords: keywords,
+          'with_runtime.gte': withRuntimeGte,
+          'with_runtime.lte': withRuntimeLte,
+          'vote_average.gte': voteAverageGte,
+          'vote_average.lte': voteAverageLte,
         },
       });
 

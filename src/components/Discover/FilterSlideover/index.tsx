@@ -1,5 +1,8 @@
+import Button from '@app/components/Common/Button';
+import MultiRangeSlider from '@app/components/Common/MultiRangeSlider';
 import SlideOver from '@app/components/Common/SlideOver';
 import type { FilterOptions } from '@app/components/Discover/constants';
+import { countActiveFilters } from '@app/components/Discover/constants';
 import LanguageSelector from '@app/components/LanguageSelector';
 import {
   CompanySelector,
@@ -7,7 +10,11 @@ import {
   KeywordSelector,
 } from '@app/components/Selector';
 import useSettings from '@app/hooks/useSettings';
-import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
+import {
+  useBatchUpdateQueryParams,
+  useUpdateQueryParams,
+} from '@app/hooks/useUpdateQueryParams';
+import { XCircleIcon } from '@heroicons/react/24/outline';
 import { defineMessages, useIntl } from 'react-intl';
 import Datepicker from 'react-tailwindcss-datepicker';
 
@@ -23,6 +30,11 @@ const messages = defineMessages({
   genres: 'Genres',
   keywords: 'Keywords',
   originalLanguage: 'Original Language',
+  runtimeText: '{minValue}-{maxValue} minute runtime',
+  ratingText: 'Ratings between {minValue} and {maxValue}',
+  clearfilters: 'Clear Active Filters',
+  tmdbuserscore: 'TMDB User Score',
+  runtime: 'Runtime',
 });
 
 type FilterSlideoverProps = {
@@ -41,6 +53,7 @@ const FilterSlideover = ({
   const intl = useIntl();
   const { currentSettings } = useSettings();
   const updateQueryParams = useUpdateQueryParams({});
+  const batchUpdateQueryParams = useBatchUpdateQueryParams({});
 
   const dateGte =
     type === 'movie' ? 'primaryReleaseDateGte' : 'firstAirDateGte';
@@ -52,7 +65,7 @@ const FilterSlideover = ({
       show={show}
       title={intl.formatMessage(messages.filters)}
       subText={intl.formatMessage(messages.activefilters, {
-        count: Object.keys(currentFilters).filter((k) => k !== 'sortBy').length,
+        count: countActiveFilters(currentFilters),
       })}
       onClose={() => onClose()}
     >
@@ -63,7 +76,7 @@ const FilterSlideover = ({
               type === 'movie' ? messages.releaseDate : messages.firstAirDate
             )}
           </div>
-          <div className="flex space-x-2">
+          <div className="relative z-40 flex space-x-2">
             <div className="flex flex-col">
               <div className="mb-2">{intl.formatMessage(messages.from)}</div>
               <Datepicker
@@ -142,7 +155,6 @@ const FilterSlideover = ({
           {intl.formatMessage(messages.originalLanguage)}
         </span>
         <LanguageSelector
-          key={`language-selector-${currentFilters.language}`}
           value={currentFilters.language}
           serverValue={currentSettings.originalLanguage}
           isUserSettings
@@ -150,6 +162,103 @@ const FilterSlideover = ({
             updateQueryParams('language', value);
           }}
         />
+        <span className="text-lg font-semibold">
+          {intl.formatMessage(messages.runtime)}
+        </span>
+        <div className="relative z-0">
+          <MultiRangeSlider
+            min={0}
+            max={400}
+            onUpdateMin={(min) => {
+              updateQueryParams(
+                'withRuntimeGte',
+                min !== 0 && Number(currentFilters.withRuntimeLte) !== 400
+                  ? min.toString()
+                  : undefined
+              );
+            }}
+            onUpdateMax={(max) => {
+              updateQueryParams(
+                'withRuntimeLte',
+                max !== 400 && Number(currentFilters.withRuntimeGte) !== 0
+                  ? max.toString()
+                  : undefined
+              );
+            }}
+            defaultMaxValue={
+              currentFilters.withRuntimeLte
+                ? Number(currentFilters.withRuntimeLte)
+                : undefined
+            }
+            defaultMinValue={
+              currentFilters.withRuntimeGte
+                ? Number(currentFilters.withRuntimeGte)
+                : undefined
+            }
+            subText={intl.formatMessage(messages.runtimeText, {
+              minValue: currentFilters.withRuntimeGte ?? 0,
+              maxValue: currentFilters.withRuntimeLte ?? 400,
+            })}
+          />
+        </div>
+        <span className="text-lg font-semibold">
+          {intl.formatMessage(messages.tmdbuserscore)}
+        </span>
+        <div className="relative z-0">
+          <MultiRangeSlider
+            min={1}
+            max={10}
+            defaultMaxValue={
+              currentFilters.voteAverageLte
+                ? Number(currentFilters.voteAverageLte)
+                : undefined
+            }
+            defaultMinValue={
+              currentFilters.voteAverageGte
+                ? Number(currentFilters.voteAverageGte)
+                : undefined
+            }
+            onUpdateMin={(min) => {
+              updateQueryParams(
+                'voteAverageGte',
+                min !== 1 && Number(currentFilters.voteAverageLte) !== 10
+                  ? min.toString()
+                  : undefined
+              );
+            }}
+            onUpdateMax={(max) => {
+              updateQueryParams(
+                'voteAverageLte',
+                max !== 10 && Number(currentFilters.voteAverageGte) !== 1
+                  ? max.toString()
+                  : undefined
+              );
+            }}
+            subText={intl.formatMessage(messages.ratingText, {
+              minValue: currentFilters.voteAverageGte ?? 1,
+              maxValue: currentFilters.voteAverageLte ?? 10,
+            })}
+          />
+        </div>
+        <div className="pt-4">
+          <Button
+            className="w-full"
+            disabled={Object.keys(currentFilters).length === 0}
+            onClick={() => {
+              const copyCurrent = Object.assign({}, currentFilters);
+              (
+                Object.keys(copyCurrent) as (keyof typeof currentFilters)[]
+              ).forEach((k) => {
+                copyCurrent[k] = undefined;
+              });
+              batchUpdateQueryParams(copyCurrent);
+              onClose();
+            }}
+          >
+            <XCircleIcon />
+            <span>{intl.formatMessage(messages.clearfilters)}</span>
+          </Button>
+        </div>
       </div>
     </SlideOver>
   );
