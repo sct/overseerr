@@ -14,7 +14,7 @@ import AsyncSelect from 'react-select/async';
 
 const messages = defineMessages({
   searchKeywords: 'Search keywords…',
-  searchGenres: 'Search genres…',
+  searchGenres: 'Select genres…',
   searchStudios: 'Search studios…',
   starttyping: 'Starting typing to search.',
   nooptions: 'No results.',
@@ -100,6 +100,11 @@ export const CompanySelector = ({
       defaultOptions
       cacheOptions
       isClearable
+      noOptionsMessage={({ inputValue }) =>
+        inputValue === ''
+          ? intl.formatMessage(messages.starttyping)
+          : intl.formatMessage(messages.nooptions)
+      }
       loadOptions={loadCompanyOptions}
       placeholder={intl.formatMessage(messages.searchStudios)}
       onChange={(value) => {

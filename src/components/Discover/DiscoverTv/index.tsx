@@ -118,7 +118,7 @@ const DiscoverTv = () => {
             show={showFilters}
           />
           <div className="mb-2 flex flex-grow sm:mb-0 lg:flex-grow-0">
-            <Button onClick={() => setShowFilters(true)}>
+            <Button onClick={() => setShowFilters(true)} className="w-full">
               <FunnelIcon />
               <span>
                 {intl.formatMessage(messages.activefilters, {
