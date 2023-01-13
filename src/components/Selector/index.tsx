@@ -1,4 +1,4 @@
-import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
+import { encodeURIExtraParams } from '@app/hooks/useDiscover';
 import type {
   TmdbCompanySearchResponse,
   TmdbGenre,
