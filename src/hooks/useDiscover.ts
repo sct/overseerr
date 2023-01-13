@@ -1,3 +1,4 @@
+import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
 import { MediaStatus } from '@server/constants/media';
 import useSWRInfinite from 'swr/infinite';
 import useSettings from './useSettings';
@@ -27,9 +28,13 @@ interface DiscoverResult<T, S> {
   firstResultData?: BaseSearchResult<T> & S;
 }
 
-const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
+const useDiscover = <
+  T extends BaseMedia,
+  S = Record<string, never>,
+  O = Record<string, unknown>
+>(
   endpoint: string,
-  options?: Record<string, unknown>,
+  options?: O,
   { hideAvailable = true } = {}
 ): DiscoverResult<T, S> => {
   const settings = useSettings();
@@ -47,7 +52,10 @@ const useDiscover = <T extends BaseMedia, S = Record<string, never>>(
       };
 
       const finalQueryString = Object.keys(params)
-        .map((paramKey) => `${paramKey}=${params[paramKey]}`)
+        .map(
+          (paramKey) =>
+            `${paramKey}=${encodeURIExtraParams(params[paramKey] as string)}`
+        )
         .join('&');
 
       return `${endpoint}?${finalQueryString}`;

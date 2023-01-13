@@ -425,6 +425,34 @@
   .react-select-container .react-select__placeholder {
     @apply text-sm text-gray-500;
   }
+
+  .datepicker-wrapper > button {
+    @apply top-0;
+  }
+
+  .datepicker-wrapper > div {
+    @apply fixed left-0 right-0 w-full px-4 md:w-auto;
+  }
+
+  .datepicker-wrapper > div > div:nth-child(2) > div {
+    @apply !flex-col;
+  }
+
+  .datepicker-wrapper > div > div:nth-child(2) > div > div > div {
+    @apply !w-full !min-w-full;
+  }
+
+  .datepicker-wrapper > div > div:first-child {
+    @apply hidden;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    @apply rounded-full bg-indigo-500;
+    pointer-events: all;
+    width: 16px;
+    height: 16px;
+    -webkit-appearance: none;
+  }
 }
 
 @layer utilities {

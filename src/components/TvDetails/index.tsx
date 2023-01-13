@@ -206,7 +206,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     seriesAttributes.push(
       data.genres
         .map((g) => (
-          <Link href={`/discover/tv/genre/${g.id}`} key={`genre-${g.id}`}>
+          <Link href={`/discover/tv?genre=${g.id}`} key={`genre-${g.id}`}>
             <a className="hover:underline">{g.name}</a>
           </Link>
         ))
@@ -499,7 +499,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
             <div className="mt-6">
               {data.keywords.map((keyword) => (
                 <Link
-                  href={`/discover/tv/keyword?keywords=${keyword.id}`}
+                  href={`/discover/tv?keywords=${keyword.id}`}
                   key={`keyword-id-${keyword.id}`}
                 >
                   <a className="mb-2 mr-2 inline-flex last:mr-0">
