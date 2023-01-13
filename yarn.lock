@@ -11304,10 +11304,10 @@ react-spring@9.6.1:
     "@react-spring/web" "~9.6.1"
     "@react-spring/zdog" "~9.6.1"
 
-react-tailwindcss-datepicker@^1.3.2:
-  version "1.3.2"
-  resolved "https://registry.yarnpkg.com/react-tailwindcss-datepicker/-/react-tailwindcss-datepicker-1.3.2.tgz#166d5dbbeaa642070be9a4dd8bd3d3bf041205c4"
-  integrity sha512-gG4s4daboLyI3PyUffAIQLCoD2fLnUCzeqRGgfwGW7a+IeQLODMnZuS4dnzBzaXzdCADtG60YxiYNqrVZRC64w==
+react-tailwindcss-datepicker-sct@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/react-tailwindcss-datepicker-sct/-/react-tailwindcss-datepicker-sct-1.3.4.tgz#e7e91c390a40822abca62e7259cee8156616d7d0"
+  integrity sha512-QlLekGZDbmW2DPGS33c4gfIxkk4gcgu4sRzBIm4/mZxfHuo7J+GR6SBVNIb5Xh8aCLlGtgyLqD+o0UmOVFIc4w==
 
 react-toast-notifications@2.5.1:
   version "2.5.1"

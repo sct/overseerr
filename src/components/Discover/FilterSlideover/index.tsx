@@ -16,7 +16,7 @@ import {
 } from '@app/hooks/useUpdateQueryParams';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { defineMessages, useIntl } from 'react-intl';
-import Datepicker from 'react-tailwindcss-datepicker';
+import Datepicker from 'react-tailwindcss-datepicker-sct';
 
 const messages = defineMessages({
   filters: 'Filters',
@@ -91,9 +91,11 @@ const FilterSlideover = ({
                     value?.startDate ? (value.startDate as string) : undefined
                   );
                 }}
+                inputName="fromdate"
                 useRange={false}
                 asSingle
                 containerClassName="datepicker-wrapper"
+                inputClassName="pr-1 sm:pr-4"
               />
             </div>
             <div className="flex flex-col">
@@ -110,9 +112,11 @@ const FilterSlideover = ({
                     value?.startDate ? (value.startDate as string) : undefined
                   );
                 }}
+                inputName="todate"
                 useRange={false}
                 asSingle
                 containerClassName="datepicker-wrapper"
+                inputClassName="pr-1 sm:pr-4"
               />
             </div>
           </div>
