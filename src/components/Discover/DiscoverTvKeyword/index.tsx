@@ -1,8 +1,7 @@
 import Header from '@app/components/Common/Header';
 import ListView from '@app/components/Common/ListView';
 import PageTitle from '@app/components/Common/PageTitle';
-import useDiscover from '@app/hooks/useDiscover';
-import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
+import useDiscover, { encodeURIExtraParams } from '@app/hooks/useDiscover';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import type { TmdbKeyword } from '@server/api/themoviedb/interfaces';

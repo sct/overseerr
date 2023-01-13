@@ -1,4 +1,3 @@
-import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
 import { MediaStatus } from '@server/constants/media';
 import useSWRInfinite from 'swr/infinite';
 import useSettings from './useSettings';
@@ -27,6 +26,23 @@ interface DiscoverResult<T, S> {
   titles: T[];
   firstResultData?: BaseSearchResult<T> & S;
 }
+
+const extraEncodes: [RegExp, string][] = [
+  [/\(/g, '%28'],
+  [/\)/g, '%29'],
+  [/!/g, '%21'],
+  [/\*/g, '%2A'],
+];
+
+export const encodeURIExtraParams = (string: string): string => {
+  let finalString = encodeURIComponent(string);
+
+  extraEncodes.forEach((encode) => {
+    finalString = finalString.replace(encode[0], encode[1]);
+  });
+
+  return finalString;
+};
 
 const useDiscover = <
   T extends BaseMedia,
