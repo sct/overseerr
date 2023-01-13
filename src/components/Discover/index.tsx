@@ -14,7 +14,7 @@ import RecentRequestsSlider from '@app/components/Discover/RecentRequestsSlider'
 import StudioSlider from '@app/components/Discover/StudioSlider';
 import TvGenreSlider from '@app/components/Discover/TvGenreSlider';
 import MediaSlider from '@app/components/MediaSlider';
-import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
+import { encodeURIExtraParams } from '@app/hooks/useDiscover';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';

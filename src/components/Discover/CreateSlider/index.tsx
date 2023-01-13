@@ -2,7 +2,7 @@ import Button from '@app/components/Common/Button';
 import Tooltip from '@app/components/Common/Tooltip';
 import { sliderTitles } from '@app/components/Discover/constants';
 import MediaSlider from '@app/components/MediaSlider';
-import { encodeURIExtraParams } from '@app/hooks/useSearchInput';
+import { encodeURIExtraParams } from '@app/hooks/useDiscover';
 import type {
   TmdbCompanySearchResponse,
   TmdbGenre,
