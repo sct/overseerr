@@ -109,6 +109,12 @@ const Discover = () => {
     }
   };
 
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const upcomingDate = new Date(now.getTime() - offset * 60 * 1000)
+    .toISOString()
+    .split('T')[0];
+
   if (!discoverData && !discoverError) {
     return <LoadingSpinner />;
   }
@@ -240,8 +246,9 @@ const Discover = () => {
               <MediaSlider
                 sliderKey="upcoming"
                 title={intl.formatMessage(sliderTitles.upcoming)}
-                linkUrl="/discover/movies/upcoming"
-                url="/api/v1/discover/movies/upcoming"
+                linkUrl={`/discover/movies?primaryReleaseDateGte=${upcomingDate}`}
+                url="/api/v1/discover/movies"
+                extraParams={`primaryReleaseDateGte=${upcomingDate}`}
               />
             );
             break;
@@ -266,8 +273,9 @@ const Discover = () => {
               <MediaSlider
                 sliderKey="upcoming-tv"
                 title={intl.formatMessage(sliderTitles.upcomingtv)}
-                url="/api/v1/discover/tv/upcoming"
-                linkUrl="/discover/tv/upcoming"
+                linkUrl={`/discover/tv?firstAirDateGte=${upcomingDate}`}
+                url="/api/v1/discover/tv"
+                extraParams={`firstAirDateGte=${upcomingDate}`}
               />
             );
             break;
@@ -285,7 +293,7 @@ const Discover = () => {
                     ? `keywords=${encodeURIExtraParams(slider.data)}`
                     : ''
                 }
-                linkUrl={`/discover/movies/keyword?keywords=${slider.data}`}
+                linkUrl={`/discover/movies?keywords=${slider.data}`}
               />
             );
             break;
@@ -300,7 +308,7 @@ const Discover = () => {
                     ? `keywords=${encodeURIExtraParams(slider.data)}`
                     : ''
                 }
-                linkUrl={`/discover/tv/keyword?keywords=${slider.data}`}
+                linkUrl={`/discover/tv?keywords=${slider.data}`}
               />
             );
             break;
@@ -309,8 +317,9 @@ const Discover = () => {
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
-                url={`/api/v1/discover/movies/genre/${slider.data}`}
-                linkUrl={`/discover/movies/genre/${slider.data}`}
+                url={`/api/v1/discover/movies`}
+                extraParams={`genre=${slider.data}`}
+                linkUrl={`/discover/movies?genre=${slider.data}`}
               />
             );
             break;
@@ -319,8 +328,9 @@ const Discover = () => {
               <MediaSlider
                 sliderKey={`custom-slider-${slider.id}`}
                 title={slider.title ?? ''}
-                url={`/api/v1/discover/tv/genre/${slider.data}`}
-                linkUrl={`/discover/tv/genre/${slider.data}`}
+                url={`/api/v1/discover/tv`}
+                extraParams={`genre=${slider.data}`}
+                linkUrl={`/discover/tv?genre=${slider.data}`}
               />
             );
             break;
