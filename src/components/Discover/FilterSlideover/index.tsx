@@ -95,7 +95,7 @@ const FilterSlideover = ({
                 useRange={false}
                 asSingle
                 containerClassName="datepicker-wrapper"
-                inputClassName="pr-1 sm:pr-4"
+                inputClassName="pr-1 sm:pr-4 text-base leading-5"
               />
             </div>
             <div className="flex flex-col">
@@ -116,7 +116,7 @@ const FilterSlideover = ({
                 useRange={false}
                 asSingle
                 containerClassName="datepicker-wrapper"
-                inputClassName="pr-1 sm:pr-4"
+                inputClassName="pr-1 sm:pr-4 text-base leading-5"
               />
             </div>
           </div>
