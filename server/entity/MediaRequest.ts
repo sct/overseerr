@@ -767,7 +767,7 @@ export class MediaRequest {
         if (
           media[this.is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
         ) {
-          logger.warn('Media already available, marking request as APPROVED', {
+          logger.warn('Media already exists, marking request as APPROVED', {
             label: 'Media Request',
             requestId: this.id,
             mediaId: this.media.id,
@@ -917,7 +917,7 @@ export class MediaRequest {
         if (
           media[this.is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
         ) {
-          logger.warn('Media already available, marking request as APPROVED', {
+          logger.warn('Media already exists, marking request as APPROVED', {
             label: 'Media Request',
             requestId: this.id,
             mediaId: this.media.id,
