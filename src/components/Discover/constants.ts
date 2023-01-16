@@ -102,6 +102,8 @@ export const QueryFilterOptions = z.object({
   withRuntimeLte: z.string().optional(),
   voteAverageGte: z.string().optional(),
   voteAverageLte: z.string().optional(),
+  watchRegion: z.string().optional(),
+  watchProviders: z.string().optional(),
 });
 
 export type FilterOptions = z.infer<typeof QueryFilterOptions>;
@@ -163,6 +165,14 @@ export const prepareFilterValues = (
 
   if (values.voteAverageLte) {
     filterValues.voteAverageLte = values.voteAverageLte;
+  }
+
+  if (values.watchProviders) {
+    filterValues.watchProviders = values.watchProviders;
+  }
+
+  if (values.watchRegion) {
+    filterValues.watchRegion = values.watchRegion;
   }
 
   return filterValues;

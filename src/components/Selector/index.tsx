@@ -1,16 +1,29 @@
+import CachedImage from '@app/components/Common/CachedImage';
+import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
+import Tooltip from '@app/components/Common/Tooltip';
+import RegionSelector from '@app/components/RegionSelector';
 import { encodeURIExtraParams } from '@app/hooks/useDiscover';
+import useSettings from '@app/hooks/useSettings';
+import { ArrowDownIcon, ArrowUpIcon } from '@heroicons/react/20/solid';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import type {
   TmdbCompanySearchResponse,
   TmdbGenre,
   TmdbKeywordSearchResponse,
 } from '@server/api/themoviedb/interfaces';
 import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
-import type { Keyword, ProductionCompany } from '@server/models/common';
+import type {
+  Keyword,
+  ProductionCompany,
+  WatchProviderDetails,
+} from '@server/models/common';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { orderBy } from 'lodash';
+import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import type { MultiValue, SingleValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
+import useSWR from 'swr';
 
 const messages = defineMessages({
   searchKeywords: 'Search keywords…',
@@ -18,6 +31,8 @@ const messages = defineMessages({
   searchStudios: 'Search studios…',
   starttyping: 'Starting typing to search.',
   nooptions: 'No results.',
+  showmore: 'Show More',
+  showless: 'Show Less',
 });
 
 type SingleVal = {
@@ -257,5 +272,185 @@ export const KeywordSelector = ({
         onChange(value as any);
       }}
     />
+  );
+};
+
+type WatchProviderSelectorProps = {
+  type: 'movie' | 'tv';
+  region?: string;
+  activeProviders?: number[];
+  onChange: (region: string, value: number[]) => void;
+};
+
+export const WatchProviderSelector = ({
+  type,
+  onChange,
+  region,
+  activeProviders,
+}: WatchProviderSelectorProps) => {
+  const intl = useIntl();
+  const { currentSettings } = useSettings();
+  const [showMore, setShowMore] = useState(false);
+  const [watchRegion, setWatchRegion] = useState(
+    region ? region : currentSettings.region ? currentSettings.region : 'US'
+  );
+  const [activeProvider, setActiveProvider] = useState<number[]>(
+    activeProviders ?? []
+  );
+  const { data, isLoading } = useSWR<WatchProviderDetails[]>(
+    `/api/v1/watchproviders/${
+      type === 'movie' ? 'movies' : 'tv'
+    }?watchRegion=${watchRegion}`
+  );
+
+  useEffect(() => {
+    onChange(watchRegion, activeProvider);
+  }, [activeProvider, watchRegion, onChange]);
+
+  useEffect(() => {
+    setActiveProvider([]);
+  }, [watchRegion]);
+
+  const orderedData = useMemo(() => {
+    if (!data) {
+      return [];
+    }
+
+    return orderBy(data, ['display_priority'], ['asc']);
+  }, [data]);
+
+  const toggleProvider = (id: number) => {
+    if (activeProvider.includes(id)) {
+      setActiveProvider(activeProvider.filter((p) => p !== id));
+    } else {
+      setActiveProvider([...activeProvider, id]);
+    }
+  };
+
+  const initialProviders = orderedData.slice(0, 24);
+  const otherProviders = orderedData.slice(24);
+
+  return (
+    <>
+      <RegionSelector
+        value={watchRegion}
+        name="watchRegion"
+        onChange={(_name, value) => setWatchRegion(value)}
+        disableAll
+        watchProviders
+      />
+      {isLoading ? (
+        <SmallLoadingSpinner />
+      ) : (
+        <>
+          <div className="grid grid-cols-6 gap-2">
+            {initialProviders.map((provider) => {
+              const isActive = activeProvider.includes(provider.id);
+              return (
+                <Tooltip
+                  content={provider.name}
+                  key={`prodiver-${provider.id}`}
+                >
+                  <div
+                    className={`provider-container relative h-full w-full cursor-pointer rounded-lg p-2 ring-1 ${
+                      isActive
+                        ? 'bg-gray-600 ring-indigo-500 hover:bg-gray-500'
+                        : 'bg-gray-700 ring-gray-500 hover:bg-gray-600'
+                    }`}
+                    onClick={() => toggleProvider(provider.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        toggleProvider(provider.id);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <CachedImage
+                      src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
+                      alt=""
+                      layout="responsive"
+                      width="100%"
+                      height="100%"
+                      className="rounded-lg"
+                    />
+                    {isActive && (
+                      <div className="pointer-events-none absolute -top-1 -left-1 flex items-center justify-center text-indigo-100 opacity-90">
+                        <CheckCircleIcon className="h-6 w-6" />
+                      </div>
+                    )}
+                  </div>
+                </Tooltip>
+              );
+            })}
+          </div>
+          {showMore && otherProviders.length > 0 && (
+            <div className="relative -top-2 grid grid-cols-6 gap-2">
+              {otherProviders.map((provider) => {
+                const isActive = activeProvider.includes(provider.id);
+                return (
+                  <Tooltip
+                    content={provider.name}
+                    key={`prodiver-${provider.id}`}
+                  >
+                    <div
+                      className={`provider-container relative h-full w-full cursor-pointer rounded-lg p-2 ring-1 transition ${
+                        isActive
+                          ? 'bg-gray-600 ring-indigo-500 hover:bg-gray-500'
+                          : 'bg-gray-700 ring-gray-500 hover:bg-gray-600'
+                      }`}
+                      onClick={() => toggleProvider(provider.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          toggleProvider(provider.id);
+                        }
+                      }}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      <CachedImage
+                        src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
+                        alt=""
+                        layout="responsive"
+                        width="100%"
+                        height="100%"
+                        className="rounded-lg"
+                      />
+                      {isActive && (
+                        <div className="pointer-events-none absolute -top-1 -left-1 flex items-center justify-center text-indigo-100 opacity-90">
+                          <CheckCircleIcon className="h-6 w-6" />
+                        </div>
+                      )}
+                    </div>
+                  </Tooltip>
+                );
+              })}
+            </div>
+          )}
+          {otherProviders.length > 0 && (
+            <button
+              className="mt-2 flex items-center justify-center space-x-2 text-sm text-gray-400 transition hover:text-gray-200"
+              onClick={() => setShowMore(!showMore)}
+            >
+              <div className="h-0.5 flex-1 bg-gray-600" />
+              {showMore ? (
+                <>
+                  <ArrowUpIcon className="h-4 w-4" />
+                  <span>{intl.formatMessage(messages.showless)}</span>
+                  <ArrowUpIcon className="h-4 w-4" />
+                </>
+              ) : (
+                <>
+                  <ArrowDownIcon className="h-4 w-4" />
+                  <span>{intl.formatMessage(messages.showmore)}</span>
+                  <ArrowDownIcon className="h-4 w-4" />
+                </>
+              )}
+              <div className="h-0.5 flex-1 bg-gray-600" />
+            </button>
+          )}
+        </>
+      )}
+    </>
   );
 };

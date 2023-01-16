@@ -8,6 +8,7 @@ import {
   CompanySelector,
   GenreSelector,
   KeywordSelector,
+  WatchProviderSelector,
 } from '@app/components/Selector';
 import useSettings from '@app/hooks/useSettings';
 import {
@@ -35,6 +36,7 @@ const messages = defineMessages({
   clearfilters: 'Clear Active Filters',
   tmdbuserscore: 'TMDB User Score',
   runtime: 'Runtime',
+  streamingservices: 'Streaming Services',
 });
 
 type FilterSlideoverProps = {
@@ -244,6 +246,30 @@ const FilterSlideover = ({
             })}
           />
         </div>
+        <span className="text-lg font-semibold">
+          {intl.formatMessage(messages.streamingservices)}
+        </span>
+        <WatchProviderSelector
+          type={type}
+          region={currentFilters.watchRegion}
+          activeProviders={
+            currentFilters.watchProviders?.split('|').map((v) => Number(v)) ??
+            []
+          }
+          onChange={(region, providers) => {
+            if (providers.length) {
+              batchUpdateQueryParams({
+                watchRegion: region,
+                watchProviders: providers.join('|'),
+              });
+            } else {
+              batchUpdateQueryParams({
+                watchRegion: undefined,
+                watchProviders: undefined,
+              });
+            }
+          }}
+        />
         <div className="pt-4">
           <Button
             className="w-full"
