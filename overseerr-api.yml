@@ -26,8 +26,8 @@ tags:
     description: Endpoints related to retrieving movies and their details.
   - name: tv
     description: Endpoints related to retrieving TV series and their details.
-  - name: keyword
-    description: Endpoints related to getting keywords and their details.
+  - name: other
+    description: Endpoints related to other TMDB data
   - name: person
     description: Endpoints related to retrieving person details.
   - name: media
@@ -1820,6 +1820,15 @@ components:
         - enabled
         - title
         - data
+    WatchProviderRegion:
+      type: object
+      properties:
+        iso_3166_1:
+          type: string
+        english_name:
+          type: string
+        native_name:
+          type: string
   securitySchemes:
     cookieAuth:
       type: apiKey
@@ -4177,6 +4186,16 @@ paths:
           schema:
             type: number
             example: 10
+        - in: query
+          name: watchRegion
+          schema:
+            type: string
+            example: US
+        - in: query
+          name: watchProviders
+          schema:
+            type: string
+            example: 8|9
       responses:
         '200':
           description: Results
@@ -4446,6 +4465,16 @@ paths:
           schema:
             type: number
             example: 10
+        - in: query
+          name: watchRegion
+          schema:
+            type: string
+            example: US
+        - in: query
+          name: watchProviders
+          schema:
+            type: string
+            example: 8|9
       responses:
         '200':
           description: Results
@@ -6250,7 +6279,7 @@ paths:
       description: |
         Returns a single keyword in JSON format.
       tags:
-        - keyword
+        - other
       parameters:
         - in: path
           name: keywordId
@@ -6265,6 +6294,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Keyword'
+  /watchproviders/regions:
+    get:
+      summary: Get watch provider regions
+      description: |
+        Returns a list of all available watch provider regions.
+      tags:
+        - other
+      responses:
+        '200':
+          description: Watch provider regions returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WatchProviderRegion'
+  /watchproviders/movies:
+    get:
+      summary: Get watch provider movies
+      description: |
+        Returns a list of all available watch providers for movies.
+      tags:
+        - other
+      parameters:
+        - in: query
+          name: watchRegion
+          required: true
+          schema:
+            type: string
+            example: US
+      responses:
+        '200':
+          description: Watch providers for movies returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WatchProviderDetails'
+  /watchproviders/tv:
+    get:
+      summary: Get watch provider series
+      description: |
+        Returns a list of all available watch providers for series.
+      tags:
+        - other
+      parameters:
+        - in: query
+          name: watchRegion
+          required: true
+          schema:
+            type: string
+            example: US
+      responses:
+        '200':
+          description: Watch providers for series returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WatchProviderDetails'
 security:
   - cookieAuth: []
   - apiKey: []

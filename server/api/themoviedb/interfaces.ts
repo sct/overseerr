@@ -446,3 +446,9 @@ export interface TmdbCompany {
 export interface TmdbCompanySearchResponse extends TmdbPaginatedResponse {
   results: TmdbCompany[];
 }
+
+export interface TmdbWatchProviderRegion {
+  iso_3166_1: string;
+  english_name: string;
+  native_name: string;
+}

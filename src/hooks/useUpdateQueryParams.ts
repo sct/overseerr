@@ -135,11 +135,11 @@ export const useUpdateQueryParams = (
 
 export const useBatchUpdateQueryParams = (
   filter: ParsedUrlQuery
-): ((items: Record<string, string>) => void) => {
+): ((items: Record<string, string | undefined>) => void) => {
   const updateQueryParams = useQueryParams();
 
   return useCallback(
-    (items: Record<string, string>) => {
+    (items: Record<string, string | undefined>) => {
       const query = {
         ...filter,
         ...items,
