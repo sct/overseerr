@@ -307,10 +307,6 @@ export const WatchProviderSelector = ({
     onChange(watchRegion, activeProvider);
   }, [activeProvider, watchRegion, onChange]);
 
-  useEffect(() => {
-    setActiveProvider([]);
-  }, [watchRegion]);
-
   const orderedData = useMemo(() => {
     if (!data) {
       return [];
@@ -335,7 +331,12 @@ export const WatchProviderSelector = ({
       <RegionSelector
         value={watchRegion}
         name="watchRegion"
-        onChange={(_name, value) => setWatchRegion(value)}
+        onChange={(_name, value) => {
+          if (value !== watchRegion) {
+            setActiveProvider([]);
+          }
+          setWatchRegion(value);
+        }}
         disableAll
         watchProviders
       />
