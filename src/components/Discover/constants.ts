@@ -194,6 +194,12 @@ export const countActiveFilters = (filterValues: FilterOptions): number => {
     delete clonedFilters.withRuntimeLte;
   }
 
+  if (clonedFilters.watchProviders) {
+    totalCount += 1;
+    delete clonedFilters.watchProviders;
+    delete clonedFilters.watchRegion;
+  }
+
   totalCount += Object.keys(clonedFilters).length;
 
   return totalCount;
