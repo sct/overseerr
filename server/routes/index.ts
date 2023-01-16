@@ -11,6 +11,7 @@ import { Permission } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { checkUser, isAuthenticated } from '@server/middleware/auth';
+import { mapWatchProviderDetails } from '@server/models/common';
 import { mapProductionCompany } from '@server/models/Movie';
 import { mapNetwork } from '@server/models/Tv';
 import settingsRoutes from '@server/routes/settings';
@@ -295,6 +296,66 @@ router.get('/keyword/:keywordId', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Unable to retrieve keyword data.',
+    });
+  }
+});
+
+router.get('/watchproviders/regions', async (req, res, next) => {
+  const tmdb = createTmdbWithRegionLanguage();
+
+  try {
+    const result = await tmdb.getAvailableWatchProviderRegions({});
+    return res.status(200).json(result);
+  } catch (e) {
+    logger.debug('Something went wrong retrieving watch provider regions', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve watch provider regions.',
+    });
+  }
+});
+
+router.get('/watchproviders/movies', async (req, res, next) => {
+  const tmdb = createTmdbWithRegionLanguage();
+
+  try {
+    const result = await tmdb.getMovieWatchProviders({
+      watchRegion: req.query.watchRegion as string,
+    });
+
+    return res.status(200).json(mapWatchProviderDetails(result));
+  } catch (e) {
+    logger.debug('Something went wrong retrieving movie watch providers', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve movie watch providers.',
+    });
+  }
+});
+
+router.get('/watchproviders/tv', async (req, res, next) => {
+  const tmdb = createTmdbWithRegionLanguage();
+
+  try {
+    const result = await tmdb.getTvWatchProviders({
+      watchRegion: req.query.watchRegion as string,
+    });
+
+    return res.status(200).json(mapWatchProviderDetails(result));
+  } catch (e) {
+    logger.debug('Something went wrong retrieving tv watch providers', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve tv watch providers.',
     });
   }
 });

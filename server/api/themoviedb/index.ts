@@ -22,6 +22,8 @@ import type {
   TmdbSeasonWithEpisodes,
   TmdbTvDetails,
   TmdbUpcomingMoviesResponse,
+  TmdbWatchProviderDetails,
+  TmdbWatchProviderRegion,
 } from './interfaces';
 
 interface SearchOptions {
@@ -68,6 +70,8 @@ interface DiscoverMovieOptions {
   studio?: string;
   keywords?: string;
   sortBy?: SortOptions;
+  watchRegion?: string;
+  watchProviders?: string;
 }
 
 interface DiscoverTvOptions {
@@ -85,6 +89,8 @@ interface DiscoverTvOptions {
   network?: number;
   keywords?: string;
   sortBy?: SortOptions;
+  watchRegion?: string;
+  watchProviders?: string;
 }
 
 class TheMovieDb extends ExternalAPI {
@@ -454,6 +460,8 @@ class TheMovieDb extends ExternalAPI {
     withRuntimeLte,
     voteAverageGte,
     voteAverageLte,
+    watchProviders,
+    watchRegion,
   }: DiscoverMovieOptions = {}): Promise<TmdbSearchMovieResponse> => {
     try {
       const defaultFutureDate = new Date(
@@ -496,6 +504,8 @@ class TheMovieDb extends ExternalAPI {
           'with_runtime.lte': withRuntimeLte,
           'vote_average.gte': voteAverageGte,
           'vote_average.lte': voteAverageLte,
+          watch_region: watchRegion,
+          with_watch_providers: watchProviders,
         },
       });
 
@@ -520,6 +530,8 @@ class TheMovieDb extends ExternalAPI {
     withRuntimeLte,
     voteAverageGte,
     voteAverageLte,
+    watchProviders,
+    watchRegion,
   }: DiscoverTvOptions = {}): Promise<TmdbSearchTvResponse> => {
     try {
       const defaultFutureDate = new Date(
@@ -562,6 +574,8 @@ class TheMovieDb extends ExternalAPI {
           'with_runtime.lte': withRuntimeLte,
           'vote_average.gte': voteAverageGte,
           'vote_average.lte': voteAverageLte,
+          with_watch_providers: watchProviders,
+          watch_region: watchRegion,
         },
       });
 
@@ -1015,6 +1029,84 @@ class TheMovieDb extends ExternalAPI {
       return data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to search companies: ${e.message}`);
+    }
+  }
+
+  public async getAvailableWatchProviderRegions({
+    language,
+  }: {
+    language?: string;
+  }) {
+    try {
+      const data = await this.get<{ results: TmdbWatchProviderRegion[] }>(
+        '/watch/providers/regions',
+        {
+          params: {
+            language: language ?? this.originalLanguage,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      return data.results;
+    } catch (e) {
+      throw new Error(
+        `[TMDB] Failed to fetch available watch regions: ${e.message}`
+      );
+    }
+  }
+
+  public async getMovieWatchProviders({
+    language,
+    watchRegion,
+  }: {
+    language?: string;
+    watchRegion: string;
+  }) {
+    try {
+      const data = await this.get<{ results: TmdbWatchProviderDetails[] }>(
+        '/watch/providers/movie',
+        {
+          params: {
+            language: language ?? this.originalLanguage,
+            watch_region: watchRegion,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      return data.results;
+    } catch (e) {
+      throw new Error(
+        `[TMDB] Failed to fetch movie watch providers: ${e.message}`
+      );
+    }
+  }
+
+  public async getTvWatchProviders({
+    language,
+    watchRegion,
+  }: {
+    language?: string;
+    watchRegion: string;
+  }) {
+    try {
+      const data = await this.get<{ results: TmdbWatchProviderDetails[] }>(
+        '/watch/providers/tv',
+        {
+          params: {
+            language: language ?? this.originalLanguage,
+            watch_region: watchRegion,
+          },
+        },
+        86400 // 24 hours
+      );
+
+      return data.results;
+    } catch (e) {
+      throw new Error(
+        `[TMDB] Failed to fetch TV watch providers: ${e.message}`
+      );
     }
   }
 }

@@ -65,6 +65,8 @@ const QueryFilterOptions = z.object({
   voteAverageGte: z.coerce.string().optional(),
   voteAverageLte: z.coerce.string().optional(),
   network: z.coerce.string().optional(),
+  watchProviders: z.coerce.string().optional(),
+  watchRegion: z.coerce.string().optional(),
 });
 
 export type FilterOptions = z.infer<typeof QueryFilterOptions>;
@@ -93,6 +95,8 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       withRuntimeLte: query.withRuntimeLte,
       voteAverageGte: query.voteAverageGte,
       voteAverageLte: query.voteAverageLte,
+      watchProviders: query.watchProviders,
+      watchRegion: query.watchRegion,
     });
 
     const media = await Media.getRelatedMedia(
@@ -366,6 +370,8 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       withRuntimeLte: query.withRuntimeLte,
       voteAverageGte: query.voteAverageGte,
       voteAverageLte: query.voteAverageLte,
+      watchProviders: query.watchProviders,
+      watchRegion: query.watchRegion,
     });
 
     const media = await Media.getRelatedMedia(
