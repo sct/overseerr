@@ -342,7 +342,7 @@ export const WatchProviderSelector = ({
       {isLoading ? (
         <SmallLoadingSpinner />
       ) : (
-        <>
+        <div className="grid">
           <div className="grid grid-cols-6 gap-2">
             {initialProviders.map((provider) => {
               const isActive = activeProvider.includes(provider.id);
@@ -385,7 +385,7 @@ export const WatchProviderSelector = ({
             })}
           </div>
           {showMore && otherProviders.length > 0 && (
-            <div className="relative -top-2 grid grid-cols-6 gap-2">
+            <div className="relative top-2 grid grid-cols-6 gap-2">
               {otherProviders.map((provider) => {
                 const isActive = activeProvider.includes(provider.id);
                 return (
@@ -429,7 +429,7 @@ export const WatchProviderSelector = ({
           )}
           {otherProviders.length > 0 && (
             <button
-              className="mt-2 flex items-center justify-center space-x-2 text-sm text-gray-400 transition hover:text-gray-200"
+              className="relative top-4 flex items-center justify-center space-x-2 text-sm text-gray-400 transition hover:text-gray-200"
               onClick={() => setShowMore(!showMore)}
             >
               <div className="h-0.5 flex-1 bg-gray-600" />
@@ -449,7 +449,7 @@ export const WatchProviderSelector = ({
               <div className="h-0.5 flex-1 bg-gray-600" />
             </button>
           )}
-        </>
+        </div>
       )}
     </>
   );
