@@ -6,7 +6,13 @@
   html {
     min-height: calc(100% + env(safe-area-inset-top));
     padding: env(safe-area-inset-top) env(safe-area-inset-right)
-      env(safe-area-inset-bottom) env(safe-area-inset-left);
+      calc(4rem + env(safe-area-inset-bottom)) env(safe-area-inset-left);
+  }
+
+  @media (min-width: 640px) {
+    html {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
   }
 
   body {
@@ -458,6 +464,16 @@
 @layer utilities {
   .absolute-top-shift {
     top: calc(-4rem - env(safe-area-inset-top));
+  }
+
+  .padding-bottom-safe {
+    padding-bottom: calc(env(safe-area-inset-bottom));
+  }
+
+  @media all and (display-mode: browser) {
+    .padding-bottom-safe {
+      @apply pb-4;
+    }
   }
 
   .min-h-screen-shift {
