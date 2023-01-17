@@ -1,4 +1,5 @@
 import { menuMessages } from '@app/components/Layout/Sidebar';
+import useClickOutside from '@app/hooks/useClickOutside';
 import { Permission, useUser } from '@app/hooks/useUser';
 import { Transition } from '@headlessui/react';
 import {
@@ -23,7 +24,7 @@ import {
 } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { cloneElement, useState } from 'react';
+import { cloneElement, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -43,10 +44,12 @@ interface MenuLink {
 }
 
 const MobileMenu = () => {
+  const ref = useRef<HTMLDivElement>(null);
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
   const { hasPermission } = useUser();
   const router = useRouter();
+  useClickOutside(ref, () => setIsOpen(false));
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -120,7 +123,8 @@ const MobileMenu = () => {
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <Transition
         show={isOpen}
-        as="nav"
+        as="div"
+        ref={ref}
         enter="transition transform duration-300"
         enterFrom="opacity-0 translate-y-0"
         enterTo="opacity-100 -translate-y-full"
