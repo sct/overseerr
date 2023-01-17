@@ -161,39 +161,45 @@ const MobileMenu = () => {
           );
         })}
       </Transition>
-      <div className="padding-bottom-safe flex h-full items-center justify-between border-t border-gray-600 bg-gray-800 bg-opacity-90 px-6 pt-4 text-gray-100 backdrop-blur">
-        {filteredLinks.slice(0, 4).map((link) => {
-          const isActive = router.pathname.match(link.activeRegExp) && !isOpen;
-          return (
-            <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
-              <a
-                className={`flex flex-col items-center space-y-1 ${
-                  isActive ? 'text-indigo-500' : ''
-                }`}
-              >
-                {cloneElement(isActive ? link.svgIconSelected : link.svgIcon, {
-                  className: 'h-6 w-6',
-                })}
-                {/* <span className="text-sm">{link.content}</span> */}
-              </a>
-            </Link>
-          );
-        })}
-        {filteredLinks.length > 4 && (
-          <button
-            className={`flex flex-col items-center space-y-1 ${
-              isOpen ? 'text-indigo-500' : ''
-            }`}
-            onClick={() => toggle()}
-          >
-            {isOpen ? (
-              <XMarkIcon className="h-6 w-6" />
-            ) : (
-              <EllipsisHorizontalIcon className="h-6 w-6" />
-            )}
-            {/* <span className="text-sm">{intl.formatMessage(messages.more)}</span> */}
-          </button>
-        )}
+      <div className="padding-bottom-safe border-t border-gray-600 bg-gray-800 bg-opacity-90 backdrop-blur">
+        <div className="flex h-full items-center justify-between px-6 py-4 text-gray-100">
+          {filteredLinks.slice(0, 4).map((link) => {
+            const isActive =
+              router.pathname.match(link.activeRegExp) && !isOpen;
+            return (
+              <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
+                <a
+                  className={`flex flex-col items-center space-y-1 ${
+                    isActive ? 'text-indigo-500' : ''
+                  }`}
+                >
+                  {cloneElement(
+                    isActive ? link.svgIconSelected : link.svgIcon,
+                    {
+                      className: 'h-6 w-6',
+                    }
+                  )}
+                  {/* <span className="text-sm">{link.content}</span> */}
+                </a>
+              </Link>
+            );
+          })}
+          {filteredLinks.length > 4 && (
+            <button
+              className={`flex flex-col items-center space-y-1 ${
+                isOpen ? 'text-indigo-500' : ''
+              }`}
+              onClick={() => toggle()}
+            >
+              {isOpen ? (
+                <XMarkIcon className="h-6 w-6" />
+              ) : (
+                <EllipsisHorizontalIcon className="h-6 w-6" />
+              )}
+              {/* <span className="text-sm">{intl.formatMessage(messages.more)}</span> */}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
