@@ -1,3 +1,4 @@
+import MobileMenu from '@app/components/Layout/MobileMenu';
 import SearchInput from '@app/components/Layout/SearchInput';
 import Sidebar from '@app/components/Layout/Sidebar';
 import UserDropdown from '@app/components/Layout/UserDropdown';
@@ -6,8 +7,7 @@ import type { AvailableLocale } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
 import { useUser } from '@app/hooks/useUser';
-import { Bars3BottomLeftIcon } from '@heroicons/react/24/outline';
-import { ArrowLeftIcon } from '@heroicons/react/24/solid';
+import { ArrowLeftIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
@@ -56,6 +56,9 @@ const Layout = ({ children }: LayoutProps) => {
         <div className="relative inset-0 h-full w-full bg-gradient-to-t from-gray-900 to-transparent" />
       </div>
       <Sidebar open={isSidebarOpen} setClosed={() => setSidebarOpen(false)} />
+      <div className="sm:hidden">
+        <MobileMenu />
+      </div>
 
       <div className="relative mb-16 flex w-0 min-w-0 flex-1 flex-col lg:ml-64">
         <PullToRefresh />
@@ -68,17 +71,17 @@ const Layout = ({ children }: LayoutProps) => {
             WebkitBackdropFilter: isScrolled ? 'blur(5px)' : undefined,
           }}
         >
-          <button
-            className={`px-4 text-white ${
-              isScrolled ? 'opacity-90' : 'opacity-70'
-            } transition duration-300 focus:outline-none lg:hidden`}
-            aria-label="Open sidebar"
-            onClick={() => setSidebarOpen(true)}
-            data-testid="sidebar-toggle"
-          >
-            <Bars3BottomLeftIcon className="h-6 w-6" />
-          </button>
-          <div className="flex flex-1 items-center justify-between pr-4 md:pr-4 md:pl-4">
+          <div className="flex flex-1 items-center justify-between px-4 md:pr-4 md:pl-4">
+            <button
+              className={`mr-2 hidden text-white sm:block ${
+                isScrolled ? 'opacity-90' : 'opacity-70'
+              } transition duration-300 focus:outline-none lg:hidden`}
+              aria-label="Open sidebar"
+              onClick={() => setSidebarOpen(true)}
+              data-testid="sidebar-toggle"
+            >
+              <Bars3BottomLeftIcon className="h-7 w-7" />
+            </button>
             <button
               className={`mr-2 text-white ${
                 isScrolled ? 'opacity-90' : 'opacity-70'

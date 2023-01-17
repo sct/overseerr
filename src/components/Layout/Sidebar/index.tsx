@@ -17,7 +17,7 @@ import { useRouter } from 'next/router';
 import { Fragment, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-const messages = defineMessages({
+export const menuMessages = defineMessages({
   dashboard: 'Discover',
   browsemovies: 'Movies',
   browsetv: 'Series',
@@ -35,7 +35,7 @@ interface SidebarProps {
 interface SidebarLinkProps {
   href: string;
   svgIcon: React.ReactNode;
-  messagesKey: keyof typeof messages;
+  messagesKey: keyof typeof menuMessages;
   activeRegExp: RegExp;
   as?: string;
   requiredPermission?: Permission | Permission[];
@@ -192,7 +192,7 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                             >
                               {sidebarLink.svgIcon}
                               {intl.formatMessage(
-                                messages[sidebarLink.messagesKey]
+                                menuMessages[sidebarLink.messagesKey]
                               )}
                             </a>
                           </Link>
@@ -253,7 +253,9 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                         data-testid={sidebarLink.dataTestId}
                       >
                         {sidebarLink.svgIcon}
-                        {intl.formatMessage(messages[sidebarLink.messagesKey])}
+                        {intl.formatMessage(
+                          menuMessages[sidebarLink.messagesKey]
+                        )}
                       </a>
                     </Link>
                   );
