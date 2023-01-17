@@ -194,7 +194,6 @@
   "components.LanguageSelector.languageServerDefault": "Default ({language})",
   "components.LanguageSelector.originalLanguageDefault": "All Languages",
   "components.Layout.LanguagePicker.displaylanguage": "Display Language",
-  "components.Layout.MobileMenu.more": "More",
   "components.Layout.SearchInput.searchPlaceholder": "Search Movies & TV",
   "components.Layout.Sidebar.browsemovies": "Movies",
   "components.Layout.Sidebar.browsetv": "Series",
