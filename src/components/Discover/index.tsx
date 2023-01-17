@@ -153,12 +153,12 @@ const Discover = () => {
             leave="transition-opacity duration-300"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            className="fixed bottom-8 right-8 z-50 flex items-center"
+            className="absolute-bottom-shift fixed right-6 z-50 flex items-center sm:bottom-8"
           >
             <button
               onClick={() => setIsEditing(true)}
               data-testid="discover-start-editing"
-              className="h-12 w-12 rounded-full border border-gray-600 bg-gray-700 bg-opacity-80 p-3 text-gray-400 shadow transition-all hover:bg-opacity-100"
+              className="h-12 w-12 rounded-full border-2 border-gray-600 bg-gray-700 bg-opacity-90 p-3 text-gray-400 shadow transition-all hover:bg-opacity-100"
             >
               <PencilIcon className="h-full w-full" />
             </button>
@@ -171,7 +171,7 @@ const Discover = () => {
             leave="transition duration-300 transform"
             leaveFrom="opacity-100 translate-y-0"
             leaveTo="opacity-0 translate-y-6"
-            className="fixed bottom-0 right-0 left-0 z-50 flex flex-col items-center justify-end space-x-0 space-y-2 border-t border-gray-700 bg-gray-800 bg-opacity-80 p-4 backdrop-blur sm:flex-row sm:space-y-0 sm:space-x-3"
+            className="safe-shift-edit-menu fixed right-0 left-0 z-50 flex flex-col items-center justify-end space-x-0 space-y-2 border-t border-gray-700 bg-gray-800 bg-opacity-80 p-4 backdrop-blur sm:bottom-0 sm:flex-row sm:space-y-0 sm:space-x-3"
           >
             <Button
               buttonType="default"
