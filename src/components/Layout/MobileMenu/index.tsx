@@ -25,11 +25,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { cloneElement, useRef, useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
-
-const messages = defineMessages({
-  more: 'More',
-});
+import { useIntl } from 'react-intl';
 
 interface MenuLink {
   href: string;
@@ -49,7 +45,13 @@ const MobileMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { hasPermission } = useUser();
   const router = useRouter();
-  useClickOutside(ref, () => setIsOpen(false));
+  useClickOutside(ref, () => {
+    setTimeout(() => {
+      if (isOpen) {
+        setIsOpen(false);
+      }
+    }, 150);
+  });
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -125,15 +127,15 @@ const MobileMenu = () => {
         show={isOpen}
         as="div"
         ref={ref}
-        enter="transition transform duration-300"
+        enter="transition transform duration-500"
         enterFrom="opacity-0 translate-y-0"
         enterTo="opacity-100 -translate-y-full"
-        leave="transition duration-300 transform"
+        leave="transition duration-500 transform"
         leaveFrom="opacity-100 -translate-y-full"
         leaveTo="opacity-0 translate-y-0"
         className="absolute top-0 left-0 right-0 flex w-full -translate-y-full transform flex-col space-y-6 border-t border-gray-600 bg-gray-900 bg-opacity-90 px-6 py-6 font-semibold text-gray-100 backdrop-blur"
       >
-        {filteredLinks.slice(4).map((link) => {
+        {filteredLinks.map((link) => {
           const isActive = router.pathname.match(link.activeRegExp);
           return (
             <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
@@ -172,7 +174,7 @@ const MobileMenu = () => {
                 {cloneElement(isActive ? link.svgIconSelected : link.svgIcon, {
                   className: 'h-6 w-6',
                 })}
-                <span className="text-sm">{link.content}</span>
+                {/* <span className="text-sm">{link.content}</span> */}
               </a>
             </Link>
           );
@@ -189,7 +191,7 @@ const MobileMenu = () => {
             ) : (
               <EllipsisHorizontalIcon className="h-6 w-6" />
             )}
-            <span className="text-sm">{intl.formatMessage(messages.more)}</span>
+            {/* <span className="text-sm">{intl.formatMessage(messages.more)}</span> */}
           </button>
         )}
       </div>
