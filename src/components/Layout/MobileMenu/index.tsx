@@ -179,7 +179,6 @@ const MobileMenu = () => {
                       className: 'h-6 w-6',
                     }
                   )}
-                  {/* <span className="text-sm">{link.content}</span> */}
                 </a>
               </Link>
             );
@@ -196,7 +195,6 @@ const MobileMenu = () => {
               ) : (
                 <EllipsisHorizontalIcon className="h-6 w-6" />
               )}
-              {/* <span className="text-sm">{intl.formatMessage(messages.more)}</span> */}
             </button>
           )}
         </div>
