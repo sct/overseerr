@@ -28,6 +28,7 @@ docker run -d \
   --name overseerr \
   -e LOG_LEVEL=debug \
   -e TZ=Asia/Tokyo \
+  -e PORT=5055 `#optional` \
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \
@@ -81,6 +82,7 @@ services:
     environment:
       - LOG_LEVEL=debug
       - TZ=Asia/Tokyo
+      - PORT=5055 #optional
     ports:
       - 5055:5055
     volumes:
