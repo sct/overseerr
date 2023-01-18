@@ -148,8 +148,6 @@ Then, create and start the Overseerr container:
 docker run -d --name overseerr -e LOG_LEVEL=debug -e TZ=Asia/Tokyo -p 5055:5055 -v "overseerr-data:/app/config" --restart unless-stopped sctx/overseerr:latest
 ```
 
-If using a named volume like above, you can safely ignore the warning about the `/app/config` folder being incorrectly mounted on the setup page.
-
 To access the files inside the volume created above, navigate to `\\wsl$\docker-desktop-data\version-pack-data\community\docker\volumes\overseerr-data\_data` using File Explorer.
 
 {% hint style="info" %}
@@ -157,7 +155,7 @@ Docker on Windows works differently than it does on Linux; it runs Docker inside
 
 **If you must run Docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host.** (This also applies to other containers with SQLite databases.)
 
-Named volumes, like in the example commands above, are automatically mounted inside the VM.
+Named volumes, like in the example commands above, are automatically mounted inside the VM. Therefore the warning on the setup about the `/app/config` folder being incorrectly mounted page should be ignored.
 {% endhint %}
 
 ## Linux
