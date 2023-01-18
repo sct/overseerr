@@ -90,7 +90,7 @@ services:
     restart: unless-stopped
 ```
 
-Then, start all services defined in the your Compose file:
+Then, start all services defined in the Compose file:
 
 ```bash
 docker-compose up -d
