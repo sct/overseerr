@@ -86,8 +86,6 @@
   "components.Discover.recentlyAdded": "Nemrég hozzáadva",
   "components.Discover.populartv": "Népszerű sorozatok",
   "components.Discover.popularmovies": "Népszerű filmek",
-  "components.Discover.discovertv": "Népszerű sorozatok",
-  "components.Discover.discovermovies": "Népszerű filmek",
   "components.CollectionDetails.requestcollection": "Gyűjtemény kérése",
   "components.CollectionDetails.overview": "Áttekintés",
   "components.CollectionDetails.numberofmovies": "Filmek száma: {count}",

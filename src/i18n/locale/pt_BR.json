@@ -28,8 +28,6 @@
   "components.Discover.recentlyAdded": "Adicionado Recentemente",
   "components.Discover.populartv": "Séries Populares",
   "components.Discover.popularmovies": "Filmes Populares",
-  "components.Discover.discovertv": "Séries Populares",
-  "components.Discover.discovermovies": "Filmes Populares",
   "components.Settings.plexlibraries": "Bibliotecas do Plex",
   "components.Settings.notrunning": "Parado",
   "components.RequestModal.season": "Temporada",

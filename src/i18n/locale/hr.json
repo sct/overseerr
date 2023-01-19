@@ -8,8 +8,6 @@
   "components.Discover.DiscoverNetwork.networkSeries": "{network} serije",
   "components.Discover.DiscoverStudio.studioMovies": "{studio} filmovi",
   "components.Discover.discover": "Otkrivanje",
-  "components.Discover.discovermovies": "Popularni filmovi",
-  "components.Discover.discovertv": "Popularne serije",
   "components.Discover.DiscoverTvGenre.genreSeries": "{genre} serije",
   "components.Discover.DiscoverTvLanguage.languageSeries": "{language} serije",
   "components.Discover.DiscoverWatchlist.discoverwatchlist": "Tvoj Plex popis gledanja",
