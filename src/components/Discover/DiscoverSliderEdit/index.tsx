@@ -12,6 +12,8 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import {
   ArrowUturnLeftIcon,
   Bars3Icon,
+  ChevronDownIcon,
+  ChevronUpIcon,
   PencilIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
@@ -44,7 +46,13 @@ type DiscoverSliderEditProps = {
     updatedItemId: number,
     position: keyof typeof Position
   ) => void;
+  onPositionClick: (
+    updatedItemId: number,
+    position: keyof typeof Position
+  ) => void;
   children: React.ReactNode;
+  slidersLength: number;
+  index: number;
 };
 
 const DiscoverSliderEdit = ({
@@ -53,6 +61,9 @@ const DiscoverSliderEdit = ({
   onEnable,
   onDelete,
   onPositionUpdate,
+  onPositionClick,
+  slidersLength,
+  index,
 }: DiscoverSliderEditProps) => {
   const intl = useIntl();
   const { addToast } = useToasts();
@@ -271,7 +282,27 @@ const DiscoverSliderEdit = ({
               </Button>
             </>
           )}
-          <div className="absolute top-4 right-4 flex-1 pl-4 text-right md:relative md:top-0 md:right-0">
+          <div className="absolute top-4 right-4 flex px-2 text-gray-400 md:relative md:top-0 md:right-0">
+            <button
+              className={`${
+                index === 0 ? 'text-gray-800' : 'hover:text-white'
+              }`}
+              onClick={() => onPositionClick(Number(slider.id), Position.Above)}
+              disabled={index === 0}
+            >
+              <ChevronUpIcon className="h-6 w-6" />
+            </button>
+            <button
+              className={`${
+                index === slidersLength ? 'text-gray-800' : 'hover:text-white'
+              }`}
+              onClick={() => onPositionClick(Number(slider.id), Position.Below)}
+              disabled={index === slidersLength}
+            >
+              <ChevronDownIcon className="h-6 w-6" />
+            </button>
+          </div>
+          <div className="absolute top-4 right-4 flex-1 text-right md:relative md:top-0 md:right-0">
             <Tooltip content={intl.formatMessage(messages.enable)}>
               <div>
                 <SlideCheckbox

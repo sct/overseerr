@@ -403,6 +403,24 @@ const Discover = () => {
 
                 setSliders(tempSliders);
               }}
+              onPositionClick={(updatedItemId, position) => {
+                const originalPosition = sliders.findIndex(
+                  (item) => item.id === updatedItemId
+                );
+                const originalItem = sliders[originalPosition];
+
+                const tempSliders = sliders.slice();
+
+                tempSliders.splice(originalPosition, 1);
+                tempSliders.splice(
+                  position === 'Above' ? index - 1 : index + 1,
+                  0,
+                  originalItem
+                );
+                setSliders(tempSliders);
+              }}
+              slidersLength={sliders.length - 1}
+              index={index}
             >
               {sliderComponent}
             </DiscoverSliderEdit>
