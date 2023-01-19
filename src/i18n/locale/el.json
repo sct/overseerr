@@ -76,8 +76,6 @@
   "components.Login.email": "Διεύθυνση ηλεκτρονικού ταχυδρομείου",
   "components.Layout.VersionStatus.streamstable": "Overseer Σταθερή Έκδοση",
   "components.Discover.popularmovies": "Δημοφιλείς Ταινίες",
-  "components.Discover.discovertv": "Δημοφιλείς Σειρές",
-  "components.Discover.discovermovies": "Δημοφιλείς Ταινίες",
   "components.Discover.discover": "Ανακάλυψε",
   "components.Discover.TvGenreSlider.tvgenres": "Είδη Σειρών",
   "components.Discover.TvGenreList.seriesgenres": "Είδη Σειρών",
