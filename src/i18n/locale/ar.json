@@ -69,8 +69,6 @@
   "components.Discover.TvGenreList.seriesgenres": "نوع المسلسل",
   "components.Discover.TvGenreSlider.tvgenres": "نوع المسلسل",
   "components.Discover.discover": "إكتشف",
-  "components.Discover.discovermovies": "أفلام ذات شعبية",
-  "components.Discover.discovertv": "مسلسلات ذات شعبية",
   "components.Discover.popularmovies": "أفلام ذات شعبية",
   "components.Discover.populartv": "مسلسلات ذات شعبية",
   "components.Discover.recentlyAdded": "أضيف مؤخرا",

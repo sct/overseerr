@@ -264,8 +264,6 @@
   "components.Discover.recentlyAdded": "最新添加",
   "components.Discover.populartv": "热门电视节目",
   "components.Discover.popularmovies": "热门电影",
-  "components.Discover.discovertv": "热门电视节目",
-  "components.Discover.discovermovies": "热门电影",
   "components.Discover.discover": "探索",
   "components.Discover.TvGenreSlider.tvgenres": "电视节目类型",
   "components.Discover.TvGenreList.seriesgenres": "电视节目类型",
@@ -1097,5 +1095,11 @@
   "components.Settings.SettingsJobsCache.imagecacheDescription": "当此功能在设置中启用时，Overseerr 将代理并缓存预配置的外部来源中的图像。缓存的图片保存于你的配置文件夹中，你可以在 <code>{appDataPath}/cache/images</code> 目录下找到这些文件。",
   "components.Settings.SettingsJobsCache.imagecache": "图片缓存",
   "components.Settings.SettingsJobsCache.imagecachesize": "缓存总大小",
-  "components.StatusBadge.seasonepisodenumber": "S{seasonNumber}E{episodeNumber}"
+  "components.StatusBadge.seasonepisodenumber": "S{seasonNumber}E{episodeNumber}",
+  "components.Discover.PlexWatchlistSlider.plexwatchlist": "您的 Plex 关注列表",
+  "components.Discover.RecentlyAddedSlider.recentlyAdded": "最新添加",
+  "components.Discover.moviegenres": "电影类型",
+  "components.Discover.networks": "电视网",
+  "components.Discover.studios": "制作公司",
+  "components.Discover.DiscoverMovieKeyword.keywordMovies": "{keywordTitle} 电影"
 }

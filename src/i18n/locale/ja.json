@@ -1,6 +1,4 @@
 {
-  "components.Discover.discovermovies": "人気の映画",
-  "components.Discover.discovertv": "人気のテレビ番組",
   "components.Discover.popularmovies": "人気の映画",
   "components.Discover.populartv": "人気のテレビ番組",
   "components.Discover.recentlyAdded": "最近追加された動画",

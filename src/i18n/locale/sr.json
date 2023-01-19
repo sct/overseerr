@@ -200,8 +200,6 @@
   "components.Discover.recentlyAdded": "Nedavno dodato",
   "components.Discover.populartv": "Popularne serije",
   "components.Discover.popularmovies": "Popularni filmovi",
-  "components.Discover.discovertv": "Popularne serije",
-  "components.Discover.discovermovies": "Popularni filmovi",
   "pages.errormessagewithcode": "{statusCode} - {error}",
   "components.StatusBadge.status": "{status}",
   "components.UserProfile.movierequests": "Zahtev za film",

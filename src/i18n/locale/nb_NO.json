@@ -1,6 +1,4 @@
 {
-  "components.Discover.discovermovies": "Populære Filmer",
-  "components.Discover.discovertv": "Populære Serier",
   "components.Discover.popularmovies": "Populære Filmer",
   "components.Discover.populartv": "Populære Serier",
   "components.Discover.recentlyAdded": "Nylig lagt til",
@@ -1091,5 +1089,25 @@
   "components.UserProfile.emptywatchlist": "Matriale som du legger til via <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink> vil dukke opp her.",
   "components.RequestModal.SearchByNameModal.nomatches": "Vi klarte ikke å koble denne serien med et søkbart treff.",
   "components.Settings.SettingsJobsCache.editJobScheduleCurrent": "Nåværende frekvens",
-  "components.TvDetails.Season.noepisodes": "Episode-oversikten er ikke tilgjengelig."
+  "components.TvDetails.Season.noepisodes": "Episode-oversikten er ikke tilgjengelig.",
+  "components.Discover.moviegenres": "Filmsjangere",
+  "components.Discover.DiscoverMovieKeyword.keywordMovies": "{keywordTitle} Filmer",
+  "components.Discover.DiscoverTvKeyword.keywordSeries": "{keywordTitle} Serier",
+  "components.Discover.PlexWatchlistSlider.plexwatchlist": "Din Plex Visningsliste",
+  "components.Discover.RecentlyAddedSlider.recentlyAdded": "Nylig lagt til",
+  "components.Discover.networks": "TV-nettverk",
+  "components.Discover.studios": "Studio",
+  "components.Discover.tmdbmoviegenre": "TMDB FIlmsjangere",
+  "components.Discover.tmdbmoviekeyword": "TMDB Filmnøkkelord",
+  "components.Discover.tmdbnetwork": "TMDB Nettverk",
+  "components.Discover.tmdbsearch": "TMDB Søk",
+  "components.Discover.tmdbstudio": "TMDB Studio",
+  "components.Discover.tmdbtvgenre": "TMDB Seriesjanger",
+  "components.Discover.tmdbtvkeyword": "TMDB Serienøkkelord",
+  "components.Discover.tvgenres": "TV-sjangere",
+  "components.RequestCard.unknowntitle": "Ukjent Tittel",
+  "components.RequestList.RequestItem.unknowntitle": "Ukjent Tittel",
+  "components.Settings.SettingsJobsCache.image-cache-cleanup": "Slett mellomlager for bilder",
+  "components.DownloadBlock.formattedTitle": "{title}: Sesong {seasonNumber} Episode {episodeNumber}",
+  "components.Discover.PlexWatchlistSlider.emptywatchlist": "Media som blir lagt til <PlexWatchlistSupportLink>Plexs Visningsliste</PlexWatchlistSupportLink> vil dukke opp her."
 }
