@@ -80,8 +80,6 @@
   "components.AirDateBadge.airedrelative": "שודר ב-{relativeTime}",
   "components.Discover.NetworkSlider.networks": "רשתות שידור",
   "components.Discover.discover": "לגלות",
-  "components.Discover.discovermovies": "סרטים פופולרים",
-  "components.Discover.discovertv": "סדרות פופולריות",
   "components.Discover.plexwatchlist": "רשימת הצפייה שלך",
   "components.Discover.popularmovies": "סרטים פופולרים",
   "components.IssueDetails.IssueComment.validationComment": "אנא הכנס הודעה",
