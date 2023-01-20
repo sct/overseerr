@@ -12,6 +12,8 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import {
   ArrowUturnLeftIcon,
   Bars3Icon,
+  ChevronDownIcon,
+  ChevronUpIcon,
   PencilIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
@@ -42,9 +44,12 @@ type DiscoverSliderEditProps = {
   onDelete: () => void;
   onPositionUpdate: (
     updatedItemId: number,
-    position: keyof typeof Position
+    position: keyof typeof Position,
+    isClickable: boolean
   ) => void;
   children: React.ReactNode;
+  disableUpButton: boolean;
+  disableDownButton: boolean;
 };
 
 const DiscoverSliderEdit = ({
@@ -53,6 +58,8 @@ const DiscoverSliderEdit = ({
   onEnable,
   onDelete,
   onPositionUpdate,
+  disableUpButton,
+  disableDownButton,
 }: DiscoverSliderEditProps) => {
   const intl = useIntl();
   const { addToast } = useToasts();
@@ -112,7 +119,7 @@ const DiscoverSliderEdit = ({
       );
       if (items?.[0]) {
         const dropped = Number(items[0]);
-        onPositionUpdate(dropped, hoverPosition);
+        onPositionUpdate(dropped, hoverPosition, false);
       }
     },
   });
@@ -271,7 +278,27 @@ const DiscoverSliderEdit = ({
               </Button>
             </>
           )}
-          <div className="absolute top-4 right-4 flex-1 pl-4 text-right md:relative md:top-0 md:right-0">
+          <div className="absolute right-4 flex px-2 md:relative md:right-0">
+            <button
+              className={'hover:text-white disabled:text-gray-800'}
+              onClick={() =>
+                onPositionUpdate(Number(slider.id), Position.Above, true)
+              }
+              disabled={disableUpButton}
+            >
+              <ChevronUpIcon className="h-8 w-8 md:h-6 md:w-8" />
+            </button>
+            <button
+              className={'hover:text-white disabled:text-gray-800'}
+              onClick={() =>
+                onPositionUpdate(Number(slider.id), Position.Below, true)
+              }
+              disabled={disableDownButton}
+            >
+              <ChevronDownIcon className="h-8 w-8 md:h-6 md:w-8" />
+            </button>
+          </div>
+          <div className="absolute top-4 right-4 flex-1 text-right md:relative md:top-0 md:right-0">
             <Tooltip content={intl.formatMessage(messages.enable)}>
               <div>
                 <SlideCheckbox
