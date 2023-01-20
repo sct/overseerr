@@ -278,7 +278,7 @@ const DiscoverSliderEdit = ({
               </Button>
             </>
           )}
-          <div className="absolute right-4 flex px-2 md:relative md:right-0">
+          <div className="absolute right-14 top-4 flex px-2 md:relative md:top-0 md:right-0">
             <button
               className={'hover:text-white disabled:text-gray-800'}
               onClick={() =>
@@ -286,7 +286,7 @@ const DiscoverSliderEdit = ({
               }
               disabled={disableUpButton}
             >
-              <ChevronUpIcon className="h-8 w-8 md:h-6 md:w-8" />
+              <ChevronUpIcon className="h-7 w-7 md:h-6 md:w-6" />
             </button>
             <button
               className={'hover:text-white disabled:text-gray-800'}
@@ -295,7 +295,7 @@ const DiscoverSliderEdit = ({
               }
               disabled={disableDownButton}
             >
-              <ChevronDownIcon className="h-8 w-8 md:h-6 md:w-8" />
+              <ChevronDownIcon className="h-7 w-7 md:h-6 md:w-6" />
             </button>
           </div>
           <div className="absolute top-4 right-4 flex-1 text-right md:relative md:top-0 md:right-0">
