@@ -409,8 +409,8 @@ const Discover = () => {
 
                 setSliders(tempSliders);
               }}
-              slidersLength={sliders.length - 1}
-              index={index}
+              disableUpButton={index === 0}
+              disableDownButton={index === sliders.length - 1}
             >
               {sliderComponent}
             </DiscoverSliderEdit>

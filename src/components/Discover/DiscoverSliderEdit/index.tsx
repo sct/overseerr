@@ -48,8 +48,8 @@ type DiscoverSliderEditProps = {
     isClickable: boolean
   ) => void;
   children: React.ReactNode;
-  slidersLength: number;
-  index: number;
+  disableUpButton: boolean;
+  disableDownButton: boolean;
 };
 
 const DiscoverSliderEdit = ({
@@ -58,8 +58,8 @@ const DiscoverSliderEdit = ({
   onEnable,
   onDelete,
   onPositionUpdate,
-  slidersLength,
-  index,
+  disableUpButton,
+  disableDownButton,
 }: DiscoverSliderEditProps) => {
   const intl = useIntl();
   const { addToast } = useToasts();
@@ -278,28 +278,24 @@ const DiscoverSliderEdit = ({
               </Button>
             </>
           )}
-          <div className="absolute top-4 right-4 flex px-2 text-gray-400 md:relative md:top-0 md:right-0">
+          <div className="absolute right-4 flex px-2 md:relative md:right-0">
             <button
-              className={`${
-                index === 0 ? 'text-gray-800' : 'hover:text-white'
-              }`}
+              className={'hover:text-white disabled:text-gray-800'}
               onClick={() =>
                 onPositionUpdate(Number(slider.id), Position.Above, true)
               }
-              disabled={index === 0}
+              disabled={disableUpButton}
             >
-              <ChevronUpIcon className="h-6 w-6" />
+              <ChevronUpIcon className="h-8 w-8 md:h-6 md:w-8" />
             </button>
             <button
-              className={`${
-                index === slidersLength ? 'text-gray-800' : 'hover:text-white'
-              }`}
+              className={'hover:text-white disabled:text-gray-800'}
               onClick={() =>
                 onPositionUpdate(Number(slider.id), Position.Below, true)
               }
-              disabled={index === slidersLength}
+              disabled={disableDownButton}
             >
-              <ChevronDownIcon className="h-6 w-6" />
+              <ChevronDownIcon className="h-8 w-8 md:h-6 md:w-8" />
             </button>
           </div>
           <div className="absolute top-4 right-4 flex-1 text-right md:relative md:top-0 md:right-0">
