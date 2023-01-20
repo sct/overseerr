@@ -384,7 +384,7 @@ const Discover = () => {
                 tempSliders[index].enabled = !tempSliders[index].enabled;
                 setSliders(tempSliders);
               }}
-              onPositionUpdate={(updatedItemId, position) => {
+              onPositionUpdate={(updatedItemId, position, hasClickedArrows) => {
                 const originalPosition = sliders.findIndex(
                   (item) => item.id === updatedItemId
                 );
@@ -393,30 +393,20 @@ const Discover = () => {
                 const tempSliders = sliders.slice();
 
                 tempSliders.splice(originalPosition, 1);
-                tempSliders.splice(
-                  position === 'Above' && index > originalPosition
-                    ? Math.max(index - 1, 0)
-                    : index,
-                  0,
-                  originalItem
-                );
+                hasClickedArrows
+                  ? tempSliders.splice(
+                      position === 'Above' ? index - 1 : index + 1,
+                      0,
+                      originalItem
+                    )
+                  : tempSliders.splice(
+                      position === 'Above' && index > originalPosition
+                        ? Math.max(index - 1, 0)
+                        : index,
+                      0,
+                      originalItem
+                    );
 
-                setSliders(tempSliders);
-              }}
-              onPositionClick={(updatedItemId, position) => {
-                const originalPosition = sliders.findIndex(
-                  (item) => item.id === updatedItemId
-                );
-                const originalItem = sliders[originalPosition];
-
-                const tempSliders = sliders.slice();
-
-                tempSliders.splice(originalPosition, 1);
-                tempSliders.splice(
-                  position === 'Above' ? index - 1 : index + 1,
-                  0,
-                  originalItem
-                );
                 setSliders(tempSliders);
               }}
               slidersLength={sliders.length - 1}

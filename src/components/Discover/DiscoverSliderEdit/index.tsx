@@ -44,11 +44,8 @@ type DiscoverSliderEditProps = {
   onDelete: () => void;
   onPositionUpdate: (
     updatedItemId: number,
-    position: keyof typeof Position
-  ) => void;
-  onPositionClick: (
-    updatedItemId: number,
-    position: keyof typeof Position
+    position: keyof typeof Position,
+    isClickable: boolean
   ) => void;
   children: React.ReactNode;
   slidersLength: number;
@@ -61,7 +58,6 @@ const DiscoverSliderEdit = ({
   onEnable,
   onDelete,
   onPositionUpdate,
-  onPositionClick,
   slidersLength,
   index,
 }: DiscoverSliderEditProps) => {
@@ -123,7 +119,7 @@ const DiscoverSliderEdit = ({
       );
       if (items?.[0]) {
         const dropped = Number(items[0]);
-        onPositionUpdate(dropped, hoverPosition);
+        onPositionUpdate(dropped, hoverPosition, false);
       }
     },
   });
@@ -287,7 +283,9 @@ const DiscoverSliderEdit = ({
               className={`${
                 index === 0 ? 'text-gray-800' : 'hover:text-white'
               }`}
-              onClick={() => onPositionClick(Number(slider.id), Position.Above)}
+              onClick={() =>
+                onPositionUpdate(Number(slider.id), Position.Above, true)
+              }
               disabled={index === 0}
             >
               <ChevronUpIcon className="h-6 w-6" />
@@ -296,7 +294,9 @@ const DiscoverSliderEdit = ({
               className={`${
                 index === slidersLength ? 'text-gray-800' : 'hover:text-white'
               }`}
-              onClick={() => onPositionClick(Number(slider.id), Position.Below)}
+              onClick={() =>
+                onPositionUpdate(Number(slider.id), Position.Below, true)
+              }
               disabled={index === slidersLength}
             >
               <ChevronDownIcon className="h-6 w-6" />
