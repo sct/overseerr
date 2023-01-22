@@ -40,10 +40,9 @@ class AvailabilitySync {
       label: 'AvailabilitySync',
     });
     const mediaRepository = getRepository(Media);
+    const requestRepository = getRepository(MediaRequest);
     const seasonRepository = getRepository(Season);
     const seasonRequestRepository = getRepository(SeasonRequest);
-
-    const mediaToDelete: number[] = [];
 
     const pageSize = 50;
 
@@ -52,10 +51,6 @@ class AvailabilitySync {
         pageSize
       )) {
         try {
-          /*
-           * We cannot immediately delete media items, because it would invalidate our page iteration.
-           * This could be fixed by using a transaction with a "READ COMMITTED" isolation level, but this is unavailable in SQLite
-           */
           if (!this.running) {
             throw new Error('Job aborted');
           }
@@ -63,12 +58,39 @@ class AvailabilitySync {
           for (const media of mediaPage) {
             const mediaExists = await this.mediaExists(media);
 
+            //We can not delete media so if both versions do not exist, we will change both columns to unknown or null
             if (!mediaExists) {
-              logger.debug(
-                `Queueing media id: ${media.tmdbId} for removal because it doesn't appear in any library.`,
-                { label: 'AvailabilitySync' }
-              );
-              mediaToDelete.push(media.id);
+              if (
+                media.status !== MediaStatus.UNKNOWN &&
+                media.status4k !== MediaStatus.UNKNOWN
+              ) {
+                const request = await requestRepository.find({
+                  relations: {
+                    media: true,
+                  },
+                  where: { media: { id: media.id } },
+                });
+
+                logger.debug(
+                  `${media.tmdbId} does not exist in any of your media instances. We will change its status to unknown.`,
+                  { label: 'AvailabilitySync' }
+                );
+
+                await mediaRepository.update(media.id, {
+                  status: MediaStatus.UNKNOWN,
+                  status4k: MediaStatus.UNKNOWN,
+                  serviceId: null,
+                  serviceId4k: null,
+                  externalServiceId: null,
+                  externalServiceId4k: null,
+                  externalServiceSlug: null,
+                  externalServiceSlug4k: null,
+                  ratingKey: null,
+                  ratingKey4k: null,
+                });
+
+                await requestRepository.delete({ id: In(request) });
+              }
               continue;
             }
 
@@ -150,9 +172,6 @@ class AvailabilitySync {
           });
         }
       }
-
-      // After we have processed all media items we can execute our queued deletions
-      await mediaRepository.delete({ id: In(mediaToDelete) });
     } catch (ex) {
       logger.error('Failed to complete availability sync.', {
         errorMessage: ex.message,
@@ -197,13 +216,11 @@ class AvailabilitySync {
     } while (mediaPage.length > 0);
   }
 
-  private async mediaUpdater(
-    is4k: boolean,
-    isSonarr: boolean,
-    media: Media
-  ): Promise<void> {
+  private async mediaUpdater(media: Media, is4k: boolean): Promise<void> {
     const mediaRepository = getRepository(Media);
     const requestRepository = getRepository(MediaRequest);
+
+    const isTVType = media.mediaType === 'tv';
 
     const request = await requestRepository.findOne({
       relations: {
@@ -214,10 +231,11 @@ class AvailabilitySync {
 
     logger.debug(
       `${media.tmdbId} does not exist in your ${is4k ? '4k' : 'non-4k'} ${
-        isSonarr ? 'sonarr' : 'radarr'
+        isTVType ? 'sonarr' : 'radarr'
       } and plex instance. We will change its status to unknown.`,
       { label: 'AvailabilitySync' }
     );
+
     await mediaRepository.update(
       media.id,
       is4k
@@ -237,7 +255,7 @@ class AvailabilitySync {
           }
     );
 
-    if (isSonarr) {
+    if (isTVType) {
       const seasonRepository = getRepository(Season);
 
       await seasonRepository?.update(
@@ -295,13 +313,13 @@ class AvailabilitySync {
 
     if (!existsInRadarr && existsInRadarr4k && !existsInPlex) {
       if (media.status !== MediaStatus.UNKNOWN) {
-        this.mediaUpdater(false, false, media);
+        this.mediaUpdater(media, false);
       }
     }
 
     if (existsInRadarr && !existsInRadarr4k && !existsInPlex4k) {
       if (media.status4k !== MediaStatus.UNKNOWN) {
-        this.mediaUpdater(true, false, media);
+        this.mediaUpdater(media, true);
       }
     }
 
@@ -363,13 +381,13 @@ class AvailabilitySync {
 
     if (!existsInSonarr && existsInSonarr4k && !existsInPlex) {
       if (media.status !== MediaStatus.UNKNOWN) {
-        this.mediaUpdater(false, true, media);
+        this.mediaUpdater(media, false);
       }
     }
 
     if (existsInSonarr && !existsInSonarr4k && !existsInPlex4k) {
       if (media.status4k !== MediaStatus.UNKNOWN) {
-        this.mediaUpdater(true, true, media);
+        this.mediaUpdater(media, true);
       }
     }
 
@@ -557,7 +575,7 @@ class AvailabilitySync {
     }
 
     //we then check radarr or sonarr has that specific media. If not, then we will move to delete
-    //if the a non-4k or 4k version exists in at least one of the instances, we will only update the media without deleting it
+    //if a non-4k or 4k version exists in at least one of the instances, we will only update that specific version
 
     if (media.mediaType === 'movie') {
       const existsInRadarr = await this.mediaExistsInRadarr(
@@ -566,7 +584,7 @@ class AvailabilitySync {
         existsInPlex4k
       );
 
-      //if true, media exists in at least one radarr or plex instance. This means we will prevent deletion and only update that specific media id.
+      //if true, media exists in at least one radarr or plex instance.
 
       if (existsInRadarr) {
         logger.warn(
@@ -587,7 +605,7 @@ class AvailabilitySync {
         existsInPlex4k
       );
 
-      //if true, media exists in at least one sonarr or plex instance. This means we will prevent deletion and only update that specific media id.
+      //if true, media exists in at least one sonarr or plex instance.
 
       if (existsInSonarr) {
         logger.warn(
