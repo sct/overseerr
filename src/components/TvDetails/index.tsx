@@ -1016,7 +1016,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
         linkUrl={`/tv/${data.id}/similar`}
         hideWhenEmpty
       />
-      <div className="relative h-32 sm:h-8" />
+      <div className="extra-bottom-space relative" />
     </div>
   );
 };

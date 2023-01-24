@@ -834,7 +834,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
         linkUrl={`/movie/${data.id}/similar`}
         hideWhenEmpty
       />
-      <div className="relative h-32 sm:h-8" />
+      <div className="extra-bottom-space relative" />
     </div>
   );
 };

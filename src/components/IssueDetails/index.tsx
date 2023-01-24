@@ -667,7 +667,7 @@ const IssueDetails = () => {
           </div>
         </div>
       </div>
-      <div className="h-16 sm:h-0" />
+      <div className="extra-bottom-space" />
     </div>
   );
 };
