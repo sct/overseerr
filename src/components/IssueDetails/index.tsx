@@ -475,48 +475,53 @@ const IssueDetails = () => {
                           className="h-20"
                         />
                         <div className="mt-4 flex items-center justify-end space-x-2">
-                          {issueData.status === IssueStatus.OPEN ? (
-                            <Button
-                              type="button"
-                              buttonType="danger"
-                              onClick={async () => {
-                                await updateIssueStatus('resolved');
+                          {(hasPermission(Permission.MANAGE_ISSUES) ||
+                            belongsToUser) && (
+                            <>
+                              {issueData.status === IssueStatus.OPEN ? (
+                                <Button
+                                  type="button"
+                                  buttonType="danger"
+                                  onClick={async () => {
+                                    await updateIssueStatus('resolved');
 
-                                if (values.message) {
-                                  handleSubmit();
-                                }
-                              }}
-                            >
-                              <CheckCircleIcon />
-                              <span>
-                                {intl.formatMessage(
-                                  values.message
-                                    ? messages.closeissueandcomment
-                                    : messages.closeissue
-                                )}
-                              </span>
-                            </Button>
-                          ) : (
-                            <Button
-                              type="button"
-                              buttonType="default"
-                              onClick={async () => {
-                                await updateIssueStatus('open');
+                                    if (values.message) {
+                                      handleSubmit();
+                                    }
+                                  }}
+                                >
+                                  <CheckCircleIcon />
+                                  <span>
+                                    {intl.formatMessage(
+                                      values.message
+                                        ? messages.closeissueandcomment
+                                        : messages.closeissue
+                                    )}
+                                  </span>
+                                </Button>
+                              ) : (
+                                <Button
+                                  type="button"
+                                  buttonType="default"
+                                  onClick={async () => {
+                                    await updateIssueStatus('open');
 
-                                if (values.message) {
-                                  handleSubmit();
-                                }
-                              }}
-                            >
-                              <ArrowPathIcon />
-                              <span>
-                                {intl.formatMessage(
-                                  values.message
-                                    ? messages.reopenissueandcomment
-                                    : messages.reopenissue
-                                )}
-                              </span>
-                            </Button>
+                                    if (values.message) {
+                                      handleSubmit();
+                                    }
+                                  }}
+                                >
+                                  <ArrowPathIcon />
+                                  <span>
+                                    {intl.formatMessage(
+                                      values.message
+                                        ? messages.reopenissueandcomment
+                                        : messages.reopenissue
+                                    )}
+                                  </span>
+                                </Button>
+                              )}
+                            </>
                           )}
                           <Button
                             type="submit"
