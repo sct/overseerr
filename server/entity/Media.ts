@@ -114,28 +114,28 @@ class Media {
   @Column({ type: 'datetime', nullable: true })
   public mediaAddedAt: Date;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'int' })
   public serviceId?: number | null;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'int' })
   public serviceId4k?: number | null;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'int' })
   public externalServiceId?: number | null;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'int' })
   public externalServiceId4k?: number | null;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'varchar' })
   public externalServiceSlug?: string | null;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'varchar' })
   public externalServiceSlug4k?: string | null;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'varchar' })
   public ratingKey?: string | null;
 
-  @Column({ nullable: true, type: 'text' })
+  @Column({ nullable: true, type: 'varchar' })
   public ratingKey4k?: string | null;
 
   public serviceUrl?: string;

@@ -13,7 +13,6 @@ import { User } from '@server/entity/User';
 import type { RadarrSettings, SonarrSettings } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
-import { In } from 'typeorm';
 
 class AvailabilitySync {
   public running = false;
@@ -89,7 +88,7 @@ class AvailabilitySync {
                   ratingKey4k: null,
                 });
 
-                await requestRepository.delete({ id: In(request) });
+                await requestRepository.remove(request);
               }
               continue;
             }
