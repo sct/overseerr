@@ -475,7 +475,8 @@ const IssueDetails = () => {
                           className="h-20"
                         />
                         <div className="mt-4 flex items-center justify-end space-x-2">
-                          {hasPermission(Permission.MANAGE_ISSUES) && (
+                          {(hasPermission(Permission.MANAGE_ISSUES) ||
+                            belongsToUser) && (
                             <>
                               {issueData.status === IssueStatus.OPEN ? (
                                 <Button
