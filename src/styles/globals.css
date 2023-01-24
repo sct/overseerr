@@ -507,6 +507,10 @@
       @apply hidden;
     }
   }
+
+  .extra-bottom-space {
+    height: calc(4rem + env(safe-area-inset-bottom));
+  }
 }
 
 .ptr--ptr {
