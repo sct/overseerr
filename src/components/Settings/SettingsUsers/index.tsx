@@ -4,7 +4,7 @@ import PageTitle from '@app/components/Common/PageTitle';
 import PermissionEdit from '@app/components/PermissionEdit';
 import QuotaSelector from '@app/components/QuotaSelector';
 import globalMessages from '@app/i18n/globalMessages';
-import { SaveIcon } from '@heroicons/react/outline';
+import { ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
 import type { MainSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -202,7 +202,7 @@ const SettingsUsers = () => {
                         type="submit"
                         disabled={isSubmitting}
                       >
-                        <SaveIcon />
+                        <ArrowDownOnSquareIcon />
                         <span>
                           {isSubmitting
                             ? intl.formatMessage(globalMessages.saving)
