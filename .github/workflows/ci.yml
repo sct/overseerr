@@ -94,9 +94,9 @@ jobs:
         run: |
           failures=(neutral, skipped, timed_out, action_required)
           if [[ ${array[@]} =~ $WORKFLOW_CONCLUSION ]]; then
-            echo "status=failure" >> $GITHUB_STATE
+            echo "status=failure" >> $GITHUB_OUTPUT
           else
-            echo "status=$WORKFLOW_CONCLUSION" >> $GITHUB_STATE
+            echo "status=$WORKFLOW_CONCLUSION" >> $GITHUB_OUTPUT
           fi
       - name: Post Status to Discord
         uses: sarisia/actions-status-discord@v1
