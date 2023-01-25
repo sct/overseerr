@@ -118,7 +118,11 @@ const MobileMenu = () => {
   ];
 
   const filteredLinks = menuLinks.filter(
-    (link) => !link.requiredPermission || hasPermission(link.requiredPermission)
+    (link) =>
+      !link.requiredPermission ||
+      hasPermission(link.requiredPermission, {
+        type: link.permissionType ?? 'and',
+      })
   );
 
   return (
