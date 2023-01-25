@@ -216,11 +216,22 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   const { addToast } = useToasts();
   const [isRetrying, setRetrying] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [refreshIntervalTimer, setRefreshIntervalTimer] = useState(0);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
+
+  const refreshIntervalChecker = (data: MediaRequest) => {
+    if (
+      (data.media.downloadStatus ?? []).length > 0 ||
+      (data.media.downloadStatus4k ?? []).length > 0
+    ) {
+      return 5000;
+    } else {
+      return 0;
+    }
+  };
+
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}` : null
   );
@@ -230,19 +241,8 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
     mutate: revalidate,
   } = useSWR<MediaRequest>(`/api/v1/request/${request.id}`, {
     fallbackData: request,
-    refreshInterval: refreshIntervalTimer,
+    refreshInterval: refreshIntervalChecker(request),
   });
-
-  useEffect(() => {
-    if (
-      (requestData?.media.downloadStatus ?? []).length > 0 ||
-      (requestData?.media.downloadStatus4k ?? []).length > 0
-    ) {
-      setRefreshIntervalTimer(5000);
-    } else {
-      setRefreshIntervalTimer(0);
-    }
-  }, [requestData?.media.downloadStatus, requestData?.media.downloadStatus4k]);
 
   const { plexUrl, plexUrl4k } = useDeepLinks({
     plexUrl: requestData?.media?.plexUrl,

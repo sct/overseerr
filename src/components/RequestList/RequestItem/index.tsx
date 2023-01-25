@@ -20,7 +20,7 @@ import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -282,11 +282,22 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [refreshIntervalTimer, setRefreshIntervalTimer] = useState(0);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
+
+  const refreshIntervalChecker = (data: MediaRequest) => {
+    if (
+      (data.media.downloadStatus ?? []).length > 0 ||
+      (data.media.downloadStatus4k ?? []).length > 0
+    ) {
+      return 5000;
+    } else {
+      return 0;
+    }
+  };
+
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? url : null
   );
@@ -294,20 +305,9 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
     `/api/v1/request/${request.id}`,
     {
       fallbackData: request,
-      refreshInterval: refreshIntervalTimer,
+      refreshInterval: refreshIntervalChecker(request),
     }
   );
-
-  useEffect(() => {
-    if (
-      (requestData?.media.downloadStatus ?? []).length > 0 ||
-      (requestData?.media.downloadStatus4k ?? []).length > 0
-    ) {
-      setRefreshIntervalTimer(5000);
-    } else {
-      setRefreshIntervalTimer(0);
-    }
-  }, [requestData?.media.downloadStatus, requestData?.media.downloadStatus4k]);
 
   const [isRetrying, setRetrying] = useState(false);
 

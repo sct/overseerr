@@ -102,7 +102,17 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     router.query.manage == '1' ? true : false
   );
   const [showIssueModal, setShowIssueModal] = useState(false);
-  const [refreshIntervalTimer, setRefreshIntervalTimer] = useState(0);
+
+  const refreshIntervalChecker = (data: TvDetailsType | undefined) => {
+    if (
+      (data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
+      (data?.mediaInfo?.downloadStatus4k ?? []).length > 0
+    ) {
+      return 5000;
+    } else {
+      return 0;
+    }
+  };
 
   const {
     data,
@@ -110,7 +120,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     mutate: revalidate,
   } = useSWR<TvDetailsType>(`/api/v1/tv/${router.query.tvId}`, {
     fallbackData: tv,
-    refreshInterval: refreshIntervalTimer,
+    refreshInterval: refreshIntervalChecker(tv),
   });
 
   const { data: ratingData } = useSWR<RTRating>(
@@ -121,17 +131,6 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     () => sortCrewPriority(data?.credits.crew ?? []),
     [data]
   );
-
-  useEffect(() => {
-    if (
-      (data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
-      (data?.mediaInfo?.downloadStatus4k ?? []).length > 0
-    ) {
-      setRefreshIntervalTimer(5000);
-    } else {
-      setRefreshIntervalTimer(0);
-    }
-  }, [data?.mediaInfo?.downloadStatus, data?.mediaInfo?.downloadStatus4k]);
 
   useEffect(() => {
     setShowManager(router.query.manage == '1' ? true : false);

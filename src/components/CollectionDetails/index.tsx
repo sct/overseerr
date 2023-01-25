@@ -16,7 +16,7 @@ import type { Collection } from '@server/models/Collection';
 import { uniq } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
@@ -38,7 +38,26 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const { hasPermission } = useUser();
   const [requestModal, setRequestModal] = useState(false);
   const [is4k, setIs4k] = useState(false);
-  const [refreshIntervalTimer, setRefreshIntervalTimer] = useState(0);
+
+  const refreshIntervalChecker = (data: Collection | undefined) => {
+    const [tempDownloadStatus, tempDownloadStatus4k] = [
+      data?.parts.flatMap((item) =>
+        item.mediaInfo?.downloadStatus ? item.mediaInfo?.downloadStatus : []
+      ),
+      data?.parts.flatMap((item) =>
+        item.mediaInfo?.downloadStatus4k ? item.mediaInfo?.downloadStatus4k : []
+      ),
+    ];
+
+    if (
+      (tempDownloadStatus ?? []).length > 0 ||
+      (tempDownloadStatus4k ?? []).length > 0
+    ) {
+      return 5000;
+    } else {
+      return 0;
+    }
+  };
 
   const {
     data,
@@ -47,7 +66,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   } = useSWR<Collection>(`/api/v1/collection/${router.query.collectionId}`, {
     fallbackData: collection,
     revalidateOnMount: true,
-    refreshInterval: refreshIntervalTimer,
+    refreshInterval: refreshIntervalChecker(collection),
   });
 
   const { data: genres } =
@@ -74,17 +93,6 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
         .map((title) => title.title),
     ];
   }, [data?.parts]);
-
-  useEffect(() => {
-    if (
-      (downloadStatus ?? []).length > 0 ||
-      (downloadStatus4k ?? []).length > 0
-    ) {
-      setRefreshIntervalTimer(5000);
-    } else {
-      setRefreshIntervalTimer(0);
-    }
-  }, [downloadStatus, downloadStatus4k]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
