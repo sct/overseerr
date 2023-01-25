@@ -1,3 +1,10 @@
+## [1.32.1](https://github.com/sct/overseerr/compare/v1.32.0...v1.32.1) (2023-01-25)
+
+
+### Bug Fixes
+
+* correctly check mobile menu permissions ([#3271](https://github.com/sct/overseerr/issues/3271)) ([f4a22dc](https://github.com/sct/overseerr/commit/f4a22dc437404558f301ccfc195cf0a300dd1ff2))
+
 # [1.32.0](https://github.com/sct/overseerr/compare/v1.31.0...v1.32.0) (2023-01-25)
 
 
