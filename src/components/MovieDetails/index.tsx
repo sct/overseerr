@@ -103,6 +103,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   const minStudios = 3;
   const [showMoreStudios, setShowMoreStudios] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
+  const [refreshIntervalTimer, setRefreshIntervalTimer] = useState(0);
 
   const {
     data,
@@ -110,6 +111,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     mutate: revalidate,
   } = useSWR<MovieDetailsType>(`/api/v1/movie/${router.query.movieId}`, {
     fallbackData: movie,
+    refreshInterval: refreshIntervalTimer,
   });
 
   const { data: ratingData } = useSWR<RTRating>(
@@ -120,6 +122,17 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     () => sortCrewPriority(data?.credits.crew ?? []),
     [data]
   );
+
+  useEffect(() => {
+    if (
+      (data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
+      (data?.mediaInfo?.downloadStatus4k ?? []).length > 0
+    ) {
+      setRefreshIntervalTimer(5000);
+    } else {
+      setRefreshIntervalTimer(0);
+    }
+  }, [data?.mediaInfo?.downloadStatus, data?.mediaInfo?.downloadStatus4k]);
 
   useEffect(() => {
     setShowManager(router.query.manage == '1' ? true : false);
