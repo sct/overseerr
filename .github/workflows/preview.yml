@@ -3,7 +3,7 @@ name: Overseerr Preview
 on:
   push:
     tags:
-      - "preview-*"
+      - 'preview-*'
 
 jobs:
   build_and_push:

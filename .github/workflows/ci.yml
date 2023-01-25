@@ -3,7 +3,7 @@ name: Overseerr CI
 on:
   pull_request:
     branches:
-      - "*"
+      - '*'
   push:
     branches:
       - develop
