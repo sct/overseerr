@@ -85,7 +85,7 @@ interface DiscoverTvOptions {
   voteAverageLte?: string;
   includeEmptyReleaseDate?: boolean;
   originalLanguage?: string;
-  genre?: number;
+  genre?: string;
   network?: number;
   keywords?: string;
   sortBy?: SortOptions;
