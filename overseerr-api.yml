@@ -4492,7 +4492,7 @@ paths:
         - in: query
           name: genre
           schema:
-            type: number
+            type: string
             example: 18
         - in: query
           name: network
