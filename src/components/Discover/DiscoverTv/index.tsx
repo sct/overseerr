@@ -91,10 +91,10 @@ const DiscoverTv = () => {
               <option value={SortOptions.PopularityAsc}>
                 {intl.formatMessage(messages.sortPopularityAsc)}
               </option>
-              <option value={SortOptions.ReleaseDateDesc}>
+              <option value={SortOptions.FirstAirDateDesc}>
                 {intl.formatMessage(messages.sortFirstAirDateDesc)}
               </option>
-              <option value={SortOptions.ReleaseDateAsc}>
+              <option value={SortOptions.FirstAirDateAsc}>
                 {intl.formatMessage(messages.sortFirstAirDateAsc)}
               </option>
               <option value={SortOptions.TmdbRatingDesc}>
