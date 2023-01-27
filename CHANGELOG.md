@@ -1,3 +1,12 @@
+## [1.32.2](https://github.com/sct/overseerr/compare/v1.32.1...v1.32.2) (2023-01-27)
+
+
+### Bug Fixes
+
+* **build:** update usage of publish snap action ([#3272](https://github.com/sct/overseerr/issues/3272)) ([51b05cd](https://github.com/sct/overseerr/commit/51b05cd8fbb5d332807d8c00b2ffb7b10c3d0179))
+* multiple genre filtering now works ([#3282](https://github.com/sct/overseerr/issues/3282)) ([5076938](https://github.com/sct/overseerr/commit/507693881b939819413f0959df5ef6b7a357eb5c))
+* **ui:** series first air date sorting ([#3283](https://github.com/sct/overseerr/issues/3283)) ([374c78c](https://github.com/sct/overseerr/commit/374c78c989cc86bb144a954a91d5d183c4b591c0))
+
 ## [1.32.1](https://github.com/sct/overseerr/compare/v1.32.0...v1.32.1) (2023-01-25)
 
 
