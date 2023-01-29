@@ -1,3 +1,13 @@
+## [1.32.3](https://github.com/sct/overseerr/compare/v1.32.2...v1.32.3) (2023-01-29)
+
+
+### Bug Fixes
+
+* pass in library type when scanning recently added items ([#3287](https://github.com/sct/overseerr/issues/3287)) ([8942eb8](https://github.com/sct/overseerr/commit/8942eb8b7c4fa1d16aa2e72e8ba7120a653c9aa2))
+* **ui:** air date will use UTC for timezone ([#3297](https://github.com/sct/overseerr/issues/3297)) ([3e43586](https://github.com/sct/overseerr/commit/3e43586acc0804c3fff524509caa890a104e132b))
+* **ui:** show 5 icons when possible on mobile menu ([#3298](https://github.com/sct/overseerr/issues/3298)) ([7040da1](https://github.com/sct/overseerr/commit/7040da1334f6d18e19a494c73caa17f7df552dfe))
+* **ui:** style range thumbs correctly for firefox ([#3294](https://github.com/sct/overseerr/issues/3294)) ([9d10e6a](https://github.com/sct/overseerr/commit/9d10e6a88c0996671f1d9d20792e1930dbc82329))
+
 ## [1.32.2](https://github.com/sct/overseerr/compare/v1.32.1...v1.32.2) (2023-01-27)
 
 
