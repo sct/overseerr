@@ -1,3 +1,10 @@
+## [1.32.4](https://github.com/sct/overseerr/compare/v1.32.3...v1.32.4) (2023-01-29)
+
+
+### Bug Fixes
+
+* **ui:** correct range slider styling in chrome ([#3299](https://github.com/sct/overseerr/issues/3299)) ([d954328](https://github.com/sct/overseerr/commit/d9543289111d72245564d25d300a71b0ea3954ba))
+
 ## [1.32.3](https://github.com/sct/overseerr/compare/v1.32.2...v1.32.3) (2023-01-29)
 
 
