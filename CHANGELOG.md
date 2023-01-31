@@ -1,3 +1,10 @@
+## [1.32.5](https://github.com/sct/overseerr/compare/v1.32.4...v1.32.5) (2023-01-31)
+
+
+### Bug Fixes
+
+* **snapcraft:** use the correct config folder for image cache ([#3302](https://github.com/sct/overseerr/issues/3302)) ([c93467b](https://github.com/sct/overseerr/commit/c93467b3acf2c256324297e7e8f21e9944005dd4))
+
 ## [1.32.4](https://github.com/sct/overseerr/compare/v1.32.3...v1.32.4) (2023-01-29)
 
 
