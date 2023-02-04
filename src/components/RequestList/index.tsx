@@ -33,6 +33,7 @@ enum Filter {
   PROCESSING = 'processing',
   AVAILABLE = 'available',
   UNAVAILABLE = 'unavailable',
+  REQUESTED = 'requested',
   FAILED = 'failed',
 }
 
@@ -176,6 +177,9 @@ const RequestList = () => {
               </option>
               <option value="unavailable">
                 {intl.formatMessage(globalMessages.unavailable)}
+              </option>
+              <option value="requested">
+                {intl.formatMessage(globalMessages.requested)}
               </option>
             </select>
           </div>

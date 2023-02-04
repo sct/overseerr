@@ -4903,6 +4903,7 @@ paths:
                 processing,
                 unavailable,
                 failed,
+                requested,
               ]
         - in: query
           name: sort

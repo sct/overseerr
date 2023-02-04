@@ -43,6 +43,13 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
         case 'available':
           statusFilter = [MediaRequestStatus.APPROVED];
           break;
+        case 'requested':
+          statusFilter = [
+            MediaRequestStatus.PENDING,
+            MediaRequestStatus.APPROVED,
+            MediaRequestStatus.DECLINED,
+          ];
+          break;
         case 'pending':
           statusFilter = [MediaRequestStatus.PENDING];
           break;
@@ -77,6 +84,12 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
             MediaStatus.PENDING,
             MediaStatus.PROCESSING,
             MediaStatus.PARTIALLY_AVAILABLE,
+          ];
+          break;
+        case 'requested':
+          mediaStatusFilter = [
+            MediaStatus.UNKNOWN,
+            MediaStatus.PENDING
           ];
           break;
         default:
