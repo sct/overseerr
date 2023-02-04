@@ -169,14 +169,12 @@ const TitleCard = ({
           <Transition
             as={Fragment}
             show={!image || showDetail || showRequestModal}
-            enter="transition transform opacity-0"
             enterFrom="opacity-0"
             enterTo="opacity-100"
-            leave="transition transform opacity-100"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="absolute inset-0 overflow-hidden rounded-xl">
+            <div className="absolute inset-0 overflow-hidden rounded-xl transition transform">
               <Link href={mediaType === 'movie' ? `/movie/${id}` : `/tv/${id}`}>
                 <a
                   className="absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left"
