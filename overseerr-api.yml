@@ -1347,6 +1347,21 @@ components:
             allowSelfSigned:
               type: boolean
               example: false
+    AppriseSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            url:
+              type: string
+              example: http://localhost:8000/notify/apprise
     Job:
       type: object
       properties:
@@ -3088,6 +3103,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/WebhookSettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/apprise:
+    get:
+      summary: Get Apprise notification settings
+      description: Returns current Apprise notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned Apprise settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppriseSettings'
+    post:
+      summary: Update Apprise notification settings
+      description: Update Apprise notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppriseSettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppriseSettings'
+  /settings/notifications/apprise/test:
+    post:
+      summary: Test Apprise settings
+      description: Sends a test notification to the Apprise agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppriseSettings'
       responses:
         '204':
           description: Test notification attempted

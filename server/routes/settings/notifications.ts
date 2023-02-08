@@ -1,6 +1,7 @@
 import type { User } from '@server/entity/User';
 import { Notification } from '@server/lib/notifications';
 import type { NotificationAgent } from '@server/lib/notifications/agents/agent';
+import AppriseAgent from '@server/lib/notifications/agents/apprise';
 import DiscordAgent from '@server/lib/notifications/agents/discord';
 import EmailAgent from '@server/lib/notifications/agents/email';
 import GotifyAgent from '@server/lib/notifications/agents/gotify';
@@ -409,6 +410,40 @@ notificationRoutes.post('/gotify/test', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Failed to send Gotify notification.',
+    });
+  }
+});
+
+notificationRoutes.get('/apprise', (_req, res) => {
+  const settings = getSettings();
+
+  res.status(200).json(settings.notifications.agents.apprise);
+});
+
+notificationRoutes.post('/apprise', (req, res) => {
+  const settings = getSettings();
+
+  settings.notifications.agents.apprise = req.body;
+  settings.save();
+
+  res.status(200).json(settings.notifications.agents.apprise);
+});
+
+notificationRoutes.post('/apprise/test', async (req, res, next) => {
+  if (!req.user) {
+    return next({
+      status: 500,
+      message: 'User information is missing from the request.',
+    });
+  }
+
+  const appriseAgent = new AppriseAgent(req.body);
+  if (await sendTestNotification(appriseAgent, req.user)) {
+    return res.status(204).send();
+  } else {
+    return next({
+      status: 500,
+      message: 'Failed to send Apprise notification.',
     });
   }
 });
