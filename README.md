@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-84-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-85-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -181,6 +181,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/s0up4200"><img src="https://avatars.githubusercontent.com/u/18177310?v=4?s=100" width="100px;" alt="soup"/><br /><sub><b>soup</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=s0up4200" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/ceptonit"><img src="https://avatars.githubusercontent.com/u/12678743?v=4?s=100" width="100px;" alt="ceptonit"/><br /><sub><b>ceptonit</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=ceptonit" title="Documentation">📖</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/aedelbro"><img src="https://avatars.githubusercontent.com/u/36162221?v=4?s=100" width="100px;" alt="aedelbro"/><br /><sub><b>aedelbro</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=aedelbro" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://twitter.com/lunks/"><img src="https://avatars.githubusercontent.com/u/91118?v=4?s=100" width="100px;" alt="Pedro Nascimento"/><br /><sub><b>Pedro Nascimento</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=lunks" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
