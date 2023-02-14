@@ -546,7 +546,7 @@ class Settings {
   }
 
   private generateApiKey(): string {
-    return Buffer.from(`${Date.now()}${randomUUID()})`).toString('base64');
+    return Buffer.from(`${Date.now()}${randomUUID()}`).toString('base64');
   }
 
   private generateVapidKeys(force = false): void {
