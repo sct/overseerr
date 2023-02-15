@@ -741,6 +741,7 @@
   "components.Settings.SettingsJobsCache.editJobSchedulePrompt": "New Frequency",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "Every {jobScheduleHours, plural, one {hour} other {{jobScheduleHours} hours}}",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorMinutes": "Every {jobScheduleMinutes, plural, one {minute} other {{jobScheduleMinutes} minutes}}",
+  "components.Settings.SettingsJobsCache.editJobScheduleSelectorSeconds": "Every {jobScheduleSeconds, plural, one {second} other {{jobScheduleSeconds} seconds}}",
   "components.Settings.SettingsJobsCache.flushcache": "Flush Cache",
   "components.Settings.SettingsJobsCache.image-cache-cleanup": "Image Cache Cleanup",
   "components.Settings.SettingsJobsCache.imagecache": "Image Cache",
