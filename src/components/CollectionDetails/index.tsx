@@ -10,6 +10,7 @@ import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
+import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { MediaStatus } from '@server/constants/media';
 import type { Collection } from '@server/models/Collection';
@@ -39,8 +40,8 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const [requestModal, setRequestModal] = useState(false);
   const [is4k, setIs4k] = useState(false);
 
-  const refreshIntervalChecker = (data: Collection | undefined) => {
-    const [tempDownloadStatus, tempDownloadStatus4k] = [
+  const returnCollectionDownloadItems = (data: Collection | undefined) => {
+    const [downloadStatus, downloadStatus4k] = [
       data?.parts.flatMap((item) =>
         item.mediaInfo?.downloadStatus ? item.mediaInfo?.downloadStatus : []
       ),
@@ -49,14 +50,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
       ),
     ];
 
-    if (
-      (tempDownloadStatus ?? []).length > 0 ||
-      (tempDownloadStatus4k ?? []).length > 0
-    ) {
-      return 5000;
-    } else {
-      return 0;
-    }
+    return { downloadStatus, downloadStatus4k };
   };
 
   const {
@@ -66,22 +60,19 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   } = useSWR<Collection>(`/api/v1/collection/${router.query.collectionId}`, {
     fallbackData: collection,
     revalidateOnMount: true,
-    refreshInterval: refreshIntervalChecker(collection),
+    refreshInterval: refreshIntervalHelper(
+      returnCollectionDownloadItems(collection),
+      15000
+    ),
   });
 
   const { data: genres } =
     useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
 
   const [downloadStatus, downloadStatus4k] = useMemo(() => {
-    return [
-      data?.parts.flatMap((item) =>
-        item.mediaInfo?.downloadStatus ? item.mediaInfo?.downloadStatus : []
-      ),
-      data?.parts.flatMap((item) =>
-        item.mediaInfo?.downloadStatus4k ? item.mediaInfo?.downloadStatus4k : []
-      ),
-    ];
-  }, [data?.parts]);
+    const downloadItems = returnCollectionDownloadItems(data);
+    return [downloadItems.downloadStatus, downloadItems.downloadStatus4k];
+  }, [data]);
 
   const [titles, titles4k] = useMemo(() => {
     return [

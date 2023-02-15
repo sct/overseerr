@@ -30,6 +30,7 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
+import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { Disclosure, Transition } from '@headlessui/react';
 import {
   ArrowRightCircleIcon,
@@ -103,24 +104,19 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
   );
   const [showIssueModal, setShowIssueModal] = useState(false);
 
-  const refreshIntervalChecker = (data: TvDetailsType | undefined) => {
-    if (
-      (data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
-      (data?.mediaInfo?.downloadStatus4k ?? []).length > 0
-    ) {
-      return 5000;
-    } else {
-      return 0;
-    }
-  };
-
   const {
     data,
     error,
     mutate: revalidate,
   } = useSWR<TvDetailsType>(`/api/v1/tv/${router.query.tvId}`, {
     fallbackData: tv,
-    refreshInterval: refreshIntervalChecker(tv),
+    refreshInterval: refreshIntervalHelper(
+      {
+        downloadStatus: tv?.mediaInfo?.downloadStatus,
+        downloadStatus4k: tv?.mediaInfo?.downloadStatus4k,
+      },
+      15000
+    ),
   });
 
   const { data: ratingData } = useSWR<RTRating>(

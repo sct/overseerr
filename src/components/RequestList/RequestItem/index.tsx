@@ -7,6 +7,7 @@ import StatusBadge from '@app/components/StatusBadge';
 import useDeepLinks from '@app/hooks/useDeepLinks';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
+import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import {
   ArrowPathIcon,
   CheckIcon,
@@ -286,18 +287,6 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
       : `/api/v1/tv/${request.media.tmdbId}`;
-
-  const refreshIntervalChecker = (data: MediaRequest) => {
-    if (
-      (data.media.downloadStatus ?? []).length > 0 ||
-      (data.media.downloadStatus4k ?? []).length > 0
-    ) {
-      return 5000;
-    } else {
-      return 0;
-    }
-  };
-
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? url : null
   );
@@ -305,7 +294,13 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
     `/api/v1/request/${request.id}`,
     {
       fallbackData: request,
-      refreshInterval: refreshIntervalChecker(request),
+      refreshInterval: refreshIntervalHelper(
+        {
+          downloadStatus: request.media.downloadStatus,
+          downloadStatus4k: request.media.downloadStatus4k,
+        },
+        15000
+      ),
     }
   );
 

@@ -26,6 +26,7 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
+import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import {
   ArrowRightCircleIcon,
   CloudIcon,
@@ -104,24 +105,19 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   const [showMoreStudios, setShowMoreStudios] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
 
-  const refreshIntervalChecker = (data: MovieDetailsType | undefined) => {
-    if (
-      (data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
-      (data?.mediaInfo?.downloadStatus4k ?? []).length > 0
-    ) {
-      return 5000;
-    } else {
-      return 0;
-    }
-  };
-
   const {
     data,
     error,
     mutate: revalidate,
   } = useSWR<MovieDetailsType>(`/api/v1/movie/${router.query.movieId}`, {
     fallbackData: movie,
-    refreshInterval: refreshIntervalChecker(movie),
+    refreshInterval: refreshIntervalHelper(
+      {
+        downloadStatus: movie?.mediaInfo?.downloadStatus,
+        downloadStatus4k: movie?.mediaInfo?.downloadStatus4k,
+      },
+      15000
+    ),
   });
 
   const { data: ratingData } = useSWR<RTRating>(
