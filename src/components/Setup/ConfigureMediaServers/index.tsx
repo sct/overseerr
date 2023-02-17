@@ -2,7 +2,7 @@ import PlexLogo from '@app/assets/services/plex.svg';
 import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import SettingsPlex from '@app/components/Settings/SettingsPlex';
-import { CheckCircleIcon } from '@heroicons/react/solid';
+import { CheckCircleIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

@@ -5,7 +5,7 @@ import LocalLogin from '@app/components/Login/LocalLogin';
 import PlexLogin from '@app/components/Login/PlexLogin';
 import useSettings from '@app/hooks/useSettings';
 import { Transition } from '@headlessui/react';
-import { XCircleIcon } from '@heroicons/react/solid';
+import { XCircleIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';

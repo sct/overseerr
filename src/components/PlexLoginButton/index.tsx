@@ -1,7 +1,7 @@
 import Button from '@app/components/Common/Button';
 import globalMessages from '@app/i18n/globalMessages';
 import PlexOAuth from '@app/utils/plex';
-import { LoginIcon } from '@heroicons/react/outline';
+import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -62,7 +62,7 @@ const PlexLoginButton = ({
         buttonType={buttonType}
         buttonSize={buttonSize}
       >
-        {svgIcon ?? <LoginIcon />}
+        {svgIcon ?? <ArrowLeftOnRectangleIcon />}
         <span>
           {loading
             ? intl.formatMessage(globalMessages.loading)

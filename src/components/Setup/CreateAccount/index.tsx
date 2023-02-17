@@ -2,7 +2,7 @@ import Button from '@app/components/Common/Button';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import LoginWithPlex from '@app/components/Setup/LoginWithPlex';
 import { useUser } from '@app/hooks/useUser';
-import { ArrowLeftIcon, UserIcon } from '@heroicons/react/solid';
+import { ArrowLeftIcon, UserIcon } from '@heroicons/react/24/solid';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
 import { useState } from 'react';

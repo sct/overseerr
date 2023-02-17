@@ -9,6 +9,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import type { PlayButtonLink } from '@app/components/Common/PlayButton';
 import PlayButton from '@app/components/Common/PlayButton';
+import Tag from '@app/components/Common/Tag';
 import Tooltip from '@app/components/Common/Tooltip';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import IssueModal from '@app/components/IssueModal';
@@ -25,19 +26,20 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
+import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import {
-  ArrowCircleRightIcon,
+  ArrowRightCircleIcon,
   CloudIcon,
   CogIcon,
-  ExclamationIcon,
+  ExclamationTriangleIcon,
   FilmIcon,
   PlayIcon,
   TicketIcon,
-} from '@heroicons/react/outline';
+} from '@heroicons/react/24/outline';
 import {
   ChevronDoubleDownIcon,
   ChevronDoubleUpIcon,
-} from '@heroicons/react/solid';
+} from '@heroicons/react/24/solid';
 import type { RTRating } from '@server/api/rottentomatoes';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaStatus } from '@server/constants/media';
@@ -109,6 +111,13 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     mutate: revalidate,
   } = useSWR<MovieDetailsType>(`/api/v1/movie/${router.query.movieId}`, {
     fallbackData: movie,
+    refreshInterval: refreshIntervalHelper(
+      {
+        downloadStatus: movie?.mediaInfo?.downloadStatus,
+        downloadStatus4k: movie?.mediaInfo?.downloadStatus4k,
+      },
+      15000
+    ),
   });
 
   const { data: ratingData } = useSWR<RTRating>(
@@ -222,7 +231,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     movieAttributes.push(
       data.genres
         .map((g) => (
-          <Link href={`/discover/movies/genre/${g.id}`} key={`genre-${g.id}`}>
+          <Link href={`/discover/movies?genre=${g.id}`} key={`genre-${g.id}`}>
             <a className="hover:underline">{g.name}</a>
           </Link>
         ))
@@ -389,7 +398,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                   onClick={() => setShowIssueModal(true)}
                   className="ml-2 first:ml-0"
                 >
-                  <ExclamationIcon />
+                  <ExclamationTriangleIcon />
                 </Button>
               </Tooltip>
             )}
@@ -447,11 +456,25 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 <Link href={`/movie/${data.id}/crew`}>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
-                    <ArrowCircleRightIcon className="ml-1.5 inline-block h-5 w-5" />
+                    <ArrowRightCircleIcon className="ml-1.5 inline-block h-5 w-5" />
                   </a>
                 </Link>
               </div>
             </>
+          )}
+          {data.keywords.length > 0 && (
+            <div className="mt-6">
+              {data.keywords.map((keyword) => (
+                <Link
+                  href={`/discover/movies?keywords=${keyword.id}`}
+                  key={`keyword-id-${keyword.id}`}
+                >
+                  <a className="mb-2 mr-2 inline-flex last:mr-0">
+                    <Tag>{keyword.name}</Tag>
+                  </a>
+                </Link>
+              ))}
+            </div>
           )}
         </div>
         <div className="media-overview-right">
@@ -606,6 +629,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                           year: 'numeric',
                           month: 'long',
                           day: 'numeric',
+                          timeZone: 'UTC',
                         })}
                       </span>
                     </span>
@@ -625,6 +649,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
+                      timeZone: 'UTC',
                     })}
                   </span>
                 </div>
@@ -785,7 +810,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
             <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
-                <ArrowCircleRightIcon />
+                <ArrowRightCircleIcon />
               </a>
             </Link>
           </div>
@@ -819,7 +844,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
         linkUrl={`/movie/${data.id}/similar`}
         hideWhenEmpty
       />
-      <div className="pb-8" />
+      <div className="extra-bottom-space relative" />
     </div>
   );
 };

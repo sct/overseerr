@@ -18,14 +18,14 @@ type ImageResponse = {
   imageBuffer: Buffer;
 };
 
+const baseCacheDirectory = process.env.CONFIG_DIRECTORY
+  ? `${process.env.CONFIG_DIRECTORY}/cache/images`
+  : path.join(__dirname, '../../config/cache/images');
+
 class ImageProxy {
   public static async clearCache(key: string) {
     let deletedImages = 0;
-    const cacheDirectory = path.join(
-      __dirname,
-      '../../config/cache/images/',
-      key
-    );
+    const cacheDirectory = path.join(baseCacheDirectory, key);
 
     const files = await promises.readdir(cacheDirectory);
 
@@ -57,11 +57,7 @@ class ImageProxy {
   public static async getImageStats(
     key: string
   ): Promise<{ size: number; imageCount: number }> {
-    const cacheDirectory = path.join(
-      __dirname,
-      '../../config/cache/images/',
-      key
-    );
+    const cacheDirectory = path.join(baseCacheDirectory, key);
 
     const imageTotalSize = await ImageProxy.getDirectorySize(cacheDirectory);
     const imageCount = await ImageProxy.getImageCount(cacheDirectory);
@@ -192,9 +188,11 @@ class ImageProxy {
 
       const buffer = Buffer.from(response.data, 'binary');
       const extension = path.split('.').pop() ?? '';
-      const maxAge = Number(response.headers['cache-control'].split('=')[1]);
+      const maxAge = Number(
+        (response.headers['cache-control'] ?? '0').split('=')[1]
+      );
       const expireAt = Date.now() + maxAge * 1000;
-      const etag = response.headers.etag.replace(/"/g, '');
+      const etag = (response.headers.etag ?? '').replace(/"/g, '');
 
       await this.writeToCacheDir(
         directory,
@@ -261,7 +259,7 @@ class ImageProxy {
   }
 
   private getCacheDirectory() {
-    return path.join(__dirname, '../../config/cache/images/', this.key);
+    return path.join(baseCacheDirectory, this.key);
   }
 }
 
