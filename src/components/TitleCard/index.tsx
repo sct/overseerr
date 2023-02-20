@@ -141,7 +141,7 @@ const TitleCard = ({
                   : intl.formatMessage(globalMessages.tvshow)}
               </div>
             </div>
-            {currentStatus && (
+            {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (
               <div className="pointer-events-none z-40 flex items-center">
                 <StatusBadgeMini
                   status={currentStatus}
