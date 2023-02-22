@@ -67,7 +67,7 @@ const SlideOver = ({
             >
               {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
               <div
-                className="slideover relative h-full w-screen max-w-md p-2 sm:p-4"
+                className="slideover relative h-full w-screen max-w-md p-2 sm:p-3"
                 ref={slideoverRef}
                 onClick={(e) => e.stopPropagation()}
               >
