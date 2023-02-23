@@ -228,10 +228,10 @@ const UserList = () => {
       <PageTitle title={intl.formatMessage(messages.users)} />
       <Transition
         as="div"
-        enter="opacity-0 transition duration-300"
+        enter="transition-opacity duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="opacity-100 transition duration-300"
+        leave="transition-opacity duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         show={deleteModal.isOpen}
@@ -257,10 +257,10 @@ const UserList = () => {
 
       <Transition
         as="div"
-        enter="opacity-0 transition duration-300"
+        enter="transition-opacity duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="opacity-100 transition duration-300"
+        leave="transition-opacity duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         show={createModal.isOpen}
@@ -440,10 +440,10 @@ const UserList = () => {
 
       <Transition
         as="div"
-        enter="opacity-0 transition duration-300"
+        enter="transition-opacity duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="opacity-100 transition duration-300"
+        leave="transition-opacity duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         show={showBulkEditModal}
@@ -461,10 +461,10 @@ const UserList = () => {
 
       <Transition
         as="div"
-        enter="opacity-0 transition duration-300"
+        enter="transition-opacity duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="opacity-100 transition duration-300"
+        leave="transition-opacity duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         show={showImportModal}
