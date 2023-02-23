@@ -735,18 +735,18 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                             )}
                           <ChevronDownIcon
                             className={`${
-                              open ? 'rotate-180 transform' : ''
+                              open ? 'rotate-180' : ''
                             } h-6 w-6 text-gray-500`}
                           />
                         </Disclosure.Button>
                         <Transition
                           show={open}
-                          enter="transition duration-100 ease-out"
-                          enterFrom="transform opacity-0"
-                          enterTo="transform opacity-100"
-                          leave="transition duration-75 ease-out"
-                          leaveFrom="transform opacity-100"
-                          leaveTo="transform opacity-0"
+                          enter="transition-opacity duration-100 ease-out"
+                          enterFrom="opacity-0"
+                          enterTo="opacity-100"
+                          leave="transition-opacity duration-75 ease-out"
+                          leaveFrom="opacity-100"
+                          leaveTo="opacity-0"
                           // Not sure why this transition is adding a margin without this here
                           style={{ margin: '0px' }}
                         >
