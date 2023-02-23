@@ -37,10 +37,10 @@ const SlideOver = ({
       as={Fragment}
       show={show}
       appear
-      enter="opacity-0 transition ease-in-out duration-300"
+      enter="transition-opacity ease-in-out duration-300"
       enterFrom="opacity-0"
       enterTo="opacity-100"
-      leave="opacity-100 transition ease-in-out duration-300"
+      leave="transition-opacity ease-in-out duration-300"
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
@@ -58,10 +58,10 @@ const SlideOver = ({
           <section className="absolute inset-y-0 right-0 flex max-w-full">
             <Transition.Child
               appear
-              enter="transform transition ease-in-out duration-500 sm:duration-700"
+              enter="transition-transform ease-in-out duration-500 sm:duration-700"
               enterFrom="translate-x-full"
               enterTo="translate-x-0"
-              leave="transform transition ease-in-out duration-500 sm:duration-700"
+              leave="transition-transform ease-in-out duration-500 sm:duration-700"
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
