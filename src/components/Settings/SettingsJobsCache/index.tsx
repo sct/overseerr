@@ -53,6 +53,7 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'plex-recently-added-scan': 'Plex Recently Added Scan',
   'plex-full-scan': 'Plex Full Library Scan',
   'plex-watchlist-sync': 'Plex Watchlist Sync',
+  'availability-sync': 'Media Availability Sync',
   'radarr-scan': 'Radarr Scan',
   'sonarr-scan': 'Sonarr Scan',
   'download-sync': 'Download Sync',
@@ -252,10 +253,10 @@ const SettingsJobs = () => {
       />
       <Transition
         as={Fragment}
-        enter="opacity-0 transition duration-300"
+        enter="transition-opacity duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="opacity-100 transition duration-300"
+        leave="transition-opacity duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         show={jobModalState.isOpen}

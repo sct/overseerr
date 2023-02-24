@@ -1,3 +1,4 @@
+import availabilitySync from '@server/lib/availabilitySync';
 import downloadTracker from '@server/lib/downloadtracker';
 import ImageProxy from '@server/lib/imageproxy';
 import { plexFullScanner, plexRecentScanner } from '@server/lib/scanners/plex';
@@ -102,6 +103,23 @@ export const startJobs = (): void => {
     }),
     running: () => sonarrScanner.status().running,
     cancelFn: () => sonarrScanner.cancel(),
+  });
+
+  // Checks if media is still available in plex/sonarr/radarr libs
+  scheduledJobs.push({
+    id: 'availability-sync',
+    name: 'Media Availability Sync',
+    type: 'process',
+    interval: 'hours',
+    cronSchedule: jobs['availability-sync'].schedule,
+    job: schedule.scheduleJob(jobs['availability-sync'].schedule, () => {
+      logger.info('Starting scheduled job: Media Availability Sync', {
+        label: 'Jobs',
+      });
+      availabilitySync.run();
+    }),
+    running: () => availabilitySync.running,
+    cancelFn: () => availabilitySync.cancel(),
   });
 
   // Run download sync every minute
