@@ -601,7 +601,7 @@ class AvailabilitySync {
 
       //if true, media exists in at least one radarr or plex instance.
       if (existsInRadarr) {
-        logger.info(
+        logger.warn(
           `${media.tmdbId} exists in at least one radarr or plex instance. Media will be updated if set to available.`,
           {
             label: 'AvailabilitySync',
@@ -621,7 +621,7 @@ class AvailabilitySync {
 
       //if true, media exists in at least one sonarr or plex instance.
       if (existsInSonarr) {
-        logger.info(
+        logger.warn(
           `${media.tvdbId} exists in at least one sonarr or plex instance. Media will be updated if set to available.`,
           {
             label: 'AvailabilitySync',
@@ -685,7 +685,7 @@ class AvailabilitySync {
     );
 
     if (existsInSonarr) {
-      logger.info(
+      logger.warn(
         `${media.tvdbId}, season: ${season.seasonNumber} exists in at least one sonarr or plex instance. Media will be updated if set to available.`,
         {
           label: 'AvailabilitySync',
