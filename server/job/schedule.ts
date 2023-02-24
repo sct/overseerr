@@ -110,7 +110,7 @@ export const startJobs = (): void => {
     id: 'availability-sync',
     name: 'Media Availability Sync',
     type: 'process',
-    interval: 'long',
+    interval: 'hours',
     cronSchedule: jobs['availability-sync'].schedule,
     job: schedule.scheduleJob(jobs['availability-sync'].schedule, () => {
       logger.info('Starting scheduled job: Media Availability Sync', {
