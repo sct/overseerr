@@ -607,7 +607,7 @@ router.get<{ id: string }, UserWatchDataResponse>(
   }
 );
 
-router.get<{ id: string; page?: number }, WatchlistResponse>(
+router.get<{ id: string }, WatchlistResponse>(
   '/:id/watchlist',
   async (req, res, next) => {
     if (

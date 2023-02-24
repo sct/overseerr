@@ -800,7 +800,7 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   }
 );
 
-discoverRoutes.get<{ page?: number }, WatchlistResponse>(
+discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
   '/watchlist',
   async (req, res) => {
     const userRepository = getRepository(User);
