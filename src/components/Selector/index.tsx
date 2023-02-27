@@ -305,6 +305,8 @@ export const WatchProviderSelector = ({
 
   useEffect(() => {
     onChange(watchRegion, activeProvider);
+    // removed onChange as a dependency as we only need to call it when the value(s) change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeProvider, watchRegion]);
 
   const orderedData = useMemo(() => {

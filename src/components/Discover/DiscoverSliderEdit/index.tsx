@@ -199,7 +199,9 @@ const DiscoverSliderEdit = ({
           className={`${slider.data ? 'mb-4' : 'mb-0'} flex space-x-2 md:mb-0`}
         >
           <Bars3Icon className="h-6 w-6" />
-          <div>{getSliderTitle(slider)}</div>
+          <div className="w-7/12 truncate md:w-full">
+            {getSliderTitle(slider)}
+          </div>
         </div>
         <div
           className={`pointer-events-none ${
