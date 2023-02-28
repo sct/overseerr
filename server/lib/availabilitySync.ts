@@ -310,11 +310,10 @@ class AvailabilitySync {
 
       //check if both exist or if a single non-4k or 4k exists
       //if both do not exist we will return false
-      if (!server.is4k && !meta.id) {
+      if (!server.is4k && (!meta.id || (!meta.hasFile && !meta.monitored))) {
         existsInRadarr = false;
       }
-
-      if (server.is4k && !meta.id) {
+      if (server.is4k && (!meta.id || (!meta.hasFile && !meta.monitored))) {
         existsInRadarr4k = false;
       }
     }
