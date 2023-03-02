@@ -119,6 +119,25 @@ class SonarrAPI extends ServarrBase<{
     }
   }
 
+  public async getSeriesById(id: number): Promise<SonarrSeries> {
+    try {
+      const response = await this.axios.get<SonarrSeries>(`/series/${id}`);
+
+      if (!response.data) {
+        throw new Error('Series not found');
+      }
+
+      return response.data;
+    } catch (e) {
+      logger.error('Error retrieving series by ID', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        id: id,
+      });
+      throw new Error('Series not found');
+    }
+  }
+
   public async getSeriesByTitle(title: string): Promise<SonarrSeries[]> {
     try {
       const response = await this.axios.get<SonarrSeries[]>('/series/lookup', {
@@ -147,29 +166,6 @@ class SonarrAPI extends ServarrBase<{
       const response = await this.axios.get<SonarrSeries[]>('/series/lookup', {
         params: {
           term: `tvdb:${id}`,
-        },
-      });
-
-      if (!response.data[0]) {
-        throw new Error('Series not found');
-      }
-
-      return response.data[0];
-    } catch (e) {
-      logger.error('Error retrieving series by tvdb ID', {
-        label: 'Sonarr API',
-        errorMessage: e.message,
-        tvdbId: id,
-      });
-      throw new Error('Series not found');
-    }
-  }
-
-  public async getExistingSeriesByTvdbId(id: number): Promise<SonarrSeries> {
-    try {
-      const response = await this.axios.get<SonarrSeries[]>('/series', {
-        params: {
-          tvdbId: id,
         },
       });
 

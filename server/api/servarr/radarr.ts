@@ -78,29 +78,6 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
     }
   }
 
-  public async getExistingMovieByTmdbId(id: number): Promise<RadarrMovie> {
-    try {
-      const response = await this.axios.get<RadarrMovie[]>('/movie', {
-        params: {
-          tmdbId: id,
-        },
-      });
-
-      if (!response.data[0]) {
-        throw new Error('Movie not found');
-      }
-
-      return response.data[0];
-    } catch (e) {
-      logger.error('Error retrieving movie by TMDB ID', {
-        label: 'Radarr API',
-        errorMessage: e.message,
-        tmdbId: id,
-      });
-      throw new Error('Movie not found');
-    }
-  }
-
   public addMovie = async (
     options: RadarrMovieOptions
   ): Promise<RadarrMovie> => {
