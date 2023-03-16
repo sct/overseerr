@@ -7,6 +7,7 @@
     min-height: calc(100% + env(safe-area-inset-top));
     padding: env(safe-area-inset-top) env(safe-area-inset-right)
       calc(4rem + env(safe-area-inset-bottom)) env(safe-area-inset-left);
+    overscroll-behavior-y: none;
   }
 
   @media (min-width: 640px) {
