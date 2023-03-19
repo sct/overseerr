@@ -14,12 +14,13 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { mapProductionCompany } from '@server/models/Movie';
 import {
+  mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
   mapTvResult,
 } from '@server/models/Search';
 import { mapNetwork } from '@server/models/Tv';
-import { isMovie, isPerson } from '@server/utils/typeHelpers';
+import { isCollection, isMovie, isPerson } from '@server/utils/typeHelpers';
 import { Router } from 'express';
 import { sortBy } from 'lodash';
 import { z } from 'zod';
@@ -647,6 +648,8 @@ discoverRoutes.get('/trending', async (req, res, next) => {
             )
           : isPerson(result)
           ? mapPersonResult(result)
+          : isCollection(result)
+          ? mapCollectionResult(result)
           : mapTvResult(
               result,
               media.find(
