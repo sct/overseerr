@@ -11,6 +11,11 @@ const PullToRefresh = () => {
   const [unlockScreen, setUnlockScreen] = useState(true);
   const refreshDiv = useRef<HTMLDivElement>(null);
 
+  const pullDownInitThreshold = pullChange > 20;
+  const pullDownStopThreshold = 120;
+  const pullDownReloadThreshold = pullChange > 340;
+  const pullDownIconLocation = pullChange / 3;
+
   useEffect(() => {
     const forceReload = () => {
       refreshDiv.current?.classList.add('loading');
@@ -19,7 +24,14 @@ const PullToRefresh = () => {
       }, 1000);
     };
 
+    const html = document.querySelector('html');
+
+    if (html) {
+      html.style.overscrollBehaviorY = 'none';
+    }
+
     const pullStart = (e: TouchEvent) => {
+      e.preventDefault();
       setPullStartPoint(e.targetTouches[0].screenY);
     };
 
@@ -34,7 +46,7 @@ const PullToRefresh = () => {
     const pullFinish = () => {
       setPullStartPoint(0);
 
-      if (pullChange > 240) {
+      if (pullDownReloadThreshold) {
         forceReload();
       } else {
         setPullChange(0);
@@ -50,7 +62,13 @@ const PullToRefresh = () => {
       window.removeEventListener('touchmove', pullDown);
       window.removeEventListener('touchend', pullFinish);
     };
-  }, [pullChange, pullStartPoint, router, unlockScreen]);
+  }, [
+    pullChange,
+    pullDownReloadThreshold,
+    pullStartPoint,
+    router,
+    unlockScreen,
+  ]);
 
   const isIconVisible = async (element: HTMLDivElement) => {
     return new Promise((resolve) => {
@@ -68,7 +86,7 @@ const PullToRefresh = () => {
     ) as HTMLDivElement;
 
     const checkIfVisible = async () => {
-      if (await isIconVisible(refreshIcon)) {
+      if ((await isIconVisible(refreshIcon)) && pullDownInitThreshold) {
         setUnlockScreen(false);
       } else {
         setUnlockScreen(true);
@@ -80,32 +98,34 @@ const PullToRefresh = () => {
     return () => {
       window.removeEventListener('touchmove', checkIfVisible);
     };
-  }, []);
+  }, [pullChange, pullDownInitThreshold]);
 
   useLockBodyScroll(true, unlockScreen);
 
   return (
     <div
       ref={refreshDiv}
-      className="absolute left-0 right-0 -top-16 z-50 m-auto w-fit transition-all ease-out"
+      className="absolute left-0 right-0 top-0 z-50 m-auto w-fit transition-all ease-out"
+      id="refreshIcon"
       style={{
         top:
-          pullChange / 3 < 80 && pullChange > 20
-            ? pullChange / 3
-            : pullChange > 20
-            ? 80
+          pullDownIconLocation < pullDownStopThreshold && pullDownInitThreshold
+            ? pullDownIconLocation
+            : pullDownInitThreshold
+            ? pullDownStopThreshold
             : '',
       }}
-      id="refreshIcon"
     >
       <div
         className={`${
           refreshDiv.current?.classList[9] === 'loading' && 'animate-spin'
-        } ${
-          pullChange > 240 ? 'rotate-180' : '-rotate-180'
-        } p-2 transition-all duration-300`}
+        } relative -top-24 h-9 w-9 rounded-full border-4 border-gray-800 bg-gray-800 shadow-md shadow-black ring-1 ring-gray-700`}
       >
-        <ArrowPathIcon className="h-9 w-9 rounded-full border-4 border-gray-800 bg-gray-800 text-indigo-500 ring-1 ring-gray-700" />
+        <ArrowPathIcon
+          className={`rounded-full ${
+            pullDownReloadThreshold && 'rotate-180'
+          } text-indigo-500 transition-all duration-300`}
+        />
       </div>
     </div>
   );
