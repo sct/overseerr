@@ -17,7 +17,6 @@
 
   body {
     @apply bg-gray-900;
-    overscroll-behavior-y: none;
     -webkit-overflow-scrolling: touch;
   }
 
