@@ -25,7 +25,7 @@ For details on the Docker CLI, please [review the official `docker run` document
 
 ```bash
 docker run -d \
-  --name overseerr \
+  --name sctx/overseerr \
   -e LOG_LEVEL=debug \
   -e TZ=Asia/Tokyo \
   -e PORT=5055 `#optional` \
