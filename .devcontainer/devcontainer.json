@@ -40,10 +40,8 @@
     Use 'onCreateCommand' to run commands at the end of container creation.
     Use 'postCreateCommand' to run commands after the container is created.
   **/
-  //"onCreateCommand": "sudo chown -R node:node /workspaces/overseerr",
-  //"onCreateCommand": "git config --global --add safe.directory /workspaces/overseerr",
   "onCreateCommand": "yarn",
-  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config --global gpg.program $(which gpg)", // && yarn dev",
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config --global gpg.program $(which gpg)",
   // Remote user of container -- Base image uses 'node' as default
   "remoteUser": "node"
 }
