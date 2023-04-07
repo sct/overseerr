@@ -1,14 +1,18 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
-// https://github.com/devcontainers/images/blob/main/src/typescript-node/.devcontainer/Dockerfile
+/**
+  For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+  https://github.com/devcontainers/images/blob/main/src/typescript-node/.devcontainer/Dockerfile
+**/
 {
   "name": "Node Typescript",
   "build": {
     "dockerfile": "Dockerfile",
     "context": "..",
     "args": {
-      // Update 'VARIANT' to pick a Node version
-      // Append -bullseye or -buster to pin to an OS version.
-      // Use -bullseye variants on local on arm64/Apple Silicon.
+      /**
+        Update 'VARIANT' to pick a Node version
+        Append -bullseye or -buster to pin to an OS version.
+        Use -bullseye variants on local on arm64/Apple Silicon.
+      **/
       "VARIANT": "16"
     }
   },
@@ -31,16 +35,14 @@
   },
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
   "forwardPorts": [5055],
-  // Use 'onCreateCommand' to run commands at the end of container creation.
-  // Use 'postCreateCommand' to run commands after the container is created.
+  /**
+    Use 'onCreateCommand' to run commands at the end of container creation.
+    Use 'postCreateCommand' to run commands after the container is created.
+  **/
   //"onCreateCommand": "sudo chown -R node:node /workspaces/overseerr",
   //"onCreateCommand": "git config --global --add safe.directory /workspaces/overseerr",
-  //"postCreateCommand": "yarn dev",
   "onCreateCommand": "yarn",
   "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}", // && yarn dev",
-  // Comment out to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  // Remote user of container -- Base image uses 'node' as default
   "remoteUser": "node"
-  // "features": {
-  //   "git": "latest"
-  // }
 }
