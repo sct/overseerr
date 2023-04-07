@@ -42,7 +42,7 @@
   //"onCreateCommand": "sudo chown -R node:node /workspaces/overseerr",
   //"onCreateCommand": "git config --global --add safe.directory /workspaces/overseerr",
   "onCreateCommand": "yarn",
-  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}", // && yarn dev",
+  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder} && git config --global gpg.program $(which gpg)", // && yarn dev",
   // Remote user of container -- Base image uses 'node' as default
   "remoteUser": "node"
 }
