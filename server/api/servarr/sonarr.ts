@@ -77,7 +77,13 @@ export interface SonarrSeries {
     searchForMissingEpisodes?: boolean;
   };
   statistics: {
+    seasonCount: number;
     episodeFileCount: number;
+    episodeCount: number;
+    totalEpisodeCount: number;
+    sizeOnDisk: number;
+    releaseGroups: string[];
+    percentOfEpisodes: number;
   };
 }
 
@@ -123,18 +129,9 @@ class SonarrAPI extends ServarrBase<{
     try {
       const response = await this.axios.get<SonarrSeries>(`/series/${id}`);
 
-      if (!response.data) {
-        throw new Error('Series not found');
-      }
-
       return response.data;
     } catch (e) {
-      logger.error('Error retrieving series by ID', {
-        label: 'Sonarr API',
-        errorMessage: e.message,
-        id: id,
-      });
-      throw new Error('Series not found');
+      throw new Error(`[Sonarr] Failed to retrieve series by ID: ${e.message}`);
     }
   }
 
