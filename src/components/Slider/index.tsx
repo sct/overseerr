@@ -170,7 +170,7 @@ const Slider = ({
         </button>
       </div>
       <div
-        className="hide-scrollbar ptr-slider relative -my-2 -ml-4 -mr-4 overflow-y-auto overflow-x-scroll overscroll-x-contain whitespace-nowrap px-2 py-2"
+        className="hide-scrollbar relative -my-2 -ml-4 -mr-4 overflow-y-auto overflow-x-scroll overscroll-x-contain whitespace-nowrap px-2 py-2"
         ref={containerRef}
         onScroll={onScroll}
       >

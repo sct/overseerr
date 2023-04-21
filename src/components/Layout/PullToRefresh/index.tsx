@@ -9,12 +9,15 @@ const PullToRefresh = () => {
   const [pullChange, setPullChange] = useState(0);
   const refreshDiv = useRef<HTMLDivElement>(null);
 
+  // Various pull down thresholds that determine icon location
   const pullDownInitThreshold = pullChange > 20;
   const pullDownStopThreshold = 120;
   const pullDownReloadThreshold = pullChange > 340;
   const pullDownIconLocation = pullChange / 3;
 
   useEffect(() => {
+    // Reload function that is called when reload threshold has been hit
+    // Add loading class to determine when to add spin animation
     const forceReload = () => {
       refreshDiv.current?.classList.add('loading');
       setTimeout(() => {
@@ -24,18 +27,26 @@ const PullToRefresh = () => {
 
     const html = document.querySelector('html');
 
+    // Determines if we are at the top of the page
+    // Locks or unlocks page when pulling down to refresh
     const pullStart = (e: TouchEvent) => {
       setPullStartPoint(e.targetTouches[0].screenY);
 
       if (window.scrollY === 0 && window.scrollX === 0) {
+        refreshDiv.current?.classList.add('block');
+        refreshDiv.current?.classList.remove('hidden');
         document.body.style.touchAction = 'none';
         document.body.style.overscrollBehavior = 'none';
         if (html) {
           html.style.overscrollBehaviorY = 'none';
         }
+      } else {
+        refreshDiv.current?.classList.remove('block');
+        refreshDiv.current?.classList.add('hidden');
       }
     };
 
+    // Tracks how far we have pulled down the refresh icon
     const pullDown = async (e: TouchEvent) => {
       const screenY = e.targetTouches[0].screenY;
 
@@ -45,6 +56,8 @@ const PullToRefresh = () => {
       setPullChange(pullLength);
     };
 
+    // Will reload the page if we are past the threshold
+    // Otherwise, we reset the pull
     const pullFinish = () => {
       setPullStartPoint(0);
 
@@ -88,7 +101,7 @@ const PullToRefresh = () => {
     >
       <div
         className={`${
-          refreshDiv.current?.classList[9] === 'loading' && 'animate-spin'
+          refreshDiv.current?.classList.contains('loading') && 'animate-spin'
         } relative -top-24 h-9 w-9 rounded-full border-4 border-gray-800 bg-gray-800 shadow-md shadow-black ring-1 ring-gray-700`}
         style={{ animationDirection: 'reverse' }}
       >
