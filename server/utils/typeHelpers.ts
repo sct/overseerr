@@ -35,7 +35,7 @@ export const isCollection = (
     | TmdbPersonResult
     | TmdbCollectionResult
 ): collection is TmdbCollectionResult => {
-  return (collection as TmdbCollectionResult).title !== undefined;
+  return (collection as TmdbCollectionResult).media_type === 'collection';
 };
 
 export const isMovieDetails = (
