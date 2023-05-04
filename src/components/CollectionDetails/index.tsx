@@ -348,7 +348,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
           />
         ))}
       />
-      <div className="pb-8" />
+      <div className="extra-bottom-space relative" />
     </div>
   );
 };
