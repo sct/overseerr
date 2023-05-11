@@ -147,7 +147,7 @@ const TitleCard = ({
                 {mediaType === 'movie'
                   ? intl.formatMessage(globalMessages.movie)
                   : mediaType === 'collection'
-                  ? intl.formatMessage(globalMessages.movies)
+                  ? intl.formatMessage(globalMessages.collection)
                   : intl.formatMessage(globalMessages.tvshow)}
               </div>
             </div>
