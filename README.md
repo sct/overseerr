@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-88-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-89-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -187,6 +187,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://voke.dev"><img src="https://avatars.githubusercontent.com/u/1899334?v=4?s=100" width="100px;" alt="Owen Voke"/><br /><sub><b>Owen Voke</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=owenvoke" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Nimelrian"><img src="https://avatars.githubusercontent.com/u/8960836?v=4?s=100" width="100px;" alt="Sebastian K"/><br /><sub><b>Sebastian K</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Nimelrian" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/jariz"><img src="https://avatars.githubusercontent.com/u/1415847?v=4?s=100" width="100px;" alt="jariz"/><br /><sub><b>jariz</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=jariz" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://arouillard.fr"><img src="https://avatars.githubusercontent.com/u/13947260?v=4?s=100" width="100px;" alt="Alex"/><br /><sub><b>Alex</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Alexays" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
