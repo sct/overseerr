@@ -104,6 +104,8 @@ export const QueryFilterOptions = z.object({
   withRuntimeLte: z.string().optional(),
   voteAverageGte: z.string().optional(),
   voteAverageLte: z.string().optional(),
+  voteCountLte: z.string().optional(),
+  voteCountGte: z.string().optional(),
   watchRegion: z.string().optional(),
   watchProviders: z.string().optional(),
 });
@@ -169,6 +171,14 @@ export const prepareFilterValues = (
     filterValues.voteAverageLte = values.voteAverageLte;
   }
 
+  if (values.voteCountGte) {
+    filterValues.voteCountGte = values.voteCountGte;
+  }
+
+  if (values.voteCountLte) {
+    filterValues.voteCountLte = values.voteCountLte;
+  }
+
   if (values.watchProviders) {
     filterValues.watchProviders = values.watchProviders;
   }
@@ -188,6 +198,12 @@ export const countActiveFilters = (filterValues: FilterOptions): number => {
     totalCount += 1;
     delete clonedFilters.voteAverageGte;
     delete clonedFilters.voteAverageLte;
+  }
+
+  if (clonedFilters.voteCountGte || filterValues.voteCountLte) {
+    totalCount += 1;
+    delete clonedFilters.voteCountGte;
+    delete clonedFilters.voteCountLte;
   }
 
   if (clonedFilters.withRuntimeGte || filterValues.withRuntimeLte) {

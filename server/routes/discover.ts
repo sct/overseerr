@@ -65,6 +65,8 @@ const QueryFilterOptions = z.object({
   withRuntimeLte: z.coerce.string().optional(),
   voteAverageGte: z.coerce.string().optional(),
   voteAverageLte: z.coerce.string().optional(),
+  voteCountGte: z.coerce.string().optional(),
+  voteCountLte: z.coerce.string().optional(),
   network: z.coerce.string().optional(),
   watchProviders: z.coerce.string().optional(),
   watchRegion: z.coerce.string().optional(),
@@ -96,6 +98,8 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       withRuntimeLte: query.withRuntimeLte,
       voteAverageGte: query.voteAverageGte,
       voteAverageLte: query.voteAverageLte,
+      voteCountGte: query.voteCountGte,
+      voteCountLte: query.voteCountLte,
       watchProviders: query.watchProviders,
       watchRegion: query.watchRegion,
     });
@@ -371,6 +375,8 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       withRuntimeLte: query.withRuntimeLte,
       voteAverageGte: query.voteAverageGte,
       voteAverageLte: query.voteAverageLte,
+      voteCountGte: query.voteCountGte,
+      voteCountLte: query.voteCountLte,
       watchProviders: query.watchProviders,
       watchRegion: query.watchRegion,
     });
