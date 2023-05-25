@@ -169,15 +169,19 @@ export const GenreSelector = ({
     loadDefaultGenre();
   }, [defaultValue, type]);
 
-  const loadGenreOptions = async () => {
+  const loadGenreOptions = async (inputValue: string) => {
     const results = await axios.get<GenreSliderItem[]>(
       `/api/v1/discover/genreslider/${type}`
     );
 
-    return results.data.map((result) => ({
-      label: result.name,
-      value: result.id,
-    }));
+    return results.data
+      .map((result) => ({
+        label: result.name,
+        value: result.id,
+      }))
+      .filter(({ label }) =>
+        label.toLowerCase().includes(inputValue.toLowerCase())
+      );
   };
 
   return (
