@@ -9,7 +9,8 @@ interface BadgeProps {
     | 'warning'
     | 'success'
     | 'dark'
-    | 'light';
+    | 'light'
+    | 'gradient';
   className?: string;
   href?: string;
   children: React.ReactNode;
@@ -65,6 +66,11 @@ const Badge = (
       if (href) {
         badgeStyle.push('hover:bg-gray-600');
       }
+      break;
+    case 'gradient':
+      badgeStyle.push(
+        'border border-white bg-gradient-to-br from-indigo-600 to-purple-600 !text-indigo-100 shadow-black'
+      );
       break;
     default:
       badgeStyle.push(

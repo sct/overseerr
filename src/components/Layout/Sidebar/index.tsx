@@ -1,3 +1,4 @@
+import Badge from '@app/components/Common/Badge';
 import VersionStatus from '@app/components/Layout/VersionStatus';
 import useClickOutside from '@app/hooks/useClickOutside';
 import { Permission, useUser } from '@app/hooks/useUser';
@@ -30,6 +31,8 @@ export const menuMessages = defineMessages({
 interface SidebarProps {
   open?: boolean;
   setClosed: () => void;
+  pendingRequestsCount?: number;
+  openIssuesCount?: number;
 }
 
 interface SidebarLinkProps {
@@ -98,7 +101,12 @@ const SidebarLinks: SidebarLinkProps[] = [
   },
 ];
 
-const Sidebar = ({ open, setClosed }: SidebarProps) => {
+const Sidebar = ({
+  open,
+  setClosed,
+  pendingRequestsCount,
+  openIssuesCount,
+}: SidebarProps) => {
   const navRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const intl = useIntl();
@@ -254,6 +262,28 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                         {intl.formatMessage(
                           menuMessages[sidebarLink.messagesKey]
                         )}
+                        {sidebarLink.messagesKey === 'requests' &&
+                          pendingRequestsCount &&
+                          pendingRequestsCount > 0 && (
+                            <div className="ml-auto">
+                              <Badge badgeType="gradient">
+                                {pendingRequestsCount < 100
+                                  ? pendingRequestsCount
+                                  : '99+'}
+                              </Badge>
+                            </div>
+                          )}
+                        {sidebarLink.messagesKey === 'issues' &&
+                          openIssuesCount &&
+                          openIssuesCount > 0 && (
+                            <div className="ml-auto">
+                              <Badge badgeType="gradient">
+                                {openIssuesCount < 100
+                                  ? openIssuesCount
+                                  : '99+'}
+                              </Badge>
+                            </div>
+                          )}
                       </a>
                     </Link>
                   );

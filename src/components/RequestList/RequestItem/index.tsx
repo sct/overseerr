@@ -26,6 +26,7 @@ import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -306,11 +307,22 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
 
   const [isRetrying, setRetrying] = useState(false);
 
+  const fetchRequestsCount = async () => {
+    const response = await axios.get('/api/v1/request/count');
+    return response.data;
+  };
+
+  const { trigger: requestTrigger } = useSWRMutation(
+    '/api/v1/request/count',
+    fetchRequestsCount
+  );
+
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
 
     if (response) {
       revalidate();
+      requestTrigger();
     }
   };
 
@@ -318,6 +330,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
     await axios.delete(`/api/v1/request/${request.id}`);
 
     revalidateList();
+    requestTrigger();
   };
 
   const retryRequest = async () => {

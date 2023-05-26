@@ -20,6 +20,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import useSWRMutation from 'swr/mutation';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -50,12 +51,23 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
   const { profile, rootFolder, server, languageProfile } =
     useRequestOverride(request);
 
+  const fetchRequestsCount = async () => {
+    const response = await axios.get('/api/v1/request/count');
+    return response.data;
+  };
+
+  const { trigger: requestTrigger } = useSWRMutation(
+    '/api/v1/request/count',
+    fetchRequestsCount
+  );
+
   const updateRequest = async (type: 'approve' | 'decline'): Promise<void> => {
     setIsUpdating(true);
     await axios.post(`/api/v1/request/${request.id}/${type}`);
 
     if (onUpdate) {
       onUpdate();
+      requestTrigger();
     }
     setIsUpdating(false);
   };
@@ -66,6 +78,7 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
 
     if (onUpdate) {
       onUpdate();
+      requestTrigger();
     }
 
     setIsUpdating(false);

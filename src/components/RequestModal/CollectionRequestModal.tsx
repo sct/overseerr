@@ -36,6 +36,7 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onCancel?: () => void;
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
+  requestTrigger: () => void;
 }
 
 const CollectionRequestModal = ({
@@ -44,6 +45,7 @@ const CollectionRequestModal = ({
   tmdbId,
   onUpdating,
   is4k = false,
+  requestTrigger,
 }: RequestModalProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [requestOverrides, setRequestOverrides] =
@@ -211,6 +213,7 @@ const CollectionRequestModal = ({
             ? MediaStatus.UNKNOWN
             : MediaStatus.PARTIALLY_AVAILABLE
         );
+        requestTrigger();
       }
 
       addToast(
@@ -230,7 +233,17 @@ const CollectionRequestModal = ({
     } finally {
       setIsUpdating(false);
     }
-  }, [requestOverrides, data, onComplete, addToast, intl, selectedParts, is4k]);
+  }, [
+    requestOverrides,
+    data?.parts,
+    data?.name,
+    onComplete,
+    addToast,
+    intl,
+    selectedParts,
+    is4k,
+    requestTrigger,
+  ]);
 
   const hasAutoApprove = hasPermission(
     [

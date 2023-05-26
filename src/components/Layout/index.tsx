@@ -10,6 +10,7 @@ import { useUser } from '@app/hooks/useUser';
 import { ArrowLeftIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import useSWR from 'swr';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -22,6 +23,8 @@ const Layout = ({ children }: LayoutProps) => {
   const router = useRouter();
   const { currentSettings } = useSettings();
   const { setLocale } = useLocale();
+  const { data: requestResponse } = useSWR('/api/v1/request/count');
+  const { data: issueResponse } = useSWR('/api/v1/issue/count');
 
   useEffect(() => {
     if (setLocale && user) {
@@ -55,11 +58,22 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="absolute top-0 h-64 w-full bg-gradient-to-bl from-gray-800 to-gray-900">
         <div className="relative inset-0 h-full w-full bg-gradient-to-t from-gray-900 to-transparent" />
       </div>
-      <Sidebar open={isSidebarOpen} setClosed={() => setSidebarOpen(false)} />
-      <div className="sm:hidden">
-        <MobileMenu />
-      </div>
-
+      {requestResponse && issueResponse && (
+        <Sidebar
+          open={isSidebarOpen}
+          setClosed={() => setSidebarOpen(false)}
+          pendingRequestsCount={requestResponse.pending}
+          openIssuesCount={issueResponse.open}
+        />
+      )}
+      {requestResponse && issueResponse && (
+        <div className="sm:hidden">
+          <MobileMenu
+            pendingRequestsCount={requestResponse.pending}
+            openIssuesCount={issueResponse.open}
+          />
+        </div>
+      )}
       <div className="relative mb-16 flex w-0 min-w-0 flex-1 flex-col lg:ml-64">
         <PullToRefresh />
         <div

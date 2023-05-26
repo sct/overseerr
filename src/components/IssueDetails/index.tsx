@@ -32,6 +32,7 @@ import { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
+import useSWRMutation from 'swr/mutation';
 import * as Yup from 'yup';
 
 const messages = defineMessages({
@@ -104,6 +105,16 @@ const IssueDetails = () => {
     (opt) => opt.issueType === issueData?.issueType
   );
 
+  const fetchIssuesCount = async () => {
+    const response = await axios.get('/api/v1/request/count');
+    return response.data;
+  };
+
+  const { trigger: issueTrigger } = useSWRMutation(
+    '/api/v1/issue/count',
+    fetchIssuesCount
+  );
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -144,6 +155,7 @@ const IssueDetails = () => {
         autoDismiss: true,
       });
       revalidateIssue();
+      issueTrigger();
     } catch (e) {
       addToast(intl.formatMessage(messages.toaststatusupdatefailed), {
         appearance: 'error',

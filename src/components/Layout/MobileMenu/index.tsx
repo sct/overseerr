@@ -1,3 +1,4 @@
+import Badge from '@app/components/Common/Badge';
 import { menuMessages } from '@app/components/Layout/Sidebar';
 import useClickOutside from '@app/hooks/useClickOutside';
 import { Permission, useUser } from '@app/hooks/useUser';
@@ -27,6 +28,11 @@ import { useRouter } from 'next/router';
 import { cloneElement, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
+interface MobileMenuProps {
+  pendingRequestsCount?: number;
+  openIssuesCount?: number;
+}
+
 interface MenuLink {
   href: string;
   svgIcon: JSX.Element;
@@ -39,7 +45,10 @@ interface MenuLink {
   dataTestId?: string;
 }
 
-const MobileMenu = () => {
+const MobileMenu = ({
+  pendingRequestsCount,
+  openIssuesCount,
+}: MobileMenuProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
@@ -144,7 +153,7 @@ const MobileMenu = () => {
           return (
             <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
               <a
-                className={`flex items-center space-x-2 ${
+                className={`flex items-center ${
                   isActive ? 'text-indigo-500' : ''
                 }`}
                 onKeyDown={(e) => {
@@ -159,7 +168,23 @@ const MobileMenu = () => {
                 {cloneElement(isActive ? link.svgIconSelected : link.svgIcon, {
                   className: 'h-5 w-5',
                 })}
-                <span>{link.content}</span>
+                <span className="ml-2">{link.content}</span>
+                {link.href === '/requests' && pendingRequestsCount && (
+                  <div className="ml-auto">
+                    <Badge badgeType="gradient">
+                      {pendingRequestsCount < 100
+                        ? pendingRequestsCount
+                        : '99+'}
+                    </Badge>
+                  </div>
+                )}
+                {link.href === '/issues' && openIssuesCount && (
+                  <div className="ml-auto">
+                    <Badge badgeType="gradient">
+                      {openIssuesCount < 100 ? openIssuesCount : '99+'}
+                    </Badge>
+                  </div>
+                )}
               </a>
             </Link>
           );
@@ -175,7 +200,7 @@ const MobileMenu = () => {
               return (
                 <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
                   <a
-                    className={`flex flex-col items-center space-y-1 ${
+                    className={`relative flex flex-col items-center space-y-1 ${
                       isActive ? 'text-indigo-500' : ''
                     }`}
                   >
@@ -184,6 +209,15 @@ const MobileMenu = () => {
                       {
                         className: 'h-6 w-6',
                       }
+                    )}
+                    {link.href === '/requests' && pendingRequestsCount && (
+                      <div className="absolute left-3 bottom-2.5">
+                        <span className="inline-flex whitespace-nowrap rounded-full border border-white bg-gradient-to-br from-indigo-600 to-purple-600 px-1 text-xs font-semibold !text-indigo-100 shadow-black">
+                          {pendingRequestsCount < 100
+                            ? pendingRequestsCount
+                            : '99+'}
+                        </span>
+                      </div>
                     )}
                   </a>
                 </Link>

@@ -27,6 +27,7 @@ import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
+import useSWRMutation from 'swr/mutation';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -247,17 +248,29 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
     iOSPlexUrl4k: requestData?.media?.iOSPlexUrl4k,
   });
 
+  const fetchRequestsCount = async () => {
+    const response = await axios.get('/api/v1/request/count');
+    return response.data;
+  };
+
+  const { trigger: requestTrigger } = useSWRMutation(
+    '/api/v1/request/count',
+    fetchRequestsCount
+  );
+
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
 
     if (response) {
       revalidate();
+      requestTrigger();
     }
   };
 
   const deleteRequest = async () => {
     await axios.delete(`/api/v1/request/${request.id}`);
     mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+    requestTrigger();
   };
 
   const retryRequest = async () => {
