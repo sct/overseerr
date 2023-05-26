@@ -264,7 +264,8 @@ const Sidebar = ({
                         )}
                         {sidebarLink.messagesKey === 'requests' &&
                           pendingRequestsCount &&
-                          pendingRequestsCount > 0 && (
+                          pendingRequestsCount > 0 &&
+                          hasPermission(Permission.MANAGE_REQUESTS) && (
                             <div className="ml-auto">
                               <Badge badgeType="gradient">
                                 {pendingRequestsCount < 100
@@ -275,7 +276,8 @@ const Sidebar = ({
                           )}
                         {sidebarLink.messagesKey === 'issues' &&
                           openIssuesCount &&
-                          openIssuesCount > 0 && (
+                          openIssuesCount > 0 &&
+                          hasPermission(Permission.MANAGE_ISSUES) && (
                             <div className="ml-auto">
                               <Badge badgeType="gradient">
                                 {openIssuesCount < 100

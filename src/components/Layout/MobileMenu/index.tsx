@@ -169,22 +169,28 @@ const MobileMenu = ({
                   className: 'h-5 w-5',
                 })}
                 <span className="ml-2">{link.content}</span>
-                {link.href === '/requests' && pendingRequestsCount && (
-                  <div className="ml-auto">
-                    <Badge badgeType="gradient">
-                      {pendingRequestsCount < 100
-                        ? pendingRequestsCount
-                        : '99+'}
-                    </Badge>
-                  </div>
-                )}
-                {link.href === '/issues' && openIssuesCount && (
-                  <div className="ml-auto">
-                    <Badge badgeType="gradient">
-                      {openIssuesCount < 100 ? openIssuesCount : '99+'}
-                    </Badge>
-                  </div>
-                )}
+                {link.href === '/requests' &&
+                  pendingRequestsCount &&
+                  pendingRequestsCount > 0 &&
+                  hasPermission(Permission.MANAGE_REQUESTS) && (
+                    <div className="ml-auto">
+                      <Badge badgeType="gradient">
+                        {pendingRequestsCount < 100
+                          ? pendingRequestsCount
+                          : '99+'}
+                      </Badge>
+                    </div>
+                  )}
+                {link.href === '/issues' &&
+                  openIssuesCount &&
+                  openIssuesCount &&
+                  hasPermission(Permission.MANAGE_ISSUES) && (
+                    <div className="ml-auto">
+                      <Badge badgeType="gradient">
+                        {openIssuesCount < 100 ? openIssuesCount : '99+'}
+                      </Badge>
+                    </div>
+                  )}
               </a>
             </Link>
           );
@@ -210,15 +216,17 @@ const MobileMenu = ({
                         className: 'h-6 w-6',
                       }
                     )}
-                    {link.href === '/requests' && pendingRequestsCount && (
-                      <div className="absolute left-3 bottom-2.5">
-                        <span className="inline-flex whitespace-nowrap rounded-full border border-white bg-gradient-to-br from-indigo-600 to-purple-600 px-1 text-xs font-semibold !text-indigo-100 shadow-black">
-                          {pendingRequestsCount < 100
-                            ? pendingRequestsCount
-                            : '99+'}
-                        </span>
-                      </div>
-                    )}
+                    {link.href === '/requests' &&
+                      pendingRequestsCount &&
+                      hasPermission(Permission.MANAGE_REQUESTS) && (
+                        <div className="absolute left-3 bottom-2.5">
+                          <span className="inline-flex whitespace-nowrap rounded-full border border-white bg-gradient-to-br from-indigo-600 to-purple-600 px-1 text-xs font-semibold !text-indigo-100 shadow-black">
+                            {pendingRequestsCount < 100
+                              ? pendingRequestsCount
+                              : '99+'}
+                          </span>
+                        </div>
+                      )}
                   </a>
                 </Link>
               );
