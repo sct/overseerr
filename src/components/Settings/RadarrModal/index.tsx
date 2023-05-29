@@ -57,7 +57,9 @@ const messages = defineMessages({
   testFirstTags: 'Test connection to load tags',
   tags: 'Tags',
   enableSearch: 'Enable Automatic Search',
-  tagRequests: "Tag requests with requestee's display name",
+  tagRequests: 'Tag Requests',
+  tagRequestsInfo:
+    "Automatically add an additional tag with the requester's user ID & display name",
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'URL base must have a leading slash',
@@ -719,6 +721,9 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="tagRequests" className="checkbox-label">
                     {intl.formatMessage(messages.tagRequests)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.tagRequestsInfo)}
+                    </span>
                   </label>
                   <div className="form-input-area">
                     <Field

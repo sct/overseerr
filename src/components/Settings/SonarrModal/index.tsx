@@ -62,7 +62,9 @@ const messages = defineMessages({
   syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
   enableSearch: 'Enable Automatic Search',
-  tagRequests: "Tag requests with requestee's display name",
+  tagRequests: 'Tag Requests',
+  tagRequestsInfo:
+    "Automatically add an additional tag with the requester's user ID & display name",
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
@@ -966,6 +968,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="tagRequests" className="checkbox-label">
                     {intl.formatMessage(messages.tagRequests)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.tagRequestsInfo)}
+                    </span>
                   </label>
                   <div className="form-input-area">
                     <Field

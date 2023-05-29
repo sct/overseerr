@@ -791,7 +791,7 @@ export class MediaRequest {
               requestId: this.id,
               mediaId: this.media.id,
               userId: this.requestedBy.id,
-              sonarrServer: radarrSettings.hostname + ':' + radarrSettings.port,
+              radarrServer: radarrSettings.hostname + ':' + radarrSettings.port,
             });
           }
         }
