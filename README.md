@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-91-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-92-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -190,6 +190,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://arouillard.fr"><img src="https://avatars.githubusercontent.com/u/13947260?v=4?s=100" width="100px;" alt="Alex"/><br /><sub><b>Alex</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Alexays" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Zebebles"><img src="https://avatars.githubusercontent.com/u/11425451?v=4?s=100" width="100px;" alt="Zeb Muller"/><br /><sub><b>Zeb Muller</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Zebebles" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://smoores.dev"><img src="https://avatars.githubusercontent.com/u/5354254?v=4?s=100" width="100px;" alt="Shane Friedman"/><br /><sub><b>Shane Friedman</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=SMores" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://izaacj.me"><img src="https://avatars.githubusercontent.com/u/711323?v=4?s=100" width="100px;" alt="Izaac Brånn"/><br /><sub><b>Izaac Brånn</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=IzaacJ" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
