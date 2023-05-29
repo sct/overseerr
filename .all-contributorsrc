@@ -836,6 +836,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "IzaacJ",
+      "name": "Izaac Brånn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/711323?v=4",
+      "profile": "https://izaacj.me",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
@@ -845,5 +854,6 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": false,
-  "commitConvention": "angular"
+  "commitConvention": "angular",
+  "commitType": "docs"
 }
