@@ -845,6 +845,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "SalmanTariq",
+      "name": "Salman Tariq",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13284494?v=4",
+      "profile": "https://github.com/SalmanTariq",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
