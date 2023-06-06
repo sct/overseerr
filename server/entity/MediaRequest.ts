@@ -247,8 +247,8 @@ export class MediaRequest {
       const requestedSeasons =
         requestBody.seasons === 'all'
           ? tmdbMediaShow.seasons
-            .map((season) => season.season_number)
-            .filter((sn) => sn > 0)
+              .map((season) => season.season_number)
+              .filter((sn) => sn > 0)
           : (requestBody.seasons as number[]);
       let existingSeasons: number[] = [];
 
@@ -575,7 +575,7 @@ export class MediaRequest {
       // Do not update the status if the item is already partially available or available
       media[this.is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE &&
       media[this.is4k ? 'status4k' : 'status'] !==
-      MediaStatus.PARTIALLY_AVAILABLE
+        MediaStatus.PARTIALLY_AVAILABLE
     ) {
       media[this.is4k ? 'status4k' : 'status'] = MediaStatus.PROCESSING;
       mediaRepository.save(media);
@@ -1180,14 +1180,14 @@ export class MediaRequest {
         case Notification.MEDIA_AUTO_REQUESTED:
           event = `${
             this.is4k ? '4K ' : ''
-            }${mediaType} Request Automatically Submitted`;
+          }${mediaType} Request Automatically Submitted`;
           notifyAdmin = false;
           notifySystem = false;
           break;
         case Notification.MEDIA_AUTO_APPROVED:
           event = `${
             this.is4k ? '4K ' : ''
-            }${mediaType} Request Automatically Approved`;
+          }${mediaType} Request Automatically Approved`;
           break;
         case Notification.MEDIA_FAILED:
           event = `${this.is4k ? '4K ' : ''}${mediaType} Request Failed`;
@@ -1205,7 +1205,7 @@ export class MediaRequest {
           event,
           subject: `${movie.title}${
             movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
-            }`,
+          }`,
           message: truncate(movie.overview, {
             length: 500,
             separator: /\s/,
@@ -1224,7 +1224,7 @@ export class MediaRequest {
           event,
           subject: `${tv.name}${
             tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
-            }`,
+          }`,
           message: truncate(tv.overview, {
             length: 500,
             separator: /\s/,
