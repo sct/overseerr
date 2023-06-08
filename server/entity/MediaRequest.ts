@@ -999,10 +999,14 @@ export class MediaRequest {
           seriesType === 'anime' && sonarrSettings.activeAnimeLanguageProfileId
             ? sonarrSettings.activeAnimeLanguageProfileId
             : sonarrSettings.activeLanguageProfileId;
-        let tags = seriesType === 'anime'
-            ? (sonarrSettings.animeTags ? [...sonarrSettings.animeTags] : [])
-            : (sonarrSettings.tags ? [...sonarrSettings.tags] : []);
-
+        let tags =
+          seriesType === 'anime'
+            ? sonarrSettings.animeTags
+              ? [...sonarrSettings.animeTags]
+              : []
+            : sonarrSettings.tags
+            ? [...sonarrSettings.tags]
+            : [];
 
         if (
           this.rootFolder &&
