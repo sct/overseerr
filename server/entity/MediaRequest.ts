@@ -704,7 +704,7 @@ export class MediaRequest {
 
         let rootFolder = radarrSettings.activeDirectory;
         let qualityProfile = radarrSettings.activeProfileId;
-        let tags = radarrSettings.tags;
+        let tags = radarrSettings.tags ? [...radarrSettings.tags] : [];
 
         if (
           this.rootFolder &&
@@ -1002,7 +1002,11 @@ export class MediaRequest {
         let tags =
           seriesType === 'anime'
             ? sonarrSettings.animeTags
-            : sonarrSettings.tags;
+              ? [...sonarrSettings.animeTags]
+              : []
+            : sonarrSettings.tags
+            ? [...sonarrSettings.tags]
+            : [];
 
         if (
           this.rootFolder &&
