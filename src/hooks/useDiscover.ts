@@ -95,6 +95,11 @@ const useDiscover = <
 
   let titles = (data ?? []).reduce((a, v) => [...a, ...v.results], [] as T[]);
 
+  // Check for duplicates, see https://github.com/sct/overseerr/issues/3499
+  titles = (titles as any[]).filter(
+    (value, index, self) => index === self.findIndex((t) => t.id === value.id)
+  );
+
   if (settings.currentSettings.hideAvailable && hideAvailable) {
     titles = titles.filter(
       (i) =>
