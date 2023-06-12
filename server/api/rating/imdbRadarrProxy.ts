@@ -165,13 +165,9 @@ class IMDBRadarrProxy extends ExternalAPI {
   }
 
   /**
-   * Search the RT algolia api for the movie title
+   * Ask the Radarr IMDB Proxy for the movie
    *
-   * We compare the release date to make sure its the correct
-   * match. But it's not guaranteed to have results.
-   *
-   * @param name Movie name
-   * @param year Release Year
+   * @param IMDBid Id of IMDB movie
    */
   public async getMovieRatings(IMDBid: string): Promise<IMDBRating | null> {
     try {
