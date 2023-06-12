@@ -41,7 +41,7 @@ import {
   ChevronDoubleDownIcon,
   ChevronDoubleUpIcon,
 } from '@heroicons/react/24/solid';
-import { type RatingResponse } from '@server/api/rating/types';
+import { type RatingResponse } from '@server/api/ratings';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaStatus } from '@server/constants/media';
 import type { MovieDetails as MovieDetailsType } from '@server/models/Movie';
