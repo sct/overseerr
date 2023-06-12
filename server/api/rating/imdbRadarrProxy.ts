@@ -1,9 +1,9 @@
 import ExternalAPI from '@server/api/externalapi';
 import cacheManager from '@server/lib/cache';
 
-export type IMDBRadarrProxyResponse = IMDBMovie[];
+type IMDBRadarrProxyResponse = IMDBMovie[];
 
-export interface IMDBMovie {
+interface IMDBMovie {
   ImdbId: string;
   Overview: string;
   Title: string;
@@ -34,72 +34,72 @@ export interface IMDBMovie {
   TmdbId: number;
 }
 
-export interface Rating {
+interface Rating {
   Count: number;
   Value: number;
   Origin: string;
   Type: string;
 }
 
-export interface MovieRatings {
+interface MovieRatings {
   Tmdb: Tmdb;
   Imdb: Imdb;
   Metacritic: Metacritic;
   RottenTomatoes: RottenTomatoes;
 }
 
-export interface Tmdb {
+interface Tmdb {
   Count: number;
   Value: number;
   Type: string;
 }
 
-export interface Imdb {
+interface Imdb {
   Count: number;
   Value: number;
   Type: string;
 }
 
-export interface Metacritic {
+interface Metacritic {
   Count: number;
   Value: number;
   Type: string;
 }
 
-export interface RottenTomatoes {
+interface RottenTomatoes {
   Count: number;
   Value: number;
   Type: string;
 }
 
-export interface Image {
+interface Image {
   CoverType: string;
   Url: string;
 }
 
-export interface AlternativeTitle {
+interface AlternativeTitle {
   Title: string;
   Type: string;
   Language: string;
 }
 
-export interface Translation {
+interface Translation {
   Title: string;
   Overview: string;
   Language: string;
 }
 
-export interface Recommendation {
+interface Recommendation {
   TmdbId: number;
   Title: string;
 }
 
-export interface Credits {
+interface Credits {
   Cast: Cast[];
   Crew: Crew[];
 }
 
-export interface Cast {
+interface Cast {
   Name: string;
   Order: number;
   Character: string;
@@ -108,12 +108,12 @@ export interface Cast {
   Images: Image2[];
 }
 
-export interface Image2 {
+interface Image2 {
   CoverType: string;
   Url: string;
 }
 
-export interface Crew {
+interface Crew {
   Name: string;
   Job: string;
   Department: string;
@@ -122,17 +122,17 @@ export interface Crew {
   Images: Image3[];
 }
 
-export interface Image3 {
+interface Image3 {
   CoverType: string;
   Url: string;
 }
 
-export interface Certification {
+interface Certification {
   Country: string;
   Certification: string;
 }
 
-export interface Collection {
+interface Collection {
   Name: string;
   Images: any;
   Overview: any;
