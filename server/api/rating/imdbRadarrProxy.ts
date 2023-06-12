@@ -186,7 +186,7 @@ class IMDBRadarrProxy extends ExternalAPI {
       };
     } catch (e) {
       throw new Error(
-        `[RT API] Failed to retrieve movie ratings: ${e.message}`
+        `[IMDB RADARR PROXY API] Failed to retrieve movie ratings: ${e.message}`
       );
     }
   }
