@@ -118,7 +118,7 @@ movieRoutes.get('/:id/similar', async (req, res, next) => {
   }
 });
 
-movieRoutes.get('/:id/ratings', async (req, res, next) => {
+movieRoutes.get('/:id/ratingscombined', async (req, res, next) => {
   const tmdb = new TheMovieDb();
   const rtapi = new RottenTomatoes();
   const imdbApi = new IMDBRadarrProxy();

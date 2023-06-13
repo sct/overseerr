@@ -123,7 +123,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   });
 
   const { data: ratingData } = useSWR<RatingResponse>(
-    `/api/v1/movie/${router.query.movieId}/ratings`
+    `/api/v1/movie/${router.query.movieId}/ratingscombined`
   );
 
   const sortedCrew = useMemo(
