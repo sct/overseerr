@@ -1,7 +1,7 @@
-openapi: "3.0.2"
+openapi: '3.0.2'
 info:
-  title: "Overseerr API"
-  version: "1.0.0"
+  title: 'Overseerr API'
+  version: '1.0.0'
   description: |
     This is the documentation for the Overseerr API backend.
 
@@ -37,7 +37,7 @@ tags:
   - name: service
     description: Endpoints related to getting service (Radarr/Sonarr) details.
 servers:
-  - url: "{server}/api/v1"
+  - url: '{server}/api/v1'
     variables:
       server:
         default: http://localhost:5055
@@ -53,7 +53,7 @@ components:
           readOnly: true
         email:
           type: string
-          example: "hey@itsme.com"
+          example: 'hey@itsme.com'
           readOnly: true
         username:
           type: string
@@ -75,11 +75,11 @@ components:
           readOnly: true
         createdAt:
           type: string
-          example: "2020-09-02T05:02:23.000Z"
+          example: '2020-09-02T05:02:23.000Z'
           readOnly: true
         updatedAt:
           type: string
-          example: "2020-09-02T05:02:23.000Z"
+          example: '2020-09-02T05:02:23.000Z'
           readOnly: true
         requestCount:
           type: number
@@ -155,15 +155,15 @@ components:
       properties:
         name:
           type: string
-          example: "Main Server"
+          example: 'Main Server'
           readOnly: true
         machineId:
           type: string
-          example: "1234123412341234"
+          example: '1234123412341234'
           readOnly: true
         ip:
           type: string
-          example: "127.0.0.1"
+          example: '127.0.0.1'
         port:
           type: number
           example: 32400
@@ -174,11 +174,11 @@ components:
           type: array
           readOnly: true
           items:
-            $ref: "#/components/schemas/PlexLibrary"
+            $ref: '#/components/schemas/PlexLibrary'
         webAppUrl:
           type: string
           nullable: true
-          example: "https://app.plex.tv/desktop"
+          example: 'https://app.plex.tv/desktop'
       required:
         - name
         - machineId
@@ -189,16 +189,16 @@ components:
       properties:
         protocol:
           type: string
-          example: "https"
+          example: 'https'
         address:
           type: string
-          example: "127.0.0.1"
+          example: '127.0.0.1'
         port:
           type: number
           example: 32400
         uri:
           type: string
-          example: "https://127-0-0-1.2ab6ce1a093d465e910def96cf4e4799.plex.direct:32400"
+          example: 'https://127-0-0-1.2ab6ce1a093d465e910def96cf4e4799.plex.direct:32400'
         local:
           type: boolean
           example: true
@@ -207,7 +207,7 @@ components:
           example: 200
         message:
           type: string
-          example: "OK"
+          example: 'OK'
       required:
         - protocol
         - address
@@ -219,54 +219,54 @@ components:
       properties:
         name:
           type: string
-          example: "My Plex Server"
+          example: 'My Plex Server'
         product:
           type: string
-          example: "Plex Media Server"
+          example: 'Plex Media Server'
         productVersion:
           type: string
-          example: "1.21"
+          example: '1.21'
         platform:
           type: string
-          example: "Linux"
+          example: 'Linux'
         platformVersion:
           type: string
-          example: "default/linux/amd64/17.1/systemd"
+          example: 'default/linux/amd64/17.1/systemd'
         device:
           type: string
-          example: "PC"
+          example: 'PC'
         clientIdentifier:
           type: string
-          example: "85a943ce-a0cc-4d2a-a4ec-f74f06e40feb"
+          example: '85a943ce-a0cc-4d2a-a4ec-f74f06e40feb'
         createdAt:
           type: string
-          example: "2021-01-01T00:00:00.000Z"
+          example: '2021-01-01T00:00:00.000Z'
         lastSeenAt:
           type: string
-          example: "2021-01-01T00:00:00.000Z"
+          example: '2021-01-01T00:00:00.000Z'
         provides:
           type: array
           items:
             type: string
-            example: "server"
+            example: 'server'
         owned:
           type: boolean
           example: true
         ownerID:
           type: string
-          example: "12345"
+          example: '12345'
         home:
           type: boolean
           example: true
         sourceTitle:
           type: string
-          example: "xyzabc"
+          example: 'xyzabc'
         accessToken:
           type: string
-          example: "supersecretaccesstoken"
+          example: 'supersecretaccesstoken'
         publicAddress:
           type: string
-          example: "127.0.0.1"
+          example: '127.0.0.1'
         httpsRequired:
           type: boolean
           example: true
@@ -291,7 +291,7 @@ components:
         connection:
           type: array
           items:
-            $ref: "#/components/schemas/PlexConnection"
+            $ref: '#/components/schemas/PlexConnection'
       required:
         - name
         - product
@@ -310,7 +310,7 @@ components:
         hostname:
           type: string
           nullable: true
-          example: "tautulli.example.com"
+          example: 'tautulli.example.com'
         port:
           type: number
           nullable: true
@@ -333,16 +333,16 @@ components:
           readOnly: true
         name:
           type: string
-          example: "Radarr Main"
+          example: 'Radarr Main'
         hostname:
           type: string
-          example: "127.0.0.1"
+          example: '127.0.0.1'
         port:
           type: number
           example: 7878
         apiKey:
           type: string
-          example: "exampleapikey"
+          example: 'exampleapikey'
         useSsl:
           type: boolean
           example: false
@@ -356,13 +356,13 @@ components:
           example: 720p/1080p
         activeDirectory:
           type: string
-          example: "/movies"
+          example: '/movies'
         is4k:
           type: boolean
           example: false
         minimumAvailability:
           type: string
-          example: "In Cinema"
+          example: 'In Cinema'
         isDefault:
           type: boolean
           example: false
@@ -396,16 +396,16 @@ components:
           readOnly: true
         name:
           type: string
-          example: "Sonarr Main"
+          example: 'Sonarr Main'
         hostname:
           type: string
-          example: "127.0.0.1"
+          example: '127.0.0.1'
         port:
           type: number
           example: 8989
         apiKey:
           type: string
-          example: "exampleapikey"
+          example: 'exampleapikey'
         useSsl:
           type: boolean
           example: false
@@ -419,7 +419,7 @@ components:
           example: 720p/1080p
         activeDirectory:
           type: string
-          example: "/tv/"
+          example: '/tv/'
         activeLanguageProfileId:
           type: number
           example: 1
@@ -510,10 +510,10 @@ components:
             type: number
         overview:
           type: string
-          example: "Overview of the movie"
+          example: 'Overview of the movie'
         originalLanguage:
           type: string
-          example: "en"
+          example: 'en'
         title:
           type: string
           example: Movie Title
@@ -529,7 +529,7 @@ components:
           type: boolean
           example: false
         mediaInfo:
-          $ref: "#/components/schemas/MediaInfo"
+          $ref: '#/components/schemas/MediaInfo'
     TvResult:
       type: object
       properties:
@@ -555,10 +555,10 @@ components:
             type: number
         overview:
           type: string
-          example: "Overview of the movie"
+          example: 'Overview of the movie'
         originalLanguage:
           type: string
-          example: "en"
+          example: 'en'
         name:
           type: string
           example: TV Show Name
@@ -572,7 +572,7 @@ components:
         firstAirDate:
           type: string
         mediaInfo:
-          $ref: "#/components/schemas/MediaInfo"
+          $ref: '#/components/schemas/MediaInfo'
     PersonResult:
       type: object
       properties:
@@ -586,13 +586,13 @@ components:
           example: false
         mediaType:
           type: string
-          default: "person"
+          default: 'person'
         knownFor:
           type: array
           items:
             oneOf:
-              - $ref: "#/components/schemas/MovieResult"
-              - $ref: "#/components/schemas/TvResult"
+              - $ref: '#/components/schemas/MovieResult'
+              - $ref: '#/components/schemas/TvResult'
     Genre:
       type: object
       properties:
@@ -668,7 +668,7 @@ components:
         site:
           type: string
           enum:
-            - "YouTube"
+            - 'YouTube'
     MovieDetails:
       type: object
       properties:
@@ -678,7 +678,7 @@ components:
           readOnly: true
         imdbId:
           type: string
-          example: "tt123"
+          example: 'tt123'
         adult:
           type: boolean
         backdropPath:
@@ -691,13 +691,13 @@ components:
         genres:
           type: array
           items:
-            $ref: "#/components/schemas/Genre"
+            $ref: '#/components/schemas/Genre'
         homepage:
           type: string
         relatedVideos:
           type: array
           items:
-            $ref: "#/components/schemas/RelatedVideo"
+            $ref: '#/components/schemas/RelatedVideo'
         originalLanguage:
           type: string
         originalTitle:
@@ -709,7 +709,7 @@ components:
         productionCompanies:
           type: array
           items:
-            $ref: "#/components/schemas/ProductionCompany"
+            $ref: '#/components/schemas/ProductionCompany'
         productionCountries:
           type: array
           items:
@@ -731,7 +731,7 @@ components:
                 properties:
                   iso_3166_1:
                     type: string
-                    example: "US"
+                    example: 'US'
                   rating:
                     type: string
                     nullable: true
@@ -742,17 +742,17 @@ components:
                       properties:
                         certification:
                           type: string
-                          example: "PG-13"
+                          example: 'PG-13'
                         iso_639_1:
                           type: string
                           nullable: true
                         note:
                           type: string
                           nullable: true
-                          example: "Blu ray"
+                          example: 'Blu ray'
                         release_date:
                           type: string
-                          example: "2017-07-12T00:00:00.000Z"
+                          example: '2017-07-12T00:00:00.000Z'
                         type:
                           type: number
                           example: 1
@@ -764,7 +764,7 @@ components:
         spokenLanguages:
           type: array
           items:
-            $ref: "#/components/schemas/SpokenLanguage"
+            $ref: '#/components/schemas/SpokenLanguage'
         status:
           type: string
         tagline:
@@ -783,11 +783,11 @@ components:
             cast:
               type: array
               items:
-                $ref: "#/components/schemas/Cast"
+                $ref: '#/components/schemas/Cast'
             crew:
               type: array
               items:
-                $ref: "#/components/schemas/Crew"
+                $ref: '#/components/schemas/Crew'
         collection:
           type: object
           properties:
@@ -802,13 +802,13 @@ components:
             backdropPath:
               type: string
         externalIds:
-          $ref: "#/components/schemas/ExternalIds"
+          $ref: '#/components/schemas/ExternalIds'
         mediaInfo:
-          $ref: "#/components/schemas/MediaInfo"
+          $ref: '#/components/schemas/MediaInfo'
         watchProviders:
           type: array
           items:
-            $ref: "#/components/schemas/WatchProviders"
+            $ref: '#/components/schemas/WatchProviders'
     Episode:
       type: object
       properties:
@@ -857,7 +857,7 @@ components:
         episodes:
           type: array
           items:
-            $ref: "#/components/schemas/Episode"
+            $ref: '#/components/schemas/Episode'
     TvDetails:
       type: object
       properties:
@@ -878,10 +878,10 @@ components:
                 properties:
                   iso_3166_1:
                     type: string
-                    example: "US"
+                    example: 'US'
                   rating:
                     type: string
-                    example: "TV-14"
+                    example: 'TV-14'
         createdBy:
           type: array
           items:
@@ -905,7 +905,7 @@ components:
         genres:
           type: array
           items:
-            $ref: "#/components/schemas/Genre"
+            $ref: '#/components/schemas/Genre'
         homepage:
           type: string
         inProduction:
@@ -917,15 +917,15 @@ components:
         lastAirDate:
           type: string
         lastEpisodeToAir:
-          $ref: "#/components/schemas/Episode"
+          $ref: '#/components/schemas/Episode'
         name:
           type: string
         nextEpisodeToAir:
-          $ref: "#/components/schemas/Episode"
+          $ref: '#/components/schemas/Episode'
         networks:
           type: array
           items:
-            $ref: "#/components/schemas/ProductionCompany"
+            $ref: '#/components/schemas/ProductionCompany'
         numberOfEpisodes:
           type: number
         numberOfSeason:
@@ -945,7 +945,7 @@ components:
         productionCompanies:
           type: array
           items:
-            $ref: "#/components/schemas/ProductionCompany"
+            $ref: '#/components/schemas/ProductionCompany'
         productionCountries:
           type: array
           items:
@@ -958,11 +958,11 @@ components:
         spokenLanguages:
           type: array
           items:
-            $ref: "#/components/schemas/SpokenLanguage"
+            $ref: '#/components/schemas/SpokenLanguage'
         seasons:
           type: array
           items:
-            $ref: "#/components/schemas/Season"
+            $ref: '#/components/schemas/Season'
         status:
           type: string
         tagline:
@@ -979,23 +979,23 @@ components:
             cast:
               type: array
               items:
-                $ref: "#/components/schemas/Cast"
+                $ref: '#/components/schemas/Cast'
             crew:
               type: array
               items:
-                $ref: "#/components/schemas/Crew"
+                $ref: '#/components/schemas/Crew'
         externalIds:
-          $ref: "#/components/schemas/ExternalIds"
+          $ref: '#/components/schemas/ExternalIds'
         keywords:
           type: array
           items:
-            $ref: "#/components/schemas/Keyword"
+            $ref: '#/components/schemas/Keyword'
         mediaInfo:
-          $ref: "#/components/schemas/MediaInfo"
+          $ref: '#/components/schemas/MediaInfo'
         watchProviders:
           type: array
           items:
-            $ref: "#/components/schemas/WatchProviders"
+            $ref: '#/components/schemas/WatchProviders'
     MediaRequest:
       type: object
       properties:
@@ -1009,20 +1009,20 @@ components:
           description: Status of the request. 1 = PENDING APPROVAL, 2 = APPROVED, 3 = DECLINED
           readOnly: true
         media:
-          $ref: "#/components/schemas/MediaInfo"
+          $ref: '#/components/schemas/MediaInfo'
         createdAt:
           type: string
-          example: "2020-09-12T10:00:27.000Z"
+          example: '2020-09-12T10:00:27.000Z'
           readOnly: true
         updatedAt:
           type: string
-          example: "2020-09-12T10:00:27.000Z"
+          example: '2020-09-12T10:00:27.000Z'
           readOnly: true
         requestedBy:
-          $ref: "#/components/schemas/User"
+          $ref: '#/components/schemas/User'
         modifiedBy:
           anyOf:
-            - $ref: "#/components/schemas/User"
+            - $ref: '#/components/schemas/User'
             - type: string
               nullable: true
         is4k:
@@ -1058,14 +1058,14 @@ components:
           type: array
           readOnly: true
           items:
-            $ref: "#/components/schemas/MediaRequest"
+            $ref: '#/components/schemas/MediaRequest'
         createdAt:
           type: string
-          example: "2020-09-12T10:00:27.000Z"
+          example: '2020-09-12T10:00:27.000Z'
           readOnly: true
         updatedAt:
           type: string
-          example: "2020-09-12T10:00:27.000Z"
+          example: '2020-09-12T10:00:27.000Z'
           readOnly: true
     Cast:
       type: object
@@ -1364,7 +1364,7 @@ components:
           example: A Job Name
         nextExecutionTime:
           type: string
-          example: "2020-09-02T05:02:23.000Z"
+          example: '2020-09-02T05:02:23.000Z'
         running:
           type: boolean
           example: false
@@ -1453,7 +1453,7 @@ components:
         character:
           type: string
         mediaInfo:
-          $ref: "#/components/schemas/MediaInfo"
+          $ref: '#/components/schemas/MediaInfo'
     CreditCrew:
       type: object
       properties:
@@ -1509,7 +1509,7 @@ components:
         job:
           type: string
         mediaInfo:
-          $ref: "#/components/schemas/MediaInfo"
+          $ref: '#/components/schemas/MediaInfo'
     Keyword:
       type: object
       properties:
@@ -1518,20 +1518,20 @@ components:
           example: 1
         name:
           type: string
-          example: "anime"
+          example: 'anime'
     SpokenLanguage:
       type: object
       properties:
         englishName:
           type: string
-          example: "English"
+          example: 'English'
           nullable: true
         iso_639_1:
           type: string
-          example: "en"
+          example: 'en'
         name:
           type: string
-          example: "English"
+          example: 'English'
     Collection:
       type: object
       properties:
@@ -1551,7 +1551,7 @@ components:
         parts:
           type: array
           items:
-            $ref: "#/components/schemas/MovieResult"
+            $ref: '#/components/schemas/MovieResult'
     SonarrSeries:
       type: object
       properties:
@@ -1685,7 +1685,7 @@ components:
       type: object
       properties:
         notificationTypes:
-          $ref: "#/components/schemas/NotificationAgentTypes"
+          $ref: '#/components/schemas/NotificationAgentTypes'
         emailEnabled:
           type: boolean
         pgpKey:
@@ -1750,10 +1750,10 @@ components:
           buy:
             type: array
             items:
-              $ref: "#/components/schemas/WatchProviderDetails"
+              $ref: '#/components/schemas/WatchProviderDetails'
           flatrate:
             items:
-              $ref: "#/components/schemas/WatchProviderDetails"
+              $ref: '#/components/schemas/WatchProviderDetails'
     WatchProviderDetails:
       type: object
       properties:
@@ -1775,15 +1775,15 @@ components:
           type: number
           example: 1
         media:
-          $ref: "#/components/schemas/MediaInfo"
+          $ref: '#/components/schemas/MediaInfo'
         createdBy:
-          $ref: "#/components/schemas/User"
+          $ref: '#/components/schemas/User'
         modifiedBy:
-          $ref: "#/components/schemas/User"
+          $ref: '#/components/schemas/User'
         comments:
           type: array
           items:
-            $ref: "#/components/schemas/IssueComment"
+            $ref: '#/components/schemas/IssueComment'
     IssueComment:
       type: object
       properties:
@@ -1791,7 +1791,7 @@ components:
           type: number
           example: 1
         user:
-          $ref: "#/components/schemas/User"
+          $ref: '#/components/schemas/User'
         message:
           type: string
           example: A comment
@@ -1813,7 +1813,7 @@ components:
           type: boolean
         data:
           type: string
-          example: "1234"
+          example: '1234'
           nullable: true
       required:
         - type
@@ -1848,7 +1848,7 @@ paths:
       tags:
         - public
       responses:
-        "200":
+        '200':
           description: Returned status
           content:
             application/json:
@@ -1874,7 +1874,7 @@ paths:
       tags:
         - public
       responses:
-        "200":
+        '200':
           description: Application data volume status and path
           content:
             application/json:
@@ -1894,12 +1894,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MainSettings"
+                $ref: '#/components/schemas/MainSettings'
     post:
       summary: Update main settings
       description: Updates main settings with the provided values.
@@ -1910,14 +1910,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/MainSettings"
+              $ref: '#/components/schemas/MainSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MainSettings"
+                $ref: '#/components/schemas/MainSettings'
   /settings/main/regenerate:
     post:
       summary: Get main settings with newly-generated API key
@@ -1925,12 +1925,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MainSettings"
+                $ref: '#/components/schemas/MainSettings'
   /settings/plex:
     get:
       summary: Get Plex settings
@@ -1938,12 +1938,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PlexSettings"
+                $ref: '#/components/schemas/PlexSettings'
     post:
       summary: Update Plex settings
       description: Updates Plex settings with the provided values.
@@ -1954,14 +1954,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PlexSettings"
+              $ref: '#/components/schemas/PlexSettings'
       responses:
-        "200":
-          description: "Values were successfully updated"
+        '200':
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PlexSettings"
+                $ref: '#/components/schemas/PlexSettings'
   /settings/plex/library:
     get:
       summary: Get Plex libraries
@@ -1984,14 +1984,14 @@ paths:
             type: string
             nullable: true
       responses:
-        "200":
-          description: "Plex libraries returned"
+        '200':
+          description: 'Plex libraries returned'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/PlexLibrary"
+                  $ref: '#/components/schemas/PlexLibrary'
   /settings/plex/sync:
     get:
       summary: Get status of full Plex library scan
@@ -1999,7 +1999,7 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Status of Plex scan
           content:
             application/json:
@@ -2016,11 +2016,11 @@ paths:
                     type: number
                     example: 100
                   currentLibrary:
-                    $ref: "#/components/schemas/PlexLibrary"
+                    $ref: '#/components/schemas/PlexLibrary'
                   libraries:
                     type: array
                     items:
-                      $ref: "#/components/schemas/PlexLibrary"
+                      $ref: '#/components/schemas/PlexLibrary'
     post:
       summary: Start full Plex library scan
       description: Runs a full Plex library scan and returns the progress in a JSON array.
@@ -2039,7 +2039,7 @@ paths:
                   type: boolean
                   example: false
       responses:
-        "200":
+        '200':
           description: Status of Plex scan
           content:
             application/json:
@@ -2056,11 +2056,11 @@ paths:
                     type: number
                     example: 100
                   currentLibrary:
-                    $ref: "#/components/schemas/PlexLibrary"
+                    $ref: '#/components/schemas/PlexLibrary'
                   libraries:
                     type: array
                     items:
-                      $ref: "#/components/schemas/PlexLibrary"
+                      $ref: '#/components/schemas/PlexLibrary'
   /settings/plex/devices/servers:
     get:
       summary: Gets the user's available Plex servers
@@ -2068,14 +2068,14 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/PlexDevice"
+                  $ref: '#/components/schemas/PlexDevice'
   /settings/plex/users:
     get:
       summary: Get Plex users
@@ -2087,7 +2087,7 @@ paths:
         - settings
         - users
       responses:
-        "200":
+        '200':
           description: Plex users
           content:
             application/json:
@@ -2113,12 +2113,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TautulliSettings"
+                $ref: '#/components/schemas/TautulliSettings'
     post:
       summary: Update Tautulli settings
       description: Updates Tautulli settings with the provided values.
@@ -2129,14 +2129,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TautulliSettings"
+              $ref: '#/components/schemas/TautulliSettings'
       responses:
-        "200":
-          description: "Values were successfully updated"
+        '200':
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TautulliSettings"
+                $ref: '#/components/schemas/TautulliSettings'
   /settings/radarr:
     get:
       summary: Get Radarr settings
@@ -2144,14 +2144,14 @@ paths:
       tags:
         - settings
       responses:
-        "200":
-          description: "Values were returned"
+        '200':
+          description: 'Values were returned'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/RadarrSettings"
+                  $ref: '#/components/schemas/RadarrSettings'
     post:
       summary: Create Radarr instance
       description: Creates a new Radarr instance from the request body.
@@ -2162,14 +2162,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RadarrSettings"
+              $ref: '#/components/schemas/RadarrSettings'
       responses:
-        "201":
-          description: "New Radarr instance created"
+        '201':
+          description: 'New Radarr instance created'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RadarrSettings"
+                $ref: '#/components/schemas/RadarrSettings'
   /settings/radarr/test:
     post:
       summary: Test Radarr configuration
@@ -2185,7 +2185,7 @@ paths:
               properties:
                 hostname:
                   type: string
-                  example: "127.0.0.1"
+                  example: '127.0.0.1'
                 port:
                   type: number
                   example: 7878
@@ -2203,7 +2203,7 @@ paths:
                 - apiKey
                 - useSsl
       responses:
-        "200":
+        '200':
           description: Succesfully connected to Radarr instance
           content:
             application/json:
@@ -2213,7 +2213,7 @@ paths:
                   profiles:
                     type: array
                     items:
-                      $ref: "#/components/schemas/ServiceProfile"
+                      $ref: '#/components/schemas/ServiceProfile'
   /settings/radarr/{radarrId}:
     put:
       summary: Update Radarr instance
@@ -2232,14 +2232,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RadarrSettings"
+              $ref: '#/components/schemas/RadarrSettings'
       responses:
-        "200":
-          description: "Radarr instance updated"
+        '200':
+          description: 'Radarr instance updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RadarrSettings"
+                $ref: '#/components/schemas/RadarrSettings'
     delete:
       summary: Delete Radarr instance
       description: Deletes an existing Radarr instance based on the radarrId parameter.
@@ -2253,12 +2253,12 @@ paths:
             type: integer
           description: Radarr instance ID
       responses:
-        "200":
-          description: "Radarr instance updated"
+        '200':
+          description: 'Radarr instance updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RadarrSettings"
+                $ref: '#/components/schemas/RadarrSettings'
   /settings/radarr/{radarrId}/profiles:
     get:
       summary: Get available Radarr profiles
@@ -2273,14 +2273,14 @@ paths:
             type: integer
           description: Radarr instance ID
       responses:
-        "200":
+        '200':
           description: Returned list of profiles
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/ServiceProfile"
+                  $ref: '#/components/schemas/ServiceProfile'
   /settings/sonarr:
     get:
       summary: Get Sonarr settings
@@ -2288,14 +2288,14 @@ paths:
       tags:
         - settings
       responses:
-        "200":
-          description: "Values were returned"
+        '200':
+          description: 'Values were returned'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SonarrSettings"
+                  $ref: '#/components/schemas/SonarrSettings'
     post:
       summary: Create Sonarr instance
       description: Creates a new Sonarr instance from the request body.
@@ -2306,14 +2306,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SonarrSettings"
+              $ref: '#/components/schemas/SonarrSettings'
       responses:
-        "201":
-          description: "New Sonarr instance created"
+        '201':
+          description: 'New Sonarr instance created'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SonarrSettings"
+                $ref: '#/components/schemas/SonarrSettings'
   /settings/sonarr/test:
     post:
       summary: Test Sonarr configuration
@@ -2329,7 +2329,7 @@ paths:
               properties:
                 hostname:
                   type: string
-                  example: "127.0.0.1"
+                  example: '127.0.0.1'
                 port:
                   type: number
                   example: 8989
@@ -2347,7 +2347,7 @@ paths:
                 - apiKey
                 - useSsl
       responses:
-        "200":
+        '200':
           description: Succesfully connected to Sonarr instance
           content:
             application/json:
@@ -2357,7 +2357,7 @@ paths:
                   profiles:
                     type: array
                     items:
-                      $ref: "#/components/schemas/ServiceProfile"
+                      $ref: '#/components/schemas/ServiceProfile'
   /settings/sonarr/{sonarrId}:
     put:
       summary: Update Sonarr instance
@@ -2376,14 +2376,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SonarrSettings"
+              $ref: '#/components/schemas/SonarrSettings'
       responses:
-        "200":
-          description: "Sonarr instance updated"
+        '200':
+          description: 'Sonarr instance updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SonarrSettings"
+                $ref: '#/components/schemas/SonarrSettings'
     delete:
       summary: Delete Sonarr instance
       description: Deletes an existing Sonarr instance based on the sonarrId parameter.
@@ -2397,12 +2397,12 @@ paths:
             type: integer
           description: Sonarr instance ID
       responses:
-        "200":
-          description: "Sonarr instance updated"
+        '200':
+          description: 'Sonarr instance updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SonarrSettings"
+                $ref: '#/components/schemas/SonarrSettings'
   /settings/public:
     get:
       summary: Get public settings
@@ -2411,12 +2411,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Public settings returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PublicSettings"
+                $ref: '#/components/schemas/PublicSettings'
   /settings/initialize:
     post:
       summary: Initialize application
@@ -2424,12 +2424,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Public settings returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PublicSettings"
+                $ref: '#/components/schemas/PublicSettings'
   /settings/jobs:
     get:
       summary: Get scheduled jobs
@@ -2437,14 +2437,14 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Scheduled jobs returned
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/Job"
+                  $ref: '#/components/schemas/Job'
   /settings/jobs/{jobId}/run:
     post:
       summary: Invoke a specific job
@@ -2458,12 +2458,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Invoked job returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Job"
+                $ref: '#/components/schemas/Job'
   /settings/jobs/{jobId}/cancel:
     post:
       summary: Cancel a specific job
@@ -2477,12 +2477,12 @@ paths:
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Canceled job returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Job"
+                $ref: '#/components/schemas/Job'
   /settings/jobs/{jobId}/schedule:
     post:
       summary: Modify job schedule
@@ -2504,14 +2504,14 @@ paths:
               properties:
                 schedule:
                   type: string
-                  example: "0 */5 * * * *"
+                  example: '0 */5 * * * *'
       responses:
-        "200":
+        '200':
           description: Rescheduled job
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Job"
+                $ref: '#/components/schemas/Job'
   /settings/cache:
     get:
       summary: Get a list of active caches
@@ -2519,7 +2519,7 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Caches returned
           content:
             application/json:
@@ -2575,8 +2575,8 @@ paths:
           schema:
             type: string
       responses:
-        "204":
-          description: "Flushed cache"
+        '204':
+          description: 'Flushed cache'
   /settings/logs:
     get:
       summary: Returns logs
@@ -2610,7 +2610,7 @@ paths:
             nullable: true
             example: plex
       responses:
-        "200":
+        '200':
           description: Server log returned
           content:
             application/json:
@@ -2630,7 +2630,7 @@ paths:
                       example: Server ready on port 5055
                     timestamp:
                       type: string
-                      example: "2020-12-15T16:20:00.069Z"
+                      example: '2020-12-15T16:20:00.069Z'
   /settings/notifications/email:
     get:
       summary: Get email notification settings
@@ -2638,12 +2638,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned email settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NotificationEmailSettings"
+                $ref: '#/components/schemas/NotificationEmailSettings'
     post:
       summary: Update email notification settings
       description: Updates email notification settings with provided values
@@ -2654,14 +2654,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NotificationEmailSettings"
+              $ref: '#/components/schemas/NotificationEmailSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NotificationEmailSettings"
+                $ref: '#/components/schemas/NotificationEmailSettings'
   /settings/notifications/email/test:
     post:
       summary: Test email settings
@@ -2673,9 +2673,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NotificationEmailSettings"
+              $ref: '#/components/schemas/NotificationEmailSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/discord:
     get:
@@ -2684,12 +2684,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned Discord settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DiscordSettings"
+                $ref: '#/components/schemas/DiscordSettings'
     post:
       summary: Update Discord notification settings
       description: Updates Discord notification settings with the provided values.
@@ -2700,14 +2700,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DiscordSettings"
+              $ref: '#/components/schemas/DiscordSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DiscordSettings"
+                $ref: '#/components/schemas/DiscordSettings'
   /settings/notifications/discord/test:
     post:
       summary: Test Discord settings
@@ -2719,9 +2719,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/DiscordSettings"
+              $ref: '#/components/schemas/DiscordSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/lunasea:
     get:
@@ -2730,12 +2730,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned LunaSea settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LunaSeaSettings"
+                $ref: '#/components/schemas/LunaSeaSettings'
     post:
       summary: Update LunaSea notification settings
       description: Updates LunaSea notification settings with the provided values.
@@ -2746,14 +2746,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LunaSeaSettings"
+              $ref: '#/components/schemas/LunaSeaSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/LunaSeaSettings"
+                $ref: '#/components/schemas/LunaSeaSettings'
   /settings/notifications/lunasea/test:
     post:
       summary: Test LunaSea settings
@@ -2765,9 +2765,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LunaSeaSettings"
+              $ref: '#/components/schemas/LunaSeaSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/pushbullet:
     get:
@@ -2776,12 +2776,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned Pushbullet settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PushbulletSettings"
+                $ref: '#/components/schemas/PushbulletSettings'
     post:
       summary: Update Pushbullet notification settings
       description: Update Pushbullet notification settings with the provided values.
@@ -2792,14 +2792,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PushbulletSettings"
+              $ref: '#/components/schemas/PushbulletSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PushbulletSettings"
+                $ref: '#/components/schemas/PushbulletSettings'
   /settings/notifications/pushbullet/test:
     post:
       summary: Test Pushbullet settings
@@ -2811,9 +2811,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PushbulletSettings"
+              $ref: '#/components/schemas/PushbulletSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/pushover:
     get:
@@ -2822,12 +2822,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned Pushover settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PushoverSettings"
+                $ref: '#/components/schemas/PushoverSettings'
     post:
       summary: Update Pushover notification settings
       description: Update Pushover notification settings with the provided values.
@@ -2838,14 +2838,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PushoverSettings"
+              $ref: '#/components/schemas/PushoverSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PushoverSettings"
+                $ref: '#/components/schemas/PushoverSettings'
   /settings/notifications/pushover/test:
     post:
       summary: Test Pushover settings
@@ -2857,9 +2857,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PushoverSettings"
+              $ref: '#/components/schemas/PushoverSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/gotify:
     get:
@@ -2868,12 +2868,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned Gotify settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GotifySettings"
+                $ref: '#/components/schemas/GotifySettings'
     post:
       summary: Update Gotify notification settings
       description: Update Gotify notification settings with the provided values.
@@ -2884,14 +2884,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GotifySettings"
+              $ref: '#/components/schemas/GotifySettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/GotifySettings"
+                $ref: '#/components/schemas/GotifySettings'
   /settings/notifications/gotify/test:
     post:
       summary: Test Gotify settings
@@ -2903,9 +2903,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/GotifySettings"
+              $ref: '#/components/schemas/GotifySettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/slack:
     get:
@@ -2914,12 +2914,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned slack settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SlackSettings"
+                $ref: '#/components/schemas/SlackSettings'
     post:
       summary: Update Slack notification settings
       description: Updates Slack notification settings with the provided values.
@@ -2930,14 +2930,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SlackSettings"
+              $ref: '#/components/schemas/SlackSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SlackSettings"
+                $ref: '#/components/schemas/SlackSettings'
   /settings/notifications/slack/test:
     post:
       summary: Test Slack settings
@@ -2949,9 +2949,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SlackSettings"
+              $ref: '#/components/schemas/SlackSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/telegram:
     get:
@@ -2960,12 +2960,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned Telegram settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TelegramSettings"
+                $ref: '#/components/schemas/TelegramSettings'
     post:
       summary: Update Telegram notification settings
       description: Update Telegram notification settings with the provided values.
@@ -2976,14 +2976,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TelegramSettings"
+              $ref: '#/components/schemas/TelegramSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TelegramSettings"
+                $ref: '#/components/schemas/TelegramSettings'
   /settings/notifications/telegram/test:
     post:
       summary: Test Telegram settings
@@ -2995,9 +2995,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/TelegramSettings"
+              $ref: '#/components/schemas/TelegramSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/webpush:
     get:
@@ -3006,12 +3006,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned web push settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WebPushSettings"
+                $ref: '#/components/schemas/WebPushSettings'
     post:
       summary: Update Web Push notification settings
       description: Updates Web Push notification settings with the provided values.
@@ -3022,14 +3022,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/WebPushSettings"
+              $ref: '#/components/schemas/WebPushSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WebPushSettings"
+                $ref: '#/components/schemas/WebPushSettings'
   /settings/notifications/webpush/test:
     post:
       summary: Test Web Push settings
@@ -3041,9 +3041,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/WebPushSettings"
+              $ref: '#/components/schemas/WebPushSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/notifications/webhook:
     get:
@@ -3052,12 +3052,12 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned webhook settings
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WebhookSettings"
+                $ref: '#/components/schemas/WebhookSettings'
     post:
       summary: Update webhook notification settings
       description: Updates webhook notification settings with the provided values.
@@ -3068,14 +3068,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/WebhookSettings"
+              $ref: '#/components/schemas/WebhookSettings'
       responses:
-        "200":
-          description: "Values were sucessfully updated"
+        '200':
+          description: 'Values were sucessfully updated'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/WebhookSettings"
+                $ref: '#/components/schemas/WebhookSettings'
   /settings/notifications/webhook/test:
     post:
       summary: Test webhook settings
@@ -3087,9 +3087,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/WebhookSettings"
+              $ref: '#/components/schemas/WebhookSettings'
       responses:
-        "204":
+        '204':
           description: Test notification attempted
   /settings/discover:
     get:
@@ -3098,14 +3098,14 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned all discovery sliders
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/DiscoverSlider"
+                  $ref: '#/components/schemas/DiscoverSlider'
     post:
       summary: Batch update all sliders.
       description: |
@@ -3121,16 +3121,16 @@ paths:
             schema:
               type: array
               items:
-                $ref: "#/components/schemas/DiscoverSlider"
+                $ref: '#/components/schemas/DiscoverSlider'
       responses:
-        "200":
+        '200':
           description: Returned all newly updated discovery sliders
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/DiscoverSlider"
+                  $ref: '#/components/schemas/DiscoverSlider'
   /settings/discover/{sliderId}:
     put:
       summary: Update a single slider
@@ -3147,20 +3147,20 @@ paths:
               properties:
                 title:
                   type: string
-                  example: "Slider Title"
+                  example: 'Slider Title'
                 type:
                   type: number
                   example: 1
                 data:
                   type: string
-                  example: "1"
+                  example: '1'
       responses:
-        "200":
+        '200':
           description: Returns newly added discovery slider
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DiscoverSlider"
+                $ref: '#/components/schemas/DiscoverSlider'
     delete:
       summary: Delete slider by ID
       description: Deletes the slider with the provided sliderId. Requires the `ADMIN` permission.
@@ -3173,12 +3173,12 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: Slider successfully deleted
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DiscoverSlider"
+                $ref: '#/components/schemas/DiscoverSlider'
   /settings/discover/add:
     post:
       summary: Add a new slider
@@ -3195,20 +3195,20 @@ paths:
               properties:
                 title:
                   type: string
-                  example: "New Slider"
+                  example: 'New Slider'
                 type:
                   type: number
                   example: 1
                 data:
                   type: string
-                  example: "1"
+                  example: '1'
       responses:
-        "200":
+        '200':
           description: Returns newly added discovery slider
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DiscoverSlider"
+                $ref: '#/components/schemas/DiscoverSlider'
   /settings/discover/reset:
     get:
       summary: Reset all discover sliders
@@ -3216,7 +3216,7 @@ paths:
       tags:
         - settings
       responses:
-        "204":
+        '204':
           description: All sliders reset to defaults
   /settings/about:
     get:
@@ -3225,7 +3225,7 @@ paths:
       tags:
         - settings
       responses:
-        "200":
+        '200':
           description: Returned about settings
           content:
             application/json:
@@ -3234,7 +3234,7 @@ paths:
                 properties:
                   version:
                     type: string
-                    example: "1.0.0"
+                    example: '1.0.0'
                   totalRequests:
                     type: number
                     example: 100
@@ -3256,12 +3256,12 @@ paths:
         - auth
         - users
       responses:
-        "200":
+        '200':
           description: Object containing the logged-in user in JSON
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
   /auth/plex:
     post:
       summary: Sign in using a Plex token
@@ -3270,12 +3270,12 @@ paths:
       tags:
         - auth
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
       requestBody:
         required: true
         content:
@@ -3295,12 +3295,12 @@ paths:
       tags:
         - auth
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
       requestBody:
         required: true
         content:
@@ -3322,7 +3322,7 @@ paths:
       tags:
         - auth
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3331,7 +3331,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "ok"
+                    example: 'ok'
   /auth/reset-password:
     post:
       summary: Send a reset password email
@@ -3340,7 +3340,7 @@ paths:
       tags:
         - users
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3349,7 +3349,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "ok"
+                    example: 'ok'
       requestBody:
         required: true
         content:
@@ -3374,9 +3374,9 @@ paths:
           required: true
           schema:
             type: string
-            example: "9afef5a7-ec89-4d5f-9397-261e96970b50"
+            example: '9afef5a7-ec89-4d5f-9397-261e96970b50'
       responses:
-        "200":
+        '200':
           description: OK
           content:
             application/json:
@@ -3385,7 +3385,7 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "ok"
+                    example: 'ok'
       requestBody:
         required: true
         content:
@@ -3423,7 +3423,7 @@ paths:
             enum: [created, updated, requests, displayname]
             default: created
       responses:
-        "200":
+        '200':
           description: A JSON array of all users
           content:
             application/json:
@@ -3431,11 +3431,11 @@ paths:
                 type: object
                 properties:
                   pageInfo:
-                    $ref: "#/components/schemas/PageInfo"
+                    $ref: '#/components/schemas/PageInfo'
                   results:
                     type: array
                     items:
-                    $ref: "#/components/schemas/User"
+                    $ref: '#/components/schemas/User'
     post:
       summary: Create new user
       description: |
@@ -3451,18 +3451,18 @@ paths:
               properties:
                 email:
                   type: string
-                  example: "hey@itsme.com"
+                  example: 'hey@itsme.com'
                 username:
                   type: string
                 permissions:
                   type: number
       responses:
-        "201":
+        '201':
           description: The created user
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
     put:
       summary: Update batch of users
       description: |
@@ -3485,14 +3485,14 @@ paths:
                 permissions:
                   type: integer
       responses:
-        "200":
+        '200':
           description: Successfully updated user details
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: '#/components/schemas/User'
   /user/import-from-plex:
     post:
       summary: Import all users from Plex
@@ -3514,14 +3514,14 @@ paths:
                   items:
                     type: string
       responses:
-        "201":
+        '201':
           description: A list of the newly created users
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/User"
+                  $ref: '#/components/schemas/User'
   /user/registerPushSubscription:
     post:
       summary: Register a web push /user/registerPushSubscription
@@ -3546,7 +3546,7 @@ paths:
                 - auth
                 - p256dh
       responses:
-        "204":
+        '204':
           description: Successfully registered push subscription
   /user/{userId}:
     get:
@@ -3562,12 +3562,12 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: Users details in JSON
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
     put:
       summary: Update a user by user ID
       description: |
@@ -3587,14 +3587,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/User"
+              $ref: '#/components/schemas/User'
       responses:
-        "200":
+        '200':
           description: Successfully updated user details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
     delete:
       summary: Delete user by ID
       description: Deletes the user with the provided userId. Requires the `MANAGE_USERS` permission.
@@ -3607,12 +3607,12 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: User successfully deleted
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/User"
+                $ref: '#/components/schemas/User'
   /user/{userId}/requests:
     get:
       summary: Get requests for a specific user
@@ -3639,7 +3639,7 @@ paths:
             nullable: true
             example: 0
       responses:
-        "200":
+        '200':
           description: User's requests returned
           content:
             application/json:
@@ -3647,11 +3647,11 @@ paths:
                 type: object
                 properties:
                   pageInfo:
-                    $ref: "#/components/schemas/PageInfo"
+                    $ref: '#/components/schemas/PageInfo'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MediaRequest"
+                      $ref: '#/components/schemas/MediaRequest'
   /user/{userId}/quota:
     get:
       summary: Get quotas for a specific user
@@ -3666,7 +3666,7 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: User quota details in JSON
           content:
             application/json:
@@ -3729,7 +3729,7 @@ paths:
             example: 1
             default: 1
       responses:
-        "200":
+        '200':
           description: Watchlist data returned
           content:
             application/json:
@@ -3769,7 +3769,7 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: User general settings returned
           content:
             application/json:
@@ -3778,7 +3778,7 @@ paths:
                 properties:
                   username:
                     type: string
-                    example: "Mr User"
+                    example: 'Mr User'
     post:
       summary: Update general settings for a user
       description: Updates and returns general settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
@@ -3801,7 +3801,7 @@ paths:
                   type: string
                   nullable: true
       responses:
-        "200":
+        '200':
           description: Updated user general settings returned
           content:
             application/json:
@@ -3810,7 +3810,7 @@ paths:
                 properties:
                   username:
                     type: string
-                    example: "Mr User"
+                    example: 'Mr User'
   /user/{userId}/settings/password:
     get:
       summary: Get password page informatiom
@@ -3824,7 +3824,7 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: User password page information returned
           content:
             application/json:
@@ -3860,7 +3860,7 @@ paths:
               required:
                 - newPassword
       responses:
-        "204":
+        '204':
           description: User password updated
   /user/{userId}/settings/notifications:
     get:
@@ -3875,12 +3875,12 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: User notification settings returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserSettingsNotifications"
+                $ref: '#/components/schemas/UserSettingsNotifications'
     post:
       summary: Update notification settings for a user
       description: Updates and returns notification settings for a specific user. Requires `MANAGE_USERS` permission if editing other users.
@@ -3897,14 +3897,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserSettingsNotifications"
+              $ref: '#/components/schemas/UserSettingsNotifications'
       responses:
-        "200":
+        '200':
           description: Updated user notification settings returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserSettingsNotifications"
+                $ref: '#/components/schemas/UserSettingsNotifications'
   /user/{userId}/settings/permissions:
     get:
       summary: Get permission settings for a user
@@ -3918,7 +3918,7 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: User permission settings returned
           content:
             application/json:
@@ -3951,7 +3951,7 @@ paths:
               required:
                 - permissions
       responses:
-        "200":
+        '200':
           description: Updated user general settings returned
           content:
             application/json:
@@ -3977,7 +3977,7 @@ paths:
           schema:
             type: number
       responses:
-        "200":
+        '200':
           description: Users
           content:
             application/json:
@@ -3987,7 +3987,7 @@ paths:
                   recentlyWatched:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MediaInfo"
+                      $ref: '#/components/schemas/MediaInfo'
                   playCount:
                     type: number
   /search:
@@ -4002,7 +4002,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "Mulan"
+            example: 'Mulan'
         - in: query
           name: page
           schema:
@@ -4015,7 +4015,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4035,9 +4035,9 @@ paths:
                     type: array
                     items:
                       anyOf:
-                        - $ref: "#/components/schemas/MovieResult"
-                        - $ref: "#/components/schemas/TvResult"
-                        - $ref: "#/components/schemas/PersonResult"
+                        - $ref: '#/components/schemas/MovieResult'
+                        - $ref: '#/components/schemas/TvResult'
+                        - $ref: '#/components/schemas/PersonResult'
   /search/keyword:
     get:
       summary: Search for keywords
@@ -4050,7 +4050,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "christmas"
+            example: 'christmas'
         - in: query
           name: page
           schema:
@@ -4058,7 +4058,7 @@ paths:
             example: 1
             default: 1
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4077,7 +4077,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Keyword"
+                      $ref: '#/components/schemas/Keyword'
   /search/company:
     get:
       summary: Search for companies
@@ -4090,7 +4090,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "Disney"
+            example: 'Disney'
         - in: query
           name: page
           schema:
@@ -4098,7 +4098,7 @@ paths:
             example: 1
             default: 1
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4117,7 +4117,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Company"
+                      $ref: '#/components/schemas/Company'
   /discover/movies:
     get:
       summary: Discover movies
@@ -4207,7 +4207,7 @@ paths:
             type: string
             example: 8|9
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4226,7 +4226,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MovieResult"
+                      $ref: '#/components/schemas/MovieResult'
   /discover/movies/genre/{genreId}:
     get:
       summary: Discover movies by genre
@@ -4239,7 +4239,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
         - in: query
           name: page
           schema:
@@ -4252,7 +4252,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4269,11 +4269,11 @@ paths:
                     type: number
                     example: 200
                   genre:
-                    $ref: "#/components/schemas/Genre"
+                    $ref: '#/components/schemas/Genre'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MovieResult"
+                      $ref: '#/components/schemas/MovieResult'
   /discover/movies/language/{language}:
     get:
       summary: Discover movies by original language
@@ -4299,7 +4299,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4316,11 +4316,11 @@ paths:
                     type: number
                     example: 200
                   language:
-                    $ref: "#/components/schemas/SpokenLanguage"
+                    $ref: '#/components/schemas/SpokenLanguage'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MovieResult"
+                      $ref: '#/components/schemas/MovieResult'
   /discover/movies/studio/{studioId}:
     get:
       summary: Discover movies by studio
@@ -4333,7 +4333,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
         - in: query
           name: page
           schema:
@@ -4346,7 +4346,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4363,11 +4363,11 @@ paths:
                     type: number
                     example: 200
                   studio:
-                    $ref: "#/components/schemas/ProductionCompany"
+                    $ref: '#/components/schemas/ProductionCompany'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MovieResult"
+                      $ref: '#/components/schemas/MovieResult'
   /discover/movies/upcoming:
     get:
       summary: Upcoming movies
@@ -4387,7 +4387,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4406,7 +4406,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MovieResult"
+                      $ref: '#/components/schemas/MovieResult'
   /discover/tv:
     get:
       summary: Discover TV shows
@@ -4496,7 +4496,7 @@ paths:
             type: string
             example: 8|9
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4515,7 +4515,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/TvResult"
+                      $ref: '#/components/schemas/TvResult'
   /discover/tv/language/{language}:
     get:
       summary: Discover TV shows by original language
@@ -4541,7 +4541,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4558,11 +4558,11 @@ paths:
                     type: number
                     example: 200
                   language:
-                    $ref: "#/components/schemas/SpokenLanguage"
+                    $ref: '#/components/schemas/SpokenLanguage'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/TvResult"
+                      $ref: '#/components/schemas/TvResult'
   /discover/tv/genre/{genreId}:
     get:
       summary: Discover TV shows by genre
@@ -4575,7 +4575,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
         - in: query
           name: page
           schema:
@@ -4588,7 +4588,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4605,11 +4605,11 @@ paths:
                     type: number
                     example: 200
                   genre:
-                    $ref: "#/components/schemas/Genre"
+                    $ref: '#/components/schemas/Genre'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/TvResult"
+                      $ref: '#/components/schemas/TvResult'
   /discover/tv/network/{networkId}:
     get:
       summary: Discover TV shows by network
@@ -4622,7 +4622,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
         - in: query
           name: page
           schema:
@@ -4635,7 +4635,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4652,11 +4652,11 @@ paths:
                     type: number
                     example: 200
                   network:
-                    $ref: "#/components/schemas/Network"
+                    $ref: '#/components/schemas/Network'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/TvResult"
+                      $ref: '#/components/schemas/TvResult'
   /discover/tv/upcoming:
     get:
       summary: Discover Upcoming TV shows
@@ -4676,7 +4676,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4695,7 +4695,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/TvResult"
+                      $ref: '#/components/schemas/TvResult'
   /discover/trending:
     get:
       summary: Trending movies and TV
@@ -4715,7 +4715,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -4735,9 +4735,9 @@ paths:
                     type: array
                     items:
                       anyOf:
-                        - $ref: "#/components/schemas/MovieResult"
-                        - $ref: "#/components/schemas/TvResult"
-                        - $ref: "#/components/schemas/PersonResult"
+                        - $ref: '#/components/schemas/MovieResult'
+                        - $ref: '#/components/schemas/TvResult'
+                        - $ref: '#/components/schemas/PersonResult'
   /discover/keyword/{keywordId}/movies:
     get:
       summary: Get movies from keyword
@@ -4763,7 +4763,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: List of movies
           content:
             application/json:
@@ -4782,7 +4782,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MovieResult"
+                      $ref: '#/components/schemas/MovieResult'
   /discover/genreslider/movie:
     get:
       summary: Get genre slider data for movies
@@ -4796,7 +4796,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Genre slider data returned
           content:
             application/json:
@@ -4828,7 +4828,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Genre slider data returned
           content:
             application/json:
@@ -4860,7 +4860,7 @@ paths:
             example: 1
             default: 1
       responses:
-        "200":
+        '200':
           description: Watchlist data returned
           content:
             application/json:
@@ -4937,7 +4937,7 @@ paths:
             nullable: true
             example: 1
       responses:
-        "200":
+        '200':
           description: Requests returned
           content:
             application/json:
@@ -4945,11 +4945,11 @@ paths:
                 type: object
                 properties:
                   pageInfo:
-                    $ref: "#/components/schemas/PageInfo"
+                    $ref: '#/components/schemas/PageInfo'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MediaRequest"
+                      $ref: '#/components/schemas/MediaRequest'
     post:
       summary: Create new request
       description: |
@@ -5001,12 +5001,12 @@ paths:
                 - mediaType
                 - mediaId
       responses:
-        "201":
+        '201':
           description: Succesfully created the request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaRequest"
+                $ref: '#/components/schemas/MediaRequest'
   /request/count:
     get:
       summary: Gets request counts
@@ -5015,7 +5015,7 @@ paths:
       tags:
         - request
       responses:
-        "200":
+        '200':
           description: Request counts returned
           content:
             application/json:
@@ -5049,16 +5049,16 @@ paths:
           name: requestId
           description: Request ID
           required: true
-          example: "1"
+          example: '1'
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Succesfully returns request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaRequest"
+                $ref: '#/components/schemas/MediaRequest'
     put:
       summary: Update MediaRequest
       description: Updates a specific media request and returns the request in a JSON object. Requires the `MANAGE_REQUESTS` permission.
@@ -5069,7 +5069,7 @@ paths:
           name: requestId
           description: Request ID
           required: true
-          example: "1"
+          example: '1'
           schema:
             type: string
       requestBody:
@@ -5104,12 +5104,12 @@ paths:
               required:
                 - mediaType
       responses:
-        "200":
+        '200':
           description: Succesfully updated request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaRequest"
+                $ref: '#/components/schemas/MediaRequest'
     delete:
       summary: Delete request
       description: Removes a request. If the user has the `MANAGE_REQUESTS` permission, any request can be removed. Otherwise, only pending requests can be removed.
@@ -5120,11 +5120,11 @@ paths:
           name: requestId
           description: Request ID
           required: true
-          example: "1"
+          example: '1'
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: Succesfully removed request
   /request/{requestId}/retry:
     post:
@@ -5142,14 +5142,14 @@ paths:
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
       responses:
-        "200":
+        '200':
           description: Retry triggered
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaRequest"
+                $ref: '#/components/schemas/MediaRequest'
   /request/{requestId}/{status}:
     post:
       summary: Update a request's status
@@ -5166,7 +5166,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
         - in: path
           name: status
           description: New status
@@ -5175,12 +5175,12 @@ paths:
             type: string
             enum: [approve, decline]
       responses:
-        "200":
+        '200':
           description: Request status changed
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaRequest"
+                $ref: '#/components/schemas/MediaRequest'
   /movie/{movieId}:
     get:
       summary: Get movie details
@@ -5200,12 +5200,12 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Movie details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MovieDetails"
+                $ref: '#/components/schemas/MovieDetails'
   /movie/{movieId}/recommendations:
     get:
       summary: Get recommended movies
@@ -5231,7 +5231,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: List of movies
           content:
             application/json:
@@ -5250,7 +5250,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MovieResult"
+                      $ref: '#/components/schemas/MovieResult'
   /movie/{movieId}/similar:
     get:
       summary: Get similar movies
@@ -5276,7 +5276,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: List of movies
           content:
             application/json:
@@ -5295,7 +5295,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MovieResult"
+                      $ref: '#/components/schemas/MovieResult'
   /movie/{movieId}/ratings:
     get:
       summary: Get movie ratings
@@ -5310,7 +5310,7 @@ paths:
             type: number
             example: 337401
       responses:
-        "200":
+        '200':
           description: Ratings returned
           content:
             application/json:
@@ -5325,19 +5325,19 @@ paths:
                     example: 2020
                   url:
                     type: string
-                    example: "http://www.rottentomatoes.com/m/mulan_2020/"
+                    example: 'http://www.rottentomatoes.com/m/mulan_2020/'
                   criticsScore:
                     type: number
                     example: 85
                   criticsRating:
                     type: string
-                    enum: ["Rotten", "Fresh", "Certified Fresh"]
+                    enum: ['Rotten', 'Fresh', 'Certified Fresh']
                   audienceScore:
                     type: number
                     example: 65
                   audienceRating:
                     type: string
-                    enum: ["Spilled", "Upright"]
+                    enum: ['Spilled', 'Upright']
   /movie/{movieId}/ratingscombined:
     get:
       summary: Get RT and IMDB movie ratings combined
@@ -5352,7 +5352,7 @@ paths:
             type: number
             example: 337401
       responses:
-        "200":
+        '200':
           description: Ratings returned
           content:
             application/json:
@@ -5370,19 +5370,19 @@ paths:
                         example: 2020
                       url:
                         type: string
-                        example: "http://www.rottentomatoes.com/m/mulan_2020/"
+                        example: 'http://www.rottentomatoes.com/m/mulan_2020/'
                       criticsScore:
                         type: number
                         example: 85
                       criticsRating:
                         type: string
-                        enum: ["Rotten", "Fresh", "Certified Fresh"]
+                        enum: ['Rotten', 'Fresh', 'Certified Fresh']
                       audienceScore:
                         type: number
                         example: 65
                       audienceRating:
                         type: string
-                        enum: ["Spilled", "Upright"]
+                        enum: ['Spilled', 'Upright']
                   imdb:
                     type: object
                     properties:
@@ -5391,7 +5391,7 @@ paths:
                         example: I am Legend
                       url:
                         type: string
-                        example: "https://www.imdb.com/title/tt0480249"
+                        example: 'https://www.imdb.com/title/tt0480249'
                       criticsScore:
                         type: number
                         example: 6.5
@@ -5414,12 +5414,12 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: TV details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/TvDetails"
+                $ref: '#/components/schemas/TvDetails'
   /tv/{tvId}/season/{seasonId}:
     get:
       summary: Get season details and episode list
@@ -5445,12 +5445,12 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: TV details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Season"
+                $ref: '#/components/schemas/Season'
   /tv/{tvId}/recommendations:
     get:
       summary: Get recommended TV series
@@ -5476,7 +5476,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: List of TV series
           content:
             application/json:
@@ -5495,7 +5495,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/TvResult"
+                      $ref: '#/components/schemas/TvResult'
   /tv/{tvId}/similar:
     get:
       summary: Get similar TV series
@@ -5521,7 +5521,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: List of TV series
           content:
             application/json:
@@ -5540,7 +5540,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/TvResult"
+                      $ref: '#/components/schemas/TvResult'
   /tv/{tvId}/ratings:
     get:
       summary: Get TV ratings
@@ -5555,7 +5555,7 @@ paths:
             type: number
             example: 76479
       responses:
-        "200":
+        '200':
           description: Ratings returned
           content:
             application/json:
@@ -5570,13 +5570,13 @@ paths:
                     example: 2019
                   url:
                     type: string
-                    example: "http://www.rottentomatoes.com/m/mulan_2020/"
+                    example: 'http://www.rottentomatoes.com/m/mulan_2020/'
                   criticsScore:
                     type: number
                     example: 85
                   criticsRating:
                     type: string
-                    enum: ["Rotten", "Fresh"]
+                    enum: ['Rotten', 'Fresh']
   /person/{personId}:
     get:
       summary: Get person details
@@ -5596,12 +5596,12 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Returned person
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PersonDetails"
+                $ref: '#/components/schemas/PersonDetails'
   /person/{personId}/combined_credits:
     get:
       summary: Get combined credits
@@ -5621,7 +5621,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Returned combined credits
           content:
             application/json:
@@ -5631,11 +5631,11 @@ paths:
                   cast:
                     type: array
                     items:
-                      $ref: "#/components/schemas/CreditCast"
+                      $ref: '#/components/schemas/CreditCast'
                   crew:
                     type: array
                     items:
-                      $ref: "#/components/schemas/CreditCrew"
+                      $ref: '#/components/schemas/CreditCrew'
                   id:
                     type: number
   /media:
@@ -5670,7 +5670,7 @@ paths:
             enum: [added, modified, mediaAdded]
             default: added
       responses:
-        "200":
+        '200':
           description: Returned media
           content:
             application/json:
@@ -5678,11 +5678,11 @@ paths:
                 type: object
                 properties:
                   pageInfo:
-                    $ref: "#/components/schemas/PageInfo"
+                    $ref: '#/components/schemas/PageInfo'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/MediaInfo"
+                      $ref: '#/components/schemas/MediaInfo'
   /media/{mediaId}:
     delete:
       summary: Delete media item
@@ -5694,11 +5694,11 @@ paths:
           name: mediaId
           description: Media ID
           required: true
-          example: "1"
+          example: '1'
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: Succesfully removed media item
   /media/{mediaId}/{status}:
     post:
@@ -5711,7 +5711,7 @@ paths:
           name: mediaId
           description: Media ID
           required: true
-          example: "1"
+          example: '1'
           schema:
             type: string
         - in: path
@@ -5732,12 +5732,12 @@ paths:
                   type: boolean
                   example: false
       responses:
-        "200":
+        '200':
           description: Returned media
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/MediaInfo"
+                $ref: '#/components/schemas/MediaInfo'
   /media/{mediaId}/watch_data:
     get:
       summary: Get watch data
@@ -5752,11 +5752,11 @@ paths:
           name: mediaId
           description: Media ID
           required: true
-          example: "1"
+          example: '1'
           schema:
             type: string
       responses:
-        "200":
+        '200':
           description: Users
           content:
             application/json:
@@ -5775,7 +5775,7 @@ paths:
                       users:
                         type: array
                         items:
-                          $ref: "#/components/schemas/User"
+                          $ref: '#/components/schemas/User'
                   data4k:
                     type: object
                     properties:
@@ -5788,7 +5788,7 @@ paths:
                       users:
                         type: array
                         items:
-                          $ref: "#/components/schemas/User"
+                          $ref: '#/components/schemas/User'
   /collection/{collectionId}:
     get:
       summary: Get collection details
@@ -5808,12 +5808,12 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Collection details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Collection"
+                $ref: '#/components/schemas/Collection'
   /service/radarr:
     get:
       summary: Get non-sensitive Radarr server list
@@ -5821,14 +5821,14 @@ paths:
       tags:
         - service
       responses:
-        "200":
+        '200':
           description: Request successful
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/RadarrSettings"
+                  $ref: '#/components/schemas/RadarrSettings'
   /service/radarr/{radarrId}:
     get:
       summary: Get Radarr server quality profiles and root folders
@@ -5843,7 +5843,7 @@ paths:
             type: number
             example: 0
       responses:
-        "200":
+        '200':
           description: Request successful
           content:
             application/json:
@@ -5851,9 +5851,9 @@ paths:
                 type: object
                 properties:
                   server:
-                    $ref: "#/components/schemas/RadarrSettings"
+                    $ref: '#/components/schemas/RadarrSettings'
                   profiles:
-                    $ref: "#/components/schemas/ServiceProfile"
+                    $ref: '#/components/schemas/ServiceProfile'
   /service/sonarr:
     get:
       summary: Get non-sensitive Sonarr server list
@@ -5861,14 +5861,14 @@ paths:
       tags:
         - service
       responses:
-        "200":
+        '200':
           description: Request successful
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SonarrSettings"
+                  $ref: '#/components/schemas/SonarrSettings'
   /service/sonarr/{sonarrId}:
     get:
       summary: Get Sonarr server quality profiles and root folders
@@ -5883,7 +5883,7 @@ paths:
             type: number
             example: 0
       responses:
-        "200":
+        '200':
           description: Request successful
           content:
             application/json:
@@ -5891,9 +5891,9 @@ paths:
                 type: object
                 properties:
                   server:
-                    $ref: "#/components/schemas/SonarrSettings"
+                    $ref: '#/components/schemas/SonarrSettings'
                   profiles:
-                    $ref: "#/components/schemas/ServiceProfile"
+                    $ref: '#/components/schemas/ServiceProfile'
   /service/sonarr/lookup/{tmdbId}:
     get:
       summary: Get series from Sonarr
@@ -5908,14 +5908,14 @@ paths:
             type: number
             example: 0
       responses:
-        "200":
+        '200':
           description: Request successful
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/SonarrSeries"
+                  $ref: '#/components/schemas/SonarrSeries'
   /regions:
     get:
       summary: Regions supported by TMDB
@@ -5923,7 +5923,7 @@ paths:
       tags:
         - tmdb
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -5945,7 +5945,7 @@ paths:
       tags:
         - tmdb
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -5977,12 +5977,12 @@ paths:
             type: number
             example: 2
       responses:
-        "200":
+        '200':
           description: Movie studio details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductionCompany"
+                $ref: '#/components/schemas/ProductionCompany'
   /network/{networkId}:
     get:
       summary: Get TV network details
@@ -5997,12 +5997,12 @@ paths:
             type: number
             example: 1
       responses:
-        "200":
+        '200':
           description: TV network details
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProductionCompany"
+                $ref: '#/components/schemas/ProductionCompany'
   /genres/movie:
     get:
       summary: Get list of official TMDB movie genres
@@ -6016,7 +6016,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -6044,7 +6044,7 @@ paths:
             type: string
             example: en
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -6067,7 +6067,7 @@ paths:
       tags:
         - tmdb
       responses:
-        "200":
+        '200':
           description: Results
           content:
             application/json:
@@ -6114,7 +6114,7 @@ paths:
             nullable: true
             example: 1
       responses:
-        "200":
+        '200':
           description: Issues returned
           content:
             application/json:
@@ -6122,11 +6122,11 @@ paths:
                 type: object
                 properties:
                   pageInfo:
-                    $ref: "#/components/schemas/PageInfo"
+                    $ref: '#/components/schemas/PageInfo'
                   results:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Issue"
+                      $ref: '#/components/schemas/Issue'
     post:
       summary: Create new issue
       description: |
@@ -6147,12 +6147,12 @@ paths:
                 mediaId:
                   type: number
       responses:
-        "201":
+        '201':
           description: Succesfully created the issue
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issue"
+                $ref: '#/components/schemas/Issue'
 
   /issue/count:
     get:
@@ -6162,7 +6162,7 @@ paths:
       tags:
         - issue
       responses:
-        "200":
+        '200':
           description: Issue counts returned
           content:
             application/json:
@@ -6198,12 +6198,12 @@ paths:
             type: number
             example: 1
       responses:
-        "200":
+        '200':
           description: Issues returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issue"
+                $ref: '#/components/schemas/Issue'
     delete:
       summary: Delete issue
       description: Removes an issue. If the user has the `MANAGE_ISSUES` permission, any issue can be removed. Otherwise, only a users own issues can be removed.
@@ -6214,11 +6214,11 @@ paths:
           name: issueId
           description: Issue ID
           required: true
-          example: "1"
+          example: '1'
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: Succesfully removed issue
   /issue/{issueId}/comment:
     post:
@@ -6246,12 +6246,12 @@ paths:
               required:
                 - message
       responses:
-        "200":
+        '200':
           description: Issue returned with new comment
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issue"
+                $ref: '#/components/schemas/Issue'
   /issueComment/{commentId}:
     get:
       summary: Get issue comment
@@ -6267,12 +6267,12 @@ paths:
             type: string
             example: 1
       responses:
-        "200":
+        '200':
           description: Comment returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/IssueComment"
+                $ref: '#/components/schemas/IssueComment'
     put:
       summary: Update issue comment
       description: |
@@ -6296,12 +6296,12 @@ paths:
                 message:
                   type: string
       responses:
-        "200":
+        '200':
           description: Comment updated
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/IssueComment"
+                $ref: '#/components/schemas/IssueComment'
     delete:
       summary: Delete issue comment
       description: |
@@ -6313,11 +6313,11 @@ paths:
           name: commentId
           description: Issue Comment ID
           required: true
-          example: "1"
+          example: '1'
           schema:
             type: string
       responses:
-        "204":
+        '204':
           description: Succesfully removed issue comment
   /issue/{issueId}/{status}:
     post:
@@ -6335,7 +6335,7 @@ paths:
           required: true
           schema:
             type: string
-            example: "1"
+            example: '1'
         - in: path
           name: status
           description: New status
@@ -6344,12 +6344,12 @@ paths:
             type: string
             enum: [open, resolved]
       responses:
-        "200":
+        '200':
           description: Issue status changed
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Issue"
+                $ref: '#/components/schemas/Issue'
   /keyword/{keywordId}:
     get:
       summary: Get keyword
@@ -6365,12 +6365,12 @@ paths:
             type: number
             example: 1
       responses:
-        "200":
+        '200':
           description: Keyword returned
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Keyword"
+                $ref: '#/components/schemas/Keyword'
   /watchproviders/regions:
     get:
       summary: Get watch provider regions
@@ -6379,14 +6379,14 @@ paths:
       tags:
         - other
       responses:
-        "200":
+        '200':
           description: Watch provider regions returned
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WatchProviderRegion"
+                  $ref: '#/components/schemas/WatchProviderRegion'
   /watchproviders/movies:
     get:
       summary: Get watch provider movies
@@ -6402,14 +6402,14 @@ paths:
             type: string
             example: US
       responses:
-        "200":
+        '200':
           description: Watch providers for movies returned
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WatchProviderDetails"
+                  $ref: '#/components/schemas/WatchProviderDetails'
   /watchproviders/tv:
     get:
       summary: Get watch provider series
@@ -6425,14 +6425,14 @@ paths:
             type: string
             example: US
       responses:
-        "200":
+        '200':
           description: Watch providers for series returned
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/WatchProviderDetails"
+                  $ref: '#/components/schemas/WatchProviderDetails'
 security:
   - cookieAuth: []
   - apiKey: []
