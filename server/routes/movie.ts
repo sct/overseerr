@@ -118,6 +118,47 @@ movieRoutes.get('/:id/similar', async (req, res, next) => {
   }
 });
 
+/**
+ * Endpoint backed by RottenTomatoes
+ */
+movieRoutes.get('/:id/ratings', async (req, res, next) => {
+  const tmdb = new TheMovieDb();
+  const rtapi = new RottenTomatoes();
+
+  try {
+    const movie = await tmdb.getMovie({
+      movieId: Number(req.params.id),
+    });
+
+    const rtratings = await rtapi.getMovieRatings(
+      movie.title,
+      Number(movie.release_date.slice(0, 4))
+    );
+
+    if (!rtratings) {
+      return next({
+        status: 404,
+        message: 'Rotten Tomatoes ratings not found.',
+      });
+    }
+
+    return res.status(200).json(rtratings);
+  } catch (e) {
+    logger.debug('Something went wrong retrieving movie ratings', {
+      label: 'API',
+      errorMessage: e.message,
+      movieId: req.params.id,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve movie ratings.',
+    });
+  }
+});
+
+/**
+ * Endpoint combining RottenTomatoes and IMDB
+ */
 movieRoutes.get('/:id/ratingscombined', async (req, res, next) => {
   const tmdb = new TheMovieDb();
   const rtapi = new RottenTomatoes();
