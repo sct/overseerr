@@ -1,3 +1,46 @@
+# [1.33.0](https://github.com/sct/overseerr/compare/v1.32.5...v1.33.0) (2023-06-15)
+
+
+### Bug Fixes
+
+* added a refresh interval if download status is in progress ([#3275](https://github.com/sct/overseerr/issues/3275)) ([1e2c6f4](https://github.com/sct/overseerr/commit/1e2c6f46ab66c836f321b5d8e34f1e8124c0b542))
+* adjust the plex watchlist sync schedule to have fuzziness ([#3502](https://github.com/sct/overseerr/issues/3502)) ([2c3f533](https://github.com/sct/overseerr/commit/2c3f5330764492e1323afd2d1f25e28ad78a2f2f))
+* availability sync file detection ([#3371](https://github.com/sct/overseerr/issues/3371)) ([7522aa3](https://github.com/sct/overseerr/commit/7522aa31743b169c903ebdf9d4d698645d27514c))
+* **build:** increase threshold for amount of data to be fetched when SSR'ing ([#3320](https://github.com/sct/overseerr/issues/3320)) ([d7b83d2](https://github.com/sct/overseerr/commit/d7b83d22cee3d20db564cc0564d42802b02327e3))
+* corrected initial fallback data load on details page ([#3395](https://github.com/sct/overseerr/issues/3395)) ([4bd8764](https://github.com/sct/overseerr/commit/4bd87647d0551c20e13589a62690a6f3e5ad8ff7))
+* correctly load series fallback modal with sonarr v4 ([#3451](https://github.com/sct/overseerr/issues/3451)) ([e051b1d](https://github.com/sct/overseerr/commit/e051b1dfea9c9320cc9dd420c475ae74cff0d901))
+* **deps:** update all non-major dependencies ([#3223](https://github.com/sct/overseerr/issues/3223)) ([f5191ad](https://github.com/sct/overseerr/commit/f5191aded680357522a65bbdcc40d162b8fbf594))
+* error deleting users with over 1000 requests ([#3376](https://github.com/sct/overseerr/issues/3376)) ([ac77b03](https://github.com/sct/overseerr/commit/ac77b037d5fb0c54f5edf4b29d04adb57aef388f))
+* fixes RT ratings for tv shows ([#3492](https://github.com/sct/overseerr/issues/3492)) ([04fbd00](https://github.com/sct/overseerr/commit/04fbd00d4ac29045592588ef8b664d1916991e37)), closes [#3491](https://github.com/sct/overseerr/issues/3491)
+* **genreselector:** fix searching in Genre filter ([#3468](https://github.com/sct/overseerr/issues/3468)) ([d7fa35e](https://github.com/sct/overseerr/commit/d7fa35e066cf371797aaa46ca464aa531ba8fb35))
+* handle search results with collections ([#3393](https://github.com/sct/overseerr/issues/3393)) ([70b1540](https://github.com/sct/overseerr/commit/70b1540ae23e83e01013856a9e06ad39e600922d))
+* improved handling of edge case that could cause availability sync to fail ([#3497](https://github.com/sct/overseerr/issues/3497)) ([d0836ce](https://github.com/sct/overseerr/commit/d0836ce0efd55fccf2546087a0c4f94f7cb2e82a))
+* lock body scroll when using webkit ([#3399](https://github.com/sct/overseerr/issues/3399)) ([c27f960](https://github.com/sct/overseerr/commit/c27f96096ac8cc6c387f9d1dde5b263576ac2132))
+* logger was set to info for the wrong logs ([#3354](https://github.com/sct/overseerr/issues/3354)) ([c36a4ba](https://github.com/sct/overseerr/commit/c36a4ba2b8df05873f5dfd0946a9bc3dc4ecfd1d))
+* make a (shallow) copy of radarr/sonarr tags into a request before adding user tags ([#3485](https://github.com/sct/overseerr/issues/3485)) ([48f7666](https://github.com/sct/overseerr/commit/48f76662d5c08156f1da3f47e216c5f02668f64b))
+* remove unnecessary parenthesis from api key generation ([#3336](https://github.com/sct/overseerr/issues/3336)) ([6bd3f01](https://github.com/sct/overseerr/commit/6bd3f015d65507efca60279007bd2b86ee860643))
+* **ui:** corrected default badge hover opacity ([#3369](https://github.com/sct/overseerr/issues/3369)) ([a4d07f5](https://github.com/sct/overseerr/commit/a4d07f5afab613317d96c9c6e9b47157a5a28986))
+* **ui:** corrected issues icon color ([#3498](https://github.com/sct/overseerr/issues/3498)) ([c1a47bd](https://github.com/sct/overseerr/commit/c1a47bd9de332cb4925974690f5a33448b5cc2e6))
+* **ui:** corrected mobile menu spacing in collection details ([#3432](https://github.com/sct/overseerr/issues/3432)) ([77a33cb](https://github.com/sct/overseerr/commit/77a33cb74d744bb747b791785799b632af8c7862))
+* **ui:** hide mini status badge if non-4K media status is unknown ([#3346](https://github.com/sct/overseerr/issues/3346)) ([50f06da](https://github.com/sct/overseerr/commit/50f06dabbffc693f0843584a64d1d96e77982820))
+* **ui:** hide search bar behind slideover when opened ([#3348](https://github.com/sct/overseerr/issues/3348)) ([b3882de](https://github.com/sct/overseerr/commit/b3882de8930a70adb2f93a27be6370bfa1826587))
+* **ui:** prevent title cards from flickering when quickly hovering across them ([#3349](https://github.com/sct/overseerr/issues/3349)) ([eb5502a](https://github.com/sct/overseerr/commit/eb5502a16f86e37a933f6beca0678c2d228e77d5))
+* **watchlist:** correctly load more than 20 watchlist items ([#3351](https://github.com/sct/overseerr/issues/3351)) ([af880a6](https://github.com/sct/overseerr/commit/af880a6c839794b34bddcd7e0fe56353aa48ba36))
+
+
+### Features
+
+* adds streaming services custom slider ([#3361](https://github.com/sct/overseerr/issues/3361)) ([2520d8f](https://github.com/sct/overseerr/commit/2520d8f739abfde608f3ef66a9fbe6b7b5c6647a))
+* auto tagging requested media with username ([#3338](https://github.com/sct/overseerr/issues/3338)) ([24f268b](https://github.com/sct/overseerr/commit/24f268b6cb67d9a8d8675cd6e09dd83a7f499add))
+* availability sync rework ([#3219](https://github.com/sct/overseerr/issues/3219)) ([ae38183](https://github.com/sct/overseerr/commit/ae3818304b2f75222d1bd223ece94f829a3b42d0)), closes [#377](https://github.com/sct/overseerr/issues/377)
+* **discover:** support filtering by tmdb user vote count on discover page ([#3407](https://github.com/sct/overseerr/issues/3407)) ([aa84977](https://github.com/sct/overseerr/commit/aa849776809dfe891e67ff4db6861ef44df1a774))
+* full title of download item on hover with tooltip ([#3296](https://github.com/sct/overseerr/issues/3296)) ([33e7691](https://github.com/sct/overseerr/commit/33e7691b94d7d369a0a1410e434850bc51e5572e))
+
+
+### Performance Improvements
+
+* **imageproxy:** do not set cookies to image proxy so CDNs can cache images ([#3332](https://github.com/sct/overseerr/issues/3332)) ([966639d](https://github.com/sct/overseerr/commit/966639df430d32f6bfebdb16314dc4590d21caf8))
+
 ## [1.32.5](https://github.com/sct/overseerr/compare/v1.32.4...v1.32.5) (2023-01-31)
 
 
