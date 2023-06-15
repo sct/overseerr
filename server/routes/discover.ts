@@ -14,12 +14,13 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { mapProductionCompany } from '@server/models/Movie';
 import {
+  mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
   mapTvResult,
 } from '@server/models/Search';
 import { mapNetwork } from '@server/models/Tv';
-import { isMovie, isPerson } from '@server/utils/typeHelpers';
+import { isCollection, isMovie, isPerson } from '@server/utils/typeHelpers';
 import { Router } from 'express';
 import { sortBy } from 'lodash';
 import { z } from 'zod';
@@ -64,6 +65,8 @@ const QueryFilterOptions = z.object({
   withRuntimeLte: z.coerce.string().optional(),
   voteAverageGte: z.coerce.string().optional(),
   voteAverageLte: z.coerce.string().optional(),
+  voteCountGte: z.coerce.string().optional(),
+  voteCountLte: z.coerce.string().optional(),
   network: z.coerce.string().optional(),
   watchProviders: z.coerce.string().optional(),
   watchRegion: z.coerce.string().optional(),
@@ -95,6 +98,8 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       withRuntimeLte: query.withRuntimeLte,
       voteAverageGte: query.voteAverageGte,
       voteAverageLte: query.voteAverageLte,
+      voteCountGte: query.voteCountGte,
+      voteCountLte: query.voteCountLte,
       watchProviders: query.watchProviders,
       watchRegion: query.watchRegion,
     });
@@ -370,6 +375,8 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       withRuntimeLte: query.withRuntimeLte,
       voteAverageGte: query.voteAverageGte,
       voteAverageLte: query.voteAverageLte,
+      voteCountGte: query.voteCountGte,
+      voteCountLte: query.voteCountLte,
       watchProviders: query.watchProviders,
       watchRegion: query.watchRegion,
     });
@@ -647,6 +654,8 @@ discoverRoutes.get('/trending', async (req, res, next) => {
             )
           : isPerson(result)
           ? mapPersonResult(result)
+          : isCollection(result)
+          ? mapCollectionResult(result)
           : mapTvResult(
               result,
               media.find(
@@ -800,12 +809,12 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   }
 );
 
-discoverRoutes.get<{ page?: number }, WatchlistResponse>(
+discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
   '/watchlist',
   async (req, res) => {
     const userRepository = getRepository(User);
     const itemsPerPage = 20;
-    const page = req.params.page ?? 1;
+    const page = Number(req.query.page) ?? 1;
     const offset = (page - 1) * itemsPerPage;
 
     const activeUser = await userRepository.findOne({
@@ -829,8 +838,8 @@ discoverRoutes.get<{ page?: number }, WatchlistResponse>(
 
     return res.json({
       page,
-      totalPages: Math.ceil(watchlist.size / itemsPerPage),
-      totalResults: watchlist.size,
+      totalPages: Math.ceil(watchlist.totalSize / itemsPerPage),
+      totalResults: watchlist.totalSize,
       results: watchlist.items.map((item) => ({
         ratingKey: item.ratingKey,
         title: item.title,

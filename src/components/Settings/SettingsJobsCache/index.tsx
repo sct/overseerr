@@ -53,6 +53,7 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
   'plex-recently-added-scan': 'Plex Recently Added Scan',
   'plex-full-scan': 'Plex Full Library Scan',
   'plex-watchlist-sync': 'Plex Watchlist Sync',
+  'availability-sync': 'Media Availability Sync',
   'radarr-scan': 'Radarr Scan',
   'sonarr-scan': 'Sonarr Scan',
   'download-sync': 'Download Sync',
@@ -67,6 +68,8 @@ const messages: { [messageName: string]: MessageDescriptor } = defineMessages({
     'Every {jobScheduleHours, plural, one {hour} other {{jobScheduleHours} hours}}',
   editJobScheduleSelectorMinutes:
     'Every {jobScheduleMinutes, plural, one {minute} other {{jobScheduleMinutes} minutes}}',
+  editJobScheduleSelectorSeconds:
+    'Every {jobScheduleSeconds, plural, one {second} other {{jobScheduleSeconds} seconds}}',
   imagecache: 'Image Cache',
   imagecacheDescription:
     'When enabled in settings, Overseerr will proxy and cache images from pre-configured external sources. Cached images are saved into your config folder. You can find the files in <code>{appDataPath}/cache/images</code>.',
@@ -78,7 +81,7 @@ interface Job {
   id: JobId;
   name: string;
   type: 'process' | 'command';
-  interval: 'short' | 'long' | 'fixed';
+  interval: 'seconds' | 'minutes' | 'hours' | 'fixed';
   cronSchedule: string;
   nextExecutionTime: string;
   running: boolean;
@@ -89,10 +92,11 @@ type JobModalState = {
   job?: Job;
   scheduleHours: number;
   scheduleMinutes: number;
+  scheduleSeconds: number;
 };
 
 type JobModalAction =
-  | { type: 'set'; hours?: number; minutes?: number }
+  | { type: 'set'; hours?: number; minutes?: number; seconds?: number }
   | {
       type: 'close';
     }
@@ -115,6 +119,7 @@ const jobModalReducer = (
         job: action.job,
         scheduleHours: 1,
         scheduleMinutes: 5,
+        scheduleSeconds: 30,
       };
 
     case 'set':
@@ -122,6 +127,7 @@ const jobModalReducer = (
         ...state,
         scheduleHours: action.hours ?? state.scheduleHours,
         scheduleMinutes: action.minutes ?? state.scheduleMinutes,
+        scheduleSeconds: action.seconds ?? state.scheduleSeconds,
       };
   }
 };
@@ -149,6 +155,7 @@ const SettingsJobs = () => {
     isOpen: false,
     scheduleHours: 1,
     scheduleMinutes: 5,
+    scheduleSeconds: 30,
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -200,9 +207,11 @@ const SettingsJobs = () => {
     const jobScheduleCron = ['0', '0', '*', '*', '*', '*'];
 
     try {
-      if (jobModalState.job?.interval === 'short') {
+      if (jobModalState.job?.interval === 'seconds') {
+        jobScheduleCron.splice(0, 2, `*/${jobModalState.scheduleSeconds}`, '*');
+      } else if (jobModalState.job?.interval === 'minutes') {
         jobScheduleCron[1] = `*/${jobModalState.scheduleMinutes}`;
-      } else if (jobModalState.job?.interval === 'long') {
+      } else if (jobModalState.job?.interval === 'hours') {
         jobScheduleCron[2] = `*/${jobModalState.scheduleHours}`;
       } else {
         // jobs with interval: fixed should not be editable
@@ -244,10 +253,10 @@ const SettingsJobs = () => {
       />
       <Transition
         as={Fragment}
-        enter="opacity-0 transition duration-300"
+        enter="transition-opacity duration-300"
         enterFrom="opacity-0"
         enterTo="opacity-100"
-        leave="opacity-100 transition duration-300"
+        leave="transition-opacity duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
         show={jobModalState.isOpen}
@@ -286,7 +295,30 @@ const SettingsJobs = () => {
                   {intl.formatMessage(messages.editJobSchedulePrompt)}
                 </label>
                 <div className="form-input-area">
-                  {jobModalState.job?.interval === 'short' ? (
+                  {jobModalState.job?.interval === 'seconds' ? (
+                    <select
+                      name="jobScheduleSeconds"
+                      className="inline"
+                      value={jobModalState.scheduleSeconds}
+                      onChange={(e) =>
+                        dispatch({
+                          type: 'set',
+                          seconds: Number(e.target.value),
+                        })
+                      }
+                    >
+                      {[30, 45, 60].map((v) => (
+                        <option value={v} key={`jobScheduleSeconds-${v}`}>
+                          {intl.formatMessage(
+                            messages.editJobScheduleSelectorSeconds,
+                            {
+                              jobScheduleSeconds: v,
+                            }
+                          )}
+                        </option>
+                      ))}
+                    </select>
+                  ) : jobModalState.job?.interval === 'minutes' ? (
                     <select
                       name="jobScheduleMinutes"
                       className="inline"
