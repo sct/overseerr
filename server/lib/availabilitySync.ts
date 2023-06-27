@@ -31,13 +31,24 @@ class AvailabilitySync {
     this.radarrServers = settings.radarr.filter((server) => server.syncEnabled);
     this.sonarrServers = settings.sonarr.filter((server) => server.syncEnabled);
 
+    // Initialize and then ping the plex client to
+    // check if it is available before we run the sync
     try {
       await this.initPlexClient();
+      await this.plexClient.getStatus();
+    } catch (ex) {
+      logger.error(
+        'Could not connect to your Plex server. Stopping availability sync.',
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
 
-      if (!this.plexClient) {
-        return;
-      }
+      return;
+    }
 
+    try {
       logger.info(`Starting availability sync...`, {
         label: 'AvailabilitySync',
       });
@@ -498,9 +509,9 @@ class AvailabilitySync {
         }
       } catch (ex) {
         logger.debug(
-          `Failure retrieving media with TMDB ID ${media.tmdbId} from your ${
-            !server.is4k ? 'non-4K' : '4K'
-          } Sonarr.`,
+          `Failure retrieving season ${season.seasonNumber}, TMDB ID ${
+            media.tmdbId
+          }, from your ${!server.is4k ? 'non-4K' : '4K'} Sonarr.`,
           {
             errorMessage: ex.message,
             label: 'AvailabilitySync',
@@ -616,7 +627,7 @@ class AvailabilitySync {
 
         if (!seasonExists && !seasonExists4k) {
           logger.info(
-            `Removing season ${season.seasonNumber}, TMDB ID ${media.id}, because it does not exist in any of your media instances.`,
+            `Removing season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, because it does not exist in any of your media instances.`,
             { label: 'AvailabilitySync' }
           );
         }
@@ -646,10 +657,13 @@ class AvailabilitySync {
         }
       }
     } catch (ex) {
-      logger.debug(`Failure updating media with TMDB ID ${media.tmdbId}.`, {
-        errorMessage: ex.message,
-        label: 'AvailabilitySync',
-      });
+      logger.debug(
+        `Failure updating season ${season.seasonNumber}, TMDB ID ${media.tmdbId}.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
   }
 
@@ -667,10 +681,13 @@ class AvailabilitySync {
       try {
         plex = await this.plexClient?.getMetadata(ratingKey);
       } catch (ex) {
-        logger.debug(`Failed to retrieve Plex non-4k metadata.`, {
-          errorMessage: ex.message,
-          label: 'AvailabilitySync',
-        });
+        logger.debug(
+          `Failure retrieving media with TMDB ID ${media.tmdbId} from your non-4k Plex.`,
+          {
+            errorMessage: ex.message,
+            label: 'AvailabilitySync',
+          }
+        );
       }
     }
 
@@ -678,10 +695,13 @@ class AvailabilitySync {
       try {
         plex4k = await this.plexClient?.getMetadata(ratingKey4k);
       } catch (ex) {
-        logger.debug(`Failed to retrieve Plex 4k metadata.`, {
-          errorMessage: ex.message,
-          label: 'AvailabilitySync',
-        });
+        logger.debug(
+          `Failure retrieving media with TMDB ID ${media.tmdbId} from your 4k Plex.`,
+          {
+            errorMessage: ex.message,
+            label: 'AvailabilitySync',
+          }
+        );
       }
     }
 
@@ -770,10 +790,13 @@ class AvailabilitySync {
           (child) => child.index === season.seasonNumber
         );
       } catch (ex) {
-        logger.debug(`Failed to retrieve Plex's non-4k season metadata.`, {
-          errorMessage: ex.message,
-          label: 'AvailabilitySync',
-        });
+        logger.debug(
+          `Failure retrieving season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, from your non-4k Plex.`,
+          {
+            errorMessage: ex.message,
+            label: 'AvailabilitySync',
+          }
+        );
       }
     }
     if (ratingKey4k && showExists4k) {
@@ -787,10 +810,13 @@ class AvailabilitySync {
           (child) => child.index === season.seasonNumber
         );
       } catch (ex) {
-        logger.debug(`Failed to retrieve Plex's 4k season metadata.`, {
-          errorMessage: ex.message,
-          label: 'AvailabilitySync',
-        });
+        logger.debug(
+          `Failure retrieving season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, from your 4k Plex.`,
+          {
+            errorMessage: ex.message,
+            label: 'AvailabilitySync',
+          }
+        );
       }
     }
 
