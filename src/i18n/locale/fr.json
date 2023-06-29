@@ -1209,7 +1209,7 @@
   "components.Discover.DiscoverSliderEdit.deletesuccess": "Slider supprimé avec succès.",
   "components.Discover.FilterSlideover.activefilters": "{count, plural, one {# Filtre actif} other {# Filtres actifs}}",
   "components.Discover.FilterSlideover.studio": "Studio",
-  "components.Layout.Sidebar.browsetv": "Série",
+  "components.Layout.Sidebar.browsetv": "Séries",
   "components.Selector.showmore": "En voir plus",
   "components.Discover.FilterSlideover.streamingservices": "Services de Streaming",
   "components.Selector.showless": "En voir moins",
