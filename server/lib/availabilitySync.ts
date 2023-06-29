@@ -18,6 +18,10 @@ import logger from '@server/logger';
 class AvailabilitySync {
   public running = false;
   private plexClient: PlexAPI;
+  private radarrClient: RadarrAPI;
+  private radarrClient4k: RadarrAPI;
+  private sonarrClient: SonarrAPI;
+  private sonarrClient4k: SonarrAPI;
   private plexSeasonsCache: Record<string, PlexMetadata[]> = {};
   private sonarrSeasonsCache: Record<string, SonarrSeason[]> = {};
   private radarrServers: RadarrSettings[];
@@ -31,21 +35,57 @@ class AvailabilitySync {
     this.radarrServers = settings.radarr.filter((server) => server.syncEnabled);
     this.sonarrServers = settings.sonarr.filter((server) => server.syncEnabled);
 
-    // Initialize and then ping the plex client to
-    // check if it is available before we run the sync
+    // Initialize and then ping our plex, radarr, and sonarr client(s) to
+    // check if it they are available before we run the sync
     try {
       await this.initPlexClient();
-      await this.plexClient.getStatus();
     } catch (ex) {
       logger.error(
-        'Could not connect to your Plex server. Stopping availability sync.',
+        'Could not connect to your Plex server. Preventing start of the media availability sync.',
         {
           errorMessage: ex.message,
           label: 'AvailabilitySync',
         }
       );
-
       return;
+    }
+
+    if (this.radarrServers.length > 0) {
+      try {
+        await this.initRadarrClient(this.radarrServers);
+      } catch (ex) {
+        logger.error(
+          'Could not connect to your Radarr server(s). Preventing start of the media availability sync.',
+          {
+            errorMessage: ex.message,
+            label: 'AvailabilitySync',
+          }
+        );
+        return;
+      }
+    } else {
+      logger.info(
+        'Could not find a Radarr server with sync enabled. Skipping Radarr detection.'
+      );
+    }
+
+    if (this.sonarrServers.length > 0) {
+      try {
+        await this.initSonarrClient(this.sonarrServers);
+      } catch (ex) {
+        logger.error(
+          'Could not connect to your Sonarr server(s). Preventing start of the media availability sync.',
+          {
+            errorMessage: ex.message,
+            label: 'AvailabilitySync',
+          }
+        );
+        return;
+      }
+    } else {
+      logger.info(
+        'Could not find a Sonarr server with sync enabled. Skipping Sonarr detection.'
+      );
     }
 
     try {
@@ -95,8 +135,8 @@ class AvailabilitySync {
           let mediaStatus4k = MediaStatus.UNKNOWN;
 
           if (media.mediaType === 'tv') {
-            mediaStatus = await this.findMediaStatus(requests, false);
-            mediaStatus4k = await this.findMediaStatus(requests, true);
+            mediaStatus = this.findMediaStatus(requests, false);
+            mediaStatus4k = this.findMediaStatus(requests, true);
           }
 
           if (
@@ -194,10 +234,10 @@ class AvailabilitySync {
     } while (mediaPage.length > 0);
   }
 
-  private async findMediaStatus(
+  private findMediaStatus(
     requests: MediaRequest[],
     is4k?: boolean
-  ): Promise<MediaStatus> {
+  ): MediaStatus {
     let filteredRequests: MediaRequest[] = requests;
 
     if (is4k !== undefined) {
@@ -251,7 +291,7 @@ class AvailabilitySync {
       let mediaStatus = MediaStatus.UNKNOWN;
 
       if (media.mediaType === 'tv') {
-        mediaStatus = await this.findMediaStatus(requests);
+        mediaStatus = this.findMediaStatus(requests);
       }
 
       await mediaRepository.update(
@@ -316,43 +356,59 @@ class AvailabilitySync {
   ): Promise<boolean> {
     let movieExists = true;
     let movieExists4k = true;
-    let radarr: RadarrMovie | undefined;
-    let radarr4k: RadarrMovie | undefined;
 
-    for (const server of this.radarrServers) {
-      const api = new RadarrAPI({
-        apiKey: server.apiKey,
-        url: RadarrAPI.buildUrl(server, '/api/v3'),
-      });
-      try {
-        // Check if both exist or if a single non-4k or 4k exists
-        // If both do not exist we will return false
-        if (!server.is4k && media.externalServiceId) {
-          radarr = await api.getMovie({ id: media.externalServiceId });
-        }
+    // Check if both exist or if a single non-4k or 4k exists
+    // If both do not exist we will return false
+    try {
+      let radarr: RadarrMovie | undefined;
 
-        if (server.is4k && media.externalServiceId4k) {
-          radarr4k = await api.getMovie({ id: media.externalServiceId4k });
-        }
-      } catch (ex) {
-        logger.debug(
-          `Failure retrieving media with TMDB ID ${media.tmdbId} from your ${
-            !server.is4k ? 'non-4K' : '4K'
-          } Radarr.`,
-          {
-            errorMessage: ex.message,
-            label: 'AvailabilitySync',
-          }
-        );
+      if (media.externalServiceId && this.radarrClient) {
+        radarr = await this.radarrClient.getMovie({
+          id: media.externalServiceId,
+        });
       }
+
+      if ((!radarr || !radarr.hasFile) && !existsInPlex) {
+        movieExists = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        movieExists = false;
+      }
+
+      logger.debug(
+        `Failure retrieving media with TMDB ID ${media.tmdbId} from your non-4K Radarr.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
-    if ((!radarr || !radarr.hasFile) && !existsInPlex) {
-      movieExists = false;
-    }
+    try {
+      let radarr4k: RadarrMovie | undefined;
 
-    if ((!radarr4k || !radarr4k.hasFile) && !existsInPlex4k) {
-      movieExists4k = false;
+      if (media.externalServiceId4k && this.radarrClient4k) {
+        radarr4k = await this.radarrClient4k.getMovie({
+          id: media.externalServiceId4k,
+        });
+      }
+
+      if ((!radarr4k || !radarr4k.hasFile) && !existsInPlex4k) {
+        movieExists4k = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        movieExists4k = false;
+      }
+
+      logger.debug(
+        `Failure retrieving media with TMDB ID ${media.tmdbId} from your 4K Radarr.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
     // If only a single non-4k or 4k exists, then change entity columns accordingly
@@ -383,53 +439,67 @@ class AvailabilitySync {
   ): Promise<boolean> {
     let showExists = true;
     let showExists4k = true;
-    let sonarr: SonarrSeries | undefined;
-    let sonarr4k: SonarrSeries | undefined;
 
-    for (const server of this.sonarrServers) {
-      const api = new SonarrAPI({
-        apiKey: server.apiKey,
-        url: SonarrAPI.buildUrl(server, '/api/v3'),
-      });
-      try {
-        // Check if both exist or if a single non-4k or 4k exists
-        // If both do not exist we will return false
-        if (!server.is4k && media.externalServiceId) {
-          sonarr = await api.getSeriesById(media.externalServiceId);
-          this.sonarrSeasonsCache[`${server.id}-${media.externalServiceId}`] =
-            sonarr.seasons;
-        }
+    // Check if both exist or if a single non-4k or 4k exists
+    // If both do not exist we will return false
+    try {
+      let sonarr: SonarrSeries | undefined;
 
-        if (server.is4k && media.externalServiceId4k) {
-          sonarr4k = await api.getSeriesById(media.externalServiceId4k);
-          this.sonarrSeasonsCache[`${server.id}-${media.externalServiceId4k}`] =
-            sonarr4k.seasons;
-        }
-      } catch (ex) {
-        logger.debug(
-          `Failure retrieving media with TMDB ID ${media.tmdbId} from your ${
-            !server.is4k ? 'non-4K' : '4K'
-          } Sonarr.`,
-          {
-            errorMessage: ex.message,
-            label: 'AvailabilitySync',
-          }
-        );
+      if (media.externalServiceId && this.sonarrClient) {
+        sonarr = await this.sonarrClient.getSeriesById(media.externalServiceId);
+        this.sonarrSeasonsCache[`0-${media.externalServiceId}`] =
+          sonarr.seasons;
       }
+
+      if (
+        (!sonarr || sonarr.statistics.episodeFileCount === 0) &&
+        !existsInPlex
+      ) {
+        showExists = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        showExists = false;
+      }
+
+      logger.debug(
+        `Failure retrieving media with TMDB ID ${media.tmdbId} from your non-4K Sonarr.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
-    if (
-      (!sonarr || sonarr.statistics.episodeFileCount === 0) &&
-      !existsInPlex
-    ) {
-      showExists = false;
-    }
+    try {
+      let sonarr4k: SonarrSeries | undefined;
 
-    if (
-      (!sonarr4k || sonarr4k.statistics.episodeFileCount === 0) &&
-      !existsInPlex4k
-    ) {
-      showExists4k = false;
+      if (media.externalServiceId4k && this.sonarrClient4k) {
+        sonarr4k = await this.sonarrClient4k.getSeriesById(
+          media.externalServiceId4k
+        );
+        this.sonarrSeasonsCache[`1-${media.externalServiceId4k}`] =
+          sonarr4k.seasons;
+      }
+
+      if (
+        (!sonarr4k || sonarr4k.statistics.episodeFileCount === 0) &&
+        !existsInPlex4k
+      ) {
+        showExists4k = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        showExists4k = false;
+      }
+
+      logger.debug(
+        `Failure retrieving media with TMDB ID ${media.tmdbId} from your 4K Sonarr.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
     // Here we check each season for availability
@@ -471,73 +541,86 @@ class AvailabilitySync {
     seasonExistsInPlex4k: boolean,
     showExists: boolean,
     showExists4k: boolean
-  ): Promise<void> {
+  ): Promise<boolean> {
     let seasonExists = true;
     let seasonExists4k = true;
-    let sonarrSeasons: SonarrSeason[] | undefined;
-    let sonarrSeasons4k: SonarrSeason[] | undefined;
 
     const mediaRepository = getRepository(Media);
     const seasonRepository = getRepository(Season);
     const seasonRequestRepository = getRepository(SeasonRequest);
 
-    for (const server of this.sonarrServers) {
-      const api = new SonarrAPI({
-        apiKey: server.apiKey,
-        url: SonarrAPI.buildUrl(server, '/api/v3'),
-      });
+    // Here we can use the cache we built when we fetched the series with mediaExistsInSonarr
+    // If the cache does not have data, we will fetch with the api route
+    try {
+      let sonarrSeasons: SonarrSeason[] | undefined;
 
-      try {
-        // Here we can use the cache we built when we fetched the series with mediaExistsInSonarr
-        // If the cache does not have data, we will fetch with the api route
-        if (!server.is4k && media.externalServiceId && showExists) {
-          sonarrSeasons =
-            this.sonarrSeasonsCache[
-              `${server.id}-${media.externalServiceId}`
-            ] ?? (await api.getSeriesById(media.externalServiceId)).seasons;
-          this.sonarrSeasonsCache[`${server.id}-${media.externalServiceId}`] =
-            sonarrSeasons;
-        }
-
-        if (server.is4k && media.externalServiceId4k && showExists4k) {
-          sonarrSeasons4k =
-            this.sonarrSeasonsCache[
-              `${server.id}-${media.externalServiceId4k}`
-            ] ?? (await api.getSeriesById(media.externalServiceId4k)).seasons;
-          this.sonarrSeasonsCache[`${server.id}-${media.externalServiceId4k}`] =
-            sonarrSeasons4k;
-        }
-      } catch (ex) {
-        logger.debug(
-          `Failure retrieving season ${season.seasonNumber}, TMDB ID ${
-            media.tmdbId
-          }, from your ${!server.is4k ? 'non-4K' : '4K'} Sonarr.`,
-          {
-            errorMessage: ex.message,
-            label: 'AvailabilitySync',
-          }
-        );
+      if (media.externalServiceId && showExists && this.sonarrClient) {
+        sonarrSeasons =
+          this.sonarrSeasonsCache[`0-${media.externalServiceId}`] ??
+          (await this.sonarrClient.getSeriesById(media.externalServiceId))
+            .seasons;
+        this.sonarrSeasonsCache[`0-${media.externalServiceId}`] = sonarrSeasons;
       }
+
+      const seasonIsUnavailable = sonarrSeasons?.find(
+        ({ seasonNumber, statistics }) =>
+          season.seasonNumber === seasonNumber &&
+          statistics?.episodeFileCount === 0
+      );
+
+      if ((seasonIsUnavailable || !sonarrSeasons) && !seasonExistsInPlex) {
+        seasonExists = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        seasonExists = false;
+      }
+
+      logger.debug(
+        `Failure retrieving media with TMDB ID ${media.tmdbId} from your non-4K Sonarr.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
-    const seasonIsUnavailable = sonarrSeasons?.find(
-      ({ seasonNumber, statistics }) =>
-        season.seasonNumber === seasonNumber &&
-        statistics?.episodeFileCount === 0
-    );
+    try {
+      let sonarrSeasons4k: SonarrSeason[] | undefined;
 
-    const seasonIsUnavailable4k = sonarrSeasons4k?.find(
-      ({ seasonNumber, statistics }) =>
-        season.seasonNumber === seasonNumber &&
-        statistics?.episodeFileCount === 0
-    );
+      if (media.externalServiceId4k && showExists4k && this.sonarrClient4k) {
+        sonarrSeasons4k =
+          this.sonarrSeasonsCache[`1-${media.externalServiceId4k}`] ??
+          (await this.sonarrClient4k.getSeriesById(media.externalServiceId4k))
+            .seasons;
+        this.sonarrSeasonsCache[`1-${media.externalServiceId4k}`] =
+          sonarrSeasons4k;
+      }
 
-    if ((seasonIsUnavailable || !sonarrSeasons) && !seasonExistsInPlex) {
-      seasonExists = false;
-    }
+      const seasonIsUnavailable4k = sonarrSeasons4k?.find(
+        ({ seasonNumber, statistics }) =>
+          season.seasonNumber === seasonNumber &&
+          statistics?.episodeFileCount === 0
+      );
 
-    if ((seasonIsUnavailable4k || !sonarrSeasons4k) && !seasonExistsInPlex4k) {
-      seasonExists4k = false;
+      if (
+        (seasonIsUnavailable4k || !sonarrSeasons4k) &&
+        !seasonExistsInPlex4k
+      ) {
+        seasonExists4k = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        seasonExists4k = false;
+      }
+
+      logger.debug(
+        `Failure retrieving media with TMDB ID ${media.tmdbId} from your 4K Sonarr.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
     try {
@@ -627,12 +710,12 @@ class AvailabilitySync {
 
         if (!seasonExists && !seasonExists4k) {
           logger.info(
-            `Removing season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, because it does not exist in any of your media instances.`,
+            `Removing season ${season.seasonNumber}, TMDB ID ${media.id}, because it does not exist in any of your media instances.`,
             { label: 'AvailabilitySync' }
           );
         }
 
-        if (media.status === MediaStatus.AVAILABLE) {
+        if (media.status === MediaStatus.AVAILABLE && !seasonExists) {
           logger.info(
             `Marking non-4k media with TMDB ID ${media.tmdbId} as PARTIALLY_AVAILABLE because season removal has occurred.`,
             { label: 'AvailabilitySync' }
@@ -642,7 +725,7 @@ class AvailabilitySync {
           });
         }
 
-        if (media.status4k === MediaStatus.AVAILABLE) {
+        if (media.status4k === MediaStatus.AVAILABLE && !seasonExists4k) {
           logger.info(
             `Marking 4k media with TMDB ID ${media.tmdbId} as PARTIALLY_AVAILABLE because season removal has occurred.`,
             { label: 'AvailabilitySync' }
@@ -657,14 +740,17 @@ class AvailabilitySync {
         }
       }
     } catch (ex) {
-      logger.debug(
-        `Failure updating season ${season.seasonNumber}, TMDB ID ${media.tmdbId}.`,
-        {
-          errorMessage: ex.message,
-          label: 'AvailabilitySync',
-        }
-      );
+      logger.debug(`Failure updating media with TMDB ID ${media.tmdbId}.`, {
+        errorMessage: ex.message,
+        label: 'AvailabilitySync',
+      });
     }
+
+    if (seasonExists || seasonExists4k) {
+      return true;
+    }
+
+    return false;
   }
 
   private async mediaExists(media: Media): Promise<boolean> {
@@ -673,50 +759,67 @@ class AvailabilitySync {
 
     let existsInPlex = true;
     let existsInPlex4k = true;
-    let plex: PlexLibraryItem | undefined;
-    let plex4k: PlexLibraryItem | undefined;
 
     // Check each plex instance to see if media exists
-    if (ratingKey) {
-      try {
+    try {
+      let plex: PlexLibraryItem | undefined;
+
+      if (ratingKey) {
         plex = await this.plexClient?.getMetadata(ratingKey);
-      } catch (ex) {
-        logger.debug(
-          `Failure retrieving media with TMDB ID ${media.tmdbId} from your non-4k Plex.`,
-          {
-            errorMessage: ex.message,
-            label: 'AvailabilitySync',
-          }
-        );
       }
+
+      if (!plex) {
+        existsInPlex = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        existsInPlex = false;
+      }
+
+      logger.debug(
+        `Failure retrieving media with TMDB ID ${media.tmdbId} from your non-4k Plex.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
-    if (ratingKey4k) {
-      try {
+    try {
+      let plex4k: PlexLibraryItem | undefined;
+
+      if (ratingKey4k) {
         plex4k = await this.plexClient?.getMetadata(ratingKey4k);
-      } catch (ex) {
-        logger.debug(
-          `Failure retrieving media with TMDB ID ${media.tmdbId} from your 4k Plex.`,
-          {
-            errorMessage: ex.message,
-            label: 'AvailabilitySync',
-          }
-        );
       }
-    }
 
-    if (!plex) {
-      existsInPlex = false;
-    }
+      if (!plex4k) {
+        existsInPlex4k = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        existsInPlex4k = false;
+      }
 
-    if (!plex4k) {
-      existsInPlex4k = false;
+      logger.debug(
+        `Failure retrieving media with TMDB ID ${media.tmdbId} from your 4k Plex.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
     // We then check radarr or sonarr has that specific media. If not, then we will move to delete
     // If a non-4k or 4k version exists in at least one of the instances, we will only update that specific version
     if (media.mediaType === 'movie') {
       if (existsInPlex && existsInPlex4k) {
+        logger.info(
+          `Media with TMDB ID ${media.tmdbId} exists in both Plex instances.`,
+          {
+            label: 'AvailabilitySync',
+          }
+        );
+
         return true;
       }
 
@@ -728,7 +831,7 @@ class AvailabilitySync {
 
       // If true, media exists in at least one radarr or plex instance.
       if (existsInRadarr) {
-        logger.warn(
+        logger.info(
           `Media with TMDB ID ${media.tmdbId} exists in at least one Radarr or Plex instance.`,
           {
             label: 'AvailabilitySync',
@@ -750,7 +853,7 @@ class AvailabilitySync {
 
       // If true, media exists in at least one sonarr or plex instance.
       if (existsInSonarr) {
-        logger.warn(
+        logger.info(
           `Media with TMDB ID ${media.tmdbId} exists in at least one Sonarr or Plex instance.`,
           {
             label: 'AvailabilitySync',
@@ -775,12 +878,12 @@ class AvailabilitySync {
 
     let seasonExistsInPlex = true;
     let seasonExistsInPlex4k = true;
-    let plexSeason: PlexMetadata | undefined;
-    let plexSeason4k: PlexMetadata | undefined;
 
     // Check each plex instance to see if the season exists
-    if (ratingKey && showExists) {
-      try {
+    try {
+      let plexSeason: PlexMetadata | undefined;
+
+      if (ratingKey && showExists) {
         const children =
           this.plexSeasonsCache[ratingKey] ??
           (await this.plexClient?.getChildrenMetadata(ratingKey)) ??
@@ -789,18 +892,29 @@ class AvailabilitySync {
         plexSeason = children?.find(
           (child) => child.index === season.seasonNumber
         );
-      } catch (ex) {
-        logger.debug(
-          `Failure retrieving season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, from your non-4k Plex.`,
-          {
-            errorMessage: ex.message,
-            label: 'AvailabilitySync',
-          }
-        );
       }
+
+      if (!plexSeason) {
+        seasonExistsInPlex = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        seasonExistsInPlex = false;
+      }
+
+      logger.debug(
+        `Failure retrieving season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, from your non-4k Plex.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
-    if (ratingKey4k && showExists4k) {
-      try {
+
+    try {
+      let plexSeason4k: PlexMetadata | undefined;
+
+      if (ratingKey4k && showExists4k) {
         const children4k =
           this.plexSeasonsCache[ratingKey4k] ??
           (await this.plexClient?.getChildrenMetadata(ratingKey4k)) ??
@@ -809,31 +923,38 @@ class AvailabilitySync {
         plexSeason4k = children4k?.find(
           (child) => child.index === season.seasonNumber
         );
-      } catch (ex) {
-        logger.debug(
-          `Failure retrieving season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, from your 4k Plex.`,
-          {
-            errorMessage: ex.message,
-            label: 'AvailabilitySync',
-          }
-        );
       }
-    }
 
-    if (!plexSeason) {
-      seasonExistsInPlex = false;
-    }
+      if (!plexSeason4k) {
+        seasonExistsInPlex4k = false;
+      }
+    } catch (ex) {
+      if (ex.message.includes('404')) {
+        seasonExistsInPlex4k = false;
+      }
 
-    if (!plexSeason4k) {
-      seasonExistsInPlex4k = false;
+      logger.debug(
+        `Failure retrieving season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, from your 4k Plex.`,
+        {
+          errorMessage: ex.message,
+          label: 'AvailabilitySync',
+        }
+      );
     }
 
     // Base case if both season versions exist in plex
     if (seasonExistsInPlex && seasonExistsInPlex4k) {
+      logger.info(
+        `Season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, exists in both Plex instances.`,
+        {
+          label: 'AvailabilitySync',
+        }
+      );
+
       return;
     }
 
-    await this.seasonExistsInSonarr(
+    const seasonExists = await this.seasonExistsInSonarr(
       media,
       season,
       seasonExistsInPlex,
@@ -841,21 +962,72 @@ class AvailabilitySync {
       showExists,
       showExists4k
     );
+
+    if (seasonExists) {
+      logger.info(
+        `Season ${season.seasonNumber}, TMDB ID ${media.tmdbId}, exists in at least one Sonarr or Plex instance.`,
+        {
+          label: 'AvailabilitySync',
+        }
+      );
+    }
   }
 
-  private async initPlexClient() {
+  private async initPlexClient(): Promise<void> {
     const userRepository = getRepository(User);
     const admin = await userRepository.findOne({
       select: { id: true, plexToken: true },
       where: { id: 1 },
     });
 
-    if (!admin) {
-      logger.warning('No admin configured. Availability sync skipped.');
-      return;
+    if (admin) {
+      this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
+      await this.plexClient.getStatus();
+    } else {
+      logger.error('An admin is not configured.');
     }
+  }
 
-    this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
+  private async initRadarrClient(
+    radarrServers: RadarrSettings[]
+  ): Promise<void> {
+    for (const server of radarrServers) {
+      const radarrAPI = new RadarrAPI({
+        apiKey: server.apiKey,
+        url: RadarrAPI.buildUrl(server, '/api/v3'),
+      });
+
+      if (!server.is4k) {
+        await radarrAPI.getSystemStatus();
+        this.radarrClient = radarrAPI;
+      }
+
+      if (server.is4k) {
+        await radarrAPI.getSystemStatus();
+        this.radarrClient4k = radarrAPI;
+      }
+    }
+  }
+
+  private async initSonarrClient(
+    sonarrServers: SonarrSettings[]
+  ): Promise<void> {
+    for (const server of sonarrServers) {
+      const sonarrAPI = new SonarrAPI({
+        apiKey: server.apiKey,
+        url: SonarrAPI.buildUrl(server, '/api/v3'),
+      });
+
+      if (!server.is4k) {
+        await sonarrAPI.getSystemStatus();
+        this.sonarrClient = sonarrAPI;
+      }
+
+      if (server.is4k) {
+        await sonarrAPI.getSystemStatus();
+        this.sonarrClient4k = sonarrAPI;
+      }
+    }
   }
 }
 
