@@ -40,7 +40,8 @@ const defaultPayload = {
     requestedBy_username: '{{requestedBy_username}}',
     requestedBy_avatar: '{{requestedBy_avatar}}',
     requestedBy_settings_discordId: '{{requestedBy_settings_discordId}}',
-    requestedBy_settings_telegramChatId: '{{requestedBy_settings_telegramChatId}}',
+    requestedBy_settings_telegramChatId:
+      '{{requestedBy_settings_telegramChatId}}',
   },
   '{{issue}}': {
     issue_id: '{{issue_id}}',
@@ -50,7 +51,8 @@ const defaultPayload = {
     reportedBy_username: '{{reportedBy_username}}',
     reportedBy_avatar: '{{reportedBy_avatar}}',
     reportedBy_settings_discordId: '{{reportedBy_settings_discordId}}',
-    reportedBy_settings_telegramChatId: '{{reportedBy_settings_telegramChatId}}',
+    reportedBy_settings_telegramChatId:
+      '{{reportedBy_settings_telegramChatId}}',
   },
   '{{comment}}': {
     comment_message: '{{comment_message}}',
@@ -58,7 +60,8 @@ const defaultPayload = {
     commentedBy_username: '{{commentedBy_username}}',
     commentedBy_avatar: '{{commentedBy_avatar}}',
     commentedBy_settings_discordId: '{{commentedBy_settings_discordId}}',
-    commentedBy_settings_telegramChatId: '{{commentedBy_settings_telegramChatId}}',
+    commentedBy_settings_telegramChatId:
+      '{{commentedBy_settings_telegramChatId}}',
   },
   '{{extra}}': [],
 };
