@@ -17,14 +17,16 @@ import logger from '@server/logger';
 class AvailabilitySync {
   public running = false;
   private plexClient: PlexAPI;
-  private plexSeasonsCache: Record<string, PlexMetadata[]> = {};
-  private sonarrSeasonsCache: Record<string, SonarrSeason[]> = {};
+  private plexSeasonsCache: Record<string, PlexMetadata[]>;
+  private sonarrSeasonsCache: Record<string, SonarrSeason[]>;
   private radarrServers: RadarrSettings[];
   private sonarrServers: SonarrSettings[];
 
   async run() {
     const settings = getSettings();
     this.running = true;
+    this.plexSeasonsCache = {};
+    this.sonarrSeasonsCache = {};
     this.radarrServers = settings.radarr.filter((server) => server.syncEnabled);
     this.sonarrServers = settings.sonarr.filter((server) => server.syncEnabled);
 
@@ -57,7 +59,7 @@ class AvailabilitySync {
         if (media.mediaType === 'movie') {
           let movieExists = false;
           let movieExists4k = false;
-          const [existsInPlex, existsInPlex4k] = [
+          const [[existsInPlex], [existsInPlex4k]] = [
             await this.mediaExistsInPlex(media, false),
             await this.mediaExistsInPlex(media, true),
           ];
@@ -69,7 +71,7 @@ class AvailabilitySync {
           if (existsInPlex || existsInRadarr) {
             movieExists = true;
             logger.info(
-              `The non-4K movie with TMDB ID ${media.tmdbId} still exists. Preventing removal.`,
+              `The non-4K movie [TMDB ID ${media.tmdbId}] still exists. Preventing removal.`,
               {
                 label: 'AvailabilitySync',
               }
@@ -79,7 +81,7 @@ class AvailabilitySync {
           if (existsInPlex4k || existsInRadarr4k) {
             movieExists4k = true;
             logger.info(
-              `The 4K movie with TMDB ID ${media.tmdbId} still exists. Preventing removal.`,
+              `The 4K movie [TMDB ID ${media.tmdbId}] still exists. Preventing removal.`,
               {
                 label: 'AvailabilitySync',
               }
@@ -87,11 +89,11 @@ class AvailabilitySync {
           }
 
           if (!movieExists && media.status === MediaStatus.AVAILABLE) {
-            this.mediaUpdater(media, false);
+            await this.mediaUpdater(media, false);
           }
 
           if (!movieExists4k && media.status4k === MediaStatus.AVAILABLE) {
-            this.mediaUpdater(media, true);
+            await this.mediaUpdater(media, true);
           }
         }
 
@@ -101,15 +103,15 @@ class AvailabilitySync {
           let showExists = false;
           let showExists4k = false;
           const [
-            [existsInPlex, plexSeasonMap],
-            [existsInPlex4k, plexSeasonMap4k],
+            [existsInPlex, plexSeasonsMap = new Map()],
+            [existsInPlex4k, plexSeasonsMap4k = new Map()],
           ] = [
             await this.mediaExistsInPlex(media, false),
             await this.mediaExistsInPlex(media, true),
           ];
           const [
-            [existsInSonarr, sonarrSeasonMap],
-            [existsInSonarr4k, sonarrSeasonMap4k],
+            [existsInSonarr, sonarrSeasonsMap],
+            [existsInSonarr4k, sonarrSeasonsMap4k],
           ] = [
             await this.mediaExistsInSonarr(media, false),
             await this.mediaExistsInSonarr(media, true),
@@ -117,7 +119,7 @@ class AvailabilitySync {
           if (existsInPlex || existsInSonarr) {
             showExists = true;
             logger.info(
-              `The non-4K show with TMDB ID ${media.tmdbId} still exists. Preventing removal.`,
+              `The non-4K show [TMDB ID ${media.tmdbId}] still exists. Preventing removal.`,
               {
                 label: 'AvailabilitySync',
               }
@@ -127,14 +129,19 @@ class AvailabilitySync {
           if (existsInPlex4k || existsInSonarr4k) {
             showExists4k = true;
             logger.info(
-              `The 4K show with TMDB ID ${media.tmdbId} still exists. Preventing removal.`,
+              `The 4K show [TMDB ID ${media.tmdbId}] still exists. Preventing removal.`,
               {
                 label: 'AvailabilitySync',
               }
             );
           }
 
-          const filteredSeasonsMap: Record<number, boolean> = {};
+          // Here we will create a final map that will cross compare
+          // with plex and sonarr. Filtered seasons will go through
+          // each season and assume the season does not exist. If Plex or
+          // Sonarr finds that season, we will change the final seasons value
+          // to true.
+          const filteredSeasonsMap: Map<number, boolean> = new Map();
 
           media.seasons
             .filter(
@@ -142,17 +149,17 @@ class AvailabilitySync {
                 season.status === MediaStatus.AVAILABLE ||
                 season.status === MediaStatus.PARTIALLY_AVAILABLE
             )
-            .forEach(
-              (season) => (filteredSeasonsMap[season.seasonNumber] = false)
+            .forEach((season) =>
+              filteredSeasonsMap.set(season.seasonNumber, false)
             );
 
-          const finalSeasons = {
+          const finalSeasons = new Map([
             ...filteredSeasonsMap,
-            ...plexSeasonMap,
-            ...sonarrSeasonMap,
-          };
+            ...plexSeasonsMap,
+            ...sonarrSeasonsMap,
+          ]);
 
-          const filteredSeasonsMap4k: Record<number, boolean> = {};
+          const filteredSeasonsMap4k: Map<number, boolean> = new Map();
 
           media.seasons
             .filter(
@@ -160,21 +167,21 @@ class AvailabilitySync {
                 season.status4k === MediaStatus.AVAILABLE ||
                 season.status4k === MediaStatus.PARTIALLY_AVAILABLE
             )
-            .forEach(
-              (season) => (filteredSeasonsMap4k[season.seasonNumber] = false)
+            .forEach((season) =>
+              filteredSeasonsMap4k.set(season.seasonNumber, false)
             );
 
-          const finalSeasons4k = {
+          const finalSeasons4k = new Map([
             ...filteredSeasonsMap4k,
-            ...plexSeasonMap4k,
-            ...sonarrSeasonMap4k,
-          };
+            ...plexSeasonsMap4k,
+            ...sonarrSeasonsMap4k,
+          ]);
 
-          if (Object.values(finalSeasons).some((season) => !season)) {
+          if ([...finalSeasons.values()].includes(false)) {
             await this.seasonUpdater(media, finalSeasons, false);
           }
 
-          if (Object.values(finalSeasons4k).some((season) => !season)) {
+          if ([...finalSeasons4k.values()].includes(false)) {
             await this.seasonUpdater(media, finalSeasons4k, true);
           }
 
@@ -183,7 +190,7 @@ class AvailabilitySync {
             (media.status === MediaStatus.AVAILABLE ||
               media.status === MediaStatus.PARTIALLY_AVAILABLE)
           ) {
-            this.mediaUpdater(media, false);
+            await this.mediaUpdater(media, false);
           }
 
           if (
@@ -191,7 +198,7 @@ class AvailabilitySync {
             (media.status4k === MediaStatus.AVAILABLE ||
               media.status4k === MediaStatus.PARTIALLY_AVAILABLE)
           ) {
-            this.mediaUpdater(media, true);
+            await this.mediaUpdater(media, true);
           }
         }
       }
@@ -315,11 +322,12 @@ class AvailabilitySync {
           mediaStatus === MediaStatus.PROCESSING
             ? media[is4k ? 'ratingKey4k' : 'ratingKey']
             : null);
+
       logger.info(
-        `The ${media.mediaType === 'tv' ? 'show' : 'movie'} with TMDB ID ${
-          media.tmdbId
-        } does not exist in your ${is4k ? '4K' : 'non-4K'} ${
-          media.mediaType === 'tv' ? 'Sonarr' : 'Radarr'
+        `The ${is4k ? '4K' : 'non-4K'} ${
+          media.mediaType === 'movie' ? 'movie' : 'show'
+        } [TMDB ID ${media.tmdbId}] was not found in any ${
+          media.mediaType === 'movie' ? 'Radarr' : 'Sonarr'
         } and Plex instance. Status will be changed to unknown.`,
         { label: 'AvailabilitySync' }
       );
@@ -334,9 +342,9 @@ class AvailabilitySync {
       }
     } catch (ex) {
       logger.debug(
-        `Failure updating the ${
+        `Failure updating the ${is4k ? '4K' : 'non-4K'} ${
           media.mediaType === 'tv' ? 'show' : 'movie'
-        } with TMDB ID ${media.tmdbId}.`,
+        } [TMDB ID ${media.tmdbId}].`,
         {
           errorMessage: ex.message,
           label: 'AvailabilitySync',
@@ -347,19 +355,22 @@ class AvailabilitySync {
 
   private async seasonUpdater(
     media: Media,
-    seasons: Record<number, boolean>,
+    seasons: Map<number, boolean>,
     is4k: boolean
   ): Promise<void> {
     const mediaRepository = getRepository(Media);
     const seasonRequestRepository = getRepository(SeasonRequest);
 
-    try {
-      const seasonsPendingRemoval = Object.fromEntries(
-        // Disabled linter as only the value is needed from the filter
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        Object.entries(seasons).filter(([_, exists]) => !exists)
-      );
+    const seasonsPendingRemoval = new Map(
+      // Disabled linter as only the value is needed from the filter
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      [...seasons].filter(([_, exists]) => !exists)
+    );
+    const seasonKeys = [...seasonsPendingRemoval.keys()];
 
+    try {
+      // Need to check and see if there are any related season
+      // requests. If they are, we will need to delete them.
       const seasonRequests = await seasonRequestRepository
         .createQueryBuilder('seasonRequest')
         .leftJoinAndSelect('seasonRequest.request', 'request')
@@ -368,24 +379,22 @@ class AvailabilitySync {
         .andWhere(
           '(request.is4k = :is4k AND seasonRequest.seasonNumber IN (:...seasonNumbers))',
           {
-            seasonNumbers: Object.keys(seasonsPendingRemoval),
+            seasonNumbers: seasonKeys,
             is4k: is4k,
           }
         )
         .getMany();
 
       for (const mediaSeason of media.seasons) {
-        Object.keys(seasonsPendingRemoval).forEach((season) => {
-          if (Number(season) === mediaSeason.seasonNumber) {
-            mediaSeason[is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
-          }
-        });
+        if (seasonsPendingRemoval.has(mediaSeason.seasonNumber)) {
+          mediaSeason[is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
+        }
       }
 
       if (media.status === MediaStatus.AVAILABLE) {
         media.status = MediaStatus.PARTIALLY_AVAILABLE;
         logger.info(
-          `Marking the non-4K show with TMDB ID ${media.tmdbId} as PARTIALLY_AVAILABLE because season removal has occurred.`,
+          `Marking the non-4K show [TMDB ID ${media.tmdbId}] as PARTIALLY_AVAILABLE because season removal has occurred.`,
           { label: 'AvailabilitySync' }
         );
       }
@@ -393,30 +402,30 @@ class AvailabilitySync {
       if (media.status4k === MediaStatus.AVAILABLE) {
         media.status4k = MediaStatus.PARTIALLY_AVAILABLE;
         logger.info(
-          `Marking the 4K show with TMDB ID ${media.tmdbId} as PARTIALLY_AVAILABLE because season removal has occurred.`,
+          `Marking the 4K show [TMDB ID ${media.tmdbId}] as PARTIALLY_AVAILABLE because season removal has occurred.`,
           { label: 'AvailabilitySync' }
         );
       }
 
-      mediaRepository.save({ media, ...media });
+      await mediaRepository.save({ media, ...media });
 
       if (seasonRequests.length > 0) {
-        seasonRequestRepository.remove(seasonRequests);
+        await seasonRequestRepository.remove(seasonRequests);
       }
 
       logger.info(
-        `Updating season(s) [${Object.keys(seasons)}], TMDB ID ${
+        `The ${is4k ? '4K' : 'non-4K'} season(s) [${seasonKeys}] [TMDB ID ${
           media.tmdbId
-        }, as they do not exist in your 4K ${
+        }] was not found in any ${
           media.mediaType === 'tv' ? 'Sonarr' : 'Radarr'
         } and Plex instance. Status will be changed to unknown.`,
         { label: 'AvailabilitySync' }
       );
     } catch (ex) {
       logger.debug(
-        `Failure updating season(s) [${Object.keys(seasons)}], TMDB ID ${
-          media.tmdbId
-        }.`,
+        `Failure updating the ${
+          is4k ? '4K' : 'non-4K'
+        } season(s) [${seasonKeys}], TMDB ID ${media.tmdbId}.`,
         {
           errorMessage: ex.message,
           label: 'AvailabilitySync',
@@ -442,13 +451,13 @@ class AvailabilitySync {
       try {
         let radarr: RadarrMovie | undefined;
 
-        if (server.is4k === is4k && media.externalServiceId) {
+        if (!server.is4k && media.externalServiceId && !is4k) {
           radarr = await radarrAPI.getMovie({
             id: media.externalServiceId,
           });
         }
 
-        if (server.is4k === is4k && media.externalServiceId4k) {
+        if (server.is4k && media.externalServiceId4k && is4k) {
           radarr = await radarrAPI.getMovie({
             id: media.externalServiceId4k,
           });
@@ -461,9 +470,9 @@ class AvailabilitySync {
         if (!ex.message.includes('404')) {
           existsInRadarr = true;
           logger.debug(
-            `Failure retrieving the movie with TMDB ID ${
+            `Failure retrieving the ${is4k ? '4K' : 'non-4K'} movie [TMDB ID ${
               media.tmdbId
-            } from your ${is4k ? '4K' : 'non-4K'} Radarr.`,
+            }] from Radarr.`,
             {
               errorMessage: ex.message,
               label: 'AvailabilitySync',
@@ -479,7 +488,7 @@ class AvailabilitySync {
   private async mediaExistsInSonarr(
     media: Media,
     is4k: boolean
-  ): Promise<[boolean, Record<number, boolean>]> {
+  ): Promise<[boolean, Map<number, boolean>]> {
     let existsInSonarr = false;
     let preventSeasonSearch = false;
 
@@ -494,13 +503,13 @@ class AvailabilitySync {
       try {
         let sonarr: SonarrSeries | undefined;
 
-        if (server.is4k === is4k && media.externalServiceId) {
+        if (!server.is4k && media.externalServiceId && !is4k) {
           sonarr = await sonarrAPI.getSeriesById(media.externalServiceId);
           this.sonarrSeasonsCache[`${server.id}-${media.externalServiceId}`] =
             sonarr.seasons;
         }
 
-        if (server.is4k === is4k && media.externalServiceId4k) {
+        if (server.is4k && media.externalServiceId4k && is4k) {
           sonarr = await sonarrAPI.getSeriesById(media.externalServiceId4k);
           this.sonarrSeasonsCache[`${server.id}-${media.externalServiceId4k}`] =
             sonarr.seasons;
@@ -514,9 +523,9 @@ class AvailabilitySync {
           existsInSonarr = true;
           preventSeasonSearch = true;
           logger.debug(
-            `Failure retrieving the show with TMDB ID ${
+            `Failure retrieving the ${is4k ? '4K' : 'non-4K'} show [TMDB ID ${
               media.tmdbId
-            } from your ${is4k ? '4K' : 'non-4K'} Sonarr.`,
+            }] from Sonarr.`,
             {
               errorMessage: ex.message,
               label: 'AvailabilitySync',
@@ -529,30 +538,30 @@ class AvailabilitySync {
     // Here we check each season for availability
     // If the API returns an error other than a 404,
     // we will have to prevent the season check from happening
-    const sonarrSeasonMap: Record<number, boolean> = {};
+    const sonarrSeasonsMap: Map<number, boolean> = new Map();
 
     if (!preventSeasonSearch) {
-      media.seasons
-        .filter(
-          (season) =>
-            season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
-            season[is4k ? 'status4k' : 'status'] ===
-              MediaStatus.PARTIALLY_AVAILABLE
-        )
-        .forEach(async (season) => {
-          const seasonExists = await this.seasonExistsInSonarr(
-            media,
-            season,
-            is4k
-          );
+      const filteredSeasons = media.seasons.filter(
+        (season) =>
+          season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
+          season[is4k ? 'status4k' : 'status'] ===
+            MediaStatus.PARTIALLY_AVAILABLE
+      );
 
-          if (seasonExists) {
-            sonarrSeasonMap[season.seasonNumber] = true;
-          }
-        });
+      for (const season of filteredSeasons) {
+        const seasonExists = await this.seasonExistsInSonarr(
+          media,
+          season,
+          is4k
+        );
+
+        if (seasonExists) {
+          sonarrSeasonsMap.set(season.seasonNumber, true);
+        }
+      }
     }
 
-    return [existsInSonarr, sonarrSeasonMap];
+    return [existsInSonarr, sonarrSeasonsMap];
   }
 
   private async seasonExistsInSonarr(
@@ -596,7 +605,7 @@ class AvailabilitySync {
   private async mediaExistsInPlex(
     media: Media,
     is4k: boolean
-  ): Promise<[boolean, Record<number, boolean>?]> {
+  ): Promise<[boolean, Map<number, boolean>?]> {
     const ratingKey = media.ratingKey;
     const ratingKey4k = media.ratingKey4k;
     let existsInPlex = false;
@@ -634,11 +643,9 @@ class AvailabilitySync {
         existsInPlex = true;
         preventSeasonSearch = true;
         logger.debug(
-          `Failure retrieving the ${
+          `Failure retrieving the ${is4k ? '4K' : 'non-4K'} ${
             media.mediaType === 'tv' ? 'show' : 'movie'
-          } with TMDB ID ${media.tmdbId} from your ${
-            is4k ? '4K' : 'non-4K'
-          } Plex.`,
+          } [TMDB ID ${media.tmdbId}] from Plex.`,
           {
             errorMessage: ex.message,
             label: 'AvailabilitySync',
@@ -651,30 +658,30 @@ class AvailabilitySync {
     // If the API returns an error other than a 404,
     // we will have to prevent the season check from happening
     if (media.mediaType === 'tv') {
-      const plexSeasonMap: Record<number, boolean> = {};
+      const plexSeasonsMap: Map<number, boolean> = new Map();
 
       if (!preventSeasonSearch) {
-        media.seasons
-          .filter(
-            (season) =>
-              season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
-              season[is4k ? 'status4k' : 'status'] ===
-                MediaStatus.PARTIALLY_AVAILABLE
-          )
-          .forEach(async (season) => {
-            const seasonExists = await this.seasonExistsInPlex(
-              media,
-              season,
-              is4k
-            );
+        const filteredSeasons = media.seasons.filter(
+          (season) =>
+            season[is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE ||
+            season[is4k ? 'status4k' : 'status'] ===
+              MediaStatus.PARTIALLY_AVAILABLE
+        );
 
-            if (seasonExists) {
-              plexSeasonMap[season.seasonNumber] = true;
-            }
-          });
+        for (const season of filteredSeasons) {
+          const seasonExists = await this.seasonExistsInPlex(
+            media,
+            season,
+            is4k
+          );
+
+          if (seasonExists) {
+            plexSeasonsMap.set(season.seasonNumber, true);
+          }
+        }
       }
 
-      return [existsInPlex, plexSeasonMap];
+      return [existsInPlex, plexSeasonsMap];
     }
 
     return [existsInPlex];
@@ -690,21 +697,21 @@ class AvailabilitySync {
     let seasonExistsInPlex = false;
 
     // Check each plex instance to see if the season exists
-    let children: PlexMetadata[] | undefined;
+    let plexSeasons: PlexMetadata[] | undefined;
 
     if (ratingKey && !is4k) {
-      children = this.plexSeasonsCache[ratingKey];
+      plexSeasons = this.plexSeasonsCache[ratingKey];
     }
 
     if (ratingKey4k && is4k) {
-      children = this.plexSeasonsCache[ratingKey4k];
+      plexSeasons = this.plexSeasonsCache[ratingKey4k];
     }
 
-    const plexSeason = children?.find(
-      (child) => child.index === season.seasonNumber
+    const seasonIsAvailable = plexSeasons?.find(
+      (plexSeason) => plexSeason.index === season.seasonNumber
     );
 
-    if (plexSeason) {
+    if (seasonIsAvailable) {
       seasonExistsInPlex = true;
     }
 
