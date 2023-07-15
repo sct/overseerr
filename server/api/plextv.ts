@@ -234,6 +234,9 @@ class PlexTvAPI extends ExternalAPI {
     }
   }
 
+  /**
+   * @deprecated Plex has deprecated '/pms/friends/all', use getUsers(); instead.
+   */
   public async getFriends(): Promise<FriendResponse> {
     const response = await this.axios.get('/pms/friends/all', {
       transformResponse: [],
@@ -255,7 +258,7 @@ class PlexTvAPI extends ExternalAPI {
         throw new Error('Plex is not configured!');
       }
 
-      const friends = await this.getFriends();
+      const friends = await this.getUsers();
 
       const users = friends.MediaContainer.User;
 
