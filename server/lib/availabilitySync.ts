@@ -59,14 +59,15 @@ class AvailabilitySync {
         if (media.mediaType === 'movie') {
           let movieExists = false;
           let movieExists4k = false;
-          const [[existsInPlex], [existsInPlex4k]] = [
-            await this.mediaExistsInPlex(media, false),
-            await this.mediaExistsInPlex(media, true),
-          ];
-          const [existsInRadarr, existsInRadarr4k] = [
-            await this.mediaExistsInRadarr(media, false),
-            await this.mediaExistsInRadarr(media, true),
-          ];
+
+          const { existsInPlex } = await this.mediaExistsInPlex(media, false);
+          const { existsInPlex: existsInPlex4k } = await this.mediaExistsInPlex(
+            media,
+            true
+          );
+
+          const existsInRadarr = await this.mediaExistsInRadarr(media, false);
+          const existsInRadarr4k = await this.mediaExistsInRadarr(media, true);
 
           if (existsInPlex || existsInRadarr) {
             movieExists = true;
@@ -102,20 +103,21 @@ class AvailabilitySync {
         if (media.mediaType === 'tv') {
           let showExists = false;
           let showExists4k = false;
-          const [
-            [existsInPlex, plexSeasonsMap = new Map()],
-            [existsInPlex4k, plexSeasonsMap4k = new Map()],
-          ] = [
-            await this.mediaExistsInPlex(media, false),
-            await this.mediaExistsInPlex(media, true),
-          ];
-          const [
-            [existsInSonarr, sonarrSeasonsMap],
-            [existsInSonarr4k, sonarrSeasonsMap4k],
-          ] = [
-            await this.mediaExistsInSonarr(media, false),
-            await this.mediaExistsInSonarr(media, true),
-          ];
+
+          const { existsInPlex, seasonsMap: plexSeasonsMap = new Map() } =
+            await this.mediaExistsInPlex(media, false);
+          const {
+            existsInPlex: existsInPlex4k,
+            seasonsMap: plexSeasonsMap4k = new Map(),
+          } = await this.mediaExistsInPlex(media, true);
+
+          const { existsInSonarr, seasonsMap: sonarrSeasonsMap } =
+            await this.mediaExistsInSonarr(media, false);
+          const {
+            existsInSonarr: existsInSonarr4k,
+            seasonsMap: sonarrSeasonsMap4k,
+          } = await this.mediaExistsInSonarr(media, true);
+
           if (existsInPlex || existsInSonarr) {
             showExists = true;
             logger.info(
@@ -305,23 +307,23 @@ class AvailabilitySync {
         mediaStatus = this.findMediaStatus(requests, is4k);
       }
 
-      (media[is4k ? 'status4k' : 'status'] = mediaStatus),
-        (media[is4k ? 'serviceId4k' : 'serviceId'] =
-          mediaStatus === MediaStatus.PROCESSING
-            ? media[is4k ? 'serviceId4k' : 'serviceId']
-            : null),
-        (media[is4k ? 'externalServiceId4k' : 'externalServiceId'] =
-          mediaStatus === MediaStatus.PROCESSING
-            ? media[is4k ? 'externalServiceId4k' : 'externalServiceId']
-            : null),
-        (media[is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
-          mediaStatus === MediaStatus.PROCESSING
-            ? media[is4k ? 'externalServiceSlug4k' : 'externalServiceSlug']
-            : null),
-        (media[is4k ? 'ratingKey4k' : 'ratingKey'] =
-          mediaStatus === MediaStatus.PROCESSING
-            ? media[is4k ? 'ratingKey4k' : 'ratingKey']
-            : null);
+      media[is4k ? 'status4k' : 'status'] = mediaStatus;
+      media[is4k ? 'serviceId4k' : 'serviceId'] =
+        mediaStatus === MediaStatus.PROCESSING
+          ? media[is4k ? 'serviceId4k' : 'serviceId']
+          : null;
+      media[is4k ? 'externalServiceId4k' : 'externalServiceId'] =
+        mediaStatus === MediaStatus.PROCESSING
+          ? media[is4k ? 'externalServiceId4k' : 'externalServiceId']
+          : null;
+      media[is4k ? 'externalServiceSlug4k' : 'externalServiceSlug'] =
+        mediaStatus === MediaStatus.PROCESSING
+          ? media[is4k ? 'externalServiceSlug4k' : 'externalServiceSlug']
+          : null;
+      media[is4k ? 'ratingKey4k' : 'ratingKey'] =
+        mediaStatus === MediaStatus.PROCESSING
+          ? media[is4k ? 'ratingKey4k' : 'ratingKey']
+          : null;
 
       logger.info(
         `The ${is4k ? '4K' : 'non-4K'} ${
@@ -488,7 +490,7 @@ class AvailabilitySync {
   private async mediaExistsInSonarr(
     media: Media,
     is4k: boolean
-  ): Promise<[boolean, Map<number, boolean>]> {
+  ): Promise<{ existsInSonarr: boolean; seasonsMap: Map<number, boolean> }> {
     let existsInSonarr = false;
     let preventSeasonSearch = false;
 
@@ -538,7 +540,7 @@ class AvailabilitySync {
     // Here we check each season for availability
     // If the API returns an error other than a 404,
     // we will have to prevent the season check from happening
-    const sonarrSeasonsMap: Map<number, boolean> = new Map();
+    const seasonsMap: Map<number, boolean> = new Map();
 
     if (!preventSeasonSearch) {
       const filteredSeasons = media.seasons.filter(
@@ -556,12 +558,12 @@ class AvailabilitySync {
         );
 
         if (seasonExists) {
-          sonarrSeasonsMap.set(season.seasonNumber, true);
+          seasonsMap.set(season.seasonNumber, true);
         }
       }
     }
 
-    return [existsInSonarr, sonarrSeasonsMap];
+    return { existsInSonarr, seasonsMap };
   }
 
   private async seasonExistsInSonarr(
@@ -605,7 +607,7 @@ class AvailabilitySync {
   private async mediaExistsInPlex(
     media: Media,
     is4k: boolean
-  ): Promise<[boolean, Map<number, boolean>?]> {
+  ): Promise<{ existsInPlex: boolean; seasonsMap?: Map<number, boolean> }> {
     const ratingKey = media.ratingKey;
     const ratingKey4k = media.ratingKey4k;
     let existsInPlex = false;
@@ -658,7 +660,7 @@ class AvailabilitySync {
     // If the API returns an error other than a 404,
     // we will have to prevent the season check from happening
     if (media.mediaType === 'tv') {
-      const plexSeasonsMap: Map<number, boolean> = new Map();
+      const seasonsMap: Map<number, boolean> = new Map();
 
       if (!preventSeasonSearch) {
         const filteredSeasons = media.seasons.filter(
@@ -676,15 +678,15 @@ class AvailabilitySync {
           );
 
           if (seasonExists) {
-            plexSeasonsMap.set(season.seasonNumber, true);
+            seasonsMap.set(season.seasonNumber, true);
           }
         }
       }
 
-      return [existsInPlex, plexSeasonsMap];
+      return { existsInPlex, seasonsMap };
     }
 
-    return [existsInPlex];
+    return { existsInPlex };
   }
 
   private async seasonExistsInPlex(
