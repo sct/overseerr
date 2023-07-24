@@ -1,3 +1,12 @@
+## [1.33.1](https://github.com/sct/overseerr/compare/v1.33.0...v1.33.1) (2023-07-24)
+
+
+### Bug Fixes
+
+* resolved issue with create slider causing incorrect form submission ([#3514](https://github.com/sct/overseerr/issues/3514)) ([a761b7d](https://github.com/sct/overseerr/commit/a761b7dd35a5bd61bb4eb0275b75d1e0977e6a2d))
+* resolved user access check issue ([#3551](https://github.com/sct/overseerr/issues/3551)) ([2816c66](https://github.com/sct/overseerr/commit/2816c66300bf870d493c0665b0e984d60f707dfd))
+* **statusbadge:** handle missing season/episode number ([#3526](https://github.com/sct/overseerr/issues/3526)) ([01de972](https://github.com/sct/overseerr/commit/01de972a8fe2ea3c18d5b2f426d01b5b14d142d4))
+
 # [1.33.0](https://github.com/sct/overseerr/compare/v1.32.5...v1.33.0) (2023-06-15)
 
 
