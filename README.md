@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-96-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-97-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -197,6 +197,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/andrew-kennedy"><img src="https://avatars.githubusercontent.com/u/2387159?v=4?s=100" width="100px;" alt="Andrew Kennedy"/><br /><sub><b>Andrew Kennedy</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=andrew-kennedy" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Fallenbagel"><img src="https://avatars.githubusercontent.com/u/98979876?v=4?s=100" width="100px;" alt="Fallenbagel"/><br /><sub><b>Fallenbagel</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Fallenbagel" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://aidoge.xyz"><img src="https://avatars.githubusercontent.com/u/9427639?v=4?s=100" width="100px;" alt="Anton K. (ai Doge)"/><br /><sub><b>Anton K. (ai Doge)</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=scorp200" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://marcofaggian.com"><img src="https://avatars.githubusercontent.com/u/19221001?v=4?s=100" width="100px;" alt="Marco Faggian"/><br /><sub><b>Marco Faggian</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=marcofaggian" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
