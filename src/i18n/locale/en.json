@@ -258,6 +258,7 @@
   "components.MovieDetails.budget": "Budget",
   "components.MovieDetails.cast": "Cast",
   "components.MovieDetails.digitalrelease": "Digital Release",
+  "components.MovieDetails.imdbuserscore": "IMDB User Score",
   "components.MovieDetails.managemovie": "Manage Movie",
   "components.MovieDetails.mark4kavailable": "Mark as Available in 4K",
   "components.MovieDetails.markavailable": "Mark as Available",
