@@ -881,6 +881,15 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "marcofaggian",
+      "name": "Marco Faggian",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19221001?v=4",
+      "profile": "https://marcofaggian.com",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
