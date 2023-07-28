@@ -1,3 +1,10 @@
+## [1.33.2](https://github.com/sct/overseerr/compare/v1.33.1...v1.33.2) (2023-07-28)
+
+
+### Bug Fixes
+
+* handle issue causing incorrect media to change to unknown ([#3516](https://github.com/sct/overseerr/issues/3516)) ([83b008c](https://github.com/sct/overseerr/commit/83b008c8391459bd02dc74bcdb0d8caf27207bdf))
+
 ## [1.33.1](https://github.com/sct/overseerr/compare/v1.33.0...v1.33.1) (2023-07-24)
 
 
