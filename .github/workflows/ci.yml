@@ -62,8 +62,6 @@ jobs:
           build-args: |
             COMMIT_TAG=${{ github.sha }}
           tags: |
-            ryanc1256/overseerr:develop
-            ryanc1256/overseerr:${{ github.sha }}
             ghcr.io/ryanc1256/overseerr:develop
             ghcr.io/ryanc1256/overseerr:${{ github.sha }}
           cache-from: type=local,src=/tmp/.buildx-cache
