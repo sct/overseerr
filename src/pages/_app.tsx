@@ -205,14 +205,18 @@ CoreApp.getInitialProps = async (initialProps) => {
       }
     } else {
       try {
+        const authHeader = ctx.req?.headers['x-api-key'];
+        let headers = undefined;
+        if (ctx.req && authHeader) {
+          headers = { ...ctx.req?.headers };
+        } else if (ctx.req && ctx.req.headers.cookie) {
+          headers = { cookie: ctx.req.headers.cookie };
+        }
         // Attempt to get the user by running a request to the local api
         const response = await axios.get<User>(
           `http://localhost:${process.env.PORT || 5055}/api/v1/auth/me`,
           {
-            headers:
-              ctx.req && ctx.req.headers.cookie
-                ? { cookie: ctx.req.headers.cookie }
-                : undefined,
+            headers,
           }
         );
         user = response.data;
