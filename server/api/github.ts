@@ -83,7 +83,7 @@ class GithubAPI extends ExternalAPI {
   } = {}): Promise<GitHubRelease[]> {
     try {
       const data = await this.get<GitHubRelease[]>(
-        '/repos/sct/overseerr/releases',
+        '/repos/ryanc1256/overseerr-sso-header/releases',
         {
           params: {
             per_page: take,
