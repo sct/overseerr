@@ -110,7 +110,7 @@ class GithubAPI extends ExternalAPI {
   } = {}): Promise<GithubCommit[]> {
     try {
       const data = await this.get<GithubCommit[]>(
-        '/repos/sct/overseerr/commits',
+        '/repos/ryanc1256/overseerr-sso-header/commits',
         {
           params: {
             per_page: take,
