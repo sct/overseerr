@@ -9,6 +9,8 @@ jobs:
   semantic-release:
     name: Tag and release latest version
     runs-on: ubuntu-20.04
+    env:
+      HUSKY: 0
     steps:
       - name: Checkout
         uses: actions/checkout@v3
