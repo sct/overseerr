@@ -105,8 +105,8 @@ const SettingsAbout = () => {
                 <a
                   href={
                     data.version.startsWith('develop-')
-                      ? `https://github.com/sct/overseerr/compare/${status.commitTag}...develop`
-                      : 'https://github.com/sct/overseerr/releases'
+                      ? `https://github.com/ryanc1256/overseerr-sso-header/compare/${status.commitTag}...develop`
+                      : 'https://github.com/ryanc1256/overseerr-sso-header/releases'
                   }
                   target="_blank"
                   rel="noopener noreferrer"
@@ -122,8 +122,8 @@ const SettingsAbout = () => {
                 <a
                   href={
                     data.version.startsWith('develop-')
-                      ? 'https://github.com/sct/overseerr/commits/develop'
-                      : 'https://github.com/sct/overseerr/releases'
+                      ? 'https://github.com/ryanc1256/overseerr-sso-header/commits/develop'
+                      : 'https://github.com/ryanc1256/overseerr-sso-header/releases'
                   }
                   target="_blank"
                   rel="noopener noreferrer"
