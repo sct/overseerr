@@ -132,7 +132,7 @@ mediaRoutes.get('/continuewatching', async (req, res, next) => {
       if (!seasons_available.map((season) => season.media.tmdbId).includes(media.tmdbId)) {
         media.status = MediaStatus.AVAILABLE;
         mediaRepository.save(media)
-        logger.info(media.tmdbId + ': Change media status to available')
+        logger.debug(media.tmdbId + ': Change media status to available')
       }
     });
     // SET MEDIA TO AVAILABLE IF NO SEASON ARE ARVAILABLE -- END
@@ -159,7 +159,7 @@ mediaRoutes.get('/continuewatching', async (req, res, next) => {
       seasons_available.forEach((season, index) => {
         if (season.media.tmdbId == media_seasons[m].tmdbId) {
           if (!season_with_episodes.includes(season.seasonNumber)) {
-            logger.info(season.media.tmdbId + ': Season ' + season.seasonNumber + ' have 0 episode.')
+            logger.debug(season.media.tmdbId + ': Season ' + season.seasonNumber + ' have 0 episode.')
             seasons_available.splice(index, 1);
           }
         }
