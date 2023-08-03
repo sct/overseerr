@@ -1,13 +1,16 @@
 import TautulliAPI from '@server/api/tautulli';
 import { MediaStatus, MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
+import TheMovieDb from '@server/api/themoviedb';
 import Media from '@server/entity/Media';
+import Season from '@server/entity/Season';
 import { User } from '@server/entity/User';
 import type {
   MediaResultsResponse,
   MediaWatchDataResponse,
 } from '@server/interfaces/api/mediaInterfaces';
 import { Permission } from '@server/lib/permissions';
+import { MediaRequest } from '@server/entity/MediaRequest';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
@@ -87,6 +90,124 @@ mediaRoutes.get('/', async (req, res, next) => {
   }
 });
 
+mediaRoutes.get('/continuewatching', async (req, res, next) => {
+
+  const mediaRepository = getRepository(Media);
+
+  const page = req.query.page ? Number(req.query.page) : 1;
+
+  const pageSize = 20;
+  const skip = (page * pageSize) - pageSize;
+
+  const tmdb = new TheMovieDb();
+  const tmdbinfos = []
+
+  try {
+    const requests = await getRepository(MediaRequest).createQueryBuilder('request')
+      .leftJoinAndSelect('request.media', 'media')
+      .where('request.media IS NOT NULL')
+      .getMany();
+
+    const seasons_available = await getRepository(Season).createQueryBuilder('season')
+      .leftJoinAndSelect('season.media', 'media')
+      .where('season.status < :status', { status: MediaStatus.AVAILABLE })
+      .andWhere('season.media IS NOT NULL')
+      .getMany();
+
+    const seasons_already = await getRepository(Season).createQueryBuilder('season')
+      .leftJoinAndSelect('season.media', 'media')
+      .where('season.status > :status', { status: MediaStatus.UNKNOWN })
+      .andWhere('season.media IS NOT NULL')
+      .getMany();
+
+    // SET MEDIA TO AVAILABLE IF NO SEASON ARE ARVAILABLE -- START
+    const mediaPartially = await mediaRepository.createQueryBuilder('media')
+      .where('media.status = :statusMedia AND media.tmdbId NOT IN (:...tmdbIds)', {
+        tmdbIds: requests.map((request) => request.media.tmdbId),
+        statusMedia: MediaStatus.PARTIALLY_AVAILABLE
+      })
+      .getMany();
+
+    mediaPartially.forEach(media => {
+      if (!seasons_available.map((season) => season.media.tmdbId).includes(media.tmdbId)) {
+        media.status = MediaStatus.AVAILABLE;
+        mediaRepository.save(media)
+        logger.info(media.tmdbId + ': Change media status to available')
+      }
+    });
+    // SET MEDIA TO AVAILABLE IF NO SEASON ARE ARVAILABLE -- END
+
+    // KEEP SEASON IF NUMBER OF EPISODE > 0 -- START
+    let media_seasons = await mediaRepository.createQueryBuilder('media')
+      .where('media.tmdbId NOT IN (:...tmdbIds) AND media.tmdbId IN (:...tmdbIds1) AND media.tmdbId IN (:...tmdbIds2)', {
+        tmdbIds: requests.map((request) => request.media.tmdbId),
+        tmdbIds1: seasons_available.map((season) => season.media.tmdbId),
+        tmdbIds2: seasons_already.map((season) => season.media.tmdbId),
+      })
+      .getMany();
+
+    for (let m in media_seasons) {
+      tmdbinfos[media_seasons[m].tmdbId] = await tmdb.getTvShow({ tvId: media_seasons[m].tmdbId, language: req.locale ?? (req.query.language as string) });
+
+      const season_with_episodes: number[] = []
+      tmdbinfos[media_seasons[m].tmdbId].seasons.forEach(season => {
+        if (season.episode_count > 0) {
+          season_with_episodes.push(season.season_number)
+        }
+      });
+
+      seasons_available.forEach((season, index) => {
+        if (season.media.tmdbId == media_seasons[m].tmdbId) {
+          if (!season_with_episodes.includes(season.seasonNumber)) {
+            logger.info(season.media.tmdbId + ': Season ' + season.seasonNumber + ' have 0 episode.')
+            seasons_available.splice(index, 1);
+          }
+        }
+      });
+    }
+    // KEEP SEASON IF NUMBER OF EPISODE > 0 -- END
+
+    const [media, mediaCount] = await mediaRepository.createQueryBuilder('media')
+      .where('media.tmdbId NOT IN (:...tmdbIds) AND media.tmdbId IN (:...tmdbIds1) AND media.tmdbId IN (:...tmdbIds2)', {
+        tmdbIds: requests.map((request) => request.media.tmdbId),
+        tmdbIds1: seasons_available.map((season) => season.media.tmdbId),
+        tmdbIds2: seasons_already.map((season) => season.media.tmdbId),
+      })
+      .orderBy('media.tmdbId', 'DESC')
+      .take(pageSize)
+      .skip(skip)
+      .getManyAndCount();
+
+    const infos = []
+    for (let m in media) {
+      let data = {
+        id: media[m].tmdbId,
+        mediaType: media[m].mediaType,
+        originalLanguage: tmdbinfos[media[m].tmdbId].original_language,
+        originalName: tmdbinfos[media[m].tmdbId].original_name,
+        overview: tmdbinfos[media[m].tmdbId].overview,
+        popularity: tmdbinfos[media[m].tmdbId].popularity,
+        name: tmdbinfos[media[m].tmdbId].name,
+        voteAverage: tmdbinfos[media[m].tmdbId].vote_average,
+        voteCount: tmdbinfos[media[m].tmdbId].vote_count,
+        backdropPath: tmdbinfos[media[m].tmdbId].backdrop_path,
+        posterPath: tmdbinfos[media[m].tmdbId].poster_path,
+        mediaInfo: media[m]
+      }
+      infos.push(data)
+    }
+
+    return res.status(200).json({
+      page: page,
+      totalPages: Math.ceil(mediaCount / pageSize),
+      totalResults: mediaCount,
+      results: infos,
+    });
+  } catch (e) {
+    next({ status: 500, message: e.message });
+  }
+});
+
 mediaRoutes.post<
   {
     id: string;
@@ -113,10 +234,31 @@ mediaRoutes.post<
       case 'available':
         media[is4k ? 'status4k' : 'status'] = MediaStatus.AVAILABLE;
         if (media.mediaType === MediaType.TV) {
-          // Mark all seasons available
-          media.seasons.forEach((season) => {
-            season[is4k ? 'status4k' : 'status'] = MediaStatus.AVAILABLE;
-          });
+
+          const seasons = (await (new TheMovieDb())
+            .getTvShow({ tvId: media.tmdbId }))
+            .seasons.filter((sn) => sn.season_number > 0);
+
+          for (const season in seasons) {
+            if (media.seasons.filter((sn: { seasonNumber: number; }) => sn.seasonNumber == seasons[season].season_number).length == 0) {
+              media.seasons.push(new Season({
+                seasonNumber: seasons[season].season_number,
+                status: MediaStatus.UNKNOWN,
+                status4k: MediaStatus.UNKNOWN,
+              }))
+            }
+          }
+
+          for (const season in media.seasons) {
+            if (media.seasons[season][is4k ? 'status4k' : 'status'] < MediaStatus.AVAILABLE) {
+              media.seasons[season][is4k ? 'status4k' : 'status'] = MediaStatus.AVAILABLE;
+              break;
+            }
+          }
+
+          media[is4k ? 'status4k' : 'status'] = media.seasons.filter((sn: { status: MediaStatus; }) =>
+            sn.status == MediaStatus.AVAILABLE).length == seasons.length ?
+            MediaStatus.AVAILABLE : MediaStatus.PARTIALLY_AVAILABLE;
         }
         break;
       case 'partial':

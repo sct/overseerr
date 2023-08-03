@@ -5685,6 +5685,33 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MediaInfo'
+  /media/continuewatching:
+    get:
+      summary: Get media already watched with new seasons
+      description: Returns all media already watched with new seasons.
+      tags:
+        - media
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Returned media
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaInfo'
   /media/{mediaId}:
     delete:
       summary: Delete media item

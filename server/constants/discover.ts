@@ -98,4 +98,10 @@ export const defaultSliders: Partial<DiscoverSlider>[] = [
     isBuiltIn: true,
     order: 11,
   },
+  {
+    type: DiscoverSliderType.CONTINUE_WATCHING,
+    enabled: true,
+    isBuiltIn: true,
+    order: 12,
+  },
 ];

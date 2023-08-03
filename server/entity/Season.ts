@@ -24,7 +24,7 @@ class Season {
   public status4k: MediaStatus;
 
   @ManyToOne(() => Media, (media) => media.seasons, { onDelete: 'CASCADE' })
-  public media: Promise<Media>;
+  public media: Media;
 
   @CreateDateColumn()
   public createdAt: Date;
