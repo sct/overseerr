@@ -128,6 +128,8 @@ const DiscoverSliderEdit = ({
     switch (slider.type) {
       case DiscoverSliderType.RECENTLY_ADDED:
         return intl.formatMessage(sliderTitles.recentlyAdded);
+      case DiscoverSliderType.CONTINUE_WATCHING:
+        return intl.formatMessage(sliderTitles.continueWatching);
       case DiscoverSliderType.RECENT_REQUESTS:
         return intl.formatMessage(sliderTitles.recentrequests);
       case DiscoverSliderType.PLEX_WATCHLIST:

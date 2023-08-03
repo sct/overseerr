@@ -98,6 +98,7 @@
   "components.Discover.popularmovies": "Popular Movies",
   "components.Discover.populartv": "Popular Series",
   "components.Discover.recentlyAdded": "Recently Added",
+  "components.Discover.continueWatching": "Continue watching",
   "components.Discover.recentrequests": "Recent Requests",
   "components.Discover.resetfailed": "Something went wrong resetting the discover customization settings.",
   "components.Discover.resetsuccess": "Sucessfully reset discover customization settings.",

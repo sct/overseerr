@@ -212,6 +212,16 @@ const Discover = () => {
           case DiscoverSliderType.RECENTLY_ADDED:
             sliderComponent = <RecentlyAddedSlider />;
             break;
+          case DiscoverSliderType.CONTINUE_WATCHING:
+            sliderComponent = (
+              <MediaSlider
+                sliderKey="continuewatching"
+                title={intl.formatMessage(sliderTitles.continueWatching)}
+                url="/api/v1/media/continuewatching"
+                linkUrl="/discover/continuewatching"
+              />
+            );
+          break;
           case DiscoverSliderType.RECENT_REQUESTS:
             sliderComponent = <RecentRequestsSlider />;
             break;
