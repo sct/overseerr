@@ -70,6 +70,12 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
         case 'available':
           mediaStatusFilter = [MediaStatus.AVAILABLE];
           break;
+        case 'requested':
+          mediaStatusFilter = [MediaStatus.PROCESSING];
+          break;
+        case 'partial':
+          mediaStatusFilter = [MediaStatus.PARTIALLY_AVAILABLE];
+          break;
         case 'processing':
         case 'unavailable':
           mediaStatusFilter = [

@@ -31,6 +31,8 @@ enum Filter {
   PENDING = 'pending',
   APPROVED = 'approved',
   PROCESSING = 'processing',
+  REQUESTED = 'requested',
+  PARTIAL = 'partial',
   AVAILABLE = 'available',
   UNAVAILABLE = 'unavailable',
   FAILED = 'failed',
@@ -167,6 +169,12 @@ const RequestList = () => {
               </option>
               <option value="processing">
                 {intl.formatMessage(globalMessages.processing)}
+              </option>
+              <option value="requested">
+                {intl.formatMessage(globalMessages.requested)}
+              </option>
+              <option value="partial">
+                {intl.formatMessage(globalMessages.partiallyavailable)}
               </option>
               <option value="failed">
                 {intl.formatMessage(globalMessages.failed)}

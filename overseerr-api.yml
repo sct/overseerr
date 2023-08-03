@@ -4919,6 +4919,8 @@ paths:
                 all,
                 approved,
                 available,
+                requested,
+                partial,
                 pending,
                 processing,
                 unavailable,
