@@ -3,6 +3,7 @@ import { MediaStatus, MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import TheMovieDb from '@server/api/themoviedb';
 import Media from '@server/entity/Media';
+import { MediaRequest } from '@server/entity/MediaRequest';
 import Season from '@server/entity/Season';
 import { User } from '@server/entity/User';
 import type {
@@ -10,7 +11,6 @@ import type {
   MediaWatchDataResponse,
 } from '@server/interfaces/api/mediaInterfaces';
 import { Permission } from '@server/lib/permissions';
-import { MediaRequest } from '@server/entity/MediaRequest';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
@@ -234,31 +234,10 @@ mediaRoutes.post<
       case 'available':
         media[is4k ? 'status4k' : 'status'] = MediaStatus.AVAILABLE;
         if (media.mediaType === MediaType.TV) {
-
-          const seasons = (await (new TheMovieDb())
-            .getTvShow({ tvId: media.tmdbId }))
-            .seasons.filter((sn) => sn.season_number > 0);
-
-          for (const season in seasons) {
-            if (media.seasons.filter((sn: { seasonNumber: number; }) => sn.seasonNumber == seasons[season].season_number).length == 0) {
-              media.seasons.push(new Season({
-                seasonNumber: seasons[season].season_number,
-                status: MediaStatus.UNKNOWN,
-                status4k: MediaStatus.UNKNOWN,
-              }))
-            }
-          }
-
-          for (const season in media.seasons) {
-            if (media.seasons[season][is4k ? 'status4k' : 'status'] < MediaStatus.AVAILABLE) {
-              media.seasons[season][is4k ? 'status4k' : 'status'] = MediaStatus.AVAILABLE;
-              break;
-            }
-          }
-
-          media[is4k ? 'status4k' : 'status'] = media.seasons.filter((sn: { status: MediaStatus; }) =>
-            sn.status == MediaStatus.AVAILABLE).length == seasons.length ?
-            MediaStatus.AVAILABLE : MediaStatus.PARTIALLY_AVAILABLE;
+          // Mark all seasons available
+          media.seasons.forEach((season) => {
+            season[is4k ? 'status4k' : 'status'] = MediaStatus.AVAILABLE;
+          });
         }
         break;
       case 'partial':
