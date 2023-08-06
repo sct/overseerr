@@ -818,6 +818,8 @@
   "components.Settings.SettingsMain.validationApplicationUrlTrailingSlash": "URL must not end in a trailing slash",
   "components.Settings.SettingsUsers.defaultPermissions": "Default Permissions",
   "components.Settings.SettingsUsers.defaultPermissionsTip": "Initial permissions assigned to new users",
+  "components.Settings.SettingsUsers.enableForwardAuth": "Enable Forward Auth Via Plex Token",
+  "components.Settings.SettingsUsers.enableForwardAuthTip": "Allow Plex users to be authenticated via Forward Auth (via <b>X-Plex-Token</b> header)",
   "components.Settings.SettingsUsers.localLogin": "Enable Local Sign-In",
   "components.Settings.SettingsUsers.localLoginTip": "Allow users to sign in using their email address and password, instead of Plex OAuth",
   "components.Settings.SettingsUsers.movieRequestLimitLabel": "Global Movie Request Limit",

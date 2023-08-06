@@ -9,7 +9,7 @@ interface PlexAccountResponse {
   user: PlexUser;
 }
 
-interface PlexUser {
+export interface PlexUser {
   id: number;
   uuid: string;
   email: string;
@@ -127,7 +127,7 @@ export interface PlexWatchlistItem {
   title: string;
 }
 
-class PlexTvAPI extends ExternalAPI {
+export class PlexTvAPI extends ExternalAPI {
   private authToken: string;
 
   constructor(authToken: string) {
@@ -337,5 +337,3 @@ class PlexTvAPI extends ExternalAPI {
     }
   }
 }
-
-export default PlexTvAPI;

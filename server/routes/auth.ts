@@ -1,7 +1,7 @@
 import PlexTvAPI from '@server/api/plextv';
 import { getRepository } from '@server/datasource';
 import { User } from '@server/entity/User';
-import { Permission } from '@server/lib/permissions';
+import { getOrCreatePlexUser } from '@server/lib/auth';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
@@ -26,8 +26,6 @@ authRoutes.get('/me', isAuthenticated(), async (req, res) => {
 });
 
 authRoutes.post('/plex', async (req, res, next) => {
-  const settings = getSettings();
-  const userRepository = getRepository(User);
   const body = req.body as { authToken?: string };
 
   if (!body.authToken) {
@@ -37,146 +35,27 @@ authRoutes.post('/plex', async (req, res, next) => {
     });
   }
   try {
-    // First we need to use this auth token to get the user's email from plex.tv
-    const plextv = new PlexTvAPI(body.authToken);
-    const account = await plextv.getUser();
-
-    let user: User | null;
-
-    // If we are already logged in, we should just get the currently logged in user
-    // otherwise we will try to match to an existing users email or plex ID
-    if (req.user) {
-      user = await userRepository.findOneBy({ id: req.user.id });
-    } else {
-      user = await userRepository
-        .createQueryBuilder('user')
-        .where('user.plexId = :id', { id: account.id })
-        .orWhere('user.email = :email', {
-          email: account.email.toLowerCase(),
-        })
-        .getOne();
-    }
-
-    if (!user && !(await userRepository.count())) {
-      user = new User({
-        email: account.email,
-        plexUsername: account.username,
-        plexId: account.id,
-        plexToken: account.authToken,
-        permissions: Permission.ADMIN,
-        avatar: account.thumb,
-      });
-
-      await userRepository.save(user);
-    } else {
-      const mainUser = await userRepository.findOneOrFail({
-        select: { id: true, plexToken: true, plexId: true, email: true },
-        where: { id: 1 },
-      });
-      const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
-
-      if (!account.id) {
-        logger.error('Plex ID was missing from Plex.tv response', {
-          label: 'API',
-          ip: req.ip,
-          email: account.email,
-          plexUsername: account.username,
-        });
-
-        return next({
-          status: 500,
-          message: 'Something went wrong. Try again.',
-        });
+    const result = await getOrCreatePlexUser(body.authToken);
+    if (result instanceof User) {
+      // Set logged in session
+      if (req.session) {
+        req.session.userId = result.id;
       }
 
-      if (
-        account.id === mainUser.plexId ||
-        (user && user.id === 1 && !user.plexId) ||
-        (account.email === mainUser.email && !mainUser.plexId) ||
-        (await mainPlexTv.checkUserAccess(account.id))
-      ) {
-        if (user) {
-          if (!user.plexId) {
-            logger.info(
-              'Found matching Plex user; updating user with Plex data. Notice: Emails are no longer synced.',
-              {
-                label: 'API',
-                ip: req.ip,
-                email: user.email,
-                userId: user.id,
-                plexId: account.id,
-                plexUsername: account.username,
-              }
-            );
-          }
-
-          user.plexToken = body.authToken;
-          user.plexId = account.id;
-          user.avatar = account.thumb;
-          user.plexUsername = account.username;
-
-          await userRepository.save(user);
-        } else if (!settings.main.newPlexLogin) {
-          logger.warn(
-            'Failed sign-in attempt by unimported Plex user with access to the media server',
-            {
-              label: 'API',
-              ip: req.ip,
-              email: account.email,
-              plexId: account.id,
-              plexUsername: account.username,
-            }
-          );
-          return next({
-            status: 403,
-            message: 'Access denied.',
-          });
-        } else {
-          logger.info(
-            'Sign-in attempt from Plex user with access to the media server; creating new Overseerr user',
-            {
-              label: 'API',
-              ip: req.ip,
-              email: account.email,
-              plexId: account.id,
-              plexUsername: account.username,
-            }
-          );
-          user = new User({
-            email: account.email,
-            plexUsername: account.username,
-            plexId: account.id,
-            plexToken: account.authToken,
-            permissions: settings.main.defaultPermissions,
-            avatar: account.thumb,
-          });
-
-          await userRepository.save(user);
-        }
-      } else {
-        logger.warn(
-          'Failed sign-in attempt by Plex user without access to the media server',
-          {
-            label: 'API',
-            ip: req.ip,
-            email: account.email,
-            plexId: account.id,
-            plexUsername: account.username,
-          }
-        );
-        return next({
-          status: 403,
-          message: 'Access denied.',
-        });
-      }
+      return res.status(200).json(result?.filter() ?? {});
+    } else {
+      logger.warn(`Failed sign-in attempt by Plex user: ${result.cause}`, {
+        label: 'API',
+        ip: req.ip,
+        email: result.account.email,
+        plexId: result.account.id,
+        plexUsername: result.account.username,
+      });
+      return next({
+        status: 403,
+        message: 'Access denied.',
+      });
     }
-
-    // Set logged in session
-    if (req.session) {
-      req.session.userId = user.id;
-    }
-
-    return res.status(200).json(user?.filter() ?? {});
   } catch (e) {
     logger.error('Something went wrong authenticating with Plex account', {
       label: 'API',
