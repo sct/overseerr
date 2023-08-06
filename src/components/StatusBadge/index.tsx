@@ -166,11 +166,11 @@ const StatusBadge = ({
               </span>
               {inProgress && (
                 <>
-                  {mediaType === 'tv' && (
+                  {mediaType === 'tv' && downloadItem[0].episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode?.seasonNumber,
-                        episodeNumber: downloadItem[0].episode?.episodeNumber,
+                        seasonNumber: downloadItem[0].episode.seasonNumber,
+                        episodeNumber: downloadItem[0].episode.episodeNumber,
                       })}
                     </span>
                   )}
@@ -219,11 +219,11 @@ const StatusBadge = ({
               </span>
               {inProgress && (
                 <>
-                  {mediaType === 'tv' && (
+                  {mediaType === 'tv' && downloadItem[0].episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode?.seasonNumber,
-                        episodeNumber: downloadItem[0].episode?.episodeNumber,
+                        seasonNumber: downloadItem[0].episode.seasonNumber,
+                        episodeNumber: downloadItem[0].episode.episodeNumber,
                       })}
                     </span>
                   )}
@@ -272,11 +272,11 @@ const StatusBadge = ({
               </span>
               {inProgress && (
                 <>
-                  {mediaType === 'tv' && (
+                  {mediaType === 'tv' && downloadItem[0].episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode?.seasonNumber,
-                        episodeNumber: downloadItem[0].episode?.episodeNumber,
+                        seasonNumber: downloadItem[0].episode.seasonNumber,
+                        episodeNumber: downloadItem[0].episode.episodeNumber,
                       })}
                     </span>
                   )}

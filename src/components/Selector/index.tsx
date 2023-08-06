@@ -169,15 +169,19 @@ export const GenreSelector = ({
     loadDefaultGenre();
   }, [defaultValue, type]);
 
-  const loadGenreOptions = async () => {
+  const loadGenreOptions = async (inputValue: string) => {
     const results = await axios.get<GenreSliderItem[]>(
       `/api/v1/discover/genreslider/${type}`
     );
 
-    return results.data.map((result) => ({
-      label: result.name,
-      value: result.id,
-    }));
+    return results.data
+      .map((result) => ({
+        label: result.name,
+        value: result.id,
+      }))
+      .filter(({ label }) =>
+        label.toLowerCase().includes(inputValue.toLowerCase())
+      );
   };
 
   return (
@@ -433,6 +437,7 @@ export const WatchProviderSelector = ({
           {otherProviders.length > 0 && (
             <button
               className="relative top-4 flex items-center justify-center space-x-2 text-sm text-gray-400 transition hover:text-gray-200"
+              type="button"
               onClick={() => setShowMore(!showMore)}
             >
               <div className="h-0.5 flex-1 bg-gray-600" />
