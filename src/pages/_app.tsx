@@ -96,6 +96,8 @@ if (typeof window === 'undefined') {
   global.Intl = require('intl');
 }
 
+let headers = {};
+
 const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
   Component,
   pageProps,
@@ -126,7 +128,12 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
   return (
     <SWRConfig
       value={{
-        fetcher: (url) => axios.get(url).then((res) => res.data),
+        fetcher: (url) =>
+          axios
+            .get(url, {
+              headers,
+            })
+            .then((res) => res.data),
         fallback: {
           '/api/v1/auth/me': user,
         },
@@ -206,7 +213,6 @@ CoreApp.getInitialProps = async (initialProps) => {
     } else {
       try {
         const authHeader = ctx.req?.headers['x-api-key'];
-        let headers = undefined;
         if (ctx.req && authHeader) {
           headers = { ...ctx.req?.headers };
         } else if (ctx.req && ctx.req.headers.cookie) {

@@ -19,9 +19,7 @@ export const getServerSideProps: GetServerSideProps<
       ctx.query.collectionId
     }`,
     {
-      headers: ctx.req?.headers?.cookie
-        ? { cookie: ctx.req.headers.cookie }
-        : undefined,
+      headers: ctx.req?.headers,
     }
   );
 

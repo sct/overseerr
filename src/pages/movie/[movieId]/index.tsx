@@ -19,9 +19,7 @@ export const getServerSideProps: GetServerSideProps<MoviePageProps> = async (
       ctx.query.movieId
     }`,
     {
-      headers: ctx.req?.headers?.cookie
-        ? { cookie: ctx.req.headers.cookie }
-        : undefined,
+      headers: ctx.req?.headers,
     }
   );
 
