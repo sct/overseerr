@@ -340,27 +340,17 @@ mediaRoutes.get('/favorites', async (req, res, next) => {
 });
 
 mediaRoutes.get<{ id: string }>('/favorites/movie/:id', async (req, res, next) => {
-  const mediaRepository = getRepository(Media);
-  const tmdb = new TheMovieDb();
-
   try {
-    const tmdbMovie = await tmdb.getMovie({
-      movieId: Number(req.params.id),
-      language: req.locale ?? (req.query.language as string),
-    });
-
-    let media = await Media.getMedia(tmdbMovie.id, MediaType.MOVIE);
+    let media = await Media.getMedia(Number(req.params.id), MediaType.MOVIE);
 
     if (!media) {
-      logger.debug(`Media ${req.params.id} / ${tmdbMovie.id} does not exist.`)
-
       media = new Media();
-      media.tmdbId = tmdbMovie.id;
+      media.tmdbId = Number(req.params.id);
       media.mediaType = MediaType.MOVIE;
     }
 
     media.isFavorite = !media.isFavorite
-    await mediaRepository.save(media);
+    await getRepository(Media).save(media);
 
     return res.status(200).json({});
   } catch (e) {
@@ -374,27 +364,17 @@ mediaRoutes.get<{ id: string }>('/favorites/movie/:id', async (req, res, next) =
 });
 
 mediaRoutes.get<{ id: string }>('/favorites/tv/:id', async (req, res, next) => {
-  const mediaRepository = getRepository(Media);
-  const tmdb = new TheMovieDb();
-
   try {
-    const tv = await tmdb.getTvShow({
-      tvId: Number(req.params.id),
-      language: req.locale ?? (req.query.language as string),
-    });
-
-    let media = await Media.getMedia(tv.id, MediaType.TV);
+    let media = await Media.getMedia(Number(req.params.id), MediaType.TV);
 
     if (!media) {
-      logger.debug(`Media ${req.params.id} / ${tv.id} does not exist.`)
-
       media = new Media();
-      media.tmdbId = tv.id;
+      media.tmdbId = Number(req.params.id);
       media.mediaType = MediaType.TV;
     }
 
     media.isFavorite = !media.isFavorite
-    await mediaRepository.save(media);
+    await getRepository(Media).save(media);
 
     return res.status(200).json({});
   } catch (e) {
