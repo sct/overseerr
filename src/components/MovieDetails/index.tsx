@@ -28,6 +28,7 @@ import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
+import axios from 'axios';
 import {
   ArrowRightCircleIcon,
   CloudIcon,
@@ -36,6 +37,7 @@ import {
   FilmIcon,
   PlayIcon,
   TicketIcon,
+  StarIcon
 } from '@heroicons/react/24/outline';
 import {
   ChevronDoubleDownIcon,
@@ -83,6 +85,8 @@ const messages = defineMessages({
   digitalrelease: 'Digital Release',
   physicalrelease: 'Physical Release',
   reportissue: 'Report an Issue',
+  addfavortie: 'Add to Favorite',
+  delfavortie: 'Remove Favorite',
   managemovie: 'Manage Movie',
   rtcriticsscore: 'Rotten Tomatoes Tomatometer',
   rtaudiencescore: 'Rotten Tomatoes Audience Score',
@@ -248,6 +252,11 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     );
   }
 
+  const addFavorite = async () => {
+    await axios.get(`/api/v1/media/favorites/movie/${data.id}`);
+    revalidate();
+  };
+
   const streamingProviders =
     data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
       ?.flatrate ?? [];
@@ -379,6 +388,15 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
             tmdbId={data.id}
             onUpdate={() => revalidate()}
           />
+          <Tooltip content={intl.formatMessage(data.mediaInfo?.isFavorite ? messages.delfavortie : messages.addfavortie)}>
+            <Button
+              buttonType={data.mediaInfo?.isFavorite ? 'danger' : 'default'}
+              onClick={() => addFavorite()}
+              className="ml-2 first:ml-0"
+            >
+              <StarIcon />
+            </Button>
+          </Tooltip>
           {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
             (settings.currentSettings.movie4kEnabled &&
               hasPermission(

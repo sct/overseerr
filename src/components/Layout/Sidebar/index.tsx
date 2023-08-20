@@ -11,6 +11,7 @@ import {
   TvIcon,
   UsersIcon,
   XMarkIcon,
+  StarIcon
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -21,6 +22,7 @@ export const menuMessages = defineMessages({
   dashboard: 'Discover',
   browsemovies: 'Movies',
   browsetv: 'Series',
+  favorites: 'Favorites',
   requests: 'Requests',
   issues: 'Issues',
   users: 'Users',
@@ -61,6 +63,12 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'browsetv',
     svgIcon: <TvIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/discover\/tv$/,
+  },
+  {
+  href: '/discover/favorites',
+  messagesKey: 'favorites',
+  svgIcon: <StarIcon className="mr-3 h-6 w-6" />,
+  activeRegExp: /^\/discover\/favorites$/,
   },
   {
     href: '/requests',

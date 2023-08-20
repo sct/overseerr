@@ -102,6 +102,9 @@ class Media {
   @OneToMany(() => Issue, (issue) => issue.media, { cascade: true })
   public issues: Issue[];
 
+  @Column({ default: false })
+  public isFavorite: boolean;
+
   @CreateDateColumn()
   public createdAt: Date;
 

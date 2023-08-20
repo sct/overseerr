@@ -5789,6 +5789,61 @@ paths:
                         type: array
                         items:
                           $ref: '#/components/schemas/User'
+  /media/favorites:
+    get:
+      summary: Get media favorites
+      description: Returns all media favorites
+      tags:
+        - media
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Returned media
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MediaInfo'
+  /media/favorites/movie/{id}:
+    get:
+      summary: Add Movie to Favorites
+      description: Add Movie to Favorites
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+            example: 76479
+      responses:
+        '200':
+          description: response
+  /media/favorites/tv/{id}:
+    get:
+      summary: Add TV to Favorites
+      description: Add TV to Favorites
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: number
+            example: 76479
+      responses:
+        '200':
+          description: response
   /collection/{collectionId}:
     get:
       summary: Get collection details

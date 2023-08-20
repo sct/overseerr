@@ -32,12 +32,14 @@ import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { Disclosure, Transition } from '@headlessui/react';
+import axios from 'axios';
 import {
   ArrowRightCircleIcon,
   CogIcon,
   ExclamationTriangleIcon,
   FilmIcon,
   PlayIcon,
+  StarIcon,
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import type { RTRating } from '@server/api/rating/rottentomatoes';
@@ -78,6 +80,8 @@ const messages = defineMessages({
   productioncountries:
     'Production {countryCount, plural, one {Country} other {Countries}}',
   reportissue: 'Report an Issue',
+  addfavortie: 'Add to Favorite',
+  delfavortie: 'Remove Favorite',
   manageseries: 'Manage Series',
   seasonstitle: 'Seasons',
   episodeCount: '{episodeCount, plural, one {# Episode} other {# Episodes}}',
@@ -257,6 +261,11 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     return [...requestedSeasons, ...availableSeasons];
   };
 
+  const addFavorite = async () => {
+    await axios.get(`/api/v1/media/favorites/tv/${data.id}`);
+    revalidate();
+  };
+
   const isComplete = seasonCount <= getAllRequestedSeasons(false).length;
 
   const is4kComplete = seasonCount <= getAllRequestedSeasons(true).length;
@@ -404,6 +413,15 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
             isShowComplete={isComplete}
             is4kShowComplete={is4kComplete}
           />
+          <Tooltip content={intl.formatMessage(data.mediaInfo?.isFavorite ? messages.delfavortie : messages.addfavortie)}>
+            <Button
+              buttonType={data.mediaInfo?.isFavorite ? 'danger' : 'default'}
+              onClick={() => addFavorite()}
+              className="ml-2 first:ml-0"
+            >
+              <StarIcon />
+            </Button>
+          </Tooltip>
           {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
             data.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE ||
             (settings.currentSettings.series4kEnabled &&

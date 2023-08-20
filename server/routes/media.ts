@@ -267,4 +267,144 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
   }
 );
 
+mediaRoutes.get('/favorites', async (req, res, next) => {
+
+  const mediaRepository = getRepository(Media);
+
+  const page = req.query.page ? Number(req.query.page) : 1;
+
+  const pageSize = 40;
+  const skip = (page * pageSize) - pageSize;
+
+  const sortFilter: FindOneOptions<Media>['order'] = {
+    mediaAddedAt: 'DESC',
+  };
+
+  try {
+    const [media, mediaCount] = await mediaRepository.findAndCount({
+      order: sortFilter,
+      where: {
+        isFavorite: true,
+      },
+      take: pageSize,
+      skip,
+    });
+
+    const tmdb = new TheMovieDb();
+    const infos = []
+    for (let m in media) {
+      if (media[m]['mediaType'] === 'movie') {
+        let tmdbinfo = await tmdb.getMovie({ movieId: media[m].tmdbId, language: req.locale ?? (req.query.language as string) });
+        let data = {
+          id: media[m].tmdbId,
+          mediaType: media[m].mediaType,
+          originalLanguage: tmdbinfo.original_language,
+          originalTitle: tmdbinfo.original_title,
+          overview: tmdbinfo.overview,
+          popularity: tmdbinfo.popularity,
+          title: tmdbinfo.title,
+          backdropPath: tmdbinfo.backdrop_path,
+          posterPath: tmdbinfo.poster_path,
+          mediaInfo: media[m]
+        }
+        infos.push(data)
+      } else {
+        let tmdbinfo = await tmdb.getTvShow({ tvId: media[m].tmdbId, language: req.locale ?? (req.query.language as string) });
+        let data = {
+          id: media[m].tmdbId,
+          mediaType: media[m].mediaType,
+          originalLanguage: tmdbinfo.original_language,
+          originalName: tmdbinfo.original_name,
+          overview: tmdbinfo.overview,
+          popularity: tmdbinfo.popularity,
+          name: tmdbinfo.name,
+          voteAverage: tmdbinfo.vote_average,
+          voteCount: tmdbinfo.vote_count,
+          backdropPath: tmdbinfo.backdrop_path,
+          posterPath: tmdbinfo.poster_path,
+          mediaInfo: media[m]
+        }
+        infos.push(data)
+      }
+    }
+
+    return res.status(200).json({
+      page: page,
+      totalPages: Math.ceil(mediaCount / pageSize),
+      totalResults: mediaCount,
+      results: infos,
+    });
+  } catch (e) {
+    next({ status: 500, message: e.message });
+  }
+});
+
+mediaRoutes.get<{ id: string }>('/favorites/movie/:id', async (req, res, next) => {
+  const mediaRepository = getRepository(Media);
+  const tmdb = new TheMovieDb();
+
+  try {
+    const tmdbMovie = await tmdb.getMovie({
+      movieId: Number(req.params.id),
+      language: req.locale ?? (req.query.language as string),
+    });
+
+    let media = await Media.getMedia(tmdbMovie.id, MediaType.MOVIE);
+
+    if (!media) {
+      logger.debug(`Media ${req.params.id} / ${tmdbMovie.id} does not exist.`)
+
+      media = new Media();
+      media.tmdbId = tmdbMovie.id;
+      media.mediaType = MediaType.MOVIE;
+    }
+
+    media.isFavorite = !media.isFavorite
+    await mediaRepository.save(media);
+
+    return res.status(200).json({});
+  } catch (e) {
+    logger.error('Something went wrong fetching media', {
+      label: 'API',
+      errorMessage: e.message,
+      mediaId: req.params.id,
+    });
+    next({ status: 500, message: 'Failed to fetch media.' });
+  }
+});
+
+mediaRoutes.get<{ id: string }>('/favorites/tv/:id', async (req, res, next) => {
+  const mediaRepository = getRepository(Media);
+  const tmdb = new TheMovieDb();
+
+  try {
+    const tv = await tmdb.getTvShow({
+      tvId: Number(req.params.id),
+      language: req.locale ?? (req.query.language as string),
+    });
+
+    let media = await Media.getMedia(tv.id, MediaType.TV);
+
+    if (!media) {
+      logger.debug(`Media ${req.params.id} / ${tv.id} does not exist.`)
+
+      media = new Media();
+      media.tmdbId = tv.id;
+      media.mediaType = MediaType.TV;
+    }
+
+    media.isFavorite = !media.isFavorite
+    await mediaRepository.save(media);
+
+    return res.status(200).json({});
+  } catch (e) {
+    logger.error('Something went wrong fetching media', {
+      label: 'API',
+      errorMessage: e.message,
+      mediaId: req.params.id,
+    });
+    next({ status: 500, message: 'Failed to fetch media.' });
+  }
+});
+
 export default mediaRoutes;
