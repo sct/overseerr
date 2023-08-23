@@ -2,6 +2,7 @@ import Spinner from '@app/assets/spinner.svg';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import StatusBadgeMini from '@app/components/Common/StatusBadgeMini';
+import FavoriteBadgeMini from '@app/components/Common/FavoriteBadgeMini';
 import RequestModal from '@app/components/RequestModal';
 import ErrorCard from '@app/components/TitleCard/ErrorCard';
 import Placeholder from '@app/components/TitleCard/Placeholder';
@@ -28,6 +29,7 @@ interface TitleCardProps {
   status?: MediaStatus;
   canExpand?: boolean;
   inProgress?: boolean;
+  inFavorite?: boolean;
 }
 
 const TitleCard = ({
@@ -39,6 +41,7 @@ const TitleCard = ({
   status,
   mediaType,
   inProgress = false,
+  inFavorite = false,
   canExpand = false,
 }: TitleCardProps) => {
   const isTouch = useIsTouch();
@@ -151,15 +154,21 @@ const TitleCard = ({
                   : intl.formatMessage(globalMessages.tvshow)}
               </div>
             </div>
-            {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (
-              <div className="pointer-events-none z-40 flex items-center">
+            <div className="pointer-events-none z-40 flex items-center">
+              {inFavorite && (
+                <FavoriteBadgeMini
+                  favorite={inFavorite}
+                  shrink
+                />
+              )}
+              {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (
                 <StatusBadgeMini
                   status={currentStatus}
                   inProgress={inProgress}
                   shrink
                 />
-              </div>
-            )}
+              )}
+            </div>
           </div>
           <Transition
             as={Fragment}

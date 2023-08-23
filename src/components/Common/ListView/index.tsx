@@ -69,6 +69,7 @@ const ListView = ({
                   inProgress={
                     (title.mediaInfo?.downloadStatus ?? []).length > 0
                   }
+                  inFavorite={title.mediaInfo?.isFavorite}
                   canExpand
                 />
               );
@@ -87,6 +88,7 @@ const ListView = ({
                   inProgress={
                     (title.mediaInfo?.downloadStatus ?? []).length > 0
                   }
+                  inFavorite={title.mediaInfo?.isFavorite}
                   canExpand
                 />
               );
