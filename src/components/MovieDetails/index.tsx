@@ -464,7 +464,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               </div>
             </>
           )}
-          {data.keywords.length > 0 && (
+          {!user?.settings?.hideTags && data.keywords.length > 0 && (
             <div className="mt-6">
               {data.keywords.map((keyword) => (
                 <Link

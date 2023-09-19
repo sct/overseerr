@@ -55,6 +55,8 @@ const messages = defineMessages({
   plexwatchlistsyncseries: 'Auto-Request Series',
   plexwatchlistsyncseriestip:
     'Automatically request series on your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink>',
+  hideTags: 'Hide Tags',
+  hideTagsTip: 'Hide the tags in a listing detail page',
 });
 
 const UserGeneralSettings = () => {
@@ -130,6 +132,7 @@ const UserGeneralSettings = () => {
           tvQuotaDays: data?.tvQuotaDays,
           watchlistSyncMovies: data?.watchlistSyncMovies,
           watchlistSyncTv: data?.watchlistSyncTv,
+          hideTags: data?.hideTags,
         }}
         validationSchema={UserGeneralSettingsSchema}
         enableReinitialize
@@ -149,6 +152,7 @@ const UserGeneralSettings = () => {
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
               watchlistSyncMovies: values.watchlistSyncMovies,
               watchlistSyncTv: values.watchlistSyncTv,
+              hideTags: values.hideTags,
             });
 
             if (currentUser?.id === user?.id && setLocale) {
@@ -332,6 +336,24 @@ const UserGeneralSettings = () => {
                       isUserSettings
                     />
                   </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="hideTags" className="checkbox-label">
+                  <span>{intl.formatMessage(messages.hideTags)}</span>
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.hideTagsTip)}
+                  </span>
+                </label>
+                <div className="form-input-area">
+                  <Field
+                    type="checkbox"
+                    id="hideTags"
+                    name="hideTags"
+                    onChange={() => {
+                      setFieldValue('hideTags', !values.hideTags);
+                    }}
+                  />
                 </div>
               </div>
               {currentHasPermission(Permission.MANAGE_USERS) &&

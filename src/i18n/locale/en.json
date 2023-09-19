@@ -1085,6 +1085,8 @@
   "components.UserProfile.UserSettings.UserGeneralSettings.enableOverride": "Override Global Limit",
   "components.UserProfile.UserSettings.UserGeneralSettings.general": "General",
   "components.UserProfile.UserSettings.UserGeneralSettings.generalsettings": "General Settings",
+  "components.UserProfile.UserSettings.UserGeneralSettings.hideTags": "Hide Tags",
+  "components.UserProfile.UserSettings.UserGeneralSettings.hideTagsTip": "Hide the tags in a listing detail page",
   "components.UserProfile.UserSettings.UserGeneralSettings.languageDefault": "Default ({language})",
   "components.UserProfile.UserSettings.UserGeneralSettings.localuser": "Local User",
   "components.UserProfile.UserSettings.UserGeneralSettings.movierequestlimit": "Movie Request Limit",
