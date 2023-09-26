@@ -16,8 +16,14 @@ export const checkUser: Middleware = async (req, _res, next) => {
     let userId = 1; // Work on original administrator account
 
     // If a User ID is provided, we will act on that user's behalf
-    if (req.header('X-API-User')) {
-      userId = Number(req.header('X-API-User'));
+    if (req.header('X-API-User') && req.header('X-API-User') != undefined) {
+      console.log(req.headers);
+      const userHeader = req.header('X-API-User') as string;
+      userId = Number(parseInt(userHeader));
+
+      if (userId == undefined) {
+        userId = 0;
+      }
     }
 
     user = await userRepository.findOne({ where: { id: userId } });
