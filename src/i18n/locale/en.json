@@ -869,6 +869,7 @@
   "components.Settings.SonarrModal.selectQualityProfile": "Select quality profile",
   "components.Settings.SonarrModal.selectRootFolder": "Select root folder",
   "components.Settings.SonarrModal.selecttags": "Select tags",
+  "components.Settings.SonarrModal.seriesType": "Anime Series Type",
   "components.Settings.SonarrModal.server4k": "4K Server",
   "components.Settings.SonarrModal.servername": "Server Name",
   "components.Settings.SonarrModal.ssl": "Use SSL",
