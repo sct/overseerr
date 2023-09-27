@@ -52,7 +52,6 @@ export interface DVRSettings {
   apiKey: string;
   useSsl: boolean;
   baseUrl?: string;
-  seriesType: 'standard' | 'daily' | 'anime';
   activeProfileId: number;
   activeProfileName: string;
   activeDirectory: string;
@@ -70,6 +69,7 @@ export interface RadarrSettings extends DVRSettings {
 }
 
 export interface SonarrSettings extends DVRSettings {
+  seriesType: 'standard' | 'daily' | 'anime';
   animeSeriesType: 'standard' | 'daily' | 'anime';
   activeAnimeProfileId?: number;
   activeAnimeProfileName?: string;
