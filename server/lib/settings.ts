@@ -115,6 +115,8 @@ interface FullPublicSettings extends PublicSettings {
   applicationUrl: string;
   hideAvailable: boolean;
   localLogin: boolean;
+  movieEnabled: boolean;
+  seriesEnabled: boolean;
   movie4kEnabled: boolean;
   series4kEnabled: boolean;
   region: string;
@@ -491,6 +493,12 @@ class Settings {
       applicationUrl: this.data.main.applicationUrl,
       hideAvailable: this.data.main.hideAvailable,
       localLogin: this.data.main.localLogin,
+      movieEnabled: this.data.radarr.some(
+        (radarr) => !radarr.is4k && radarr.isDefault
+      ),
+      seriesEnabled: this.data.sonarr.some(
+        (sonarr) => !sonarr.is4k && sonarr.isDefault
+      ),
       movie4kEnabled: this.data.radarr.some(
         (radarr) => radarr.is4k && radarr.isDefault
       ),
