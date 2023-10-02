@@ -273,7 +273,9 @@ const RequestButton = ({
           : Permission.REQUEST_TV,
       ],
       { type: 'or' }
-    )
+    ) &&
+    ((settings.currentSettings.movieEnabled && mediaType === 'movie') ||
+      (settings.currentSettings.seriesEnabled && mediaType === 'tv'))
   ) {
     buttons.push({
       id: 'request',
@@ -292,7 +294,8 @@ const RequestButton = ({
     }) &&
     media &&
     media.status !== MediaStatus.AVAILABLE &&
-    !isShowComplete
+    !isShowComplete &&
+    settings.currentSettings.seriesEnabled
   ) {
     buttons.push({
       id: 'request-more',

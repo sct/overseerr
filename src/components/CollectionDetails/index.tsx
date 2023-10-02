@@ -129,6 +129,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   }
 
   const hasRequestable =
+    settings.currentSettings.movieEnabled &&
     hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
       type: 'or',
     }) &&
@@ -237,14 +238,19 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
         </div>
         <div className="media-title">
           <div className="media-status">
-            <StatusBadge
-              status={collectionStatus}
-              downloadItem={downloadStatus}
-              title={titles}
-              inProgress={data.parts.some(
-                (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
+            {settings.currentSettings.movieEnabled &&
+              hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+                type: 'or',
+              }) && (
+                <StatusBadge
+                  status={collectionStatus}
+                  downloadItem={downloadStatus}
+                  title={titles}
+                  inProgress={data.parts.some(
+                    (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
+                  )}
+                />
               )}
-            />
             {settings.currentSettings.movie4kEnabled &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
@@ -340,6 +346,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
             id={title.id}
             image={title.posterPath}
             status={title.mediaInfo?.status}
+            status4k={title.mediaInfo?.status4k}
             summary={title.overview}
             title={title.title}
             userScore={title.voteAverage}
