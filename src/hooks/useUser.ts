@@ -1,5 +1,4 @@
 import { UserType } from '@server/constants/user';
-import type { UserSettingsGeneralResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import type { PermissionCheckOptions } from '@server/lib/permissions';
 import { hasPermission, Permission } from '@server/lib/permissions';
 import type { NotificationAgentKey } from '@server/lib/settings';
@@ -26,14 +25,15 @@ export interface User {
 
 type NotificationAgentTypes = Record<NotificationAgentKey, number>;
 
-type UserSettings = Pick<
-  UserSettingsGeneralResponse,
-  'discordId' | 'region' | 'originalLanguage' | 'locale' | 'hideTags'
-> & {
+export interface UserSettings {
+  discordId?: string;
+  region?: string;
+  originalLanguage?: string;
+  locale?: string;
   notificationTypes: Partial<NotificationAgentTypes>;
   watchlistSyncMovies?: boolean;
   watchlistSyncTv?: boolean;
-};
+}
 
 interface UserHookResponse {
   user?: User;
