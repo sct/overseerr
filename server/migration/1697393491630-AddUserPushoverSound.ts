@@ -1,7 +1,7 @@
 import type { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddUserPushoverSound1661138015903 implements MigrationInterface {
-  name = 'AddUserPushoverSound1661138015903';
+export class AddUserPushoverSound1697393491630 implements MigrationInterface {
+  name = 'AddUserPushoverSound1697393491630';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
