@@ -109,6 +109,25 @@ self.addEventListener('push', (event) => {
     );
   }
 
+  //Set the badge with the amount of pending requests
+  //Only update the badge if the payload confirms they are the admin
+  if (
+    (payload.notificationType === 'MEDIA_APPROVED' ||
+      payload.notificationType === 'MEDIA_DECLINED') &&
+    payload.isAdmin
+  ) {
+    if ('setAppBadge' in navigator) {
+      navigator.setAppBadge(payload.pendingRequestsCount);
+    }
+    return;
+  }
+
+  if (payload.notificationType === 'MEDIA_PENDING') {
+    if ('setAppBadge' in navigator) {
+      navigator.setAppBadge(payload.pendingRequestsCount);
+    }
+  }
+
   event.waitUntil(
     self.registration.showNotification(payload.subject, options)
   );
@@ -128,7 +147,7 @@ self.addEventListener('notificationclick', (event) => {
       method: 'POST',
     });
   }
-  
+
   if (notificationData.actionUrl) {
     clients.openWindow(notificationData.actionUrl);
   }
