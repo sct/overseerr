@@ -192,6 +192,7 @@ export interface NotificationAgentPushover extends NotificationAgentConfig {
   options: {
     accessToken: string;
     userToken: string;
+    sound: string;
   };
 }
 
@@ -372,6 +373,7 @@ class Settings {
             options: {
               accessToken: '',
               userToken: '',
+              sound: '',
             },
           },
           webhook: {
