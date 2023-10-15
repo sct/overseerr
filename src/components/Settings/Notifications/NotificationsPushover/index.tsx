@@ -3,7 +3,6 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import NotificationTypeSelector from '@app/components/NotificationTypeSelector';
 import globalMessages from '@app/i18n/globalMessages';
 import { ArrowDownOnSquareIcon, BeakerIcon } from '@heroicons/react/24/outline';
-import { BeakerIcon, SaveIcon } from '@heroicons/react/outline';
 import type { PushoverSound } from '@server/api/pushover';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -241,7 +240,7 @@ const NotificationsPushover = () => {
               <label htmlFor="sound" className="text-label">
                 {intl.formatMessage(messages.sound)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     as="select"

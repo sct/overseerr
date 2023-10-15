@@ -203,7 +203,7 @@ const UserPushoverSettings = () => {
               <label htmlFor="sound" className="text-label">
                 {intl.formatMessage(messages.sound)}
               </label>
-              <div className="form-input">
+              <div className="form-input-area">
                 <div className="form-input-field">
                   <Field
                     as="select"
