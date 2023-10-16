@@ -3170,6 +3170,12 @@ paths:
         Updates a single slider and return the newly updated slider. Requires the `ADMIN` permission.
       tags:
         - settings
+      parameters:
+        - in: path
+          name: sliderId
+          required: true
+          schema:
+            type: number
       requestBody:
         required: true
         content:
