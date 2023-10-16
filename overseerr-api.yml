@@ -3473,7 +3473,7 @@ paths:
                   results:
                     type: array
                     items:
-                    $ref: '#/components/schemas/User'
+                      $ref: '#/components/schemas/User'
     post:
       summary: Create new user
       description: |
