@@ -152,7 +152,7 @@ app
         cookie: {
           maxAge: 1000 * 60 * 60 * 24 * 30,
           httpOnly: true,
-          sameSite: 'lax',
+          sameSite: settings.main.csrfProtection ? 'strict' : 'lax',
           secure: 'auto',
         },
         store: new TypeormStore({
