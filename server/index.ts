@@ -152,7 +152,7 @@ app
         cookie: {
           maxAge: 1000 * 60 * 60 * 24 * 30,
           httpOnly: true,
-          sameSite: true,
+          sameSite: 'lax',
           secure: 'auto',
         },
         store: new TypeormStore({
