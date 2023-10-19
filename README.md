@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-98-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-99-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -199,6 +199,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="http://aidoge.xyz"><img src="https://avatars.githubusercontent.com/u/9427639?v=4?s=100" width="100px;" alt="Anton K. (ai Doge)"/><br /><sub><b>Anton K. (ai Doge)</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=scorp200" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://marcofaggian.com"><img src="https://avatars.githubusercontent.com/u/19221001?v=4?s=100" width="100px;" alt="Marco Faggian"/><br /><sub><b>Marco Faggian</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=marcofaggian" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://nemchik.com/"><img src="https://avatars.githubusercontent.com/u/725456?v=4?s=100" width="100px;" alt="Eric Nemchik"/><br /><sub><b>Eric Nemchik</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=nemchik" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/RemiRigal"><img src="https://avatars.githubusercontent.com/u/19256051?v=4?s=100" width="100px;" alt="RemiRigal"/><br /><sub><b>RemiRigal</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=RemiRigal" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
