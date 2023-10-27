@@ -42,7 +42,6 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onCancel?: () => void;
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
-  requestTrigger: () => void;
 }
 
 const MovieRequestModal = ({
@@ -52,7 +51,6 @@ const MovieRequestModal = ({
   onUpdating,
   editRequest,
   is4k = false,
-  requestTrigger,
 }: RequestModalProps) => {
   const [isUpdating, setIsUpdating] = useState(false);
   const [requestOverrides, setRequestOverrides] =
@@ -97,7 +95,7 @@ const MovieRequestModal = ({
         ...overrideParams,
       });
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
-      requestTrigger();
+      mutate('/api/v1/request/count');
 
       if (response.data) {
         if (onComplete) {
@@ -137,7 +135,6 @@ const MovieRequestModal = ({
     data?.id,
     data?.title,
     is4k,
-    requestTrigger,
     onComplete,
     addToast,
     intl,
@@ -152,7 +149,7 @@ const MovieRequestModal = ({
         `/api/v1/request/${editRequest?.id}`
       );
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
-      requestTrigger();
+      mutate('/api/v1/request/count');
 
       if (response.status === 204) {
         if (onComplete) {
@@ -190,7 +187,7 @@ const MovieRequestModal = ({
         await axios.post(`/api/v1/request/${editRequest?.id}/approve`);
       }
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
-      requestTrigger();
+      mutate('/api/v1/request/count');
 
       addToast(
         <span>

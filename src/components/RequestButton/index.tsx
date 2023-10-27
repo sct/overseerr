@@ -15,7 +15,7 @@ import type { MediaRequest } from '@server/entity/MediaRequest';
 import axios from 'axios';
 import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import useSWRMutation from 'swr/mutation';
+import { mutate } from 'swr';
 
 const messages = defineMessages({
   viewrequest: 'View Request',
@@ -90,16 +90,6 @@ const RequestButton = ({
       : undefined;
   }, [active4kRequests, user]);
 
-  const fetchRequestsCount = async () => {
-    const response = await axios.get('/api/v1/request/count');
-    return response.data;
-  };
-
-  const { trigger: requestTrigger } = useSWRMutation(
-    '/api/v1/request/count',
-    fetchRequestsCount
-  );
-
   const modifyRequest = async (
     request: MediaRequest,
     type: 'approve' | 'decline'
@@ -108,7 +98,7 @@ const RequestButton = ({
 
     if (response) {
       onUpdate();
-      requestTrigger();
+      mutate('/api/v1/request/count');
     }
   };
 
@@ -127,7 +117,7 @@ const RequestButton = ({
     );
 
     onUpdate();
-    requestTrigger();
+    mutate('/api/v1/request/count');
   };
 
   const buttons: ButtonOption[] = [];

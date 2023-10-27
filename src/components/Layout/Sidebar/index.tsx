@@ -31,8 +31,8 @@ export const menuMessages = defineMessages({
 interface SidebarProps {
   open?: boolean;
   setClosed: () => void;
-  pendingRequestsCount?: number;
-  openIssuesCount?: number;
+  pendingRequestsCount: number;
+  openIssuesCount: number;
 }
 
 interface SidebarLinkProps {
@@ -263,26 +263,36 @@ const Sidebar = ({
                           menuMessages[sidebarLink.messagesKey]
                         )}
                         {sidebarLink.messagesKey === 'requests' &&
-                          pendingRequestsCount &&
                           pendingRequestsCount > 0 &&
                           hasPermission(Permission.MANAGE_REQUESTS) && (
                             <div className="ml-auto">
-                              <Badge badgeType="gradient">
-                                {pendingRequestsCount < 100
-                                  ? pendingRequestsCount
-                                  : '99+'}
+                              <Badge
+                                className={`rounded-md bg-gradient-to-br ${
+                                  router.pathname.match(
+                                    sidebarLink.activeRegExp
+                                  )
+                                    ? 'border-indigo-600 from-indigo-700 to-purple-700'
+                                    : 'border-indigo-500 from-indigo-600 to-purple-600'
+                                }`}
+                              >
+                                {pendingRequestsCount}
                               </Badge>
                             </div>
                           )}
                         {sidebarLink.messagesKey === 'issues' &&
-                          openIssuesCount &&
                           openIssuesCount > 0 &&
                           hasPermission(Permission.MANAGE_ISSUES) && (
                             <div className="ml-auto">
-                              <Badge badgeType="gradient">
-                                {openIssuesCount < 100
-                                  ? openIssuesCount
-                                  : '99+'}
+                              <Badge
+                                className={`rounded-md bg-gradient-to-br ${
+                                  router.pathname.match(
+                                    sidebarLink.activeRegExp
+                                  )
+                                    ? 'border-indigo-600 from-indigo-700 to-purple-700'
+                                    : 'border-indigo-500 from-indigo-600 to-purple-600'
+                                }`}
+                              >
+                                {openIssuesCount}
                               </Badge>
                             </div>
                           )}

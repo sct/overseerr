@@ -29,8 +29,8 @@ import { cloneElement, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 interface MobileMenuProps {
-  pendingRequestsCount?: number;
-  openIssuesCount?: number;
+  pendingRequestsCount: number;
+  openIssuesCount: number;
 }
 
 interface MenuLink {
@@ -170,24 +170,20 @@ const MobileMenu = ({
                 })}
                 <span className="ml-2">{link.content}</span>
                 {link.href === '/requests' &&
-                  pendingRequestsCount &&
                   pendingRequestsCount > 0 &&
                   hasPermission(Permission.MANAGE_REQUESTS) && (
                     <div className="ml-auto">
-                      <Badge badgeType="gradient">
-                        {pendingRequestsCount < 100
-                          ? pendingRequestsCount
-                          : '99+'}
+                      <Badge className="rounded-md border-indigo-500 bg-gradient-to-br from-indigo-600 to-purple-600">
+                        {pendingRequestsCount}
                       </Badge>
                     </div>
                   )}
                 {link.href === '/issues' &&
-                  openIssuesCount &&
-                  openIssuesCount &&
+                  openIssuesCount > 0 &&
                   hasPermission(Permission.MANAGE_ISSUES) && (
                     <div className="ml-auto">
-                      <Badge badgeType="gradient">
-                        {openIssuesCount < 100 ? openIssuesCount : '99+'}
+                      <Badge className="rounded-md border-indigo-500 bg-gradient-to-br from-indigo-600 to-purple-600">
+                        {openIssuesCount}
                       </Badge>
                     </div>
                   )}
@@ -217,14 +213,18 @@ const MobileMenu = ({
                       }
                     )}
                     {link.href === '/requests' &&
-                      pendingRequestsCount &&
+                      pendingRequestsCount > 0 &&
                       hasPermission(Permission.MANAGE_REQUESTS) && (
-                        <div className="absolute left-3 bottom-2.5">
-                          <span className="inline-flex whitespace-nowrap rounded-full border border-white bg-gradient-to-br from-indigo-600 to-purple-600 px-1 text-xs font-semibold !text-indigo-100 shadow-black">
-                            {pendingRequestsCount < 100
-                              ? pendingRequestsCount
-                              : '99+'}
-                          </span>
+                        <div className="absolute left-3 bottom-3">
+                          <Badge
+                            className={`bg-gradient-to-br ${
+                              router.pathname.match(link.activeRegExp)
+                                ? 'border-indigo-600 from-indigo-700 to-purple-700'
+                                : 'border-indigo-500 from-indigo-600 to-purple-600'
+                            } !px-1 leading-none`}
+                          >
+                            {pendingRequestsCount}
+                          </Badge>
                         </div>
                       )}
                   </a>

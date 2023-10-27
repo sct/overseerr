@@ -4,8 +4,6 @@ import TvRequestModal from '@app/components/RequestModal/TvRequestModal';
 import { Transition } from '@headlessui/react';
 import type { MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
-import axios from 'axios';
-import useSWRMutation from 'swr/mutation';
 
 interface RequestModalProps {
   show: boolean;
@@ -28,16 +26,6 @@ const RequestModal = ({
   onUpdating,
   onCancel,
 }: RequestModalProps) => {
-  const fetchRequestsCount = async () => {
-    const response = await axios.get('/api/v1/request/count');
-    return response.data;
-  };
-
-  const { trigger: requestTrigger } = useSWRMutation(
-    '/api/v1/request/count',
-    fetchRequestsCount
-  );
-
   return (
     <Transition
       as="div"
@@ -57,7 +45,6 @@ const RequestModal = ({
           onUpdating={onUpdating}
           is4k={is4k}
           editRequest={editRequest}
-          requestTrigger={requestTrigger}
         />
       ) : type === 'tv' ? (
         <TvRequestModal
@@ -67,7 +54,6 @@ const RequestModal = ({
           onUpdating={onUpdating}
           is4k={is4k}
           editRequest={editRequest}
-          requestTrigger={requestTrigger}
         />
       ) : (
         <CollectionRequestModal
@@ -76,7 +62,6 @@ const RequestModal = ({
           tmdbId={tmdbId}
           onUpdating={onUpdating}
           is4k={is4k}
-          requestTrigger={requestTrigger}
         />
       )}
     </Transition>

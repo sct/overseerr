@@ -55,7 +55,6 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onCancel?: () => void;
   onComplete?: (newStatus: MediaStatus) => void;
   onUpdating?: (isUpdating: boolean) => void;
-  requestTrigger: () => void;
   is4k?: boolean;
   editRequest?: MediaRequest;
 }
@@ -67,7 +66,6 @@ const TvRequestModal = ({
   onUpdating,
   editRequest,
   is4k = false,
-  requestTrigger,
 }: RequestModalProps) => {
   const settings = useSettings();
   const { addToast } = useToasts();
@@ -107,7 +105,7 @@ const TvRequestModal = ({
 
     if (onUpdating) {
       onUpdating(true);
-      requestTrigger();
+      mutate('/api/v1/request/count');
     }
 
     try {
@@ -130,7 +128,7 @@ const TvRequestModal = ({
         await axios.delete(`/api/v1/request/${editRequest.id}`);
       }
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
-      requestTrigger();
+      mutate('/api/v1/request/count');
 
       addToast(
         <span>
@@ -179,7 +177,7 @@ const TvRequestModal = ({
 
     if (onUpdating) {
       onUpdating(true);
-      requestTrigger();
+      mutate('/api/v1/request/count');
     }
 
     try {
