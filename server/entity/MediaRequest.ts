@@ -678,6 +678,14 @@ export class MediaRequest {
             radarr.isAnime === this.isAnime
         );
 
+        // Fallback for requesting anime if there is no default anime server
+        // This will sent the anime request to the regular default Radarr instance for single-instance setups
+        if (!radarrSettings && this.isAnime) {
+          radarrSettings = settings.radarr.find(
+            (radarr) => radarr.isDefault && radarr.is4k === this.is4k
+          );
+        }
+
         if (
           this.serverId !== null &&
           this.serverId >= 0 &&
@@ -915,6 +923,14 @@ export class MediaRequest {
             sonarr.is4k === this.is4k &&
             sonarr.isAnime == this.isAnime
         );
+
+        // Fallback for requesting anime if there is no default anime server
+        // This will sent the anime request to the regular default Sonarr instance for single-instance setups
+        if (!sonarrSettings && this.isAnime) {
+          sonarrSettings = settings.sonarr.find(
+            (sonarr) => sonarr.isDefault && sonarr.is4k === this.is4k
+          );
+        }
 
         if (
           this.serverId !== null &&
