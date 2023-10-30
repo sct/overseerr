@@ -27,7 +27,9 @@ const messages = defineMessages({
   ssl: 'SSL',
   default: 'Default',
   default4k: 'Default 4K',
+  defaultAnime: 'Default Anime',
   is4k: '4K',
+  isAnime: 'Anime',
   address: 'Address',
   activeProfile: 'Active Profile',
   addradarr: 'Add Radarr Server',
@@ -47,6 +49,7 @@ interface ServerInstanceProps {
   name: string;
   isDefault?: boolean;
   is4k?: boolean;
+  isAnime?: boolean;
   hostname: string;
   port: number;
   isSSL?: boolean;
@@ -63,6 +66,7 @@ const ServerInstance = ({
   port,
   profileName,
   is4k = false,
+  isAnime = false,
   isDefault = false,
   isSSL = false,
   isSonarr = false,
@@ -89,15 +93,23 @@ const ServerInstance = ({
                 {name}
               </a>
             </h3>
-            {isDefault && !is4k && (
+            {isDefault && !is4k && !isAnime && (
               <Badge>{intl.formatMessage(messages.default)}</Badge>
             )}
             {isDefault && is4k && (
               <Badge>{intl.formatMessage(messages.default4k)}</Badge>
             )}
+            {isDefault && isAnime && (
+              <Badge>{intl.formatMessage(messages.defaultAnime)}</Badge>
+            )}
             {!isDefault && is4k && (
               <Badge badgeType="warning">
                 {intl.formatMessage(messages.is4k)}
+              </Badge>
+            )}
+            {!isDefault && isAnime && (
+              <Badge badgeType="warning">
+                {intl.formatMessage(messages.isAnime)}
               </Badge>
             )}
             {isSSL && (
