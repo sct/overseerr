@@ -27,8 +27,7 @@ radarrRoutes.post('/', (req, res) => {
       .filter(
         (radarrInstance) =>
           radarrInstance.is4k === req.body.is4k &&
-          radarrInstance.isAnime &&
-          req.body.isAnime
+          radarrInstance.isAnime === req.body.isAnime
       )
       .forEach((radarrInstance) => {
         radarrInstance.isDefault = false;
