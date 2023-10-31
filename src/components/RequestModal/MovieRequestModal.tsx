@@ -135,7 +135,16 @@ const MovieRequestModal = ({
     } finally {
       setIsUpdating(false);
     }
-  }, [data, onComplete, addToast, requestOverrides, hasPermission, intl, is4k]);
+  }, [
+    data,
+    onComplete,
+    addToast,
+    requestOverrides,
+    hasPermission,
+    intl,
+    is4k,
+    isAnime,
+  ]);
 
   const cancelRequest = async () => {
     setIsUpdating(true);
