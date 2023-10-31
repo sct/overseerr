@@ -21,9 +21,11 @@ const messages = defineMessages({
   createsonarr: 'Add New Sonarr Server',
   create4ksonarr: 'Add New 4K Sonarr Server',
   createAnimesonarr: 'Add New Anime Sonarr Server',
+  create4kAnimesonarr: 'Add New 4K Anime Sonarr Server',
   editsonarr: 'Edit Sonarr Server',
   edit4ksonarr: 'Edit 4K Sonarr Server',
   editAnimesonarr: 'Edit Anime Sonarr Server',
+  edit4kAnimesonarr: 'Edit 4K Anime Sonarr Server',
   validationNameRequired: 'You must provide a server name',
   validationHostnameRequired: 'You must provide a valid hostname or IP address',
   validationPortRequired: 'You must provide a valid port number',
@@ -37,6 +39,7 @@ const messages = defineMessages({
   defaultserver: 'Default Server',
   default4kserver: 'Default 4K Server',
   defaultAnimeserver: 'Default Anime Server',
+  default4kAnimeserver: 'Default 4K Anime Server',
   servername: 'Server Name',
   hostname: 'Hostname or IP Address',
   port: 'Port',
@@ -377,14 +380,18 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
               title={
                 !sonarr
                   ? intl.formatMessage(
-                      values.isAnime
+                      values.isAnime && values.is4k
+                        ? messages.create4kAnimesonarr
+                        : values.isAnime
                         ? messages.createAnimesonarr
                         : values.is4k
                         ? messages.create4ksonarr
                         : messages.createsonarr
                     )
                   : intl.formatMessage(
-                      values.isAnime
+                      values.isAnime && values.is4k
+                        ? messages.edit4kAnimesonarr
+                        : values.isAnime
                         ? messages.editAnimesonarr
                         : values.is4k
                         ? messages.edit4ksonarr
@@ -396,7 +403,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="isDefault" className="checkbox-label">
                     {intl.formatMessage(
-                      values.isAnime
+                      values.isAnime && values.is4k
+                        ? messages.default4kAnimeserver
+                        : values.isAnime
                         ? messages.defaultAnimeserver
                         : values.is4k
                         ? messages.default4kserver
