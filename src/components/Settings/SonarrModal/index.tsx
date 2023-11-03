@@ -126,6 +126,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
     name: Yup.string().required(
       intl.formatMessage(messages.validationNameRequired)
     ),
+    isAnime: Yup.boolean(),
     hostname: Yup.string()
       .required(intl.formatMessage(messages.validationHostnameRequired))
       .matches(
@@ -147,6 +148,24 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
     activeLanguageProfileId: Yup.number().required(
       intl.formatMessage(messages.validationLanguageProfileRequired)
     ),
+    activeAnimeRootFolder: Yup.string().when('isAnime', {
+      is: true,
+      then: Yup.string().required(
+        intl.formatMessage(messages.validationRootFolderRequired)
+      ),
+    }),
+    activeAnimeProfileId: Yup.string().when('isAnime', {
+      is: true,
+      then: Yup.string().required(
+        intl.formatMessage(messages.validationProfileRequired)
+      ),
+    }),
+    activeAnimeLanguageProfileId: Yup.string().when('isAnime', {
+      is: true,
+      then: Yup.string().required(
+        intl.formatMessage(messages.validationLanguageProfileRequired)
+      ),
+    }),
     externalUrl: Yup.string()
       .url(intl.formatMessage(messages.validationApplicationUrl))
       .test(
@@ -805,6 +824,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="activeAnimeProfileId" className="text-label">
                     {intl.formatMessage(messages.animequalityprofile)}
+                    <span className="label-required">
+                      {values.isAnime ? '*' : ''}
+                    </span>
                   </label>
                   <div className="form-input-area">
                     <div className="form-input-field">
@@ -845,6 +867,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="activeAnimeRootFolder" className="text-label">
                     {intl.formatMessage(messages.animerootfolder)}
+                    <span className="label-required">
+                      {values.isAnime ? '*' : ''}
+                    </span>
                   </label>
                   <div className="form-input-area">
                     <div className="form-input-field">
@@ -874,7 +899,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                     </div>
                     {errors.activeAnimeRootFolder &&
                       touched.activeAnimeRootFolder && (
-                        <div className="error">{errors.rootFolder}</div>
+                        <div className="error">
+                          {errors.activeAnimeRootFolder}
+                        </div>
                       )}
                   </div>
                 </div>
@@ -884,6 +911,9 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                     className="text-label"
                   >
                     {intl.formatMessage(messages.animelanguageprofile)}
+                    <span className="label-required">
+                      {values.isAnime ? '*' : ''}
+                    </span>
                   </label>
                   <div className="form-input-area">
                     <div className="form-input-field">
