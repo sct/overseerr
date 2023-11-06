@@ -1,4 +1,4 @@
-FROM node:20.9-alpine AS BUILD_IMAGE
+FROM node:18.18-alpine AS BUILD_IMAGE
 
 WORKDIR /app
 
@@ -8,7 +8,8 @@ ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 RUN \
   case "${TARGETPLATFORM}" in \
   'linux/arm64' | 'linux/arm/v7') \
-  apk add --no-cache python3 make g++ \
+  apk add --no-cache python3 make g++ && \
+  ln -s /usr/bin/python3 /usr/bin/python \
   ;; \
   esac
 
@@ -32,7 +33,7 @@ RUN touch config/DOCKER
 RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 
-FROM node:20.9-alpine
+FROM node:18.18-alpine
 
 WORKDIR /app
 
