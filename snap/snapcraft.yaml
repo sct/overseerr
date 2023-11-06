@@ -16,7 +16,7 @@ architectures:
 parts:
   overseerr:
     plugin: nodejs
-    nodejs-version: '18.8.2'
+    nodejs-version: '18.18.2'
     nodejs-package-manager: 'yarn'
     nodejs-yarn-version: v1.22.19
     build-packages:
