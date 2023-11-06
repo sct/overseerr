@@ -5,14 +5,14 @@ WORKDIR /app
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
-RUN \
-  case "${TARGETPLATFORM}" in \
-  'linux/arm64' | 'linux/arm/v7') \
-  apk update && \
-  apk add --no-cache python3 make g++ gcc libc6-compat bash && \
-  yarn global add node-gyp \
-  ;; \
-  esac
+# RUN \
+#   case "${TARGETPLATFORM}" in \
+#   'linux/arm64' | 'linux/arm/v7') \
+#   apk update && \
+#   apk add --no-cache python3 make g++ gcc libc6-compat bash && \
+#   yarn global add node-gyp \
+#   ;; \
+#   esac
 
 COPY package.json yarn.lock ./
 RUN CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --network-timeout 1000000
