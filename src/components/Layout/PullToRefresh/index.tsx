@@ -4,17 +4,15 @@ import { useEffect, useRef, useState } from 'react';
 
 const PullToRefresh = () => {
   const router = useRouter();
-
-  const [pullStartPoint, setPullStartPoint] = useState(0);
-  const [pullChange, setPullChange] = useState(0);
+  const [pullStartPoint, setPullStartPoint] = useState<number>(0);
+  const [pullChange, setPullChange] = useState<number>(0);
+  const [iconPlacement, setIconPlacement] = useState<number>(0);
   const refreshDiv = useRef<HTMLDivElement>(null);
 
-  // Various pull down thresholds that determine icon location
-  const pullDownInitThreshold = pullChange > 20;
-  const pullDownStopThreshold = 120;
-  const pullDownReloadThreshold = pullChange > 340;
-  const pullDownIconLocation = pullChange / 3;
-
+  // If pull change is greater than 20, we have passed
+  // the initialization threshold of the pull to refresh
+  // (the icon will start to show). If it hits 120,
+  // the reload will start on release
   useEffect(() => {
     // Reload function that is called when reload threshold has been hit
     // Add loading class to determine when to add spin animation
@@ -37,8 +35,9 @@ const PullToRefresh = () => {
         refreshDiv.current?.classList.remove('hidden');
         document.body.style.touchAction = 'none';
         document.body.style.overscrollBehavior = 'none';
+
         if (html) {
-          html.style.overscrollBehaviorY = 'none';
+          html.style.overscrollBehavior = 'none';
         }
       } else {
         refreshDiv.current?.classList.remove('block');
@@ -47,13 +46,17 @@ const PullToRefresh = () => {
     };
 
     // Tracks how far we have pulled down the refresh icon
-    const pullDown = async (e: TouchEvent) => {
+    const pullDown = (e: TouchEvent) => {
       const screenY = e.targetTouches[0].screenY;
-
       const pullLength =
         pullStartPoint < screenY ? Math.abs(screenY - pullStartPoint) : 0;
 
       setPullChange(pullLength);
+
+      // Lock the body when the icon is shown
+      if (iconPlacement > 50) {
+        document.body.style.overflow = 'hidden';
+      }
     };
 
     // Will reload the page if we are past the threshold
@@ -61,16 +64,17 @@ const PullToRefresh = () => {
     const pullFinish = () => {
       setPullStartPoint(0);
 
-      if (pullDownReloadThreshold) {
+      if (pullChange > 340) {
         forceReload();
       } else {
         setPullChange(0);
       }
 
       document.body.style.touchAction = 'auto';
-      document.body.style.overscrollBehaviorY = 'auto';
+      document.body.style.overscrollBehavior = 'auto';
+      document.body.style.overflow = 'scroll';
       if (html) {
-        html.style.overscrollBehaviorY = 'auto';
+        html.style.overscrollBehavior = 'auto';
       }
     };
 
@@ -78,26 +82,28 @@ const PullToRefresh = () => {
     window.addEventListener('touchmove', pullDown, { passive: false });
     window.addEventListener('touchend', pullFinish, { passive: false });
 
+    // Determines the position of the icon based on
+    // the pull-down distance to touch
+    if (pullChange / 3 < 120 && pullChange > 20) {
+      setIconPlacement(pullChange / 3);
+    } else if (pullChange > 20) {
+      setIconPlacement(120);
+    } else {
+      setIconPlacement(0);
+    }
+
     return () => {
       window.removeEventListener('touchstart', pullStart);
       window.removeEventListener('touchmove', pullDown);
       window.removeEventListener('touchend', pullFinish);
     };
-  }, [pullDownInitThreshold, pullDownReloadThreshold, pullStartPoint, router]);
+  }, [iconPlacement, pullChange, pullStartPoint, router]);
 
   return (
     <div
       ref={refreshDiv}
-      className="absolute left-0 right-0 top-0 z-50 m-auto w-fit transition-all ease-out"
-      id="refreshIcon"
-      style={{
-        top:
-          pullDownIconLocation < pullDownStopThreshold && pullDownInitThreshold
-            ? pullDownIconLocation
-            : pullDownInitThreshold
-            ? pullDownStopThreshold
-            : '',
-      }}
+      className="absolute left-0 right-0 z-50 m-auto w-fit transition-all ease-out"
+      style={{ top: iconPlacement }}
     >
       <div
         className={`${
@@ -107,7 +113,7 @@ const PullToRefresh = () => {
       >
         <ArrowPathIcon
           className={`rounded-full ${
-            pullDownReloadThreshold && 'rotate-180'
+            pullChange > 340 && 'rotate-180'
           } text-indigo-500 transition-all duration-300`}
         />
       </div>

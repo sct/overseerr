@@ -524,22 +524,3 @@
     height: calc(4rem + env(safe-area-inset-bottom));
   }
 }
-
-.ptr--ptr {
-  box-shadow: initial !important;
-  position: absolute !important;
-  z-index: 30 !important;
-}
-
-.ptr--refresh {
-  overflow: visible !important;
-  z-index: 30 !important;
-}
-
-.ptr--pull {
-  z-index: 30 !important;
-}
-
-.ptr--box {
-  margin-bottom: -13px !important;
-}
