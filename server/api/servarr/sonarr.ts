@@ -316,6 +316,21 @@ class SonarrAPI extends ServarrBase<{
     }
   }
 
+  public async removeSerie(serieId: number): Promise<void> {
+    try {
+      const { id, title } = await this.getSeriesByTvdbId(serieId);
+      await this.axios.delete(`/series/${id}`, {
+        params: {
+          deleteFiles: true,
+          addImportExclusion: false,
+        },
+      });
+      logger.info(`[Sonarr] Removed serie ${title}`);
+    } catch (e) {
+      throw new Error(`[Sonarr] Failed to remove serie: ${e.message}`);
+    }
+  }
+
   private buildSeasonList(
     seasons: number[],
     existingSeasons?: SonarrSeason[]
