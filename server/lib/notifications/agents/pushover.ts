@@ -56,9 +56,13 @@ class PushoverAgent
         responseType: 'arraybuffer',
       });
       const base64 = Buffer.from(response.data, 'binary').toString('base64');
+      const contentType = (
+        response.headers['Content-Type'] || response.headers['content-type']
+      )?.toString();
+
       return {
         attachment_base64: base64,
-        attachment_type: response.headers['content-type'],
+        attachment_type: contentType,
       };
     } catch (e) {
       logger.error('Error getting image payload', {
