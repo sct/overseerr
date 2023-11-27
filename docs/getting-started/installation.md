@@ -30,7 +30,7 @@ docker run -d \
   -e TZ=Asia/Tokyo \
   -e PORT=5055 `#optional` \
   -p 5055:5055 \
-  -v /path/to/appdata/config:/app/config \
+  -v /path/to/appdata/config:/config \
   --restart unless-stopped \
   sctx/overseerr
 ```
@@ -86,7 +86,7 @@ services:
     ports:
       - 5055:5055
     volumes:
-      - /path/to/appdata/config:/app/config
+      - /path/to/appdata/config:/config
     restart: unless-stopped
 ```
 
@@ -145,17 +145,17 @@ or the Docker Desktop app:
 Then, create and start the Overseerr container:
 
 ```bash
-docker run -d --name overseerr -e LOG_LEVEL=debug -e TZ=Asia/Tokyo -p 5055:5055 -v "overseerr-data:/app/config" --restart unless-stopped sctx/overseerr:latest
+docker run -d --name overseerr -e LOG_LEVEL=debug -e TZ=Asia/Tokyo -p 5055:5055 -v "overseerr-data:/config" --restart unless-stopped sctx/overseerr:latest
 ```
 
 To access the files inside the volume created above, navigate to `\\wsl$\docker-desktop-data\version-pack-data\community\docker\volumes\overseerr-data\_data` using File Explorer.
 
 {% hint style="info" %}
-Docker on Windows works differently than it does on Linux; it runs Docker inside of a stripped-down Linux VM. Volume mounts are exposed to Docker inside this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/app/config` directory because SMB does not support file locking. This will eventually corrupt your database, which can lead to slow behavior and crashes.
+Docker on Windows works differently than it does on Linux; it runs Docker inside of a stripped-down Linux VM. Volume mounts are exposed to Docker inside this VM via SMB mounts. While this is fine for media, it is unacceptable for the `/config` directory because SMB does not support file locking. This will eventually corrupt your database, which can lead to slow behavior and crashes.
 
-**If you must run Docker on Windows, you should put the `/app/config` directory mount inside the VM and not on the Windows host.** (This also applies to other containers with SQLite databases.)
+**If you must run Docker on Windows, you should put the `/config` directory mount inside the VM and not on the Windows host.** (This also applies to other containers with SQLite databases.)
 
-Named volumes, like in the example commands above, are automatically mounted inside the VM. Therefore the warning on the setup about the `/app/config` folder being incorrectly mounted page should be ignored.
+Named volumes, like in the example commands above, are automatically mounted inside the VM. Therefore the warning on the setup about the `/config` folder being incorrectly mounted page should be ignored.
 {% endhint %}
 
 ## Linux
