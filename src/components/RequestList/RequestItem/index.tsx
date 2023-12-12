@@ -2,6 +2,7 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import ConfirmButton from '@app/components/Common/ConfirmButton';
+import DeclineRequestModal from '@app/components/DeclineRequestModal';
 import RequestModal from '@app/components/RequestModal';
 import StatusBadge from '@app/components/StatusBadge';
 import useDeepLinks from '@app/hooks/useDeepLinks';
@@ -283,6 +284,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
@@ -305,6 +307,16 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   );
 
   const [isRetrying, setRetrying] = useState(false);
+
+  const declineRequest = async (declineMessage: string) => {
+    const response = await axios.post(`/api/v1/request/${request.id}/decline`, {
+      message: declineMessage,
+    });
+
+    if (response) {
+      revalidate();
+    }
+  }
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
@@ -374,6 +386,16 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
           revalidateList();
           setShowEditModal(false);
         }}
+      />
+      <DeclineRequestModal
+        show={showDeclineModal}
+        tmdbId={request.media.tmdbId}
+        onDecline={(declineMessage) => {
+          declineRequest(declineMessage);
+          setShowDeclineModal(false);
+        }
+        }
+        onCancel={() => setShowDeclineModal(false)}
       />
       <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
         {title.backdropPath && (
@@ -648,7 +670,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   <Button
                     className="w-full"
                     buttonType="danger"
-                    onClick={() => modifyRequest('decline')}
+                    onClick={() => setShowDeclineModal(true)}
                   >
                     <XMarkIcon />
                     <span>{intl.formatMessage(globalMessages.decline)}</span>
