@@ -45,6 +45,9 @@ class WebPushAgent
         : 'series'
       : undefined;
     const is4k = payload.request?.is4k;
+    const adminMessage = payload.adminMessage
+      ? payload.adminMessage
+      : undefined;
 
     const issueType = payload.issue
       ? payload.issue.issueType !== IssueType.OTHER
@@ -80,7 +83,9 @@ class WebPushAgent
         }${mediaType} request is now available!`;
         break;
       case Notification.MEDIA_DECLINED:
-        message = `Your ${is4k ? '4K ' : ''}${mediaType} request was declined.`;
+        message = `Your ${is4k ? '4K ' : ''}${mediaType} request was declined${
+          adminMessage ? `: ${adminMessage}` : '.'
+        }.`;
         break;
       case Notification.MEDIA_FAILED:
         message = `Failed to process ${is4k ? '4K ' : ''}${mediaType} request.`;

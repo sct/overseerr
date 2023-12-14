@@ -19,6 +19,7 @@ export interface NotificationPayload {
   request?: MediaRequest;
   issue?: Issue;
   comment?: IssueComment;
+  adminMessage?: string;
 }
 
 export abstract class BaseAgent<T extends NotificationAgentConfig> {
