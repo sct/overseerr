@@ -61,6 +61,10 @@ div(style='display: block; background-color: #111827; padding: 2.5rem 0;')
               td(style='font-size: .85em; color: #9ca3af; line-height: 1em; vertical-align: bottom; margin-right: 1rem')
                 span
                   | #{timestamp}
+    if adminMessage
+      tr
+        td(style='font-size: 1.0em; color: #9ca3af; line-height: 1.5em; vertical-align: top; margin-right: 1rem')
+          | #{adminMessage}
     if actionUrl
       tr
         td

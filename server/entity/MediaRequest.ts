@@ -460,6 +460,9 @@ export class MediaRequest {
   @Column({ default: false })
   public isAutoRequest: boolean;
 
+  @Column({ nullable: true, length: 140 })
+  public adminMessage?: string;
+
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }

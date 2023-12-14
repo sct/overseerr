@@ -310,13 +310,13 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
 
   const declineRequest = async (declineMessage: string) => {
     const response = await axios.post(`/api/v1/request/${request.id}/decline`, {
-      message: declineMessage,
+      adminMessage: declineMessage,
     });
 
     if (response) {
       revalidate();
     }
-  }
+  };
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
@@ -393,11 +393,10 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
         onDecline={(declineMessage) => {
           declineRequest(declineMessage);
           setShowDeclineModal(false);
-        }
-        }
+        }}
         onCancel={() => setShowDeclineModal(false)}
       />
-      <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
+      <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:flex-row">
         {title.backdropPath && (
           <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
             <CachedImage
@@ -617,6 +616,17 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                       </Link>
                     ),
                   })}
+                </span>
+              </div>
+            )}
+            {requestData.adminMessage && (
+              <div className="card-field">
+                <span className="card-field-name">
+                  {requestData.status === MediaRequestStatus.DECLINED && (
+                    <span className="flex truncate whitespace-normal text-sm font-light italic text-gray-300">
+                      &quot;{requestData.adminMessage}&quot;
+                    </span>
+                  )}
                 </span>
               </div>
             )}

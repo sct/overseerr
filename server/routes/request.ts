@@ -538,6 +538,12 @@ requestRoutes.post<{
 
       request.status = newStatus;
       request.modifiedBy = req.user;
+
+      const adminMessage = req.body.adminMessage;
+      if (adminMessage) {
+        request.adminMessage = adminMessage;
+      }
+
       await requestRepository.save(request);
 
       return res.status(200).json(request);
