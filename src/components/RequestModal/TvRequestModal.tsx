@@ -41,7 +41,7 @@ const messages = defineMessages({
   season: 'Season',
   numberofepisodes: '# of Episodes',
   seasonnumber: 'Season {number}',
-  extras: 'Extras',
+  specials: 'Specials',
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request for <strong>{title}</strong> edited successfully!',
   requestApproved: 'Request for <strong>{title}</strong> approved!',
@@ -232,9 +232,7 @@ const TvRequestModal = ({
 
   const getAllSeasons = (): number[] => {
     return (data?.seasons ?? [])
-      .filter(
-        (season) => season.seasonNumber !== 0 && season.episodeCount !== 0
-      )
+      .filter((season) => season.episodeCount !== 0)
       .map((season) => season.seasonNumber);
   };
 
@@ -557,10 +555,7 @@ const TvRequestModal = ({
                 </thead>
                 <tbody className="divide-y divide-gray-700">
                   {data?.seasons
-                    .filter(
-                      (season) =>
-                        season.seasonNumber !== 0 && season.episodeCount !== 0
-                    )
+                    .filter((season) => season.episodeCount !== 0)
                     .map((season) => {
                       const seasonRequest = getSeasonRequest(
                         season.seasonNumber
@@ -637,7 +632,7 @@ const TvRequestModal = ({
                           </td>
                           <td className="whitespace-nowrap px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6">
                             {season.seasonNumber === 0
-                              ? intl.formatMessage(messages.extras)
+                              ? intl.formatMessage(messages.specials)
                               : intl.formatMessage(messages.seasonnumber, {
                                   number: season.seasonNumber,
                                 })}
