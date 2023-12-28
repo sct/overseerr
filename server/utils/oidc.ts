@@ -24,15 +24,16 @@ export async function getOIDCRedirectUrl(req: Request, state: string) {
   url.searchParams.set('response_type', 'code');
   url.searchParams.set('client_id', oidcClientId);
 
-  const callbackUrl = new URL(
-    '/api/v1/auth/oidc-callback',
-    `${req.protocol}://${req.headers.host}`
-  ).toString();
+  // Use X-Forwarded-Proto if available, otherwise fall back to req.protocol
+  const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+  const callbackUrl = new URL('/api/v1/auth/oidc-callback', `${protocol}://${req.headers.host}`).toString();
   url.searchParams.set('redirect_uri', callbackUrl);
   url.searchParams.set('scope', 'openid profile email');
   url.searchParams.set('state', state);
+
   return url.toString();
 }
+
 
 export const createJwtSchema = ({
   oidcDomain,
