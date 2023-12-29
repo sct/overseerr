@@ -457,7 +457,7 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
   const cookieState = req.cookies['oidc-state'];
   const url = new URL(req.url, `${req.protocol}://${req.hostname}`);
   const state = url.searchParams.get('state');
-  const scope = url.searchParams.get('scope'); // Handling additional 'scope' parameter
+  const scope = url.searchParams.get('scope'); // Handling 'scope' parameter
 
   try {
     // State validation
@@ -484,7 +484,9 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
     formData.append('redirect_uri', callbackUrl.toString());
     formData.append('client_id', oidcClientId);
     formData.append('code', code);
-    formData.append('scope', scope); // Include the 'scope' in the token request
+    if (scope) { // Append 'scope' only if it's provided
+      formData.append('scope', scope);
+    }
 
     const response = await fetch(wellKnownInfo.token_endpoint, {
       method: 'POST',
