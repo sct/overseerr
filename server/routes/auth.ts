@@ -443,6 +443,7 @@ authRoutes.get('/oidc-login', async (req, res, next) => {
 
 
 authRoutes.get('/oidc-callback', async (req, res, next) => {
+  logger.info('OIDC callback initiated', { req });
   const settings = getSettings();
   const { oidcDomain, oidcClientId, oidcClientSecret } = settings.main;
 
