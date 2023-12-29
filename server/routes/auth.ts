@@ -453,14 +453,7 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
   const cookieState = req.cookies['oidc-state'];
   const url = new URL(req.url, `${req.protocol}://${req.hostname}`);
   const state = url.searchParams.get('state');
-  const scope = url.searchParams.get('scope'); // Optional scope parameter
-
-  // Optional logging for scope parameter
-  if (scope) {
-    logger.info('OIDC callback with scope', { scope });
-  } else {
-    logger.info('OIDC callback without scope');
-  }
+  const scope = url.searchParams.get('scope'); // Handling 'scope' parameter
 
   try {
     // Check that the request belongs to the correct state
@@ -501,8 +494,7 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
     formData.append('redirect_uri', callbackUrl.toString());
     formData.append('client_id', oidcClientId);
     formData.append('code', code);
-    // Append scope if available
-    if (scope) {
+    if (scope) { // Append 'scope' only if it's provided
       formData.append('scope', scope);
     }
 
