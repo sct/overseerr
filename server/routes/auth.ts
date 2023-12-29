@@ -443,6 +443,25 @@ authRoutes.get('/oidc-login', async (req, res, next) => {
 });
 
 authRoutes.get('/oidc-callback', async (req, res, next) => {
+  logger.info('OIDC callback initiated', { req });
+  const settings = getSettings();
+  const { oidcDomain, oidcClientId, oidcClientSecret } = settings.main;
+
+  if (!settings.main.oidcLogin) {
+    return res.status(500).json({ error: 'OIDC sign-in is disabled.' });
+  }
+  const cookieState = req.cookies['oidc-state'];
+  const url = new URL(req.url, `${req.protocol}://${req.hostname}`);
+  const state = url.searchParams.get('state');
+  const scope = url.searchParams.get('scope'); // Optional scope parameter
+
+  // Optional logging for scope parameter
+  if (scope) {
+    logger.info('OIDC callback with scope', { scope });
+  } else {
+    logger.info('OIDC callback without scope');
+  }
+
   try {
     const logRequestInfo = (req: Request) => {
       const remoteIp = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
