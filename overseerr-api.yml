@@ -3472,6 +3472,23 @@ paths:
           schema:
             type: string
             example: '123456789'
+        - in: query
+          name: scope
+          required: false
+          allowReserved: true
+          schema:
+            type: string
+            example: 'openid email profile'
+        - in: query
+          name: error
+          required: false
+          schema:
+            type: string
+        - in: query
+          name: error_description
+          required: false
+          schema:
+            type: string
         - in: cookie
           name: oidc-state
           required: true
