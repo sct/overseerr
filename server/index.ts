@@ -40,6 +40,17 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
+const logMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // Log information about the incoming request
+  console.log(`Request Method: ${req.method}`);
+  console.log(`Request URL: ${req.url}`);
+  console.log(`Request Headers: ${JSON.stringify(req.headers)}`);
+  console.log(`Request Body: ${JSON.stringify(req.body)}`);
+
+  // Continue processing the request
+  next();
+};
+
 app
   .prepare()
   .then(async () => {
@@ -95,6 +106,9 @@ app
     startJobs();
 
     const server = express();
+
+    server.use(logMiddleware);
+
     if (settings.main.trustProxy) {
       server.enable('trust proxy');
     }
