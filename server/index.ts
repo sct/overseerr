@@ -45,12 +45,10 @@ const handle = app.getRequestHandler();
 
 const logMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // Log information about the incoming request
-  console.log(`Request Method: ${req.method}`);
-  console.log(`Request URL: ${req.url}`);
-  console.log(`Request Headers: ${JSON.stringify(req.headers)}`);
-  console.log(`Request Body: ${JSON.stringify(req.body)}`);
-
-  // Continue processing the request
+  logger.debug(`Request Method: ${req.method}`);
+  logger.debug(`Request URL: ${req.url}`);
+  logger.debug(`Request Headers: ${JSON.stringify(req.headers)}`);
+  logger.debug(`Request Body: ${JSON.stringify(req.body)}`);
   next();
 };
 
