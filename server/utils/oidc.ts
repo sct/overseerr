@@ -50,7 +50,7 @@ export const createJwtSchema = ({
         `The token iss value doesn't match the oidc_DOMAIN (${oidcDomain})`
       )
       .required("The token didn't come with an iss value."),
-    
+
     aud: yup
       .mixed()
       .test(
@@ -140,4 +140,3 @@ export interface OIDCJwtPayload {
   // Include any additional fields that your OIDC provider might use
   [additionalClaim: string]: unknown;
 }
-

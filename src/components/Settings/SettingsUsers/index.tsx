@@ -5,7 +5,7 @@ import SensitiveInput from '@app/components/Common/SensitiveInput';
 import PermissionEdit from '@app/components/PermissionEdit';
 import QuotaSelector from '@app/components/QuotaSelector';
 import globalMessages from '@app/i18n/globalMessages';
-import { ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
+import { SaveIcon } from '@heroicons/react/outline';
 import type { MainSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -344,7 +344,7 @@ const SettingsUsers: React.FC = () => {
                         type="submit"
                         disabled={isSubmitting}
                       >
-                        <ArrowDownOnSquareIcon />
+                        <SaveIcon />
                         <span>
                           {isSubmitting
                             ? intl.formatMessage(globalMessages.saving)

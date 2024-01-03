@@ -430,6 +430,7 @@ authRoutes.post('/reset-password/:guid', async (req, res, next) => {
   return res.status(200).json({ status: 'ok' });
 });
 
+
 authRoutes.get('/oidc-login', async (req, res, next) => {
   try {
     const state = randomBytes(32).toString('hex');
