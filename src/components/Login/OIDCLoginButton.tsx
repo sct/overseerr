@@ -1,6 +1,6 @@
 import globalMessages from '@app/i18n/globalMessages';
 import OIDCAuth from '@app/utils/oidc';
-import { LoginIcon } from '@heroicons/react/outline';
+import { ArrowLeftOnRectangleIcon} from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -37,7 +37,7 @@ function OIDCLoginButton({ revalidate, oidcName }: Props) {
         className="plex-button bg-indigo-500 hover:bg-indigo-600"
         onClick={handleClick}
       >
-        <LoginIcon />
+        <ArrowLeftOnRectangleIcon />
         <span>
           {loading
             ? intl.formatMessage(globalMessages.loading)
