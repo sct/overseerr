@@ -5,13 +5,7 @@ WORKDIR /app
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
-RUN \
-  case "${TARGETPLATFORM}" in \
-    'linux/arm64' | 'linux/arm/v7') \
-      apk add --no-cache python3 make g++ && \
-      ln -s /usr/bin/python3 /usr/bin/python \
-      ;; \
-  esac
+RUN apk add --no-cache python3 make g++
 
 COPY package.json yarn.lock ./
 RUN CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --network-timeout 1000000
