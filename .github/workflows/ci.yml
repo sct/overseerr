@@ -13,14 +13,13 @@ jobs:
     name: Lint & Test Build
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    container: node:18-alpine
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '20-x'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.10'
