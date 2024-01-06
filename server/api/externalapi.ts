@@ -1,3 +1,4 @@
+import logger from '@server/logger';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
@@ -37,6 +38,10 @@ class ExternalAPI {
         ...options.headers,
       },
     });
+
+    if (process.env.HTTPS_PROXY) {
+      logger.debug(`Using proxy from env var ${process.env.HTTPS_PROXY}`);
+    }
 
     if (options.rateLimit) {
       this.axios = rateLimit(this.axios, {
