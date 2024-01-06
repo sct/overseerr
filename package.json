@@ -169,7 +169,8 @@
     "sqlite3/node-gyp": "8.4.1",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
-    "@types/express-session": "1.17.6"
+    "@types/express-session": "1.17.6",
+    "next/@swc/helpers": "0.4.36"
   },
   "config": {
     "commitizen": {
