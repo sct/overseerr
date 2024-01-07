@@ -39,6 +39,7 @@ class ExternalAPI {
       },
     });
 
+    logger.debug(process.env);
     if (process.env.HTTPS_PROXY) {
       logger.debug(`Using proxy from env var ${process.env.HTTPS_PROXY}`);
     }
