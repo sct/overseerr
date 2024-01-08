@@ -1,5 +1,6 @@
 import ExternalAPI from '@server/api/externalapi';
 import cacheManager from '@server/lib/cache';
+import logger from '@server/logger';
 import { sortBy } from 'lodash';
 import type {
   TmdbCollection,
@@ -264,6 +265,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
+      logger.error('[TMDB] Failed to fetch movie details $o', e);
       throw new Error(`[TMDB] Failed to fetch movie details: ${e.message}`);
     }
   };

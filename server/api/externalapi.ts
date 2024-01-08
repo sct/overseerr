@@ -56,7 +56,6 @@ class ExternalAPI {
         },
         protocol: port == 443 ? 'https' : 'http',
       };
-      logger.debug(`Using proxy config %o`, config.proxy);
     }
 
     this.axios = axios.create(config);
