@@ -31,7 +31,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata && rm -rf /tmp/*
+RUN apk add --no-cache tzdata curl && rm -rf /tmp/*
 
 # copy from build image
 COPY --from=BUILD_IMAGE /app ./
