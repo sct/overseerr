@@ -31,12 +31,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata tini && rm -rf /tmp/*
+RUN apk add --no-cache tzdata && rm -rf /tmp/*
 
 # copy from build image
 COPY --from=BUILD_IMAGE /app ./
 
-ENTRYPOINT [ "/sbin/tini", "--" ]
 CMD [ "yarn", "start" ]
 
 EXPOSE 5055
