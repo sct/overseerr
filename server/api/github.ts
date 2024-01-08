@@ -93,6 +93,7 @@ class GithubAPI extends ExternalAPI {
 
       return data;
     } catch (e) {
+      logger.error('[GITHUB]' + e.toJSON());
       logger.warn(
         "Failed to retrieve GitHub releases. This may be an issue on GitHub's end. Overseerr can't check if it's on the latest version.",
         { label: 'GitHub API', errorMessage: e.message }

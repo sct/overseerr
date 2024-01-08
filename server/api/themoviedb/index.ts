@@ -265,7 +265,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      logger.error('[TMDB] Failed to fetch movie details $o', e);
+      logger.error('[TMDB]' + e.toJSON());
       throw new Error(`[TMDB] Failed to fetch movie details: ${e.message}`);
     }
   };

@@ -1,4 +1,3 @@
-import logger from '@server/logger';
 import type {
   AxiosInstance,
   AxiosRequestConfig,
@@ -44,7 +43,6 @@ class ExternalAPI {
     };
 
     if (process.env.HTTPS_PROXY) {
-      logger.debug(`Using proxy from env var ${process.env.HTTPS_PROXY}`);
       const parsedUrl = new URL(process.env.HTTPS_PROXY);
       const port = parseInt(parsedUrl.port);
       config.proxy = {
