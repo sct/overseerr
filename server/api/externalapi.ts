@@ -47,13 +47,14 @@ class ExternalAPI {
       logger.debug(`Using proxy from env var ${process.env.HTTPS_PROXY}`);
       const parsedUrl = new URL(process.env.HTTPS_PROXY);
       config.proxy = {
-        host: parsedUrl.host,
+        host: parsedUrl.hostname,
         port: parseInt(parsedUrl.port),
         auth: {
           username: parsedUrl.username,
           password: parsedUrl.password,
         },
       };
+      logger.debug(`Using proxy config %o`, config.proxy);
     }
 
     this.axios = axios.create(config);
