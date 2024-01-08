@@ -46,13 +46,15 @@ class ExternalAPI {
     if (process.env.HTTPS_PROXY) {
       logger.debug(`Using proxy from env var ${process.env.HTTPS_PROXY}`);
       const parsedUrl = new URL(process.env.HTTPS_PROXY);
+      const port = parseInt(parsedUrl.port);
       config.proxy = {
         host: parsedUrl.hostname,
-        port: parseInt(parsedUrl.port),
+        port: port,
         auth: {
           username: parsedUrl.username,
           password: parsedUrl.password,
         },
+        protocol: port == 443 ? 'https' : 'http',
       };
       logger.debug(`Using proxy config %o`, config.proxy);
     }
