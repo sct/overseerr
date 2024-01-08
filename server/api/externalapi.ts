@@ -1,10 +1,12 @@
 import type {
   AxiosInstance,
+  AxiosProxyConfig,
   AxiosRequestConfig,
   CreateAxiosDefaults,
 } from 'axios';
 import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
+import http from 'http';
 import type NodeCache from 'node-cache';
 
 // 5 minute default TTL (in seconds)
@@ -24,6 +26,7 @@ interface ExternalAPIOptions {
 
 class ExternalAPI {
   protected axios: AxiosInstance;
+  protected proxy: AxiosProxyConfig;
   private baseUrl: string;
   private cache?: NodeCache;
 
@@ -45,7 +48,7 @@ class ExternalAPI {
     if (process.env.HTTPS_PROXY) {
       const parsedUrl = new URL(process.env.HTTPS_PROXY);
       const port = parseInt(parsedUrl.port);
-      config.proxy = {
+      this.proxy = {
         host: parsedUrl.hostname,
         port: port,
         auth: {
@@ -54,6 +57,7 @@ class ExternalAPI {
         },
         protocol: port == 443 ? 'https' : 'http',
       };
+      config.proxy = this.proxy;
     }
 
     this.axios = axios.create(config);
@@ -79,6 +83,27 @@ class ExternalAPI {
     if (cachedItem) {
       return cachedItem;
     }
+
+    const auth =
+      'Basic ' +
+      Buffer.from(
+        this.proxy.auth?.username + ':' + this.proxy.auth?.password
+      ).toString('base64');
+
+    http.get(
+      {
+        host: this.proxy.host,
+        port: this.proxy.port,
+        path: endpoint,
+        headers: {
+          'Proxy-Authorization': auth,
+        },
+      },
+      (res) => {
+        // eslint-disable-next-line no-console
+        console.log(res);
+      }
+    );
 
     const response = await this.axios.get<T>(endpoint, config);
 
