@@ -1,5 +1,9 @@
 import logger from '@server/logger';
-import type { AxiosInstance, AxiosRequestConfig } from 'axios';
+import type {
+  AxiosInstance,
+  AxiosRequestConfig,
+  CreateAxiosDefaults,
+} from 'axios';
 import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
 import type NodeCache from 'node-cache';
@@ -29,7 +33,7 @@ class ExternalAPI {
     params: Record<string, unknown>,
     options: ExternalAPIOptions = {}
   ) {
-    this.axios = axios.create({
+    const config: CreateAxiosDefaults = {
       baseURL: baseUrl,
       params,
       headers: {
@@ -37,12 +41,22 @@ class ExternalAPI {
         Accept: 'application/json',
         ...options.headers,
       },
-    });
+    };
 
-    logger.debug('Enviroment vars %o', process.env);
     if (process.env.HTTPS_PROXY) {
       logger.debug(`Using proxy from env var ${process.env.HTTPS_PROXY}`);
+      const parsedUrl = new URL(process.env.HTTPS_PROXY);
+      config.proxy = {
+        host: parsedUrl.host,
+        port: parseInt(parsedUrl.port),
+        auth: {
+          username: parsedUrl.username,
+          password: parsedUrl.password,
+        },
+      };
     }
+
+    this.axios = axios.create(config);
 
     if (options.rateLimit) {
       this.axios = rateLimit(this.axios, {
