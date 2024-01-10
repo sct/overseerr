@@ -43,6 +43,17 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
 
+const logMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // Log information about the incoming request
+  logger.debug(`Request Method: ${req.method}`);
+  logger.debug(`Request URL: ${req.url}`);
+  logger.debug(`Request Headers: ${JSON.stringify(req.headers)}`);
+  logger.debug(`Request Body: ${JSON.stringify(req.body)}`);
+
+  // Continue processing the request
+  next();
+};
+
 app
   .prepare()
   .then(async () => {
@@ -104,6 +115,7 @@ app
     if (settings.main.trustProxy) {
       server.enable('trust proxy');
     }
+    server.use(logMiddleware);
     server.use(cookieParser());
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
