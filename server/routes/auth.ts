@@ -6,14 +6,15 @@ import { Permission } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
-import { Router, Request } from 'express';
+import { Router} from 'express';
+import type { Request } from 'express';
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   createJwtSchema,
   getOIDCRedirectUrl,
   getOIDCWellknownConfiguration,
-  OIDCJwtPayload,
 } from '@server/utils/oidc';
+import type { OIDCJwtPayload } from '@server/utils/oidc';
 import { randomBytes } from 'crypto';
 import gravatarUrl from 'gravatar-url';
 import decodeJwt from 'jwt-decode';

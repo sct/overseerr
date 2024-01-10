@@ -35,6 +35,8 @@ import next from 'next';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import xss from 'xss';
+import validator from 'validator';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -45,12 +47,19 @@ const handle = app.getRequestHandler();
 
 const logMiddleware = (req: Request, res: Response, next: NextFunction) => {
   // Log information about the incoming request
-  logger.debug(`Request Method: ${req.method}`);
-  logger.debug(`Request URL: ${req.url}`);
-  logger.debug(`Request Headers: ${JSON.stringify(req.headers)}`);
-  logger.debug(`Request Body: ${JSON.stringify(req.body)}`);
+  logger.debug(`Request Method: ${xss(req.method)}`);
+  logger.debug(`Request URL: ${xss(req.url)}`);
 
-  // Continue processing the request
+  const sanitizedHeaders = JSON.stringify(req.headers, (key, value) =>
+    typeof value === 'string' ? validator.escape(value) : value
+  );
+  logger.debug(`Request Headers: ${sanitizedHeaders}`);
+
+  const sanitizedBody = JSON.stringify(req.body, (key, value) =>
+    typeof value === 'string' ? validator.escape(value) : value
+  );
+  logger.debug(`Request Body: ${sanitizedBody}`);
+
   next();
 };
 
