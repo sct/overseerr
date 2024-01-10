@@ -123,7 +123,7 @@ const Login = () => {
                   {settings.currentSettings.newPlexLogin && (
                     <div>
                       <button
-                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700 focus:outline-none ${
+                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700 focus:outline-none sm:rounded-t-lg ${
                           openIndexes.includes(0) && 'text-indigo-500'
                         }`}
                         onClick={() => handleClick(0)}
