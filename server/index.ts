@@ -31,12 +31,11 @@ import express from 'express';
 import * as OpenApiValidator from 'express-openapi-validator';
 import type { Store } from 'express-session';
 import session from 'express-session';
+import _ from 'lodash';
 import next from 'next';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
-import xss from 'xss';
-import validator from 'validator';
 
 const API_SPEC_PATH = path.join(__dirname, '../overseerr-api.yml');
 
@@ -46,19 +45,34 @@ const app = next({ dev });
 const handle = app.getRequestHandler();
 
 const logMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  // Log information about the incoming request
-  logger.debug(`Request Method: ${xss(req.method)}`);
-  logger.debug(`Request URL: ${xss(req.url)}`);
+  // Enhanced sanitization function with explicit return type
+  const sanitize = (input: unknown, depth = 0): string => {
+    if (depth > 2) {
+      return typeof input === 'string' ? _.escape(input) : '[Complex Object]';
+    }
+    if (typeof input === 'string') {
+      return _.escape(_.truncate(input, { length: 200 }));
+    } else if (_.isObject(input)) {
+      return _.mapValues(input, (value) =>
+        sanitize(value, depth + 1)
+      ) as unknown as string;
+    }
+    return input as string;
+  };
 
-  const sanitizedHeaders = JSON.stringify(req.headers, (key, value) =>
-    typeof value === 'string' ? validator.escape(value) : value
-  );
-  logger.debug(`Request Headers: ${sanitizedHeaders}`);
+  // Function to selectively log properties with explicit parameter types
+  const safeLog = (key: string, value: unknown): unknown => {
+    const sensitiveKeys = ['authorization', 'cookie', 'set-cookie'];
+    if (sensitiveKeys.includes(key.toLowerCase())) {
+      return '[Filtered]';
+    }
+    return sanitize(value);
+  };
 
-  const sanitizedBody = JSON.stringify(req.body, (key, value) =>
-    typeof value === 'string' ? validator.escape(value) : value
-  );
-  logger.debug(`Request Body: ${sanitizedBody}`);
+  logger.debug(`Request Method: ${sanitize(req.method)}`);
+  logger.debug(`Request URL: ${sanitize(req.originalUrl)}`);
+  logger.debug(`Request Headers: ${JSON.stringify(req.headers, safeLog)}`);
+  logger.debug(`Request Body: ${JSON.stringify(req.body, safeLog)}`);
 
   next();
 };

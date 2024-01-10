@@ -6,16 +6,15 @@ import { Permission } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
-import { Router} from 'express';
-import type { Request } from 'express';
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import type { OIDCJwtPayload } from '@server/utils/oidc';
 import {
   createJwtSchema,
   getOIDCRedirectUrl,
   getOIDCWellknownConfiguration,
 } from '@server/utils/oidc';
-import type { OIDCJwtPayload } from '@server/utils/oidc';
 import { randomBytes } from 'crypto';
+import type { Request } from 'express';
+import { Router } from 'express';
 import gravatarUrl from 'gravatar-url';
 import decodeJwt from 'jwt-decode';
 import type { InferType } from 'yup';
@@ -458,11 +457,13 @@ authRoutes.get('/oidc-login', async (req, res, next) => {
   }
 });
 
-
 authRoutes.get('/oidc-callback', async (req, res, next) => {
   try {
     const logRequestInfo = (req: Request) => {
-      const remoteIp = req.headers['x-real-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+      const remoteIp =
+        req.headers['x-real-ip'] ||
+        req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress;
       const requestInfo = {
         method: req.method,
         url: req.url,
@@ -517,7 +518,10 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
 
     const wellKnownInfo = await getOIDCWellknownConfiguration(oidcDomain);
 
-    const callbackUrl = new URL('/api/v1/auth/oidc-callback', `${req.protocol}://${req.headers.host}`);
+    const callbackUrl = new URL(
+      '/api/v1/auth/oidc-callback',
+      `${req.protocol}://${req.headers.host}`
+    );
     const formData = new URLSearchParams();
     formData.append('client_secret', oidcClientSecret);
     formData.append('grant_type', 'authorization_code');
@@ -530,7 +534,9 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
 
     const response = await fetch(wellKnownInfo.token_endpoint, {
       method: 'POST',
-      headers: new Headers([['Content-Type', 'application/x-www-form-urlencoded']]),
+      headers: new Headers([
+        ['Content-Type', 'application/x-www-form-urlencoded'],
+      ]),
       body: formData,
     });
 
@@ -547,7 +553,10 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
       return res.redirect('/login');
     }
 
-    const { id_token: idToken } = body as Extract<typeof body, { id_token: string }>;
+    const { id_token: idToken } = body as Extract<
+      typeof body,
+      { id_token: string }
+    >;
     try {
       const decoded = decodeJwt<OIDCJwtPayload>(idToken);
       const jwtSchema = createJwtSchema({
@@ -618,6 +627,5 @@ authRoutes.get('/oidc-callback', async (req, res, next) => {
     next(error);
   }
 });
-
 
 export default authRoutes;
