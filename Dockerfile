@@ -1,11 +1,11 @@
-FROM node:20-alpine AS BUILD_IMAGE
+FROM node:20-bullseye AS BUILD_IMAGE
 
 WORKDIR /app
 
 ARG TARGETPLATFORM
 ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
 
-RUN apk add --no-cache python3 make g++
+RUN apt-get install python3 make g++
 
 COPY package.json yarn.lock ./
 RUN CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --network-timeout 1000000
