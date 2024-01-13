@@ -27,11 +27,9 @@ RUN touch config/DOCKER
 RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
 
 
-FROM node:20-alpine
+FROM node:20-bullseye
 
 WORKDIR /app
-
-RUN apk add --no-cache tzdata curl && rm -rf /tmp/*
 
 # copy from build image
 COPY --from=BUILD_IMAGE /app ./
