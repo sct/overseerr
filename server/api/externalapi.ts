@@ -48,20 +48,16 @@ class ExternalAPI {
     if (process.env.HTTPS_PROXY) {
       const parsedUrl = new URL(process.env.HTTPS_PROXY);
       const port = parseInt(parsedUrl.port);
-      const parts = process.env.HTTPS_PROXY.split('//')[1]
-        .split('@')[0]
-        .split(':');
-      const password = parts[1];
       this.proxy = {
         host: parsedUrl.hostname,
         port: port,
         auth: {
           username: parsedUrl.username,
-          password: password,
+          password: parsedUrl.password,
         },
         protocol: port == 443 ? 'https' : 'http',
       };
-      logger.debug('Using auth %o', this.proxy.auth);
+      logger.debug('Using auth pass:%s', this.proxy.auth?.password);
       config.proxy = this.proxy;
     }
 
