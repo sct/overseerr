@@ -1,3 +1,4 @@
+import logger from '@server/logger';
 import type {
   AxiosInstance,
   AxiosProxyConfig,
@@ -6,7 +7,6 @@ import type {
 } from 'axios';
 import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
-import http from 'http';
 import type NodeCache from 'node-cache';
 
 // 5 minute default TTL (in seconds)
@@ -57,6 +57,7 @@ class ExternalAPI {
         },
         protocol: port == 443 ? 'https' : 'http',
       };
+      logger.debug('Using auth %o', this.proxy.auth);
       config.proxy = this.proxy;
     }
 
@@ -83,27 +84,6 @@ class ExternalAPI {
     if (cachedItem) {
       return cachedItem;
     }
-
-    const auth =
-      'Basic ' +
-      Buffer.from(
-        this.proxy.auth?.username + ':' + this.proxy.auth?.password
-      ).toString('base64');
-
-    http.get(
-      {
-        host: this.proxy.host,
-        port: this.proxy.port,
-        path: endpoint,
-        headers: {
-          'Proxy-Authorization': auth,
-        },
-      },
-      (res) => {
-        // eslint-disable-next-line no-console
-        console.log(res);
-      }
-    );
 
     const response = await this.axios.get<T>(endpoint, config);
 
