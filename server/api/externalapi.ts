@@ -1,3 +1,4 @@
+import logger from '@server/logger';
 import type {
   AxiosInstance,
   AxiosProxyConfig,
@@ -42,7 +43,8 @@ class ExternalAPI {
     this.headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      //  "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+      'User-Agent':
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36',
       ...options.headers,
     };
 
@@ -112,6 +114,7 @@ class ExternalAPI {
     return new Promise<T>((resolve, reject) => {
       needle.get(path.toString(), request, (err, _, body) => {
         if (err) {
+          logger.error(err);
           reject(err);
         } else {
           resolve(body);
