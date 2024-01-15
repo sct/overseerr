@@ -10,6 +10,7 @@ import rateLimit from 'axios-rate-limit';
 import type { NeedleOptions } from 'needle';
 import needle from 'needle';
 import type NodeCache from 'node-cache';
+import tunnel from 'tunnel';
 
 // 5 minute default TTL (in seconds)
 const DEFAULT_TTL = 300;
@@ -109,23 +110,30 @@ class ExternalAPI {
 
     if (process.env.HTTPS_PROXY) {
       request.proxy = process.env.HTTPS_PROXY;
+      request.agent = tunnel.httpsOverHttp({
+        proxy: this.proxy,
+      });
     }
 
-    return new Promise<T>((resolve, reject) => {
-      needle.get(path.toString(), request, (err, _, body) => {
-        if (err) {
-          logger.error(err);
-          reject(err);
+    return needle('get', path.toString(), params)
+      .then((res) => {
+        if (res.statusCode && res.statusCode >= 200 && res.statusCode <= 400) {
+          return res.body;
         } else {
-          resolve(body);
+          logger.error(
+            'Failed to get %s, reason %s',
+            path.toString(),
+            res.statusMessage
+          );
+          return res.body;
         }
+      })
+      .then((data) => {
+        if (this.cache) {
+          this.cache.set(cacheKey, data, ttl ?? DEFAULT_TTL);
+        }
+        return data;
       });
-    }).then((data) => {
-      if (this.cache) {
-        this.cache.set(cacheKey, data, ttl ?? DEFAULT_TTL);
-      }
-      return data;
-    });
   }
 
   protected async post<T>(
