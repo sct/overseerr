@@ -1,4 +1,3 @@
-import logger from '@server/logger';
 import type {
   AxiosInstance,
   AxiosProxyConfig,
@@ -7,9 +6,8 @@ import type {
 } from 'axios';
 import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
+import { HttpProxyAgent } from 'http-proxy-agent';
 import { HttpsProxyAgent } from 'https-proxy-agent';
-import type { NeedleOptions } from 'needle';
-import needle from 'needle';
 import type NodeCache from 'node-cache';
 
 // 5 minute default TTL (in seconds)
@@ -58,18 +56,10 @@ class ExternalAPI {
     };
 
     if (process.env.HTTPS_PROXY) {
-      const parsedUrl = new URL(process.env.HTTPS_PROXY);
-      const port = parseInt(parsedUrl.port);
-      this.proxy = {
-        host: parsedUrl.hostname,
-        port: port,
-        auth: {
-          username: parsedUrl.username,
-          password: parsedUrl.password,
-        },
-        protocol: port == 443 ? 'https' : 'http',
-      };
-      this.config.proxy = this.proxy;
+      this.config.httpsAgent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
+      if (process.env.HTTP_PROXY) {
+        this.config.httpAgent = new HttpProxyAgent(process.env.HTTP_PROXY);
+      }
     }
 
     this.axios = axios.create(this.config);
@@ -96,41 +86,13 @@ class ExternalAPI {
       return cachedItem;
     }
 
-    const params = {
-      ...config?.params,
-      ...this.params,
-    };
+    const response = await this.axios.get<T>(endpoint, config);
 
-    const args = '?' + new URLSearchParams(params).toString();
-    const path = new URL(endpoint + args, this.baseUrl);
-    const request: NeedleOptions = {
-      json: true,
-      headers: this.headers,
-    };
-
-    if (process.env.HTTPS_PROXY) {
-      request.agent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
+    if (this.cache) {
+      this.cache.set(cacheKey, response.data, ttl ?? DEFAULT_TTL);
     }
 
-    return needle('get', path.toString(), request)
-      .then((res) => {
-        if (res.statusCode && res.statusCode >= 200 && res.statusCode <= 400) {
-          return res.body;
-        } else {
-          logger.error(
-            'Failed to get %s, reason %s',
-            path.toString(),
-            res.statusMessage
-          );
-          return res.body;
-        }
-      })
-      .then((data) => {
-        if (this.cache) {
-          this.cache.set(cacheKey, data, ttl ?? DEFAULT_TTL);
-        }
-        return data;
-      });
+    return response.data;
   }
 
   protected async post<T>(
