@@ -1,4 +1,3 @@
-import logger from '@server/logger';
 import type {
   AxiosInstance,
   AxiosProxyConfig,
@@ -7,6 +6,8 @@ import type {
 } from 'axios';
 import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
+import type { NeedleOptions } from 'needle';
+import needle from 'needle';
 import type NodeCache from 'node-cache';
 
 // 5 minute default TTL (in seconds)
@@ -29,20 +30,28 @@ class ExternalAPI {
   protected proxy: AxiosProxyConfig;
   private baseUrl: string;
   private cache?: NodeCache;
+  protected config?: CreateAxiosDefaults;
+  private headers: { [key: string]: string };
+  private params: Record<string, unknown>;
 
   constructor(
     baseUrl: string,
     params: Record<string, unknown>,
     options: ExternalAPIOptions = {}
   ) {
-    const config: CreateAxiosDefaults = {
+    this.headers = {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      //  "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36",
+      ...options.headers,
+    };
+
+    this.params = params;
+
+    this.config = {
       baseURL: baseUrl,
-      params,
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        ...options.headers,
-      },
+      params: this.params,
+      headers: this.headers,
     };
 
     if (process.env.HTTPS_PROXY) {
@@ -57,11 +66,10 @@ class ExternalAPI {
         },
         protocol: port == 443 ? 'https' : 'http',
       };
-      logger.debug('Using auth pass:%s', this.proxy.auth?.password);
-      config.proxy = this.proxy;
+      this.config.proxy = this.proxy;
     }
 
-    this.axios = axios.create(config);
+    this.axios = axios.create(this.config);
 
     if (options.rateLimit) {
       this.axios = rateLimit(this.axios, {
@@ -85,13 +93,36 @@ class ExternalAPI {
       return cachedItem;
     }
 
-    const response = await this.axios.get<T>(endpoint, config);
+    const params = {
+      ...config?.params,
+      ...this.params,
+    };
 
-    if (this.cache) {
-      this.cache.set(cacheKey, response.data, ttl ?? DEFAULT_TTL);
+    const args = '?' + new URLSearchParams(params).toString();
+    const path = new URL(endpoint + args, this.baseUrl);
+    const request: NeedleOptions = {
+      json: true,
+      headers: this.headers,
+    };
+
+    if (process.env.HTTPS_PROXY) {
+      request.proxy = process.env.HTTPS_PROXY;
     }
 
-    return response.data;
+    return new Promise<T>((resolve, reject) => {
+      needle.get(path.toString(), request, (err, _, body) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(body);
+        }
+      });
+    }).then((data) => {
+      if (this.cache) {
+        this.cache.set(cacheKey, data, ttl ?? DEFAULT_TTL);
+      }
+      return data;
+    });
   }
 
   protected async post<T>(

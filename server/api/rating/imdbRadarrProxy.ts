@@ -155,7 +155,7 @@ export interface IMDBRating {
  */
 class IMDBRadarrProxy extends ExternalAPI {
   constructor() {
-    super('https://api.radarr.video/v1', {
+    super('https://api.radarr.video', {
       headers: {
         'Content-Type': 'application/json',
         Accept: 'application/json',
@@ -172,7 +172,7 @@ class IMDBRadarrProxy extends ExternalAPI {
   public async getMovieRatings(IMDBid: string): Promise<IMDBRating | null> {
     try {
       const data = await this.get<IMDBRadarrProxyResponse>(
-        `/movie/imdb/${IMDBid}`
+        `/v1/movie/imdb/${IMDBid}`
       );
 
       if (!data?.length || data[0].ImdbId !== IMDBid) {
