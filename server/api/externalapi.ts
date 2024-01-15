@@ -7,10 +7,10 @@ import type {
 } from 'axios';
 import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
+import { HttpsProxyAgent } from 'https-proxy-agent';
 import type { NeedleOptions } from 'needle';
 import needle from 'needle';
 import type NodeCache from 'node-cache';
-import tunnel from 'tunnel';
 
 // 5 minute default TTL (in seconds)
 const DEFAULT_TTL = 300;
@@ -109,13 +109,10 @@ class ExternalAPI {
     };
 
     if (process.env.HTTPS_PROXY) {
-      request.proxy = process.env.HTTPS_PROXY;
-      request.agent = tunnel.httpsOverHttp({
-        proxy: this.proxy,
-      });
+      request.agent = new HttpsProxyAgent(process.env.HTTPS_PROXY);
     }
 
-    return needle('get', path.toString(), params)
+    return needle('get', path.toString(), request)
       .then((res) => {
         if (res.statusCode && res.statusCode >= 200 && res.statusCode <= 400) {
           return res.body;

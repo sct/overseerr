@@ -60,6 +60,7 @@
     "express-session": "1.17.3",
     "formik": "2.2.9",
     "gravatar-url": "3.1.0",
+    "https-proxy-agent": "^7.0.2",
     "intl": "1.2.5",
     "lodash": "4.17.21",
     "needle": "^3.3.1",
