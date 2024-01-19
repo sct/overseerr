@@ -1,39 +1,28 @@
-FROM node:20-bullseye AS BUILD_IMAGE
+FROM golang:1.21-alpine as build-backend
+RUN apk add git
+ADD .. /build
+WORKDIR /build
+
+RUN go mod download
+RUN go get -u github.com/natewong1313/go-react-ssr
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags "-w -X main.APP_ENV=production" -a -o main
+
+
+FROM node:lts-alpine as build-frontend
+
+RUN apk add python3 make g++
+ADD ./src /src
+ADD ./package.json /src/package.json
+WORKDIR /src
+
+RUN npm install
+
+# if tailwind is enabled, use "FROM node:16-alpine" instead
+FROM alpine:latest
+COPY --from=build-backend /build/main ./app/main
+COPY --from=build-frontend /src ./app/frontend
 
 WORKDIR /app
-
-ARG TARGETPLATFORM
-ENV TARGETPLATFORM=${TARGETPLATFORM:-linux/amd64}
-
-RUN apt-get install python3 make g++
-
-COPY package.json yarn.lock ./
-RUN CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --network-timeout 1000000
-
-COPY . ./
-
-ARG COMMIT_TAG
-ENV COMMIT_TAG=${COMMIT_TAG}
-
-RUN yarn build
-
-# remove development dependencies
-RUN yarn install --production --ignore-scripts --prefer-offline
-
-RUN rm -rf src server .next/cache
-
-RUN touch config/DOCKER
-
-RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
-
-
-FROM node:20-bullseye
-
-WORKDIR /app
-
-# copy from build image
-COPY --from=BUILD_IMAGE /app ./
-
-CMD [ "yarn", "start" ]
-
-EXPOSE 5055
+RUN chmod +x ./main
+EXPOSE 8080
+CMD ["./main"]

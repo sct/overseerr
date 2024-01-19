@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"math/rand"
+	"net/http"
 	"overseerr/models"
 
 	"github.com/gin-gonic/gin"
@@ -37,5 +38,11 @@ func main() {
 		})
 		c.Writer.Write(renderedResponse)
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.Run()
+
+	_, err = http.Get("https://google.com")
+	if err != nil {
+		log.Printf("Cant connect")
+		log.Print(err)
+	}
 }
