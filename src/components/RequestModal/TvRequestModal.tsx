@@ -18,7 +18,7 @@ import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useToasts } from 'react-toast-notifications';
+// import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
@@ -69,7 +69,7 @@ const TvRequestModal = ({
   is4k = false,
 }: RequestModalProps) => {
   const settings = useSettings();
-  const { addToast } = useToasts();
+  // const { addToast } = useToasts();
   const editingSeasons: number[] = (editRequest?.seasons ?? []).map(
     (season) => season.seasonNumber
   );
@@ -129,36 +129,36 @@ const TvRequestModal = ({
       }
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
 
-      addToast(
-        <span>
-          {selectedSeasons.length > 0
-            ? intl.formatMessage(
-                alsoApproveRequest
-                  ? messages.requestApproved
-                  : messages.requestedited,
-                {
-                  title: data?.name,
-                  strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
-                }
-              )
-            : intl.formatMessage(messages.requestcancelled, {
-                title: data?.name,
-                strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
-              })}
-        </span>,
-        {
-          appearance: 'success',
-          autoDismiss: true,
-        }
-      );
+      // addToast(
+      //   <span>
+      //     {selectedSeasons.length > 0
+      //       ? intl.formatMessage(
+      //           alsoApproveRequest
+      //             ? messages.requestApproved
+      //             : messages.requestedited,
+      //           {
+      //             title: data?.name,
+      //             strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
+      //           }
+      //         )
+      //       : intl.formatMessage(messages.requestcancelled, {
+      //           title: data?.name,
+      //           strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
+      //         })}
+      //   </span>,
+      //   {
+      //     appearance: 'success',
+      //     autoDismiss: true,
+      //   }
+      // );
       if (onComplete) {
         onComplete(MediaStatus.PENDING);
       }
     } catch (e) {
-      addToast(<span>{intl.formatMessage(messages.errorediting)}</span>, {
-        appearance: 'error',
-        autoDismiss: true,
-      });
+      // addToast(<span>{intl.formatMessage(messages.errorediting)}</span>, {
+      //   appearance: 'error',
+      //   autoDismiss: true,
+      // });
     } finally {
       if (onUpdating) {
         onUpdating(false);
@@ -208,21 +208,21 @@ const TvRequestModal = ({
         if (onComplete) {
           onComplete(response.data.media.status);
         }
-        addToast(
-          <span>
-            {intl.formatMessage(messages.requestSuccess, {
-              title: data?.name,
-              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
-            })}
-          </span>,
-          { appearance: 'success', autoDismiss: true }
-        );
+        // addToast(
+        //   <span>
+        //     {intl.formatMessage(messages.requestSuccess, {
+        //       title: data?.name,
+        //       strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
+        //     })}
+        //   </span>,
+        //   { appearance: 'success', autoDismiss: true }
+        // );
       }
     } catch (e) {
-      addToast(intl.formatMessage(messages.requesterror), {
-        appearance: 'error',
-        autoDismiss: true,
-      });
+      // addToast(intl.formatMessage(messages.requesterror), {
+      //   appearance: 'error',
+      //   autoDismiss: true,
+      // });
     } finally {
       if (onUpdating) {
         onUpdating(false);

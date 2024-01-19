@@ -1,10 +1,7 @@
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
-import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
 
 const PullToRefresh = () => {
-  const router = useRouter();
-
   const [pullStartPoint, setPullStartPoint] = useState(0);
   const [pullChange, setPullChange] = useState(0);
   const refreshDiv = useRef<HTMLDivElement>(null);
@@ -21,7 +18,7 @@ const PullToRefresh = () => {
     const forceReload = () => {
       refreshDiv.current?.classList.add('loading');
       setTimeout(() => {
-        router.reload();
+        location.reload();
       }, 1000);
     };
 
@@ -83,7 +80,7 @@ const PullToRefresh = () => {
       window.removeEventListener('touchmove', pullDown);
       window.removeEventListener('touchend', pullFinish);
     };
-  }, [pullDownInitThreshold, pullDownReloadThreshold, pullStartPoint, router]);
+  }, [pullDownInitThreshold, pullDownReloadThreshold, pullStartPoint]);
 
   return (
     <div

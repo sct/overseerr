@@ -23,7 +23,7 @@ import axios from 'axios';
 import { useRef, useState } from 'react';
 import { useDrag, useDrop } from 'react-aria';
 import { defineMessages, useIntl } from 'react-intl';
-import { useToasts } from 'react-toast-notifications';
+// import { useToasts } from 'react-toast-notifications';
 
 const messages = defineMessages({
   deletesuccess: 'Sucessfully deleted slider.',
@@ -62,7 +62,7 @@ const DiscoverSliderEdit = ({
   disableDownButton,
 }: DiscoverSliderEditProps) => {
   const intl = useIntl();
-  const { addToast } = useToasts();
+  // const { addToast } = useToasts();
   const [isEditing, setIsEditing] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const [hoverPosition, setHoverPosition] = useState<keyof typeof Position>(
@@ -78,16 +78,16 @@ const DiscoverSliderEdit = ({
   const deleteSlider = async () => {
     try {
       await axios.delete(`/api/v1/settings/discover/${slider.id}`);
-      addToast(intl.formatMessage(messages.deletesuccess), {
-        appearance: 'success',
-        autoDismiss: true,
-      });
+      // addToast(intl.formatMessage(messages.deletesuccess), {
+      //   appearance: 'success',
+      //   autoDismiss: true,
+      // });
       onDelete();
     } catch (e) {
-      addToast(intl.formatMessage(messages.deletefail), {
-        appearance: 'error',
-        autoDismiss: true,
-      });
+      // addToast(intl.formatMessage(messages.deletefail), {
+      //   appearance: 'error',
+      //   autoDismiss: true,
+      // });
     }
   };
 

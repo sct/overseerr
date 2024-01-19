@@ -8,7 +8,6 @@ import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
 import { useUser } from '@app/hooks/useUser';
 import { ArrowLeftIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
-import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 type LayoutProps = {
@@ -19,7 +18,6 @@ const Layout = ({ children }: LayoutProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const { user } = useUser();
-  const router = useRouter();
   const { currentSettings } = useSettings();
   const { setLocale } = useLocale();
 
@@ -86,7 +84,7 @@ const Layout = ({ children }: LayoutProps) => {
               className={`mr-2 text-white ${
                 isScrolled ? 'opacity-90' : 'opacity-70'
               } pwa-only transition duration-300 hover:text-white focus:text-white focus:outline-none`}
-              onClick={() => router.back()}
+              onClick={() => history.back()}
             >
               <ArrowLeftIcon className="w-7" />
             </button>

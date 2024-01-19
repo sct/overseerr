@@ -30,7 +30,6 @@ import type DiscoverSlider from '@server/entity/DiscoverSlider';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 
 const messages = defineMessages({
@@ -54,7 +53,6 @@ const messages = defineMessages({
 const Discover = () => {
   const intl = useIntl();
   const { hasPermission } = useUser();
-  const { addToast } = useToasts();
   const {
     data: discoverData,
     error: discoverError,
@@ -74,39 +72,39 @@ const Discover = () => {
   const hasChanged = () => !Object.is(discoverData, sliders);
 
   const updateSliders = async () => {
-    try {
-      await axios.post('/api/v1/settings/discover', sliders);
+    await axios.post('/api/v1/settings/discover', sliders);
+    // try {
 
-      addToast(intl.formatMessage(messages.updatesuccess), {
-        appearance: 'success',
-        autoDismiss: true,
-      });
-      setIsEditing(false);
-      mutate();
-    } catch (e) {
-      addToast(intl.formatMessage(messages.updatefailed), {
-        appearance: 'error',
-        autoDismiss: true,
-      });
-    }
+    //   addToast(intl.formatMessage(messages.updatesuccess), {
+    //     appearance: 'success',
+    //     autoDismiss: true,
+    //   });
+    //   setIsEditing(false);
+    //   mutate();
+    // } catch (e) {
+    //   addToast(intl.formatMessage(messages.updatefailed), {
+    //     appearance: 'error',
+    //     autoDismiss: true,
+    //   });
+    // }
   };
 
   const resetSliders = async () => {
-    try {
-      await axios.get('/api/v1/settings/discover/reset');
+    await axios.get('/api/v1/settings/discover/reset');
+    // try {
 
-      addToast(intl.formatMessage(messages.resetsuccess), {
-        appearance: 'success',
-        autoDismiss: true,
-      });
-      setIsEditing(false);
-      mutate();
-    } catch (e) {
-      addToast(intl.formatMessage(messages.resetfailed), {
-        appearance: 'error',
-        autoDismiss: true,
-      });
-    }
+    //   addToast(intl.formatMessage(messages.resetsuccess), {
+    //     appearance: 'success',
+    //     autoDismiss: true,
+    //   });
+    //   setIsEditing(false);
+    //   mutate();
+    // } catch (e) {
+    //   addToast(intl.formatMessage(messages.resetfailed), {
+    //     appearance: 'error',
+    //     autoDismiss: true,
+    //   });
+    // }
   };
 
   const now = new Date();

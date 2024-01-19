@@ -13,7 +13,6 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { Fragment, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -100,10 +99,10 @@ const SidebarLinks: SidebarLinkProps[] = [
 
 const Sidebar = ({ open, setClosed }: SidebarProps) => {
   const navRef = useRef<HTMLDivElement>(null);
-  const router = useRouter();
   const intl = useIntl();
   const { hasPermission } = useUser();
   useClickOutside(navRef, () => setClosed());
+  const path = '';
 
   return (
     <>
@@ -179,9 +178,7 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                               tabIndex={0}
                               className={`flex items-center rounded-md px-2 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out focus:outline-none
                                 ${
-                                  router.pathname.match(
-                                    sidebarLink.activeRegExp
-                                  )
+                                  path.match(sidebarLink.activeRegExp)
                                     ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
                                     : 'hover:bg-gray-700 focus:bg-gray-700'
                                 }
@@ -241,9 +238,7 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                       <a
                         className={`group flex items-center rounded-md px-2 py-2 text-lg font-medium leading-6 text-white transition duration-150 ease-in-out focus:outline-none
                                 ${
-                                  router.pathname.match(
-                                    sidebarLink.activeRegExp
-                                  )
+                                  path.match(sidebarLink.activeRegExp)
                                     ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
                                     : 'hover:bg-gray-700 focus:bg-gray-700'
                                 }

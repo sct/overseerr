@@ -13,7 +13,7 @@ import type { MovieDetails } from '@server/models/Movie';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useToasts } from 'react-toast-notifications';
+// import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
@@ -55,7 +55,7 @@ const MovieRequestModal = ({
   const [isUpdating, setIsUpdating] = useState(false);
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
-  const { addToast } = useToasts();
+  // const { addToast } = useToasts();
   const { data, error } = useSWR<MovieDetails>(`/api/v1/movie/${tmdbId}`, {
     revalidateOnMount: true,
   });
@@ -111,25 +111,25 @@ const MovieRequestModal = ({
               : MediaStatus.PENDING
           );
         }
-        addToast(
-          <span>
-            {intl.formatMessage(messages.requestSuccess, {
-              title: data?.title,
-              strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
-            })}
-          </span>,
-          { appearance: 'success', autoDismiss: true }
-        );
+        //   addToast(
+        //     <span>
+        //       {intl.formatMessage(messages.requestSuccess, {
+        //         title: data?.title,
+        //         strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
+        //       })}
+        //     </span>,
+        //     { appearance: 'success', autoDismiss: true }
+        //   );
       }
     } catch (e) {
-      addToast(intl.formatMessage(messages.requesterror), {
-        appearance: 'error',
-        autoDismiss: true,
-      });
+      // addToast(intl.formatMessage(messages.requesterror), {
+      //   appearance: 'error',
+      //   autoDismiss: true,
+      // });
     } finally {
       setIsUpdating(false);
     }
-  }, [data, onComplete, addToast, requestOverrides, hasPermission, intl, is4k]);
+  }, [data, onComplete, requestOverrides, hasPermission, is4k]);
 
   const cancelRequest = async () => {
     setIsUpdating(true);

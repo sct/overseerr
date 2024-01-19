@@ -18,7 +18,6 @@ import { Field, Form, Formik } from 'formik';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import AsyncSelect from 'react-select/async';
-import { useToasts } from 'react-toast-notifications';
 import * as Yup from 'yup';
 
 const messages = defineMessages({
@@ -61,7 +60,6 @@ type CreateOption = {
 
 const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
   const intl = useIntl();
-  const { addToast } = useToasts();
   const [resultCount, setResultCount] = useState(0);
   const [defaultDataValue, setDefaultDataValue] = useState<
     { label: string; value: number }[] | null
@@ -326,25 +324,25 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
             });
           }
 
-          addToast(
-            intl.formatMessage(
-              slider ? messages.editsuccess : messages.addsuccess
-            ),
-            {
-              appearance: 'success',
-              autoDismiss: true,
-            }
-          );
+          // addToast(
+          //   intl.formatMessage(
+          //     slider ? messages.editsuccess : messages.addsuccess
+          //   ),
+          //   {
+          //     appearance: 'success',
+          //     autoDismiss: true,
+          //   }
+          // );
           onCreate();
           resetForm();
         } catch (e) {
-          addToast(
-            intl.formatMessage(slider ? messages.editfail : messages.addfail),
-            {
-              appearance: 'error',
-              autoDismiss: true,
-            }
-          );
+          // addToast(
+          //   intl.formatMessage(slider ? messages.editfail : messages.addfail),
+          //   {
+          //     appearance: 'error',
+          //     autoDismiss: true,
+          //   }
+          // );
         }
       }}
     >

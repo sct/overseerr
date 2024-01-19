@@ -31,12 +31,12 @@ const VersionStatus = ({ onClick }: VersionStatusProps) => {
     return null;
   }
 
-  const versionStream =
-    data.commitTag === 'local'
-      ? 'Keep it up! 👍'
-      : data.version.startsWith('develop-')
-      ? intl.formatMessage(messages.streamdevelop)
-      : intl.formatMessage(messages.streamstable);
+  // const versionStream =
+  //   data.commitTag === 'local'
+  //     ? 'Keep it up! 👍'
+  //     : data.version.startsWith('develop-')
+  //     ? intl.formatMessage(messages.streamdevelop)
+  //     : intl.formatMessage(messages.streamstable);
 
   return (
     <Link href="/settings/about">
@@ -62,7 +62,7 @@ const VersionStatus = ({ onClick }: VersionStatusProps) => {
         ) : (
           <ServerIcon className="h-6 w-6" />
         )}
-        <div className="flex min-w-0 flex-1 flex-col truncate px-2 last:pr-0">
+        {/* <div className="flex min-w-0 flex-1 flex-col truncate px-2 last:pr-0">
           <span className="font-bold">{versionStream}</span>
           <span className="truncate">
             {data.commitTag === 'local' ? (
@@ -79,7 +79,7 @@ const VersionStatus = ({ onClick }: VersionStatusProps) => {
               </code>
             )}
           </span>
-        </div>
+        </div> */}
         {data.updateAvailable && <ArrowUpCircleIcon className="h-6 w-6" />}
       </a>
     </Link>

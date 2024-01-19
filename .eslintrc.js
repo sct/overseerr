@@ -42,6 +42,7 @@ module.exports = {
       'error',
       { allowSameFolder: true },
     ],
+    "@next/next/no-document-import-in-page": "off"
   },
   overrides: [
     {

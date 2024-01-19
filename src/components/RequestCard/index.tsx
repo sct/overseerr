@@ -25,7 +25,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
-import { useToasts } from 'react-toast-notifications';
+// import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
@@ -214,7 +214,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   });
   const intl = useIntl();
   const { user, hasPermission } = useUser();
-  const { addToast } = useToasts();
+  // const { addToast } = useToasts();
   const [isRetrying, setRetrying] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const url =
@@ -270,10 +270,10 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
         revalidate();
       }
     } catch (e) {
-      addToast(intl.formatMessage(messages.failedretry), {
-        autoDismiss: true,
-        appearance: 'error',
-      });
+      // addToast(intl.formatMessage(messages.failedretry), {
+      //   autoDismiss: true,
+      //   appearance: 'error',
+      // });
     } finally {
       setRetrying(false);
     }

@@ -1,6 +1,5 @@
 import type { PublicSettingsResponse } from '@server/interfaces/api/settingsInterfaces';
 import React from 'react';
-import useSWR from 'swr';
 
 export interface SettingsContextProps {
   currentSettings: PublicSettingsResponse;
@@ -34,19 +33,8 @@ export const SettingsProvider = ({
   children,
   currentSettings,
 }: SettingsContextProps) => {
-  const { data, error } = useSWR<PublicSettingsResponse>(
-    '/api/v1/settings/public',
-    { fallbackData: currentSettings }
-  );
-
-  let newSettings = defaultSettings;
-
-  if (data && !error) {
-    newSettings = data;
-  }
-
   return (
-    <SettingsContext.Provider value={{ currentSettings: newSettings }}>
+    <SettingsContext.Provider value={{ currentSettings: {} }}>
       {children}
     </SettingsContext.Provider>
   );

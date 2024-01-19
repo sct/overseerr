@@ -23,7 +23,6 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import { cloneElement, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -44,7 +43,6 @@ const MobileMenu = () => {
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
   const { hasPermission } = useUser();
-  const router = useRouter();
   useClickOutside(ref, () => {
     setTimeout(() => {
       if (isOpen) {
@@ -125,6 +123,8 @@ const MobileMenu = () => {
       })
   );
 
+  const path = '';
+
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <Transition
@@ -140,7 +140,7 @@ const MobileMenu = () => {
         className="absolute top-0 left-0 right-0 flex w-full -translate-y-full flex-col space-y-6 border-t border-gray-600 bg-gray-900 bg-opacity-90 px-6 py-6 font-semibold text-gray-100 backdrop-blur"
       >
         {filteredLinks.map((link) => {
-          const isActive = router.pathname.match(link.activeRegExp);
+          const isActive = path.match(link.activeRegExp);
           return (
             <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
               <a
@@ -170,8 +170,7 @@ const MobileMenu = () => {
           {filteredLinks
             .slice(0, filteredLinks.length === 5 ? 5 : 4)
             .map((link) => {
-              const isActive =
-                router.pathname.match(link.activeRegExp) && !isOpen;
+              const isActive = path.match(link.activeRegExp) && !isOpen;
               return (
                 <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
                   <a

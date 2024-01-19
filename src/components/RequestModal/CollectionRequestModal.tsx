@@ -15,7 +15,7 @@ import type { Collection } from '@server/models/Collection';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useToasts } from 'react-toast-notifications';
+// import { useToasts } from 'react-toast-notifications';
 import useSWR from 'swr';
 
 const messages = defineMessages({
@@ -49,7 +49,7 @@ const CollectionRequestModal = ({
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
   const [selectedParts, setSelectedParts] = useState<number[]>([]);
-  const { addToast } = useToasts();
+  // const { addToast } = useToasts();
   const { data, error } = useSWR<Collection>(`/api/v1/collection/${tmdbId}`, {
     revalidateOnMount: true,
   });
@@ -213,24 +213,24 @@ const CollectionRequestModal = ({
         );
       }
 
-      addToast(
-        <span>
-          {intl.formatMessage(messages.requestSuccess, {
-            title: data?.name,
-            strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
-          })}
-        </span>,
-        { appearance: 'success', autoDismiss: true }
-      );
+      // addToast(
+      //   <span>
+      //     {intl.formatMessage(messages.requestSuccess, {
+      //       title: data?.name,
+      //       strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
+      //     })}
+      //   </span>,
+      //   { appearance: 'success', autoDismiss: true }
+      // );
     } catch (e) {
-      addToast(intl.formatMessage(messages.requesterror), {
-        appearance: 'error',
-        autoDismiss: true,
-      });
+      // addToast(intl.formatMessage(messages.requesterror), {
+      //   appearance: 'error',
+      //   autoDismiss: true,
+      // });
     } finally {
       setIsUpdating(false);
     }
-  }, [requestOverrides, data, onComplete, addToast, intl, selectedParts, is4k]);
+  }, [requestOverrides, data, onComplete, selectedParts, is4k]);
 
   const hasAutoApprove = hasPermission(
     [
