@@ -86,6 +86,8 @@ if (typeof window === 'undefined') {
   global.Intl = require('intl');
 }
 
+import defaultLang from "../i18n/locale/en.json";
+
 export default function App({
   user,
   currentSettings,
@@ -96,15 +98,17 @@ export default function App({
   const [currentLocale, setLocale] = useState<AvailableLocale>(locale);
 
   useEffect(() => {
-    loadLocaleData(currentLocale).then(setMessages);
-  }, [currentLocale]);
+    if (messages == null) {
+      setMessages(defaultLang)
+    }
+  }, [messages]);
 
   return (
     <LanguageContext.Provider value={{ locale: currentLocale, setLocale }}>
       <IntlProvider
         locale={currentLocale}
         defaultLocale="en"
-        messages={loadedMessages}
+        messages={defaultLang}
       >
         <LoadingBar />
         <SettingsProvider currentSettings={currentSettings}>

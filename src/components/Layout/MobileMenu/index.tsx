@@ -30,7 +30,7 @@ interface MenuLink {
   href: string;
   svgIcon: JSX.Element;
   svgIconSelected: JSX.Element;
-  content: React.ReactNode;
+  // content: React.ReactNode;
   activeRegExp: RegExp;
   as?: string;
   requiredPermission?: Permission | Permission[];
@@ -56,35 +56,35 @@ const MobileMenu = () => {
   const menuLinks: MenuLink[] = [
     {
       href: '/',
-      content: intl.formatMessage(menuMessages.dashboard),
+      // content: intl.formatMessage(menuMessages.dashboard),
       svgIcon: <SparklesIcon className="h-6 w-6" />,
       svgIconSelected: <FilledSparklesIcon className="h-6 w-6" />,
       activeRegExp: /^\/(discover\/?)?$/,
     },
     {
       href: '/discover/movies',
-      content: intl.formatMessage(menuMessages.browsemovies),
+      // content: intl.formatMessage(menuMessages.browsemovies),
       svgIcon: <FilmIcon className="h-6 w-6" />,
       svgIconSelected: <FilledFilmIcon className="h-6 w-6" />,
       activeRegExp: /^\/discover\/movies$/,
     },
     {
       href: '/discover/tv',
-      content: intl.formatMessage(menuMessages.browsetv),
+      // content: intl.formatMessage(menuMessages.browsetv),
       svgIcon: <TvIcon className="h-6 w-6" />,
       svgIconSelected: <FilledTvIcon className="h-6 w-6" />,
       activeRegExp: /^\/discover\/tv$/,
     },
     {
       href: '/requests',
-      content: intl.formatMessage(menuMessages.requests),
+      // content: intl.formatMessage(menuMessages.requests),
       svgIcon: <ClockIcon className="h-6 w-6" />,
       svgIconSelected: <FilledClockIcon className="h-6 w-6" />,
       activeRegExp: /^\/requests/,
     },
     {
       href: '/issues',
-      content: intl.formatMessage(menuMessages.issues),
+      // content: intl.formatMessage(menuMessages.issues),
       svgIcon: <ExclamationTriangleIcon className="h-6 w-6" />,
       svgIconSelected: <FilledExclamationTriangleIcon className="h-6 w-6" />,
       activeRegExp: /^\/issues/,
@@ -97,7 +97,7 @@ const MobileMenu = () => {
     },
     {
       href: '/users',
-      content: intl.formatMessage(menuMessages.users),
+      // content: intl.formatMessage(menuMessages.users),
       svgIcon: <UsersIcon className="mr-3 h-6 w-6" />,
       svgIconSelected: <FilledUsersIcon className="mr-3 h-6 w-6" />,
       activeRegExp: /^\/users/,
@@ -106,7 +106,7 @@ const MobileMenu = () => {
     },
     {
       href: '/settings',
-      content: intl.formatMessage(menuMessages.settings),
+      // content: intl.formatMessage(menuMessages.settings),
       svgIcon: <CogIcon className="mr-3 h-6 w-6" />,
       svgIconSelected: <FilledCogIcon className="mr-3 h-6 w-6" />,
       activeRegExp: /^\/settings/,
@@ -159,7 +159,8 @@ const MobileMenu = () => {
                 {cloneElement(isActive ? link.svgIconSelected : link.svgIcon, {
                   className: 'h-5 w-5',
                 })}
-                <span>{link.content}</span>
+                {/* <span>{link.content}</span> */}
+                <span>123</span>
               </a>
             </Link>
           );

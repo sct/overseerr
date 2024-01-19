@@ -186,9 +186,9 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                               data-testid={`${sidebarLink.dataTestId}-mobile`}
                             >
                               {sidebarLink.svgIcon}
-                              {intl.formatMessage(
+                              {/* {intl.formatMessage(
                                 menuMessages[sidebarLink.messagesKey]
-                              )}
+                              )} */}
                             </a>
                           </Link>
                         );
@@ -246,9 +246,9 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                         data-testid={sidebarLink.dataTestId}
                       >
                         {sidebarLink.svgIcon}
-                        {intl.formatMessage(
+                        {/* {intl.formatMessage(
                           menuMessages[sidebarLink.messagesKey]
-                        )}
+                        )} */}
                       </a>
                     </Link>
                   );

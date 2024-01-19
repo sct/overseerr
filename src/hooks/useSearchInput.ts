@@ -1,12 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import type { Nullable } from '@app/utils/typeHelpers';
-import { useRouter } from 'next/router';
 import type { Dispatch, SetStateAction } from 'react';
 import { useEffect, useState } from 'react';
-import type { UrlObject } from 'url';
 import useDebouncedState from './useDebouncedState';
-
-type Url = string | UrlObject;
 
 interface SearchObject {
   searchValue: string;
@@ -17,11 +13,12 @@ interface SearchObject {
 }
 
 const useSearchInput = (): SearchObject => {
-  const router = useRouter();
+  const path = '';
+  const query = '';
   const [searchOpen, setIsOpen] = useState(false);
-  const [lastRoute, setLastRoute] = useState<Nullable<Url>>(null);
+  const [lastRoute, setLastRoute] = useState<Nullable<URL>>(null);
   const [searchValue, debouncedValue, setSearchValue] = useDebouncedState(
-    (router.query.query as string) ?? ''
+    query ?? ''
   );
 
   /**
@@ -33,22 +30,22 @@ const useSearchInput = (): SearchObject => {
    */
   useEffect(() => {
     if (debouncedValue !== '' && searchOpen) {
-      if (router.pathname.startsWith('/search')) {
-        router.replace({
-          pathname: router.pathname,
-          query: {
-            ...router.query,
-            query: debouncedValue,
-          },
-        });
+      if (path.startsWith('/search')) {
+        history.replaceState(null, '', new URL(location.pathname));
+        // {
+        //   pathname: router.pathname,
+        //   query: {
+        //     ...router.query,
+        //     query: debouncedValue,
+        //   },
+        // });
       } else {
-        setLastRoute(router.asPath);
-        router
-          .push({
-            pathname: '/search',
-            query: { query: debouncedValue },
-          })
-          .then(() => window.scrollTo(0, 0));
+        setLastRoute(new URL(location.pathname));
+        history.pushState(null, '', new URL('/search'));
+        //   pathname: '/search',
+        //   query: { query: debouncedValue },
+        // })
+        window.scrollTo(0, 0);
       }
     }
   }, [debouncedValue]);
@@ -60,15 +57,13 @@ const useSearchInput = (): SearchObject => {
    * (in the case of a deeplink) we take the user back to the index route
    */
   useEffect(() => {
-    if (
-      searchValue === '' &&
-      router.pathname.startsWith('/search') &&
-      !searchOpen
-    ) {
+    if (searchValue === '' && path.startsWith('/search') && !searchOpen) {
       if (lastRoute) {
-        router.push(lastRoute).then(() => window.scrollTo(0, 0));
+        history.pushState(null, '', lastRoute);
+        window.scrollTo(0, 0);
       } else {
-        router.replace('/').then(() => window.scrollTo(0, 0));
+        history.pushState(null, '', '/');
+        window.scrollTo(0, 0);
       }
     }
   }, [searchOpen]);
@@ -89,22 +84,20 @@ const useSearchInput = (): SearchObject => {
    * is on /search
    */
   useEffect(() => {
-    if (router.query.query !== debouncedValue) {
+    if (location.search !== debouncedValue) {
       setSearchValue(
-        router.query.query
-          ? decodeURIComponent(router.query.query as string)
-          : ''
+        location.search ? decodeURIComponent(location.search as string) : ''
       );
 
-      if (!router.pathname.startsWith('/search') && !router.query.query) {
+      if (!path.startsWith('/search') && !location.search) {
         setIsOpen(false);
       }
     }
 
-    if (router.pathname.startsWith('/search')) {
+    if (path.startsWith('/search')) {
       setIsOpen(true);
     }
-  }, [router, setSearchValue]);
+  }, [setSearchValue]);
 
   const clear = () => {
     setIsOpen(false);
