@@ -44,7 +44,6 @@ export interface TautulliSettings {
   externalUrl?: string;
 }
 
-export interface DVRSettings {
 export interface ArrSettings {
   id: number;
   name: string;
@@ -57,7 +56,6 @@ export interface ArrSettings {
   activeProfileName: string;
   activeDirectory: string;
   tags: number[];
-  is4k: boolean;
   isDefault: boolean;
   externalUrl?: string;
   syncEnabled: boolean;
@@ -84,6 +82,7 @@ export interface SonarrSettings extends DVRSettings {
   animeTags?: number[];
   enableSeasonFolders: boolean;
 }
+
 
 interface Quota {
   quotaLimit?: number;
@@ -491,9 +490,11 @@ class Settings {
   get lidarr(): ArrSettings[] {
     return this.data.lidarr;
   }
+
   set lidarr(data: ArrSettings[]) {
     this.data.lidarr = data;
   }
+
   get public(): PublicSettings {
     return this.data.public;
   }
