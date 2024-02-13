@@ -20,6 +20,7 @@ import {
 import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import Season from './Season';
+import LidarrAPI from '@server/api/servarr/lidarr';
 
 @Entity()
 class Media {
@@ -72,13 +73,21 @@ class Media {
   @Column({ type: 'varchar' })
   public mediaType: MediaType;
 
-  @Column()
+  @Column({ nullable: true })
   @Index()
   public tmdbId: number;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ nullable: true })
+  @Index()
+  public mbId: number;
+
+  @Column({ nullable: true })
   @Index()
   public tvdbId?: number;
+
+  @Column({ nullable: true })
+  @Index()
+  public musicdbId?: number;
 
   @Column({ nullable: true })
   @Index()
@@ -253,6 +262,21 @@ class Media {
         }
       }
     }
+
+    if (this.mediaType === MediaType.MUSIC) {
+      if (this.serviceId !== null && this.externalServiceSlug !== null) {
+        const settings = getSettings();
+        const server = settings.lidarr.find(
+          (lidarr) => lidarr.id === this.serviceId
+        );
+
+        if (server) {
+          this.serviceUrl = server.externalUrl
+            ? `${server.externalUrl}/movie/${this.externalServiceSlug}`
+            : LidarrAPI.buildUrl(server, `/movie/${this.externalServiceSlug}`);
+        }
+      }
+    }
   }
 
   @AfterLoad()
@@ -305,6 +329,20 @@ class Media {
         this.downloadStatus4k = downloadTracker.getSeriesProgress(
           this.serviceId4k,
           this.externalServiceId4k
+        );
+      }
+    }
+
+    if (this.mediaType === MediaType.MUSIC) {
+      if (
+        this.externalServiceId !== undefined &&
+        this.externalServiceId !== null &&
+        this.serviceId !== undefined &&
+        this.serviceId !== null
+      ) {
+        this.downloadStatus = downloadTracker.getMusicProgress(
+          this.serviceId,
+          this.externalServiceId
         );
       }
     }
