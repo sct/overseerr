@@ -5,7 +5,10 @@ import type {
   SonarrSeries,
 } from '@server/api/servarr/sonarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
+import type { LidarrMusicOptions } from '@server/api/servarr/lidarr';
+import LidarrAPI from '@server/api/servarr/lidarr';
 import TheMovieDb from '@server/api/themoviedb';
+import MusicBrainz from '@server/api/musicbrainz';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import {
   MediaRequestStatus,
@@ -53,6 +56,7 @@ export class MediaRequest {
     options: MediaRequestOptions = {}
   ): Promise<MediaRequest> {
     const tmdb = new TheMovieDb();
+    const musicbrainz = new MusicBrainz();
     const mediaRepository = getRepository(Media);
     const requestRepository = getRepository(MediaRequest);
     const userRepository = getRepository(User);
@@ -1160,6 +1164,234 @@ export class MediaRequest {
     }
   }
 
+  public async sendToLidarr(): Promise<void> {
+    if (
+      this.status === MediaRequestStatus.APPROVED &&
+      this.type === MediaType.MUSIC
+    ) {
+      try {
+        const mediaRepository = getRepository(Media);
+        const settings = getSettings();
+        if (settings.lidarr.length === 0 && !settings.lidarr[0]) {
+          logger.info(
+            'No Lidarr server configured, skipping request processing',
+            {
+              label: 'Media Request',
+              requestId: this.id,
+              mediaId: this.media.id,
+            }
+          );
+          return;
+        }
+
+        let lidarrSettings = settings.lidarr.find((lidarr) => lidarr.isDefault);
+
+        if (
+          this.serverId !== null &&
+          this.serverId >= 0 &&
+          lidarrSettings?.id !== this.serverId
+        ) {
+          lidarrSettings = settings.lidarr.find(
+            (lidarr) => lidarr.id === this.serverId
+          );
+          logger.info(
+            `Request has an override server: ${lidarrSettings?.name}`,
+            {
+              label: 'Media Request',
+              requestId: this.id,
+              mediaId: this.media.id,
+            }
+          );
+        }
+
+        if (!lidarrSettings) {
+          logger.warn(
+            `There is no default Lidarr server configured. Did you set any of your Lidarr servers as default?`,
+            {
+              label: 'Media Request',
+              requestId: this.id,
+              mediaId: this.media.id,
+            }
+          );
+          return;
+        }
+
+        let rootFolder = lidarrSettings.activeDirectory;
+        let qualityProfile = lidarrSettings.activeProfileId;
+        let tags = lidarrSettings.tags ? [...lidarrSettings.tags] : [];
+
+        if (
+          this.rootFolder &&
+          this.rootFolder !== '' &&
+          this.rootFolder !== lidarrSettings.activeDirectory
+        ) {
+          rootFolder = this.rootFolder;
+          logger.info(`Request has an override root folder: ${rootFolder}`, {
+            label: 'Media Request',
+            requestId: this.id,
+            mediaId: this.media.id,
+          });
+        }
+
+        if (
+          this.profileId &&
+          this.profileId !== lidarrSettings.activeProfileId
+        ) {
+          qualityProfile = this.profileId;
+          logger.info(
+            `Request has an override quality profile ID: ${qualityProfile}`,
+            {
+              label: 'Media Request',
+              requestId: this.id,
+              mediaId: this.media.id,
+            }
+          );
+        }
+
+        if (this.tags && !isEqual(this.tags, lidarrSettings.tags)) {
+          tags = this.tags;
+          logger.info(`Request has override tags`, {
+            label: 'Media Request',
+            requestId: this.id,
+            mediaId: this.media.id,
+            tagIds: tags,
+          });
+        }
+
+        const musicbrainz = new MusicBrainz();
+        const lidarr = new LidarrAPI({
+          apiKey: lidarrSettings.apiKey,
+          url: LidarrAPI.buildUrl(lidarrSettings, '/api/v3'),
+        });
+        const music = await musicbrainz.getMusic({ mbId: this.media.mbId });
+
+        const media = await mediaRepository.findOne({
+          where: { id: this.media.id },
+        });
+
+        if (!media) {
+          logger.error('Media data not found', {
+            label: 'Media Request',
+            requestId: this.id,
+            mediaId: this.media.id,
+          });
+          return;
+        }
+
+        if (lidarrSettings.tagRequests) {
+          let userTag = (await lidarr.getTags()).find((v) =>
+            v.label.startsWith(this.requestedBy.id + ' - ')
+          );
+          if (!userTag) {
+            logger.info(`Requester has no active tag. Creating new`, {
+              label: 'Media Request',
+              requestId: this.id,
+              mediaId: this.media.id,
+              userId: this.requestedBy.id,
+              newTag:
+                this.requestedBy.id + ' - ' + this.requestedBy.displayName,
+            });
+            userTag = await lidarr.createTag({
+              label: this.requestedBy.id + ' - ' + this.requestedBy.displayName,
+            });
+          }
+          if (userTag.id) {
+            if (!tags?.find((v) => v === userTag?.id)) {
+              tags?.push(userTag.id);
+            }
+          } else {
+            logger.warn(`Requester has no tag and failed to add one`, {
+              label: 'Media Request',
+              requestId: this.id,
+              mediaId: this.media.id,
+              userId: this.requestedBy.id,
+              lidarrServer: lidarrSettings.hostname + ':' + lidarrSettings.port,
+            });
+          }
+        }
+
+        if (
+          media['status'] === MediaStatus.AVAILABLE
+        ) {
+          logger.warn('Media already exists, marking request as APPROVED', {
+            label: 'Media Request',
+            requestId: this.id,
+            mediaId: this.media.id,
+          });
+
+          const requestRepository = getRepository(MediaRequest);
+          this.status = MediaRequestStatus.APPROVED;
+          await requestRepository.save(this);
+          return;
+        }
+
+        const lidarrMusicOptions: LidarrMusicOptions = {
+          profileId: qualityProfile,
+          qualityProfileId: qualityProfile,
+          rootFolderPath: rootFolder,
+          title: music.title,
+          mbId: music.id,
+          year: Number(music.release_date.slice(0, 4)),
+          monitored: true,
+          tags,
+          searchNow: !lidarrSettings.preventSearch,
+        };
+
+        // Run this asynchronously so we don't wait for it on the UI side
+        lidarr
+          .addMusic(lidarrMusicOptions)
+          .then(async (lidarrMusic) => {
+            // We grab media again here to make sure we have the latest version of it
+            const media = await mediaRepository.findOne({
+              where: { id: this.media.id },
+            });
+
+            if (!media) {
+              throw new Error('Media data not found');
+            }
+
+            media['externalServiceId'] =
+              lidarrMusic.id;
+            media['externalServiceSlug'] =
+              lidarrMusic.titleSlug;
+            media['serviceId'] = lidarrSettings?.id;
+            await mediaRepository.save(media);
+          })
+          .catch(async () => {
+            const requestRepository = getRepository(MediaRequest);
+
+            this.status = MediaRequestStatus.FAILED;
+            requestRepository.save(this);
+
+            logger.warn(
+              'Something went wrong sending music request to Lidarr, marking status as FAILED',
+              {
+                label: 'Media Request',
+                requestId: this.id,
+                mediaId: this.media.id,
+                lidarrMusicOptions,
+              }
+            );
+
+            this.sendNotification(media, Notification.MEDIA_FAILED);
+          });
+        logger.info('Sent request to Lidarr', {
+          label: 'Media Request',
+          requestId: this.id,
+          mediaId: this.media.id,
+        });
+      } catch (e) {
+        logger.error('Something went wrong sending request to Lidarr', {
+          label: 'Media Request',
+          errorMessage: e.message,
+          requestId: this.id,
+          mediaId: this.media.id,
+        });
+        throw new Error(e.message);
+      }
+    }
+  }
+
   private async sendNotification(media: Media, type: Notification) {
     const tmdb = new TheMovieDb();
 
@@ -1243,6 +1475,25 @@ export class MediaRequest {
                 .join(', '),
             },
           ],
+        });
+      } else if (this.type === MediaType.MUSIC) {
+        const music = await musicbrainz.getMusic({ mbId: media.tmdbId });
+        notificationManager.sendNotification(type, {
+          media,
+          request: this,
+          notifyAdmin,
+          notifySystem,
+          notifyUser: notifyAdmin ? undefined : this.requestedBy,
+          event,
+          subject: `${music.name}${
+            music.first_realease_date ? ` (${music.first_realease_date.slice(0, 4)})` : ''
+          }`,
+          message: truncate(music.overview, {
+            length: 500,
+            separator: /\s/,
+            omission: '…',
+          }),
+          image: `http://coverartarchive.org/${music.type}/${music.mbid}/front-250`, //TODO: Add coverartarchive
         });
       }
     } catch (e) {

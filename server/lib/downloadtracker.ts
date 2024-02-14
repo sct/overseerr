@@ -1,5 +1,6 @@
 import RadarrAPI from '@server/api/servarr/radarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
+import LidarrAPI from '@server/api/servarr/lidarr';
 import { MediaType } from '@server/constants/media';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
@@ -26,6 +27,7 @@ export interface DownloadingItem {
 class DownloadTracker {
   private radarrServers: Record<number, DownloadingItem[]> = {};
   private sonarrServers: Record<number, DownloadingItem[]> = {};
+  private lidarrServers: Record<number, DownloadingItem[]> = {};
 
   public getMovieProgress(
     serverId: number,
@@ -53,6 +55,19 @@ class DownloadTracker {
     );
   }
 
+  public getMusicProgress(
+    serverId: number,
+    externalServiceId: number
+  ): DownloadingItem[] {
+    if (!this.lidarrServers[serverId]) {
+      return [];
+    }
+
+    return this.lidarrServers[serverId].filter(
+      (item) => item.externalId === externalServiceId
+    );
+  }
+
   public async resetDownloadTracker() {
     this.radarrServers = {};
   }
@@ -60,6 +75,7 @@ class DownloadTracker {
   public updateDownloads() {
     this.updateRadarrDownloads();
     this.updateSonarrDownloads();
+    this.updateLidarrDownloads();
   }
 
   private async updateRadarrDownloads() {
@@ -208,6 +224,83 @@ class DownloadTracker {
           matchingServers.forEach((ms) => {
             if (ms.syncEnabled) {
               this.sonarrServers[ms.id] = this.sonarrServers[server.id];
+            }
+          });
+        }
+      })
+    );
+  }
+
+  private async updateLidarrDownloads() {
+    const settings = getSettings();
+
+    // Remove duplicate servers
+    const filteredServers = uniqWith(settings.lidarr, (lidarrA, lidarrB) => {
+      return (
+        lidarrA.hostname === lidarrB.hostname &&
+        lidarrA.port === lidarrB.port &&
+        lidarrA.baseUrl === lidarrB.baseUrl
+      );
+    });
+
+    // Load downloads from Lidarr servers
+    Promise.all(
+      filteredServers.map(async (server) => {
+        if (server.syncEnabled) {
+          const lidarr = new LidarrAPI({
+            apiKey: server.apiKey,
+            url: LidarrAPI.buildUrl(server, '/api/v3'),
+          });
+
+          try {
+            const queueItems = await lidarr.getQueue();
+
+            this.lidarrServers[server.id] = queueItems.map((item) => ({
+              externalId: item.seriesId,
+              estimatedCompletionTime: new Date(item.estimatedCompletionTime),
+              mediaType: MediaType.TV,
+              size: item.size,
+              sizeLeft: item.sizeleft,
+              status: item.status,
+              timeLeft: item.timeleft,
+              title: item.title,
+              episode: item.episode,
+            }));
+
+            if (queueItems.length > 0) {
+              logger.debug(
+                `Found ${queueItems.length} item(s) in progress on Sonarr server: ${server.name}`,
+                { label: 'Download Tracker' }
+              );
+            }
+          } catch {
+            logger.error(
+              `Unable to get queue from Sonarr server: ${server.name}`,
+              {
+                label: 'Download Tracker',
+              }
+            );
+          }
+
+          // Duplicate this data to matching servers
+          const matchingServers = settings.lidarr.filter(
+            (ss) =>
+              ss.hostname === server.hostname &&
+              ss.port === server.port &&
+              ss.baseUrl === server.baseUrl &&
+              ss.id !== server.id
+          );
+
+          if (matchingServers.length > 0) {
+            logger.debug(
+              `Matching download data to ${matchingServers.length} other Sonarr server(s)`,
+              { label: 'Download Tracker' }
+            );
+          }
+
+          matchingServers.forEach((ms) => {
+            if (ms.syncEnabled) {
+              this.lidarrServers[ms.id] = this.lidarrServers[server.id];
             }
           });
         }
