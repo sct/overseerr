@@ -1,3 +1,4 @@
+import LidarrAPI from '@server/api/servarr/lidarr';
 import RadarrAPI from '@server/api/servarr/radarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
 import { MediaStatus, MediaType } from '@server/constants/media';
@@ -20,7 +21,6 @@ import {
 import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import Season from './Season';
-import LidarrAPI from '@server/api/servarr/lidarr';
 
 @Entity()
 class Media {
@@ -73,13 +73,13 @@ class Media {
   @Column({ type: 'varchar' })
   public mediaType: MediaType;
 
-  @Column({ nullable: true })
+  @Column()
   @Index()
-  public tmdbId: number;
+  public tmdbId?: number;
 
-  @Column({ nullable: true })
+  @Column()
   @Index()
-  public mbId: number;
+  public mbId?: string;
 
   @Column({ nullable: true })
   @Index()
