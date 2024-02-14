@@ -45,6 +45,7 @@ class WatchlistSync {
           Permission.AUTO_REQUEST,
           Permission.AUTO_REQUEST_MOVIE,
           Permission.AUTO_APPROVE_TV,
+          Permission.AUTO_REQUEST_MUSIC,
         ],
         { type: 'or' }
       )
@@ -74,7 +75,8 @@ class WatchlistSync {
         !mediaItems.find(
           (m) =>
             m.tmdbId === i.tmdbId &&
-            ((m.status !== MediaStatus.UNKNOWN && m.mediaType === 'movie') ||
+            ((m.status !== MediaStatus.UNKNOWN &&
+              (m.mediaType === 'movie' || m.mediaType === 'music')) ||
               (m.mediaType === 'tv' && m.status === MediaStatus.AVAILABLE))
         )
     );

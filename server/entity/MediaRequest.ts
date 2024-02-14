@@ -1,5 +1,5 @@
 import MusicBrainz from '@server/api/musicbrainz';
-import type { LidarrMusicOptions } from '@server/api/servarr/lidarr';
+import type { LidarrAlbumOptions } from '@server/api/servarr/lidarr';
 import LidarrAPI from '@server/api/servarr/lidarr';
 import type { RadarrMovieOptions } from '@server/api/servarr/radarr';
 import RadarrAPI from '@server/api/servarr/radarr';
@@ -1384,7 +1384,7 @@ export class MediaRequest {
           apiKey: lidarrSettings.apiKey,
           url: LidarrAPI.buildUrl(lidarrSettings, '/api/v3'),
         });
-        const music = await musicbrainz.getMusic({ mbId: this.media.mbId });
+        const release = await musicbrainz.getRelease(String(this.media.mbId));
 
         const media = await mediaRepository.findOne({
           where: { id: this.media.id },
@@ -1444,22 +1444,21 @@ export class MediaRequest {
           return;
         }
 
-        const lidarrMusicOptions: LidarrMusicOptions = {
+        const lidarrAlbumOptions: LidarrAlbumOptions = {
           profileId: qualityProfile,
           qualityProfileId: qualityProfile,
           rootFolderPath: rootFolder,
-          title: music.title,
-          mbId: music.id,
-          year: Number(music.release_date.slice(0, 4)),
+          title: release.title,
+          mbId: release.id,
           monitored: true,
-          tags,
+          tags: tags.map((tag) => String(tag)),
           searchNow: !lidarrSettings.preventSearch,
         };
 
         // Run this asynchronously so we don't wait for it on the UI side
         lidarr
-          .addMusic(lidarrMusicOptions)
-          .then(async (lidarrMusic) => {
+          .addAlbum(lidarrAlbumOptions)
+          .then(async (lidarrAlbum) => {
             // We grab media again here to make sure we have the latest version of it
             const media = await mediaRepository.findOne({
               where: { id: this.media.id },
@@ -1469,8 +1468,8 @@ export class MediaRequest {
               throw new Error('Media data not found');
             }
 
-            media['externalServiceId'] = lidarrMusic.id;
-            media['externalServiceSlug'] = lidarrMusic.titleSlug;
+            media['externalServiceId'] = lidarrAlbum.id;
+            media['externalServiceSlug'] = lidarrAlbum.disambiguation;
             media['serviceId'] = lidarrSettings?.id;
             await mediaRepository.save(media);
           })
@@ -1486,7 +1485,7 @@ export class MediaRequest {
                 label: 'Media Request',
                 requestId: this.id,
                 mediaId: this.media.id,
-                lidarrMusicOptions,
+                lidarrAlbumOptions,
               }
             );
 

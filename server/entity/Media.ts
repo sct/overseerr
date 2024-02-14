@@ -73,11 +73,11 @@ class Media {
   @Column({ type: 'varchar' })
   public mediaType: MediaType;
 
-  @Column()
+  @Column({ nullable: true })
   @Index()
   public tmdbId?: number;
 
-  @Column()
+  @Column({ nullable: true })
   @Index()
   public mbId?: string;
 

@@ -1,16 +1,15 @@
 import logger from '@server/logger';
 import ServarrBase from './base';
 
-export interface LidarrMusicOptions {
-  title: string;
-  qualityProfileId: number;
-  tags: number[];
+export interface LidarrAlbumOptions {
   profileId: number;
-  year: number;
+  qualityProfileId: number;
   rootFolderPath: string;
-  mbId: number;
-  monitored?: boolean;
-  searchNow?: boolean;
+  title: string;
+  mbId: string;
+  monitored: boolean;
+  tags: string[];
+  searchNow: boolean;
 }
 
 export interface LidarrMusic {
@@ -19,7 +18,6 @@ export interface LidarrMusic {
   isAvailable: boolean;
   monitored: boolean;
   mbId: number;
-  imdbId: string;
   titleSlug: string;
   folderName: string;
   path: string;
@@ -29,15 +27,123 @@ export interface LidarrMusic {
   hasFile: boolean;
 }
 
+export interface LidarrAlbum {
+  title: string;
+  disambiguation: string;
+  overview: string;
+  artistId: number;
+  foreignAlbumId: string;
+  monitored: boolean;
+  anyReleaseOk: boolean;
+  profileId: number;
+  duration: number;
+  albumType: string;
+  secondaryTypes: string[];
+  mediumCount: number;
+  ratings: Ratings;
+  releaseDate: string;
+  releases: LidarrRelease[];
+  genres: string[];
+  media: Medium[];
+  artist: LidarrArtist;
+  images: Image[];
+  links: Link[];
+  statistics: Statistics;
+  grabbed: boolean;
+  id: number;
+}
+
+export interface LidarrArtist {
+  artistMetadataId: number;
+  status: string;
+  ended: boolean;
+  artistName: string;
+  foreignArtistId: string;
+  tadbId: number;
+  discogsId: number;
+  overview: string;
+  artistType: string;
+  disambiguation: string;
+  links: Link[];
+  images: Image[];
+  path: string;
+  qualityProfileId: number;
+  metadataProfileId: number;
+  monitored: boolean;
+  monitorNewItems: string;
+  rootFolderPath?: string;
+  genres: string[];
+  cleanName: string;
+  sortName: string;
+  tags: Tag[];
+  added: string;
+  ratings: Ratings;
+  statistics: Statistics;
+  id: number;
+}
+
+export interface LidarrRelease {
+  id: number;
+  albumId: number;
+  foreignReleaseId: string;
+  title: string;
+  status: string;
+  duration: number;
+  trackCount: number;
+  media: Medium[];
+  mediumCount: number;
+  disambiguation: string;
+  country: string[];
+  label: string[];
+  format: string;
+  monitored: boolean;
+}
+
+export interface Link {
+  url: string;
+  name: string;
+}
+
+export interface Ratings {
+  votes: number;
+  value: number;
+}
+
+export interface Statistics {
+  albumCount?: number;
+  trackFileCount: number;
+  trackCount: number;
+  totalTrackCount: number;
+  sizeOnDisk: number;
+  percentOfTracks: number;
+}
+
+export interface Image {
+  url: string;
+  coverType: string;
+  extension: string;
+  remoteUrl: string;
+}
+
+export interface Tag {
+  name: string;
+  count: number;
+}
+
+export interface Medium {
+  mediumNumber: number;
+  mediumName: string;
+  mediumFormat: string;
+}
 
 class LidarrAPI extends ServarrBase<{ musicId: number }> {
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
     super({ url, apiKey, cacheName: 'lidarr', apiName: 'Lidarr' });
   }
 
-  public getMusics = async (): Promise<LidarrMusic[]> => {
+  public getArtists = async (): Promise<LidarrArtist[]> => {
     try {
-      const response = await this.axios.get<LidarrMusic[]>('/music');
+      const response = await this.axios.get<LidarrArtist[]>('/artist');
 
       return response.data;
     } catch (e) {
@@ -45,172 +151,52 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     }
   };
 
-  public getMusic = async ({ id }: { id: number }): Promise<LidarrMusic> => {
+  public async getAlbum({ mbId }: { mbId: string }): Promise<LidarrAlbum[]> {
     try {
-      const response = await this.axios.get<LidarrMusic>(`/music/${id}`);
-
-      return response.data;
-    } catch (e) {
-      throw new Error(`[Lidarr] Failed to retrieve music: ${e.message}`);
-    }
-  };
-
-  public async getMusicBymbId(id: number): Promise<LidarrMusic> {
-    try {
-      const response = await this.axios.get<LidarrMusic[]>('/music/lookup', {
+      const response = await this.axios.get<LidarrAlbum[]>('/album', {
         params: {
-          term: `musicbrainz:${id}`,
+          foreignAlbumId: mbId,
         },
       });
-
-      if (!response.data[0]) {
-        throw new Error('Music not found');
+      if (response.data.length > 0) {
+        return response.data;
       }
-
-      return response.data[0];
+      throw new Error('Album not found');
     } catch (e) {
-      logger.error('Error retrieving music by MUSICBRAINZ ID', {
+      logger.error('Error retrieving album by MUSICBRAINZ ID', {
         label: 'Lidarr API',
         errorMessage: e.message,
-        mbId: id,
+        mbId: mbId,
       });
-      throw new Error('Music not found');
+      throw new Error('Album not found');
     }
   }
 
-  public addMusic = async (
-    options: LidarrMusicOptions
-  ): Promise<LidarrMusic> => {
+  public addAlbum = async (
+    options: LidarrAlbumOptions
+  ): Promise<LidarrAlbum> => {
     try {
-      const music = await this.getMusicBymbId(options.mbId);
-
-      if (music.hasFile) {
+      const albums = await this.getAlbum({ mbId: options.mbId.toString() });
+      if (albums.length > 0) {
         logger.info(
-          'Title already exists and is available. Skipping add and returning success',
-          {
-            label: 'Lidarr',
-            music,
-          }
-        );
-        return music;
-      }
-
-      // music exists in Lidarr but is neither downloaded nor monitored
-      if (music.id && !music.monitored) {
-        const response = await this.axios.put<LidarrMusic>(`/music`, {
-          ...music,
-          title: options.title,
-          qualityProfileId: options.qualityProfileId,
-          profileId: options.profileId,
-          titleSlug: options.mbId.toString(),
-          mbId: options.mbId,
-          year: options.year,
-          tags: options.tags,
-          rootFolderPath: options.rootFolderPath,
-          monitored: options.monitored,
-          addOptions: {
-            searchForMusic: options.searchNow,
-          },
-        });
-
-        if (response.data.monitored) {
-          logger.info(
-            'Found existing title in Lidarr and set it to monitored.',
-            {
-              label: 'Lidarr',
-              musicId: response.data.id,
-              musicTitle: response.data.title,
-            }
-          );
-          logger.debug('Lidarr update details', {
-            label: 'Lidarr',
-            music: response.data,
-          });
-
-          if (options.searchNow) {
-            this.searchMusic(response.data.id);
-          }
-
-          return response.data;
-        } else {
-          logger.error('Failed to update existing music in Lidarr.', {
-            label: 'Lidarr',
-            options,
-          });
-          throw new Error('Failed to update existing music in Lidarr');
-        }
-      }
-
-      if (music.id) {
-        logger.info(
-          'Music is already monitored in Lidarr. Skipping add and returning success',
+          'Album is already monitored in Lidarr. Skipping add and returning success',
           { label: 'Lidarr' }
         );
-        return music;
+        return albums[0];
       }
-
-      const response = await this.axios.post<LidarrMusic>(`/music`, {
-        title: options.title,
-        qualityProfileId: options.qualityProfileId,
-        profileId: options.profileId,
-        titleSlug: options.mbId.toString(),
-        mbId: options.mbId,
-        year: options.year,
-        rootFolderPath: options.rootFolderPath,
-        monitored: options.monitored,
-        tags: options.tags,
-        addOptions: {
-          searchForMusic: options.searchNow,
-        },
+      const response = await this.axios.put<LidarrAlbum>('/album', {
+        params: { id: options.mbId },
       });
-
-      if (response.data.id) {
-        logger.info('Lidarr accepted request', { label: 'Lidarr' });
-        logger.debug('Lidarr add details', {
-          label: 'Lidarr',
-          music: response.data,
-        });
-      } else {
-        logger.error('Failed to add music to Lidarr', {
-          label: 'Lidarr',
-          options,
-        });
-        throw new Error('Failed to add music to Lidarr');
-      }
       return response.data;
     } catch (e) {
-      logger.error(
-        'Failed to add music to Lidarr. This might happen if the music already exists, in which case you can safely ignore this error.',
-        {
-          label: 'Lidarr',
-          errorMessage: e.message,
-          options,
-          response: e?.response?.data,
-        }
-      );
-      throw new Error('Failed to add music to Lidarr');
+      logger.error('Error adding album by MUSICBRAINZ ID', {
+        label: 'Lidarr API',
+        errorMessage: e.message,
+        mbId: options.mbId,
+      });
+      throw new Error(`[Lidarr] Failed to add album: ${options.mbId}`);
     }
   };
-
-  public async searchMusic(musicId: number): Promise<void> {
-    logger.info('Executing music search command', {
-      label: 'Lidarr API',
-      musicId,
-    });
-
-    try {
-      await this.runCommand('MusicsSearch', { musicIds: [musicId] });
-    } catch (e) {
-      logger.error(
-        'Something went wrong while executing Lidarr music search.',
-        {
-          label: 'Lidarr API',
-          errorMessage: e.message,
-          musicId,
-        }
-      );
-    }
-  }
 }
 
 export default LidarrAPI;

@@ -20,13 +20,13 @@ interface MediaRequestBody {
 export interface VideoRequestBody extends MediaRequestBody {
   mediaType: MediaType.MOVIE | MediaType.TV;
   mediaId: number;
+  seasons?: number[] | 'all';
   is4k?: boolean;
+  tvdbId?: number;
 }
 
 export interface TvRequestBody extends VideoRequestBody {
   mediaType: MediaType.TV;
-  tvdbId?: number;
-  seasons?: number[] | 'all';
 }
 
 export interface MusicRequestBody extends MediaRequestBody {

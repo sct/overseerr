@@ -55,16 +55,17 @@ export interface ArrSettings {
   activeProfileId: number;
   activeProfileName: string;
   activeDirectory: string;
-  tags: number[];
   isDefault: boolean;
   externalUrl?: string;
   syncEnabled: boolean;
   preventSearch: boolean;
   tagRequests: boolean;
+  tags: string[] | number[];
 }
 
 export interface DVRSettings extends ArrSettings {
   is4k: boolean;
+  tags: number[];
 }
 
 export interface RadarrSettings extends DVRSettings {
@@ -82,7 +83,6 @@ export interface SonarrSettings extends DVRSettings {
   animeTags?: number[];
   enableSeasonFolders: boolean;
 }
-
 
 interface Quota {
   quotaLimit?: number;
