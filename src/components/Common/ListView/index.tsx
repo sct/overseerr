@@ -5,29 +5,50 @@ import useVerticalScroll from '@app/hooks/useVerticalScroll';
 import globalMessages from '@app/i18n/globalMessages';
 import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
 import type {
+  ArtistResult,
   CollectionResult,
   MovieResult,
+  MusicResult,
   PersonResult,
+  RecordingResult,
+  ReleaseGroupResult,
+  ReleaseResult,
   TvResult,
+  WorkResult,
 } from '@server/models/Search';
 import { useIntl } from 'react-intl';
 
 type ListViewProps = {
-  items?: (TvResult | MovieResult | PersonResult | CollectionResult)[];
+  items?: (
+    | TvResult
+    | MovieResult
+    | PersonResult
+    | CollectionResult
+    | MusicResult
+    | ArtistResult
+    | ReleaseResult
+    | ReleaseGroupResult
+    | WorkResult
+    | RecordingResult
+  )[];
+  jsxItems?: React.ReactNode[];
   plexItems?: WatchlistItem[];
   isEmpty?: boolean;
   isLoading?: boolean;
   isReachingEnd?: boolean;
   onScrollBottom: () => void;
+  force_big?: boolean;
 };
 
 const ListView = ({
   items,
+  jsxItems,
   isEmpty,
   isLoading,
   onScrollBottom,
   isReachingEnd,
   plexItems,
+  force_big = false,
 }: ListViewProps) => {
   const intl = useIntl();
   useVerticalScroll(onScrollBottom, !isLoading && !isEmpty && !isReachingEnd);
@@ -43,9 +64,9 @@ const ListView = ({
           return (
             <li key={`${title.ratingKey}-${index}`}>
               <TmdbTitleCard
-                id={title.tmdbId}
-                tmdbId={title.tmdbId}
-                type={title.mediaType}
+                id={Number(title.tmdbId)}
+                tmdbId={Number(title.tmdbId)}
+                type={title.mediaType as 'movie' | 'tv'}
                 canExpand
               />
             </li>
@@ -113,10 +134,66 @@ const ListView = ({
                 />
               );
               break;
+            case 'artist':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  image={title.posterPath}
+                  title={title.name}
+                  mediaType={title.mediaType}
+                  canExpand
+                  force_big={force_big}
+                />
+              );
+              break;
+            case 'release':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  image={title.posterPath}
+                  title={title.title}
+                  mediaType={title.mediaType}
+                  canExpand
+                  force_big={force_big}
+                />
+              );
+              break;
+            case 'release-group':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  image={title.posterPath}
+                  title={title.title}
+                  mediaType={title.mediaType}
+                  canExpand
+                />
+              );
+              break;
+            case 'work':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  title={title.title}
+                  mediaType={title.mediaType}
+                  canExpand
+                />
+              );
+              break;
+            case 'recording':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  title={title.title}
+                  mediaType={title.mediaType}
+                  canExpand
+                />
+              );
+              break;
           }
 
           return <li key={`${title.id}-${index}`}>{titleCard}</li>;
         })}
+        {jsxItems}
         {isLoading &&
           !isReachingEnd &&
           [...Array(20)].map((_item, i) => (

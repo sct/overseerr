@@ -1,3 +1,4 @@
+import MusicBrainz from '@server/api/musicbrainz';
 import TheMovieDb from '@server/api/themoviedb';
 import type {
   TmdbMovieDetails,
@@ -10,6 +11,7 @@ import type {
   TmdbTvDetails,
   TmdbTvResult,
 } from '@server/api/themoviedb/interfaces';
+import type { MbSearchMultiResponse } from '@server/models/Search';
 import {
   mapMovieDetailsToResult,
   mapPersonDetailsToResult,
@@ -31,7 +33,7 @@ interface SearchProvider {
     id: string;
     language?: string;
     query?: string;
-  }) => Promise<TmdbSearchMultiResponse>;
+  }) => Promise<TmdbSearchMultiResponse | MbSearchMultiResponse>;
 }
 
 const searchProviders: SearchProvider[] = [];
@@ -206,6 +208,32 @@ searchProviders.push({
       });
     }
 
+    return {
+      page: 1,
+      total_pages: 1,
+      total_results: results.length,
+      results,
+    };
+  },
+});
+
+searchProviders.push({
+  pattern: new RegExp(
+    /(?<=mb:)[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+  ),
+  search: async ({ id }) => {
+    const mb = new MusicBrainz();
+    const results = [];
+    try {
+      results.push(await mb.getArtist(id));
+    } catch (e) {
+      // ignore
+    }
+    try {
+      results.push(await mb.getRelease(id));
+    } catch (e) {
+      // ignore
+    }
     return {
       page: 1,
       total_pages: 1,

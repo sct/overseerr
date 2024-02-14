@@ -1,5 +1,6 @@
+import type { LidarrRelease } from '@server/api/servarr/lidarr';
 import TheMovieDb from '@server/api/themoviedb';
-import { MediaStatus, MediaType } from '@server/constants/media';
+import { MediaStatus, MediaType, SecondaryType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import Season from '@server/entity/Season';
@@ -24,7 +25,8 @@ export interface RunnableScanner<T> {
 }
 
 export interface MediaIds {
-  tmdbId: number;
+  tmdbId?: number;
+  mbId?: string;
   imdbId?: string;
   tvdbId?: number;
   isHama?: boolean;
@@ -39,6 +41,11 @@ interface ProcessOptions {
   externalServiceSlug?: string;
   title?: string;
   processing?: boolean;
+  parentRatingKey?: string;
+}
+
+interface ProcessGroupOptions extends ProcessOptions {
+  releases?: LidarrRelease[];
 }
 
 export interface ProcessableSeason {
@@ -79,13 +86,19 @@ class BaseScanner<T> {
     this.updateRate = updateRate ?? UPDATE_RATE;
   }
 
-  private async getExisting(tmdbId: number, mediaType: MediaType) {
+  private async getExisting(id: number | string, mediaType: MediaType) {
     const mediaRepository = getRepository(Media);
 
-    const existing = await mediaRepository.findOne({
-      where: { tmdbId: tmdbId, mediaType },
-    });
-
+    let existing: Media | null;
+    if (mediaType === MediaType.MOVIE || mediaType === MediaType.TV) {
+      existing = await mediaRepository.findOne({
+        where: { tmdbId: id as number, mediaType },
+      });
+    } else {
+      existing = await mediaRepository.findOne({
+        where: { mbId: id as string, mediaType },
+      });
+    }
     return existing;
   }
 
@@ -110,8 +123,8 @@ class BaseScanner<T> {
       if (existing) {
         let changedExisting = false;
 
-        if (existing[is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE) {
-          existing[is4k ? 'status4k' : 'status'] = processing
+        if (existing['status'] !== MediaStatus.AVAILABLE) {
+          existing['status'] = processing
             ? MediaStatus.PROCESSING
             : MediaStatus.AVAILABLE;
           if (mediaAddedAt) {
@@ -125,29 +138,21 @@ class BaseScanner<T> {
           changedExisting = true;
         }
 
-        if (
-          ratingKey &&
-          existing[is4k ? 'ratingKey4k' : 'ratingKey'] !== ratingKey
-        ) {
-          existing[is4k ? 'ratingKey4k' : 'ratingKey'] = ratingKey;
+        if (ratingKey && existing['ratingKey'] !== ratingKey) {
+          existing['ratingKey'] = ratingKey;
           changedExisting = true;
         }
 
-        if (
-          serviceId !== undefined &&
-          existing[is4k ? 'serviceId4k' : 'serviceId'] !== serviceId
-        ) {
-          existing[is4k ? 'serviceId4k' : 'serviceId'] = serviceId;
+        if (serviceId !== undefined && existing['serviceId'] !== serviceId) {
+          existing['serviceId'] = serviceId;
           changedExisting = true;
         }
 
         if (
           externalServiceId !== undefined &&
-          existing[is4k ? 'externalServiceId4k' : 'externalServiceId'] !==
-            externalServiceId
+          existing['externalServiceId'] !== externalServiceId
         ) {
-          existing[is4k ? 'externalServiceId4k' : 'externalServiceId'] =
-            externalServiceId;
+          existing['externalServiceId'] = externalServiceId;
           changedExisting = true;
         }
 
@@ -384,12 +389,11 @@ class BaseScanner<T> {
         }
 
         if (serviceId !== undefined) {
-          media[is4k ? 'serviceId4k' : 'serviceId'] = serviceId;
+          media['serviceId'] = serviceId;
         }
 
         if (externalServiceId !== undefined) {
-          media[is4k ? 'externalServiceId4k' : 'externalServiceId'] =
-            externalServiceId;
+          media['externalServiceId'] = externalServiceId;
         }
 
         if (externalServiceSlug !== undefined) {
@@ -501,6 +505,289 @@ class BaseScanner<T> {
         });
         await mediaRepository.save(newMedia);
         this.log(`Saved ${title}`);
+      }
+    });
+  }
+
+  protected async processArtist(
+    mbId: string,
+    {
+      mediaAddedAt,
+      ratingKey,
+      serviceId,
+      externalServiceId,
+      processing = false,
+      title = 'Unknown Title',
+    }: ProcessOptions = {}
+  ): Promise<void> {
+    const mediaRepository = getRepository(Media);
+
+    await this.asyncLock.dispatch(mbId, async () => {
+      const existing = await this.getExisting(mbId, MediaType.MUSIC);
+
+      if (existing) {
+        let changedExisting = false;
+
+        if (existing['status'] !== MediaStatus.AVAILABLE) {
+          existing['status'] = processing
+            ? MediaStatus.PROCESSING
+            : MediaStatus.AVAILABLE;
+          if (mediaAddedAt) {
+            existing.mediaAddedAt = mediaAddedAt;
+          }
+          changedExisting = true;
+        }
+
+        if (!changedExisting && !existing.mediaAddedAt && mediaAddedAt) {
+          existing.mediaAddedAt = mediaAddedAt;
+          changedExisting = true;
+        }
+
+        if (ratingKey && existing['ratingKey'] !== ratingKey) {
+          existing['ratingKey'] = ratingKey;
+          changedExisting = true;
+        }
+
+        if (serviceId !== undefined && existing['serviceId'] !== serviceId) {
+          existing['serviceId'] = serviceId;
+          changedExisting = true;
+        }
+
+        if (
+          externalServiceId !== undefined &&
+          existing['externalServiceId'] !== externalServiceId
+        ) {
+          existing['externalServiceId'] = externalServiceId;
+          changedExisting = true;
+        }
+
+        if (changedExisting) {
+          await mediaRepository.save(existing);
+          this.log(
+            `Media for ${title} exists. Changes were detected and the title will be updated.`,
+            'info'
+          );
+        } else {
+          this.log(`Title already exists and no changes detected for ${title}`);
+        }
+      } else {
+        const newMedia = new Media();
+        newMedia.mbId = mbId;
+        newMedia.title = title;
+        newMedia.secondaryType = SecondaryType.ARTIST;
+        newMedia.status = !processing
+          ? MediaStatus.AVAILABLE
+          : processing
+          ? MediaStatus.PROCESSING
+          : MediaStatus.UNKNOWN;
+        newMedia.mediaType = MediaType.MUSIC;
+        newMedia.serviceId = serviceId;
+        newMedia.externalServiceId = externalServiceId;
+
+        if (mediaAddedAt) {
+          newMedia.mediaAddedAt = mediaAddedAt;
+        }
+
+        if (ratingKey) {
+          newMedia.ratingKey = ratingKey;
+        }
+        await mediaRepository.save(newMedia);
+        this.log(`Saved new media: ${title}`);
+      }
+    });
+  }
+
+  protected async processAlbum(
+    mbId: string,
+    {
+      mediaAddedAt,
+      ratingKey,
+      serviceId,
+      externalServiceId,
+      processing = false,
+      title = 'Unknown Title',
+      parentRatingKey = undefined,
+    }: ProcessOptions = {}
+  ): Promise<void> {
+    const mediaRepository = getRepository(Media);
+
+    await this.asyncLock.dispatch(mbId, async () => {
+      const existing = await this.getExisting(mbId, MediaType.MUSIC);
+
+      if (existing) {
+        let changedExisting = false;
+
+        if (existing['status'] !== MediaStatus.AVAILABLE) {
+          existing['status'] = processing
+            ? MediaStatus.PROCESSING
+            : MediaStatus.AVAILABLE;
+          if (mediaAddedAt) {
+            existing.mediaAddedAt = mediaAddedAt;
+          }
+          changedExisting = true;
+        }
+
+        if (!changedExisting && !existing.mediaAddedAt && mediaAddedAt) {
+          existing.mediaAddedAt = mediaAddedAt;
+          changedExisting = true;
+        }
+
+        if (ratingKey && existing['ratingKey'] !== ratingKey) {
+          existing['ratingKey'] = ratingKey;
+          changedExisting = true;
+        }
+
+        if (serviceId !== undefined && existing['serviceId'] !== serviceId) {
+          existing['serviceId'] = serviceId;
+          changedExisting = true;
+        }
+
+        if (
+          externalServiceId !== undefined &&
+          existing['externalServiceId'] !== externalServiceId
+        ) {
+          existing['externalServiceId'] = externalServiceId;
+          changedExisting = true;
+        }
+
+        if (changedExisting) {
+          await mediaRepository.save(existing);
+          this.log(
+            `Media for ${title} exists. Changes were detected and the title will be updated.`,
+            'info'
+          );
+        } else {
+          this.log(`Title already exists and no changes detected for ${title}`);
+        }
+      } else {
+        const newMedia = new Media();
+        newMedia.mbId = mbId;
+        newMedia.title = title;
+        newMedia.parentRatingKey = parentRatingKey
+          ? Number(parentRatingKey.match(/(\d+)/)?.[0])
+          : undefined;
+        newMedia.secondaryType = SecondaryType.RELEASE;
+        newMedia.status = !processing
+          ? MediaStatus.AVAILABLE
+          : processing
+          ? MediaStatus.PROCESSING
+          : MediaStatus.UNKNOWN;
+        newMedia.mediaType = MediaType.MUSIC;
+        newMedia.serviceId = serviceId;
+        newMedia.externalServiceId = externalServiceId;
+
+        if (mediaAddedAt) {
+          newMedia.mediaAddedAt = mediaAddedAt;
+        }
+
+        if (ratingKey) {
+          newMedia.ratingKey = ratingKey;
+        }
+        await mediaRepository.save(newMedia);
+        this.log(`Saved new media: ${title}`);
+      }
+    });
+  }
+
+  protected async processGroup(
+    mbId: string,
+    {
+      mediaAddedAt,
+      ratingKey,
+      serviceId,
+      externalServiceId,
+      processing = false,
+      title = 'Unknown Title',
+      parentRatingKey = undefined,
+      releases = [],
+    }: ProcessGroupOptions = {}
+  ): Promise<void> {
+    const mediaRepository = getRepository(Media);
+
+    await this.asyncLock.dispatch(mbId, async () => {
+      const existings = (
+        await Promise.all(
+          releases.map((release) =>
+            this.getExisting(release.foreignReleaseId, MediaType.MUSIC)
+          )
+        )
+      ).filter((existing) => existing !== null) as Media[];
+
+      if (existings.length > 0) {
+        for (const existing of existings) {
+          let changedExisting = false;
+
+          if (existing['status'] !== MediaStatus.AVAILABLE) {
+            existing['status'] = processing
+              ? MediaStatus.PROCESSING
+              : MediaStatus.AVAILABLE;
+            if (mediaAddedAt) {
+              existing.mediaAddedAt = mediaAddedAt;
+            }
+            changedExisting = true;
+          }
+
+          if (!changedExisting && !existing.mediaAddedAt && mediaAddedAt) {
+            existing.mediaAddedAt = mediaAddedAt;
+            changedExisting = true;
+          }
+
+          if (ratingKey && existing['ratingKey'] !== ratingKey) {
+            existing['ratingKey'] = ratingKey;
+            changedExisting = true;
+          }
+
+          if (serviceId !== undefined && existing['serviceId'] !== serviceId) {
+            existing['serviceId'] = serviceId;
+            changedExisting = true;
+          }
+
+          if (
+            externalServiceId !== undefined &&
+            existing['externalServiceId'] !== externalServiceId
+          ) {
+            existing['externalServiceId'] = externalServiceId;
+            changedExisting = true;
+          }
+
+          if (changedExisting) {
+            await mediaRepository.save(existing);
+            this.log(
+              `Media for ${title} exists. Changes were detected and the title will be updated.`,
+              'info'
+            );
+          } else {
+            this.log(
+              `Title already exists and no changes detected for ${title}`
+            );
+          }
+        }
+      } else {
+        const newMedia = new Media();
+        newMedia.mbId = mbId;
+        newMedia.title = title;
+        newMedia.parentRatingKey = parentRatingKey
+          ? Number(parentRatingKey.match(/(\d+)/)?.[0])
+          : undefined;
+        newMedia.secondaryType = SecondaryType.RELEASE;
+        newMedia.status = !processing
+          ? MediaStatus.AVAILABLE
+          : processing
+          ? MediaStatus.PROCESSING
+          : MediaStatus.UNKNOWN;
+        newMedia.mediaType = MediaType.MUSIC;
+        newMedia.serviceId = serviceId;
+        newMedia.externalServiceId = externalServiceId;
+
+        if (mediaAddedAt) {
+          newMedia.mediaAddedAt = mediaAddedAt;
+        }
+
+        if (ratingKey) {
+          newMedia.ratingKey = ratingKey;
+        }
+        await mediaRepository.save(newMedia);
+        this.log(`Saved new media: ${title}`);
       }
     });
   }

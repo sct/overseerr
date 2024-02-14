@@ -1,3 +1,4 @@
+import LidarrAPI from '@server/api/servarr/lidarr';
 import RadarrAPI from '@server/api/servarr/radarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
 import { MediaStatus, MediaType } from '@server/constants/media';
@@ -20,25 +21,35 @@ import {
 import Issue from './Issue';
 import { MediaRequest } from './MediaRequest';
 import Season from './Season';
-import LidarrAPI from '@server/api/servarr/lidarr';
 
 @Entity()
 class Media {
   public static async getRelatedMedia(
-    tmdbIds: number | number[]
+    tmdbIds: number | number[] = [],
+    mbIds: string | string[] = []
   ): Promise<Media[]> {
     const mediaRepository = getRepository(Media);
 
     try {
-      let finalIds: number[];
+      let finalTmdbIds: number[] = [];
       if (!Array.isArray(tmdbIds)) {
-        finalIds = [tmdbIds];
+        finalTmdbIds = [tmdbIds];
       } else {
-        finalIds = tmdbIds;
+        finalTmdbIds = tmdbIds;
+      }
+
+      let finalMusicBrainzIds: string[] = [];
+      if (!Array.isArray(mbIds)) {
+        finalMusicBrainzIds = [mbIds];
+      } else {
+        finalMusicBrainzIds = mbIds;
       }
 
       const media = await mediaRepository.find({
-        where: { tmdbId: In(finalIds) },
+        where: [
+          { tmdbId: In(finalTmdbIds) },
+          { mbId: In(finalMusicBrainzIds) },
+        ],
       });
 
       return media;
@@ -49,18 +60,43 @@ class Media {
   }
 
   public static async getMedia(
-    id: number,
+    id: number | string,
     mediaType: MediaType
   ): Promise<Media | undefined> {
     const mediaRepository = getRepository(Media);
 
     try {
-      const media = await mediaRepository.findOne({
-        where: { tmdbId: id, mediaType },
+      let media: Media | null = null;
+      if (mediaType === MediaType.MOVIE || mediaType === MediaType.TV) {
+        media = await mediaRepository.findOne({
+          where: { tmdbId: Number(id), mediaType },
+          relations: { requests: true, issues: true },
+        });
+      } else if (mediaType === MediaType.MUSIC) {
+        media = await mediaRepository.findOne({
+          where: { mbId: String(id), mediaType },
+          relations: { requests: true, issues: true },
+        });
+      }
+      return media ?? undefined;
+    } catch (e) {
+      logger.error(e.message);
+      return undefined;
+    }
+  }
+
+  public static async getChildMedia(
+    parentId: number
+  ): Promise<Media[] | undefined> {
+    const mediaRepository = getRepository(Media);
+
+    try {
+      const media = await mediaRepository.find({
+        where: { parentRatingKey: parentId },
         relations: { requests: true, issues: true },
       });
 
-      return media ?? undefined;
+      return media;
     } catch (e) {
       logger.error(e.message);
       return undefined;
@@ -73,13 +109,16 @@ class Media {
   @Column({ type: 'varchar' })
   public mediaType: MediaType;
 
-  @Column({ nullable: true })
-  @Index()
-  public tmdbId: number;
+  @Column({ type: 'varchar', nullable: true })
+  public secondaryType?: string;
 
   @Column({ nullable: true })
   @Index()
-  public mbId: number;
+  public tmdbId?: number;
+
+  @Column({ nullable: true })
+  @Index()
+  public mbId?: string;
 
   @Column({ nullable: true })
   @Index()
@@ -146,6 +185,12 @@ class Media {
 
   @Column({ nullable: true, type: 'varchar' })
   public ratingKey4k?: string | null;
+
+  @Column({ nullable: true, type: 'varchar' })
+  public title?: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  public parentRatingKey?: number;
 
   public serviceUrl?: string;
   public serviceUrl4k?: string;

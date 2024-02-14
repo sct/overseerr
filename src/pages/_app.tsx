@@ -186,6 +186,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     locale: 'en',
     emailEnabled: false,
     newPlexLogin: true,
+    fallbackImage: '/images/overseerr_poster_not_found_logo_top.png',
   };
 
   if (ctx.res) {

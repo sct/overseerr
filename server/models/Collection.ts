@@ -14,20 +14,22 @@ export interface Collection {
   parts: MovieResult[];
 }
 
-export const mapCollection = (
+export const mapCollection = async (
   collection: TmdbCollection,
   media: Media[]
-): Collection => ({
+): Promise<Collection> => ({
   id: collection.id,
   name: collection.name,
   overview: collection.overview,
   posterPath: collection.poster_path,
   backdropPath: collection.backdrop_path,
-  parts: sortBy(collection.parts, 'release_date').map((part) =>
-    mapMovieResult(
-      part,
-      media?.find(
-        (req) => req.tmdbId === part.id && req.mediaType === MediaType.MOVIE
+  parts: await Promise.all(
+    sortBy(collection.parts, 'release_date').map((part) =>
+      mapMovieResult(
+        part,
+        media?.find(
+          (req) => req.tmdbId === part.id && req.mediaType === MediaType.MOVIE
+        )
       )
     )
   ),

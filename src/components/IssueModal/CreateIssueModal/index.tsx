@@ -6,6 +6,7 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { RadioGroup } from '@headlessui/react';
 import { ArrowRightCircleIcon } from '@heroicons/react/24/solid';
+import type { SecondaryType } from '@server/constants/media';
 import { MediaStatus } from '@server/constants/media';
 import type Issue from '@server/entity/Issue';
 import type { MovieDetails } from '@server/models/Movie';
@@ -47,8 +48,10 @@ const classNames = (...classes: string[]) => {
 };
 
 interface CreateIssueModalProps {
-  mediaType: 'movie' | 'tv';
+  mediaType: 'movie' | 'tv' | 'music';
   tmdbId?: number;
+  mbId?: string;
+  secondaryType?: SecondaryType;
   onCancel?: () => void;
 }
 
@@ -56,16 +59,18 @@ const CreateIssueModal = ({
   onCancel,
   mediaType,
   tmdbId,
+  mbId,
+  secondaryType,
 }: CreateIssueModalProps) => {
   const intl = useIntl();
   const settings = useSettings();
   const { hasPermission } = useUser();
   const { addToast } = useToasts();
   const { data, error } = useSWR<MovieDetails | TvDetails>(
-    tmdbId ? `/api/v1/${mediaType}/${tmdbId}` : null
+    tmdbId ? `/api/v1/${mediaType}/${tmdbId}` : mbId ? `/api/v1/music/${secondaryType}/${mbId}` : null
   );
 
-  if (!tmdbId) {
+  if (!tmdbId && (!mbId || !secondaryType)) {
     return null;
   }
 

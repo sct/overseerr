@@ -15,9 +15,11 @@ import {
   TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
+import type { SecondaryType } from '@server/constants/media';
 import { MediaRequestStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { MovieDetails } from '@server/models/Movie';
+import type { ArtistResult, ReleaseResult } from '@server/models/Search';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
@@ -40,11 +42,29 @@ const messages = defineMessages({
   cancelRequest: 'Cancel Request',
   tmdbid: 'TMDB ID',
   tvdbid: 'TheTVDB ID',
+  mbId: 'MusicBrainz ID',
   unknowntitle: 'Unknown Title',
 });
 
-const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
-  return (movie as MovieDetails).title !== undefined;
+const isMovie = (
+  movie: MovieDetails | TvDetails | ReleaseResult | ArtistResult
+): movie is MovieDetails => {
+  // Check if the object doesn't have a mediaType property and does have a title property then it's a movie
+  return !('mediaType' in movie) && 'title' in movie;
+};
+
+const isTv = (
+  tv: MovieDetails | TvDetails | ReleaseResult | ArtistResult
+): tv is TvDetails => {
+  // Check if the object doesn't have a mediaType property and does have a name property then it's a tv show
+  return !('mediaType' in tv) && 'name' in tv;
+};
+
+const isRelease = (
+  release: MovieDetails | TvDetails | ReleaseResult | ArtistResult
+): release is ReleaseResult => {
+  // Check if the object has a mediaType property and does have a title property then it's a release
+  return 'mediaType' in release && 'title' in release;
 };
 
 interface RequestItemErrorProps {
@@ -81,7 +101,9 @@ const RequestItemError = ({
                 requestData?.type
                   ? requestData?.type === 'movie'
                     ? globalMessages.movie
-                    : globalMessages.tvshow
+                    : requestData?.type === 'tv'
+                    ? globalMessages.tvshow
+                    : globalMessages.music
                   : globalMessages.request
               ),
             })}
@@ -90,10 +112,14 @@ const RequestItemError = ({
             <>
               <div className="card-field">
                 <span className="card-field-name">
-                  {intl.formatMessage(messages.tmdbid)}
+                  {requestData?.type === 'movie' || requestData?.type === 'tv'
+                    ? intl.formatMessage(messages.tmdbid)
+                    : intl.formatMessage(messages.mbId)}
                 </span>
                 <span className="flex truncate text-sm text-gray-300">
-                  {requestData.media.tmdbId}
+                  {requestData?.type === 'movie' || requestData?.type === 'tv'
+                    ? requestData?.media.tmdbId
+                    : requestData?.media.mbId}
                 </span>
               </div>
               {requestData.media.tvdbId && (
@@ -286,10 +312,12 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
-      : `/api/v1/tv/${request.media.tmdbId}`;
-  const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? url : null
-  );
+      : request.type === 'tv'
+      ? `/api/v1/tv/${request.media.tmdbId}`
+      : `/api/v1/music/${request.secondaryType}/${request.media.mbId}`;
+  const { data: title, error } = useSWR<
+    MovieDetails | TvDetails | ReleaseResult | ArtistResult
+  >(inView ? url : null);
   const { data: requestData, mutate: revalidate } = useSWR<MediaRequest>(
     `/api/v1/request/${request.id}`,
     {
@@ -303,7 +331,6 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
       ),
     }
   );
-
   const [isRetrying, setRetrying] = useState(false);
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
@@ -374,9 +401,10 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
           revalidateList();
           setShowEditModal(false);
         }}
+        secondaryType={request.secondaryType as SecondaryType}
       />
       <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
-        {title.backdropPath && (
+        {(isMovie(title) || isTv(title)) && title.backdropPath && (
           <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
             <CachedImage
               src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
@@ -399,15 +427,18 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
               href={
                 requestData.type === 'movie'
                   ? `/movie/${requestData.media.tmdbId}`
-                  : `/tv/${requestData.media.tmdbId}`
+                  : requestData.type === 'tv'
+                  ? `/tv/${requestData.media.tmdbId}`
+                  : `/music/${requestData.secondaryType}/${requestData.media.mbId}`
               }
             >
               <a className="relative h-auto w-12 flex-shrink-0 scale-100 transform-gpu overflow-hidden rounded-md transition duration-300 hover:scale-105">
                 <CachedImage
                   src={
-                    title.posterPath
+                    title.posterPath && (isMovie(title) || isTv(title))
                       ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
-                      : '/images/overseerr_poster_not_found.png'
+                      : title.posterPath ??
+                        '/images/overseerr_poster_not_found.png'
                   }
                   alt=""
                   layout="responsive"
@@ -421,21 +452,29 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
               <div className="pt-0.5 text-xs font-medium text-white sm:pt-1">
                 {(isMovie(title)
                   ? title.releaseDate
-                  : title.firstAirDate
+                  : isTv(title)
+                  ? title.firstAirDate
+                  : isRelease(title)
+                  ? new Date(title.date as string).toDateString()
+                  : title.beginDate
                 )?.slice(0, 4)}
               </div>
               <Link
                 href={
                   requestData.type === 'movie'
                     ? `/movie/${requestData.media.tmdbId}`
-                    : `/tv/${requestData.media.tmdbId}`
+                    : requestData.type === 'tv'
+                    ? `/tv/${requestData.media.tmdbId}`
+                    : `/music/${requestData.secondaryType}/${requestData.media.mbId}`
                 }
               >
                 <a className="mr-2 min-w-0 truncate text-lg font-bold text-white hover:underline xl:text-xl">
-                  {isMovie(title) ? title.title : title.name}
+                  {isMovie(title) || isRelease(title)
+                    ? title.title
+                    : title.name}
                 </a>
               </Link>
-              {!isMovie(title) && request.seasons.length > 0 && (
+              {isTv(title) && request.seasons.length > 0 && (
                 <div className="card-field">
                   <span className="card-field-name">
                     {intl.formatMessage(messages.seasons, {
@@ -484,7 +523,11 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                       requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
                     ]
                   }
-                  title={isMovie(title) ? title.title : title.name}
+                  title={
+                    isMovie(title) || isRelease(title)
+                      ? title.title
+                      : title.name
+                  }
                   inProgress={
                     (
                       requestData.media[

@@ -41,7 +41,9 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
           const tmdb = new TheMovieDb();
 
           try {
-            const movie = await tmdb.getMovie({ movieId: entity.tmdbId });
+            const movie = await tmdb.getMovie({
+              movieId: Number(entity.tmdbId),
+            });
 
             relatedRequests.forEach((request) => {
               notificationManager.sendNotification(
@@ -136,7 +138,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
           );
 
           try {
-            const tv = await tmdb.getTvShow({ tvId: entity.tmdbId });
+            const tv = await tmdb.getTvShow({ tvId: Number(entity.tmdbId) });
             notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
               event: `${is4k ? '4K ' : ''}Series Request Now Available`,
               subject: `${tv.name}${

@@ -1,3 +1,4 @@
+import MusicBrainz from '@server/api/musicbrainz';
 import PlexTvAPI from '@server/api/plextv';
 import type { SortOptions } from '@server/api/themoviedb';
 import TheMovieDb from '@server/api/themoviedb';
@@ -14,9 +15,11 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { mapProductionCompany } from '@server/models/Movie';
 import {
+  mapArtistResult,
   mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
+  mapReleaseResult,
   mapTvResult,
 } from '@server/models/Search';
 import { mapNetwork } from '@server/models/Tv';
@@ -845,9 +848,68 @@ discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
         title: item.title,
         mediaType: item.type === 'show' ? 'tv' : 'movie',
         tmdbId: item.tmdbId,
+        musicBrainzId: item.musicBrainzId,
       })),
     });
   }
 );
+
+discoverRoutes.get('/musics', async (req, res, next) => {
+  const mb = new MusicBrainz();
+  try {
+    const query = QueryFilterOptions.parse(req.query);
+    const results = await mb.searchMulti({
+      query: '',
+      tags: query.keywords ? decodeURIComponent(query.keywords).split(',') : [],
+      limit: 20,
+      page: Number(query.page),
+    });
+    const mbIds = results.releaseResults
+      .map((result) => result.id)
+      .concat(results.artistResults.map((result) => result.id));
+    const media = await Media.getRelatedMedia([], mbIds);
+    const resultsWithMedia = [
+      ...(await Promise.all(
+        results.artistResults.map((result) => {
+          return mapArtistResult(
+            result,
+            media.find(
+              (med) =>
+                med.mbId === result.id &&
+                med.mediaType === MediaType.MUSIC &&
+                med.secondaryType === 'artist'
+            )
+          );
+        })
+      )),
+      ...(await Promise.all(
+        results.releaseResults.map((result) => {
+          return mapReleaseResult(
+            result,
+            media.find(
+              (med) =>
+                med.mbId === result.id &&
+                med.mediaType === MediaType.MUSIC &&
+                med.secondaryType === 'release'
+            )
+          );
+        })
+      )),
+    ];
+    return res.status(200).json({
+      page: query.page,
+      results: resultsWithMedia,
+    });
+  } catch (e) {
+    logger.debug('Something went wrong retrieving release groups', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve release groups.',
+    });
+  }
+});
 
 export default discoverRoutes;

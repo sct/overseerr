@@ -1,5 +1,5 @@
 import TautulliAPI from '@server/api/tautulli';
-import { MediaStatus, MediaType } from '@server/constants/media';
+import { MediaStatus, MediaType, SecondaryType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { User } from '@server/entity/User';
@@ -64,12 +64,47 @@ mediaRoutes.get('/', async (req, res, next) => {
       };
   }
 
+  let typeFilter: FindOneOptions<Media>['where'] = undefined;
+
+  switch (req.query.type) {
+    case 'movie':
+      typeFilter = {
+        mediaType: MediaType.MOVIE,
+      };
+      break;
+    case 'tv':
+      typeFilter = {
+        mediaType: MediaType.TV,
+      };
+      break;
+    case 'music':
+      typeFilter = {
+        mediaType: MediaType.MUSIC,
+      };
+      break;
+    case 'artist':
+      typeFilter = {
+        mediaType: MediaType.MUSIC,
+        secondaryType: SecondaryType.ARTIST,
+      };
+      break;
+    case 'release':
+      typeFilter = {
+        mediaType: MediaType.MUSIC,
+        secondaryType: SecondaryType.RELEASE,
+      };
+      break;
+  }
+
   try {
     const [media, mediaCount] = await mediaRepository.findAndCount({
       order: sortFilter,
       where: statusFilter && {
-        status: statusFilter,
-      },
+          status: statusFilter,
+        } &&
+        typeFilter && {
+          ...typeFilter,
+        },
       take: pageSize,
       skip,
     });

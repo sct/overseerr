@@ -1,6 +1,6 @@
+import LidarrAPI from '@server/api/servarr/lidarr';
 import RadarrAPI from '@server/api/servarr/radarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
-import LidarrAPI from '@server/api/servarr/lidarr';
 import { MediaType } from '@server/constants/media';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
@@ -249,33 +249,32 @@ class DownloadTracker {
         if (server.syncEnabled) {
           const lidarr = new LidarrAPI({
             apiKey: server.apiKey,
-            url: LidarrAPI.buildUrl(server, '/api/v3'),
+            url: LidarrAPI.buildUrl(server, '/api/v1'),
           });
 
           try {
             const queueItems = await lidarr.getQueue();
 
             this.lidarrServers[server.id] = queueItems.map((item) => ({
-              externalId: item.seriesId,
+              externalId: item.musicId,
               estimatedCompletionTime: new Date(item.estimatedCompletionTime),
-              mediaType: MediaType.TV,
+              mediaType: MediaType.MUSIC,
               size: item.size,
               sizeLeft: item.sizeleft,
               status: item.status,
               timeLeft: item.timeleft,
               title: item.title,
-              episode: item.episode,
             }));
 
             if (queueItems.length > 0) {
               logger.debug(
-                `Found ${queueItems.length} item(s) in progress on Sonarr server: ${server.name}`,
+                `Found ${queueItems.length} item(s) in progress on Lidarr server: ${server.name}`,
                 { label: 'Download Tracker' }
               );
             }
           } catch {
             logger.error(
-              `Unable to get queue from Sonarr server: ${server.name}`,
+              `Unable to get queue from Lidarr server: ${server.name}`,
               {
                 label: 'Download Tracker',
               }
@@ -293,7 +292,7 @@ class DownloadTracker {
 
           if (matchingServers.length > 0) {
             logger.debug(
-              `Matching download data to ${matchingServers.length} other Sonarr server(s)`,
+              `Matching download data to ${matchingServers.length} other Lidarr server(s)`,
               { label: 'Download Tracker' }
             );
           }

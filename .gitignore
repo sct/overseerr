@@ -68,6 +68,3 @@ tsconfig.tsbuildinfo
 # Config Cache Directory
 config/cache
 
-# Yarn
-yarn.lock
-.yarn/*

@@ -44,7 +44,7 @@ const messages = defineMessages({
 type FilterSlideoverProps = {
   show: boolean;
   onClose: () => void;
-  type: 'movie' | 'tv';
+  type: 'movie' | 'tv' | 'music';
   currentFilters: FilterOptions;
 };
 
@@ -74,57 +74,59 @@ const FilterSlideover = ({
       onClose={() => onClose()}
     >
       <div className="flex flex-col space-y-4">
-        <div>
-          <div className="mb-2 text-lg font-semibold">
-            {intl.formatMessage(
-              type === 'movie' ? messages.releaseDate : messages.firstAirDate
-            )}
-          </div>
-          <div className="relative z-40 flex space-x-2">
-            <div className="flex flex-col">
-              <div className="mb-2">{intl.formatMessage(messages.from)}</div>
-              <Datepicker
-                primaryColor="indigo"
-                value={{
-                  startDate: currentFilters[dateGte] ?? null,
-                  endDate: currentFilters[dateGte] ?? null,
-                }}
-                onChange={(value) => {
-                  updateQueryParams(
-                    dateGte,
-                    value?.startDate ? (value.startDate as string) : undefined
-                  );
-                }}
-                inputName="fromdate"
-                useRange={false}
-                asSingle
-                containerClassName="datepicker-wrapper"
-                inputClassName="pr-1 sm:pr-4 text-base leading-5"
-              />
+        {type !== 'music' && (
+          <div>
+            <div className="mb-2 text-lg font-semibold">
+              {intl.formatMessage(
+                type === 'movie' ? messages.releaseDate : messages.firstAirDate
+              )}
             </div>
-            <div className="flex flex-col">
-              <div className="mb-2">{intl.formatMessage(messages.to)}</div>
-              <Datepicker
-                primaryColor="indigo"
-                value={{
-                  startDate: currentFilters[dateLte] ?? null,
-                  endDate: currentFilters[dateLte] ?? null,
-                }}
-                onChange={(value) => {
-                  updateQueryParams(
-                    dateLte,
-                    value?.startDate ? (value.startDate as string) : undefined
-                  );
-                }}
-                inputName="todate"
-                useRange={false}
-                asSingle
-                containerClassName="datepicker-wrapper"
-                inputClassName="pr-1 sm:pr-4 text-base leading-5"
-              />
+            <div className="relative z-40 flex space-x-2">
+              <div className="flex flex-col">
+                <div className="mb-2">{intl.formatMessage(messages.from)}</div>
+                <Datepicker
+                  primaryColor="indigo"
+                  value={{
+                    startDate: currentFilters[dateGte] ?? null,
+                    endDate: currentFilters[dateGte] ?? null,
+                  }}
+                  onChange={(value) => {
+                    updateQueryParams(
+                      dateGte,
+                      value?.startDate ? (value.startDate as string) : undefined
+                    );
+                  }}
+                  inputName="fromdate"
+                  useRange={false}
+                  asSingle
+                  containerClassName="datepicker-wrapper"
+                  inputClassName="pr-1 sm:pr-4 text-base leading-5"
+                />
+              </div>
+              <div className="flex flex-col">
+                <div className="mb-2">{intl.formatMessage(messages.to)}</div>
+                <Datepicker
+                  primaryColor="indigo"
+                  value={{
+                    startDate: currentFilters[dateLte] ?? null,
+                    endDate: currentFilters[dateLte] ?? null,
+                  }}
+                  onChange={(value) => {
+                    updateQueryParams(
+                      dateLte,
+                      value?.startDate ? (value.startDate as string) : undefined
+                    );
+                  }}
+                  inputName="todate"
+                  useRange={false}
+                  asSingle
+                  containerClassName="datepicker-wrapper"
+                  inputClassName="pr-1 sm:pr-4 text-base leading-5"
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {type === 'movie' && (
           <>
             <span className="text-lg font-semibold">
@@ -138,179 +140,199 @@ const FilterSlideover = ({
             />
           </>
         )}
-        <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.genres)}
-        </span>
-        <GenreSelector
-          type={type}
-          defaultValue={currentFilters.genre}
-          isMulti
-          onChange={(value) => {
-            updateQueryParams('genre', value?.map((v) => v.value).join(','));
-          }}
-        />
+        {type !== 'music' && (
+          <>
+            <span className="text-lg font-semibold">
+              {intl.formatMessage(messages.genres)}
+            </span>
+            <GenreSelector
+              type={type}
+              defaultValue={currentFilters.genre}
+              isMulti
+              onChange={(value) => {
+                updateQueryParams(
+                  'genre',
+                  value?.map((v) => v.value).join(',')
+                );
+              }}
+            />
+          </>
+        )}
         <span className="text-lg font-semibold">
           {intl.formatMessage(messages.keywords)}
         </span>
         <KeywordSelector
           defaultValue={currentFilters.keywords}
           isMulti
-          onChange={(value) => {
-            updateQueryParams('keywords', value?.map((v) => v.value).join(','));
-          }}
-        />
-        <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.originalLanguage)}
-        </span>
-        <LanguageSelector
-          value={currentFilters.language}
-          serverValue={currentSettings.originalLanguage}
-          isUserSettings
-          setFieldValue={(_key, value) => {
-            updateQueryParams('language', value);
-          }}
-        />
-        <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.runtime)}
-        </span>
-        <div className="relative z-0">
-          <MultiRangeSlider
-            min={0}
-            max={400}
-            onUpdateMin={(min) => {
-              updateQueryParams(
-                'withRuntimeGte',
-                min !== 0 && Number(currentFilters.withRuntimeLte) !== 400
-                  ? min.toString()
-                  : undefined
-              );
-            }}
-            onUpdateMax={(max) => {
-              updateQueryParams(
-                'withRuntimeLte',
-                max !== 400 && Number(currentFilters.withRuntimeGte) !== 0
-                  ? max.toString()
-                  : undefined
-              );
-            }}
-            defaultMaxValue={
-              currentFilters.withRuntimeLte
-                ? Number(currentFilters.withRuntimeLte)
-                : undefined
-            }
-            defaultMinValue={
-              currentFilters.withRuntimeGte
-                ? Number(currentFilters.withRuntimeGte)
-                : undefined
-            }
-            subText={intl.formatMessage(messages.runtimeText, {
-              minValue: currentFilters.withRuntimeGte ?? 0,
-              maxValue: currentFilters.withRuntimeLte ?? 400,
-            })}
-          />
-        </div>
-        <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.tmdbuserscore)}
-        </span>
-        <div className="relative z-0">
-          <MultiRangeSlider
-            min={1}
-            max={10}
-            defaultMaxValue={
-              currentFilters.voteAverageLte
-                ? Number(currentFilters.voteAverageLte)
-                : undefined
-            }
-            defaultMinValue={
-              currentFilters.voteAverageGte
-                ? Number(currentFilters.voteAverageGte)
-                : undefined
-            }
-            onUpdateMin={(min) => {
-              updateQueryParams(
-                'voteAverageGte',
-                min !== 1 && Number(currentFilters.voteAverageLte) !== 10
-                  ? min.toString()
-                  : undefined
-              );
-            }}
-            onUpdateMax={(max) => {
-              updateQueryParams(
-                'voteAverageLte',
-                max !== 10 && Number(currentFilters.voteAverageGte) !== 1
-                  ? max.toString()
-                  : undefined
-              );
-            }}
-            subText={intl.formatMessage(messages.ratingText, {
-              minValue: currentFilters.voteAverageGte ?? 1,
-              maxValue: currentFilters.voteAverageLte ?? 10,
-            })}
-          />
-        </div>
-        <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.tmdbuservotecount)}
-        </span>
-        <div className="relative z-0">
-          <MultiRangeSlider
-            min={0}
-            max={1000}
-            defaultMaxValue={
-              currentFilters.voteCountLte
-                ? Number(currentFilters.voteCountLte)
-                : undefined
-            }
-            defaultMinValue={
-              currentFilters.voteCountGte
-                ? Number(currentFilters.voteCountGte)
-                : undefined
-            }
-            onUpdateMin={(min) => {
-              updateQueryParams(
-                'voteCountGte',
-                min !== 0 && Number(currentFilters.voteCountLte) !== 1000
-                  ? min.toString()
-                  : undefined
-              );
-            }}
-            onUpdateMax={(max) => {
-              updateQueryParams(
-                'voteCountLte',
-                max !== 1000 && Number(currentFilters.voteCountGte) !== 0
-                  ? max.toString()
-                  : undefined
-              );
-            }}
-            subText={intl.formatMessage(messages.voteCount, {
-              minValue: currentFilters.voteCountGte ?? 0,
-              maxValue: currentFilters.voteCountLte ?? 1000,
-            })}
-          />
-        </div>
-        <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.streamingservices)}
-        </span>
-        <WatchProviderSelector
           type={type}
-          region={currentFilters.watchRegion}
-          activeProviders={
-            currentFilters.watchProviders?.split('|').map((v) => Number(v)) ??
-            []
-          }
-          onChange={(region, providers) => {
-            if (providers.length) {
-              batchUpdateQueryParams({
-                watchRegion: region,
-                watchProviders: providers.join('|'),
-              });
-            } else {
-              batchUpdateQueryParams({
-                watchRegion: undefined,
-                watchProviders: undefined,
-              });
-            }
+          onChange={(value) => {
+            updateQueryParams(
+              'keywords',
+              type === 'music'
+                ? encodeURIComponent(value?.map((v) => v.label).join(',') ?? '')
+                : encodeURIComponent(value?.map((v) => v.value).join(',') ?? '')
+            );
           }}
         />
+        {type !== 'music' && (
+          <>
+            <span className="text-lg font-semibold">
+              {intl.formatMessage(messages.originalLanguage)}
+            </span>
+            <LanguageSelector
+              value={currentFilters.language}
+              serverValue={currentSettings.originalLanguage}
+              isUserSettings
+              setFieldValue={(_key, value) => {
+                updateQueryParams('language', value);
+              }}
+            />
+            <span className="text-lg font-semibold">
+              {intl.formatMessage(messages.runtime)}
+            </span>
+            <div className="relative z-0">
+              <MultiRangeSlider
+                min={0}
+                max={400}
+                onUpdateMin={(min) => {
+                  updateQueryParams(
+                    'withRuntimeGte',
+                    min !== 0 && Number(currentFilters.withRuntimeLte) !== 400
+                      ? min.toString()
+                      : undefined
+                  );
+                }}
+                onUpdateMax={(max) => {
+                  updateQueryParams(
+                    'withRuntimeLte',
+                    max !== 400 && Number(currentFilters.withRuntimeGte) !== 0
+                      ? max.toString()
+                      : undefined
+                  );
+                }}
+                defaultMaxValue={
+                  currentFilters.withRuntimeLte
+                    ? Number(currentFilters.withRuntimeLte)
+                    : undefined
+                }
+                defaultMinValue={
+                  currentFilters.withRuntimeGte
+                    ? Number(currentFilters.withRuntimeGte)
+                    : undefined
+                }
+                subText={intl.formatMessage(messages.runtimeText, {
+                  minValue: currentFilters.withRuntimeGte ?? 0,
+                  maxValue: currentFilters.withRuntimeLte ?? 400,
+                })}
+              />
+            </div>
+            <span className="text-lg font-semibold">
+              {intl.formatMessage(messages.tmdbuserscore)}
+            </span>
+            <div className="relative z-0">
+              <MultiRangeSlider
+                min={1}
+                max={10}
+                defaultMaxValue={
+                  currentFilters.voteAverageLte
+                    ? Number(currentFilters.voteAverageLte)
+                    : undefined
+                }
+                defaultMinValue={
+                  currentFilters.voteAverageGte
+                    ? Number(currentFilters.voteAverageGte)
+                    : undefined
+                }
+                onUpdateMin={(min) => {
+                  updateQueryParams(
+                    'voteAverageGte',
+                    min !== 1 && Number(currentFilters.voteAverageLte) !== 10
+                      ? min.toString()
+                      : undefined
+                  );
+                }}
+                onUpdateMax={(max) => {
+                  updateQueryParams(
+                    'voteAverageLte',
+                    max !== 10 && Number(currentFilters.voteAverageGte) !== 1
+                      ? max.toString()
+                      : undefined
+                  );
+                }}
+                subText={intl.formatMessage(messages.ratingText, {
+                  minValue: currentFilters.voteAverageGte ?? 1,
+                  maxValue: currentFilters.voteAverageLte ?? 10,
+                })}
+              />
+            </div>
+            <span className="text-lg font-semibold">
+              {intl.formatMessage(messages.tmdbuservotecount)}
+            </span>
+            <div className="relative z-0">
+              <MultiRangeSlider
+                min={0}
+                max={1000}
+                defaultMaxValue={
+                  currentFilters.voteCountLte
+                    ? Number(currentFilters.voteCountLte)
+                    : undefined
+                }
+                defaultMinValue={
+                  currentFilters.voteCountGte
+                    ? Number(currentFilters.voteCountGte)
+                    : undefined
+                }
+                onUpdateMin={(min) => {
+                  updateQueryParams(
+                    'voteCountGte',
+                    min !== 0 && Number(currentFilters.voteCountLte) !== 1000
+                      ? min.toString()
+                      : undefined
+                  );
+                }}
+                onUpdateMax={(max) => {
+                  updateQueryParams(
+                    'voteCountLte',
+                    max !== 1000 && Number(currentFilters.voteCountGte) !== 0
+                      ? max.toString()
+                      : undefined
+                  );
+                }}
+                subText={intl.formatMessage(messages.voteCount, {
+                  minValue: currentFilters.voteCountGte ?? 0,
+                  maxValue: currentFilters.voteCountLte ?? 1000,
+                })}
+              />
+            </div>
+            <span className="text-lg font-semibold">
+              {intl.formatMessage(messages.streamingservices)}
+            </span>
+            {type in ['movie', 'tv'] ? (
+              <WatchProviderSelector
+                type={type as 'movie' | 'tv'}
+                region={currentFilters.watchRegion}
+                activeProviders={
+                  currentFilters.watchProviders
+                    ?.split('|')
+                    .map((v) => Number(v)) ?? []
+                }
+                onChange={(region, providers) => {
+                  if (providers.length) {
+                    batchUpdateQueryParams({
+                      watchRegion: region,
+                      watchProviders: providers.join('|'),
+                    });
+                  } else {
+                    batchUpdateQueryParams({
+                      watchRegion: undefined,
+                      watchProviders: undefined,
+                    });
+                  }
+                }}
+              />
+            ) : null}
+          </>
+        )}
         <div className="pt-4">
           <Button
             className="w-full"

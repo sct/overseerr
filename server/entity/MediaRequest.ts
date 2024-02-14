@@ -1,3 +1,10 @@
+import MusicBrainz from '@server/api/musicbrainz';
+import type { mbRelease } from '@server/api/musicbrainz/interfaces';
+import type {
+  LidarrAlbumOptions,
+  LidarrArtistOptions,
+} from '@server/api/servarr/lidarr';
+import LidarrAPI from '@server/api/servarr/lidarr';
 import type { RadarrMovieOptions } from '@server/api/servarr/radarr';
 import RadarrAPI from '@server/api/servarr/radarr';
 import type {
@@ -5,18 +12,21 @@ import type {
   SonarrSeries,
 } from '@server/api/servarr/sonarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
-import type { LidarrMusicOptions } from '@server/api/servarr/lidarr';
-import LidarrAPI from '@server/api/servarr/lidarr';
 import TheMovieDb from '@server/api/themoviedb';
-import MusicBrainz from '@server/api/musicbrainz';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
+import type { TmdbTvDetails } from '@server/api/themoviedb/interfaces';
 import {
   MediaRequestStatus,
   MediaStatus,
   MediaType,
+  SecondaryType,
 } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
-import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces';
+import type {
+  MusicRequestBody,
+  TvRequestBody,
+  VideoRequestBody,
+} from '@server/interfaces/api/requestInterfaces';
 import notificationManager, { Notification } from '@server/lib/notifications';
 import { Permission } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
@@ -51,7 +61,7 @@ type MediaRequestOptions = {
 @Entity()
 export class MediaRequest {
   public static async request(
-    requestBody: MediaRequestBody,
+    requestBody: VideoRequestBody | TvRequestBody | MusicRequestBody,
     user: User,
     options: MediaRequestOptions = {}
   ): Promise<MediaRequest> {
@@ -115,6 +125,18 @@ export class MediaRequest {
           requestBody.is4k ? '4K ' : ''
         }series requests.`
       );
+    } else if (
+      requestBody.mediaType === MediaType.MUSIC &&
+      !requestUser.hasPermission(
+        [Permission.REQUEST, Permission.REQUEST_MUSIC],
+        {
+          type: 'or',
+        }
+      )
+    ) {
+      throw new RequestPermissionError(
+        `You do not have permission to make music requests.`
+      );
     }
 
     const quotas = await requestUser.getQuota();
@@ -123,49 +145,118 @@ export class MediaRequest {
       throw new QuotaRestrictedError('Movie Quota exceeded.');
     } else if (requestBody.mediaType === MediaType.TV && quotas.tv.restricted) {
       throw new QuotaRestrictedError('Series Quota exceeded.');
+    } else if (
+      requestBody.mediaType === MediaType.MUSIC &&
+      quotas.music.restricted
+    ) {
+      throw new QuotaRestrictedError('Music Quota exceeded.');
     }
 
-    const tmdbMedia =
+    const metaMedia =
       requestBody.mediaType === MediaType.MOVIE
         ? await tmdb.getMovie({ movieId: requestBody.mediaId })
+        : requestBody.mediaType === MediaType.MUSIC
+        ? requestBody.secondaryType === SecondaryType.RELEASE
+          ? await musicbrainz.getRelease(requestBody.mediaId)
+          : await musicbrainz.getArtist(requestBody.mediaId)
         : await tmdb.getTvShow({ tvId: requestBody.mediaId });
 
-    let media = await mediaRepository.findOne({
-      where: {
-        tmdbId: requestBody.mediaId,
-        mediaType: requestBody.mediaType,
-      },
-      relations: ['requests'],
-    });
+    let media =
+      requestBody.mediaType === MediaType.MUSIC
+        ? await mediaRepository.findOne({
+            where: {
+              mbId: requestBody.mediaId,
+              mediaType: MediaType.MUSIC,
+              secondaryType: requestBody.secondaryType,
+            },
+            relations: ['requests'],
+          })
+        : await mediaRepository.findOne({
+            where: {
+              tmdbId: Number(metaMedia.id), // Convert tmdbId to number
+              mediaType: requestBody.mediaType,
+            },
+            relations: ['requests'],
+          });
 
     if (!media) {
-      media = new Media({
-        tmdbId: tmdbMedia.id,
-        tvdbId: requestBody.tvdbId ?? tmdbMedia.external_ids.tvdb_id,
-        status: !requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
-        status4k: requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
-        mediaType: requestBody.mediaType,
-      });
-    } else {
-      if (media.status === MediaStatus.UNKNOWN && !requestBody.is4k) {
-        media.status = MediaStatus.PENDING;
-      }
+      if (requestBody.mediaType === MediaType.MUSIC) {
+        media = new Media({
+          mbId: requestBody.mediaId,
+          status: MediaStatus.PENDING,
+          mediaType: MediaType.MUSIC,
+          secondaryType: requestBody.secondaryType,
+          title: (metaMedia as mbRelease).title,
+        });
+      } else if (requestBody.mediaType === MediaType.MOVIE) {
+        media = new Media({
+          tmdbId: requestBody.mediaId,
+          status: !requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
+          status4k: requestBody.is4k
+            ? MediaStatus.PENDING
+            : MediaStatus.UNKNOWN,
+          mediaType: requestBody.mediaType,
+        });
+      } else {
+        let tvdbId: number | undefined;
+        if (requestBody.mediaType === MediaType.TV) {
+          const tvMedia = metaMedia as TmdbTvDetails;
+          tvdbId = tvMedia.external_ids?.tvdb_id;
+        }
 
-      if (media.status4k === MediaStatus.UNKNOWN && requestBody.is4k) {
-        media.status4k = MediaStatus.PENDING;
+        media = new Media({
+          tmdbId: requestBody.mediaId,
+          tvdbId: (requestBody as TvRequestBody).tvdbId ?? tvdbId,
+          status: !requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
+          status4k: requestBody.is4k
+            ? MediaStatus.PENDING
+            : MediaStatus.UNKNOWN,
+          mediaType: requestBody.mediaType,
+        });
+      }
+    } else {
+      if (media.mediaType !== MediaType.MUSIC) {
+        if (
+          media.status === MediaStatus.UNKNOWN &&
+          !(requestBody as VideoRequestBody | TvRequestBody).is4k
+        ) {
+          media.status = MediaStatus.PENDING;
+        }
+
+        if (
+          media.status4k === MediaStatus.UNKNOWN &&
+          (requestBody as VideoRequestBody | TvRequestBody).is4k
+        ) {
+          media.status4k = MediaStatus.PENDING;
+        }
+      } else {
+        if (media.status === MediaStatus.UNKNOWN) {
+          media.status = MediaStatus.PENDING;
+        }
       }
     }
 
-    const existing = await requestRepository
-      .createQueryBuilder('request')
-      .leftJoin('request.media', 'media')
-      .leftJoinAndSelect('request.requestedBy', 'user')
-      .where('request.is4k = :is4k', { is4k: requestBody.is4k })
-      .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
-      .andWhere('media.mediaType = :mediaType', {
-        mediaType: requestBody.mediaType,
-      })
-      .getMany();
+    const existing =
+      requestBody.mediaType !== MediaType.MUSIC
+        ? await requestRepository
+            .createQueryBuilder('request')
+            .leftJoin('request.media', 'media')
+            .leftJoinAndSelect('request.requestedBy', 'user')
+            .where('request.is4k = :is4k', { is4k: requestBody.is4k })
+            .andWhere('media.tmdbId = :tmdbId', { tmdbId: metaMedia.id })
+            .andWhere('media.mediaType = :mediaType', {
+              mediaType: requestBody.mediaType,
+            })
+            .getMany()
+        : await requestRepository
+            .createQueryBuilder('request')
+            .leftJoin('request.media', 'media')
+            .leftJoinAndSelect('request.requestedBy', 'user')
+            .where('media.mbId = :mbId', { mbId: requestBody.mediaId })
+            .andWhere('media.mediaType = :mediaType', {
+              mediaType: requestBody.mediaType,
+            })
+            .getMany();
 
     if (existing && existing.length > 0) {
       // If there is an existing movie request that isn't declined, don't allow a new one.
@@ -174,7 +265,7 @@ export class MediaRequest {
         existing[0].status !== MediaRequestStatus.DECLINED
       ) {
         logger.warn('Duplicate request for media blocked', {
-          tmdbId: tmdbMedia.id,
+          tmdbId: metaMedia.id,
           mediaType: requestBody.mediaType,
           is4k: requestBody.is4k,
           label: 'Media Request',
@@ -244,16 +335,17 @@ export class MediaRequest {
 
       await requestRepository.save(request);
       return request;
-    } else {
-      const tmdbMediaShow = tmdbMedia as Awaited<
+    } else if (requestBody.mediaType === MediaType.TV) {
+      const metaMediaShow = metaMedia as Awaited<
         ReturnType<typeof tmdb.getTvShow>
       >;
+
       const requestedSeasons =
-        requestBody.seasons === 'all'
-          ? tmdbMediaShow.seasons
+        (requestBody as TvRequestBody).seasons === 'all'
+          ? metaMediaShow.seasons
               .map((season) => season.season_number)
               .filter((sn) => sn > 0)
-          : (requestBody.seasons as number[]);
+          : ((requestBody as TvRequestBody).seasons as number[]);
       let existingSeasons: number[] = [];
 
       // We need to check existing requests on this title to make sure we don't double up on seasons that were
@@ -368,6 +460,44 @@ export class MediaRequest {
 
       await requestRepository.save(request);
       return request;
+    } else {
+      await mediaRepository.save(media);
+
+      const request = new MediaRequest({
+        type: MediaType.MUSIC,
+        secondaryType: (requestBody as MusicRequestBody).secondaryType,
+        media,
+        requestedBy: requestUser,
+        // If the user is an admin or has the "auto approve" permission, automatically approve the request
+        status: user.hasPermission(
+          [
+            Permission.AUTO_APPROVE,
+            Permission.AUTO_APPROVE_MUSIC,
+            Permission.MANAGE_REQUESTS,
+          ],
+          { type: 'or' }
+        )
+          ? MediaRequestStatus.APPROVED
+          : MediaRequestStatus.PENDING,
+        modifiedBy: user.hasPermission(
+          [
+            Permission.AUTO_APPROVE,
+            Permission.AUTO_APPROVE_MUSIC,
+            Permission.MANAGE_REQUESTS,
+          ],
+          { type: 'or' }
+        )
+          ? user
+          : undefined,
+        serverId: requestBody.serverId,
+        profileId: requestBody.profileId,
+        rootFolder: requestBody.rootFolder,
+        tags: requestBody.tags,
+        isAutoRequest: options.isAutoRequest ?? false,
+      });
+
+      await requestRepository.save(request);
+      return request;
     }
   }
 
@@ -405,6 +535,9 @@ export class MediaRequest {
 
   @Column({ type: 'varchar' })
   public type: MediaType;
+
+  @Column({ type: 'varchar', nullable: true })
+  public secondaryType?: SecondaryType;
 
   @RelationCount((request: MediaRequest) => request.seasons)
   public seasonCount: number;
@@ -471,7 +604,11 @@ export class MediaRequest {
   @AfterUpdate()
   @AfterInsert()
   public async sendMedia(): Promise<void> {
-    await Promise.all([this.sendToRadarr(), this.sendToSonarr()]);
+    await Promise.all([
+      this.sendToRadarr(),
+      this.sendToSonarr(),
+      this.sendToLidarr(),
+    ]);
   }
 
   @AfterInsert()
@@ -753,7 +890,9 @@ export class MediaRequest {
           apiKey: radarrSettings.apiKey,
           url: RadarrAPI.buildUrl(radarrSettings, '/api/v3'),
         });
-        const movie = await tmdb.getMovie({ movieId: this.media.tmdbId });
+        const movie = await tmdb.getMovie({
+          movieId: Number(this.media.tmdbId),
+        });
 
         const media = await mediaRepository.findOne({
           where: { id: this.media.id },
@@ -970,7 +1109,7 @@ export class MediaRequest {
           apiKey: sonarrSettings.apiKey,
           url: SonarrAPI.buildUrl(sonarrSettings, '/api/v3'),
         });
-        const series = await tmdb.getTvShow({ tvId: media.tmdbId });
+        const series = await tmdb.getTvShow({ tvId: Number(media.tmdbId) });
         const tvdbId = series.external_ids.tvdb_id ?? media.tvdbId;
 
         if (!tvdbId) {
@@ -1261,10 +1400,8 @@ export class MediaRequest {
         const musicbrainz = new MusicBrainz();
         const lidarr = new LidarrAPI({
           apiKey: lidarrSettings.apiKey,
-          url: LidarrAPI.buildUrl(lidarrSettings, '/api/v3'),
+          url: LidarrAPI.buildUrl(lidarrSettings, '/api/v1'),
         });
-        const music = await musicbrainz.getMusic({ mbId: this.media.mbId });
-
         const media = await mediaRepository.findOne({
           where: { id: this.media.id },
         });
@@ -1310,9 +1447,7 @@ export class MediaRequest {
           }
         }
 
-        if (
-          media['status'] === MediaStatus.AVAILABLE
-        ) {
+        if (media['status'] === MediaStatus.AVAILABLE) {
           logger.warn('Media already exists, marking request as APPROVED', {
             label: 'Media Request',
             requestId: this.id,
@@ -1325,56 +1460,110 @@ export class MediaRequest {
           return;
         }
 
-        const lidarrMusicOptions: LidarrMusicOptions = {
-          profileId: qualityProfile,
-          qualityProfileId: qualityProfile,
-          rootFolderPath: rootFolder,
-          title: music.title,
-          mbId: music.id,
-          year: Number(music.release_date.slice(0, 4)),
-          monitored: true,
-          tags,
-          searchNow: !lidarrSettings.preventSearch,
-        };
+        if (this.media.secondaryType === SecondaryType.RELEASE) {
+          const release = await musicbrainz.getRelease(String(this.media.mbId));
 
-        // Run this asynchronously so we don't wait for it on the UI side
-        lidarr
-          .addMusic(lidarrMusicOptions)
-          .then(async (lidarrMusic) => {
-            // We grab media again here to make sure we have the latest version of it
-            const media = await mediaRepository.findOne({
-              where: { id: this.media.id },
-            });
+          const lidarrAlbumOptions: LidarrAlbumOptions = {
+            profileId: qualityProfile,
+            qualityProfileId: qualityProfile,
+            rootFolderPath: rootFolder,
+            title: release.title,
+            mbId: release.releaseGroup?.id ?? release.id,
+            monitored: true,
+            tags: tags.map((tag) => String(tag)),
+            searchNow: !lidarrSettings.preventSearch,
+          };
 
-            if (!media) {
-              throw new Error('Media data not found');
-            }
+          // Run this asynchronously so we don't wait for it on the UI side
+          lidarr
+            .addAlbum(lidarrAlbumOptions)
+            .then(async (lidarrAlbum) => {
+              // We grab media again here to make sure we have the latest version of it
+              const media = await mediaRepository.findOne({
+                where: { id: this.media.id },
+              });
 
-            media['externalServiceId'] =
-              lidarrMusic.id;
-            media['externalServiceSlug'] =
-              lidarrMusic.titleSlug;
-            media['serviceId'] = lidarrSettings?.id;
-            await mediaRepository.save(media);
-          })
-          .catch(async () => {
-            const requestRepository = getRepository(MediaRequest);
-
-            this.status = MediaRequestStatus.FAILED;
-            requestRepository.save(this);
-
-            logger.warn(
-              'Something went wrong sending music request to Lidarr, marking status as FAILED',
-              {
-                label: 'Media Request',
-                requestId: this.id,
-                mediaId: this.media.id,
-                lidarrMusicOptions,
+              if (!media) {
+                throw new Error('Media data not found');
               }
-            );
 
-            this.sendNotification(media, Notification.MEDIA_FAILED);
-          });
+              media['externalServiceId'] = lidarrAlbum.id;
+              media['externalServiceSlug'] = lidarrAlbum.disambiguation;
+              media['serviceId'] = lidarrSettings?.id;
+              await mediaRepository.save(media);
+            })
+            .catch(async () => {
+              const requestRepository = getRepository(MediaRequest);
+
+              this.status = MediaRequestStatus.FAILED;
+              requestRepository.save(this);
+
+              logger.warn(
+                'Something went wrong sending music request to Lidarr, marking status as FAILED',
+                {
+                  label: 'Media Request',
+                  requestId: this.id,
+                  mediaId: this.media.id,
+                  lidarrAlbumOptions,
+                }
+              );
+
+              this.sendNotification(media, Notification.MEDIA_FAILED);
+            });
+        } else if (this.media.secondaryType === SecondaryType.ARTIST) {
+          const artist = await musicbrainz.getArtist(String(this.media.mbId));
+
+          const lidarrArtistOptions: LidarrArtistOptions = {
+            profileId: qualityProfile,
+            qualityProfileId: qualityProfile,
+            rootFolderPath: rootFolder,
+            mbId: artist.id,
+            monitored: true,
+            tags: tags.map((tag) => String(tag)),
+            searchNow: !lidarrSettings.preventSearch,
+            monitorNewItems: 'all',
+            monitor: 'all',
+            searchForMissingAlbums: true,
+          };
+
+          // Run this asynchronously so we don't wait for it on the UI side
+          lidarr
+            .addArtist(lidarrArtistOptions)
+            .then(async (lidarrArtist) => {
+              // We grab media again here to make sure we have the latest version of it
+              const media = await mediaRepository.findOne({
+                where: { id: this.media.id },
+              });
+
+              if (!media) {
+                throw new Error('Media data not found');
+              }
+
+              media['externalServiceId'] = lidarrArtist.id;
+              media['externalServiceSlug'] = lidarrArtist.disambiguation;
+              media['serviceId'] = lidarrSettings?.id;
+              await mediaRepository.save(media);
+            })
+            .catch(async () => {
+              const requestRepository = getRepository(MediaRequest);
+
+              this.status = MediaRequestStatus.FAILED;
+              requestRepository.save(this);
+
+              logger.warn(
+                'Something went wrong sending music request to Lidarr, marking status as FAILED',
+                {
+                  label: 'Media Request',
+                  requestId: this.id,
+                  mediaId: this.media.id,
+                  lidarrArtistOptions,
+                }
+              );
+
+              this.sendNotification(media, Notification.MEDIA_FAILED);
+            });
+        }
+
         logger.info('Sent request to Lidarr', {
           label: 'Media Request',
           requestId: this.id,
@@ -1394,7 +1583,7 @@ export class MediaRequest {
 
   private async sendNotification(media: Media, type: Notification) {
     const tmdb = new TheMovieDb();
-
+    const musicbrainz = new MusicBrainz();
     try {
       const mediaType = this.type === MediaType.MOVIE ? 'Movie' : 'Series';
       let event: string | undefined;
@@ -1429,9 +1618,8 @@ export class MediaRequest {
           event = `${this.is4k ? '4K ' : ''}${mediaType} Request Failed`;
           break;
       }
-
       if (this.type === MediaType.MOVIE) {
-        const movie = await tmdb.getMovie({ movieId: media.tmdbId });
+        const movie = await tmdb.getMovie({ movieId: media.tmdbId as number });
         notificationManager.sendNotification(type, {
           media,
           request: this,
@@ -1450,7 +1638,7 @@ export class MediaRequest {
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
         });
       } else if (this.type === MediaType.TV) {
-        const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
+        const tv = await tmdb.getTvShow({ tvId: media.tmdbId as number });
         notificationManager.sendNotification(type, {
           media,
           request: this,
@@ -1477,24 +1665,34 @@ export class MediaRequest {
           ],
         });
       } else if (this.type === MediaType.MUSIC) {
-        const music = await musicbrainz.getMusic({ mbId: media.tmdbId });
-        notificationManager.sendNotification(type, {
-          media,
-          request: this,
-          notifyAdmin,
-          notifySystem,
-          notifyUser: notifyAdmin ? undefined : this.requestedBy,
-          event,
-          subject: `${music.name}${
-            music.first_realease_date ? ` (${music.first_realease_date.slice(0, 4)})` : ''
-          }`,
-          message: truncate(music.overview, {
-            length: 500,
-            separator: /\s/,
-            omission: '…',
-          }),
-          image: `http://coverartarchive.org/${music.type}/${music.mbid}/front-250`, //TODO: Add coverartarchive
-        });
+        if (this.media.secondaryType === SecondaryType.RELEASE) {
+          const music = await musicbrainz.getRelease(media.mbId as string);
+          notificationManager.sendNotification(type, {
+            media,
+            request: this,
+            notifyAdmin,
+            notifySystem,
+            notifyUser: notifyAdmin ? undefined : this.requestedBy,
+            event,
+            subject: `${music.title}${
+              music.date ? ` (${music.date.toLocaleDateString()})` : ''
+            }`,
+            message: music.artist.map((artist) => artist.name).join(', '),
+            image: `http://coverartarchive.org/release/${music.id}/front-250`,
+          });
+        } else if (this.media.secondaryType === SecondaryType.ARTIST) {
+          const artist = await musicbrainz.getArtist(media.mbId as string);
+          notificationManager.sendNotification(type, {
+            media,
+            request: this,
+            notifyAdmin,
+            notifySystem,
+            notifyUser: notifyAdmin ? undefined : this.requestedBy,
+            event,
+            subject: artist.name,
+            image: `http://coverartarchive.org/artist/${artist.id}/front-250`,
+          });
+        }
       }
     } catch (e) {
       logger.error('Something went wrong sending media notification(s)', {
