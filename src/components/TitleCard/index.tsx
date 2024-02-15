@@ -18,7 +18,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TitleCardProps {
-  id: number;
+  id: number|string;
   image?: string;
   summary?: string;
   year?: string;
@@ -79,21 +79,24 @@ const TitleCard = ({
     ],
     { type: 'or' }
   );
-
+  const tmdbOrMbId: boolean = mediaType in ['movie', 'tv', 'collection'];
   return (
     <div
       className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}
       data-testid="title-card"
     >
       <RequestModal
-        tmdbId={id}
+        tmdbId={tmdbOrMbId ? (id as number) : -1}
+        mbId={tmdbOrMbId ? "" : (id as string)}
         show={showRequestModal}
         type={
           mediaType === 'movie'
             ? 'movie'
             : mediaType === 'collection'
             ? 'collection'
-            : 'tv'
+            : mediaType === 'tv'
+            ? 'tv'
+            : 'music'
         }
         onComplete={requestComplete}
         onUpdating={requestUpdating}
@@ -188,13 +191,7 @@ const TitleCard = ({
           >
             <div className="absolute inset-0 overflow-hidden rounded-xl">
               <Link
-                href={
-                  mediaType === 'movie'
-                    ? `/movie/${id}`
-                    : mediaType === 'collection'
-                    ? `/collection/${id}`
-                    : `/tv/${id}`
-                }
+                href={`/${mediaType}/${id}`}
               >
                 <a
                   className="absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left"

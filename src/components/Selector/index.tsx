@@ -131,7 +131,7 @@ export const CompanySelector = ({
 };
 
 type GenreSelectorProps = (BaseSelectorMultiProps | BaseSelectorSingleProps) & {
-  type: 'movie' | 'tv';
+  type: 'movie' | 'tv' | 'music';
 };
 
 export const GenreSelector = ({

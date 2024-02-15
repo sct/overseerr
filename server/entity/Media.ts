@@ -25,20 +25,31 @@ import Season from './Season';
 @Entity()
 class Media {
   public static async getRelatedMedia(
-    tmdbIds: number | number[]
+    tmdbIds: number | number[] = [],
+    mbIds: string | string[] = []
   ): Promise<Media[]> {
     const mediaRepository = getRepository(Media);
 
     try {
-      let finalIds: number[];
+      let finalTmdbIds: number[] = [];
       if (!Array.isArray(tmdbIds)) {
-        finalIds = [tmdbIds];
+        finalTmdbIds = [tmdbIds];
       } else {
-        finalIds = tmdbIds;
+        finalTmdbIds = tmdbIds;
+      }
+
+      let finalMusicBrainzIds: string[] = [];
+      if (!Array.isArray(mbIds)) {
+        finalMusicBrainzIds = [mbIds];
+      } else {
+        finalMusicBrainzIds = mbIds;
       }
 
       const media = await mediaRepository.find({
-        where: { tmdbId: In(finalIds) },
+        where: [
+          { tmdbId: In(finalTmdbIds) },
+          { mbId: In(finalMusicBrainzIds) },
+        ],
       });
 
       return media;

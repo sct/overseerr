@@ -9,11 +9,17 @@ import type {
   MovieResult,
   PersonResult,
   TvResult,
+  MusicResult,
+  ArtistResult,
+  ReleaseResult,
+  ReleaseGroupResult,
+  WorkResult,
+  RecordingResult,
 } from '@server/models/Search';
 import { useIntl } from 'react-intl';
 
 type ListViewProps = {
-  items?: (TvResult | MovieResult | PersonResult | CollectionResult)[];
+  items?: (TvResult | MovieResult | PersonResult | CollectionResult | MusicResult | ArtistResult | ReleaseResult | ReleaseGroupResult | WorkResult | RecordingResult)[];
   plexItems?: WatchlistItem[];
   isEmpty?: boolean;
   isLoading?: boolean;
@@ -109,6 +115,58 @@ const ListView = ({
                   personId={title.id}
                   name={title.name}
                   profilePath={title.profilePath}
+                  canExpand
+                />
+              );
+              break;
+            case 'artist':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  title={title.name}
+                  mediaType={title.mediaType}
+                  canExpand
+                />
+              );
+              break;
+            case 'release':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  image={title.posterPath}
+                  title={title.title}
+                  mediaType={title.mediaType}
+                  canExpand
+                />
+              );
+              break;
+            case 'release-group':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  image={title.posterPath}
+                  title={title.title}
+                  mediaType={title.mediaType}
+                  canExpand
+                />
+              );
+              break;
+            case 'work':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  title={title.title}
+                  mediaType={title.mediaType}
+                  canExpand
+                />
+              );
+              break;
+            case 'recording':
+              titleCard = (
+                <TitleCard
+                  id={title.id}
+                  title={title.title}
+                  mediaType={title.mediaType}
                   canExpand
                 />
               );

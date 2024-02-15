@@ -26,7 +26,6 @@ const messages = defineMessages({
   validationApiKeyRequired: 'You must provide an API key',
   validationRootFolderRequired: 'You must select a root folder',
   validationProfileRequired: 'You must select a quality profile',
-  validationLanguageProfileRequired: 'You must select a language profile',
   toastLidarrTestSuccess: 'Lidarr connection established successfully!',
   toastLidarrTestFailure: 'Failed to connect to Lidarr.',
   add: 'Add Server',
@@ -38,11 +37,9 @@ const messages = defineMessages({
   apiKey: 'API Key',
   baseUrl: 'URL Base',
   qualityprofile: 'Quality Profile',
-  languageprofile: 'Language Profile',
   rootfolder: 'Root Folder',
   selectQualityProfile: 'Select quality profile',
   selectRootFolder: 'Select root folder',
-  selectLanguageProfile: 'Select language profile',
   loadingprofiles: 'Loading quality profiles…',
   testFirstQualityProfiles: 'Test connection to load quality profiles',
   loadingrootfolders: 'Loading root folders…',
@@ -73,10 +70,6 @@ interface TestResponse {
     id: number;
     path: string;
   }[];
-  languageProfiles: {
-    id: number;
-    name: string;
-  }[];
   tags: {
     id: number;
     label: string;
@@ -99,7 +92,6 @@ const LidarrModal = ({ onClose, lidarr, onSave }: LidarrModalProps) => {
   const [testResponse, setTestResponse] = useState<TestResponse>({
     profiles: [],
     rootFolders: [],
-    languageProfiles: [],
     tags: [],
   });
   const LidarrSettingsSchema = Yup.object().shape({
@@ -123,9 +115,6 @@ const LidarrModal = ({ onClose, lidarr, onSave }: LidarrModalProps) => {
     ),
     activeProfileId: Yup.string().required(
       intl.formatMessage(messages.validationProfileRequired)
-    ),
-    activeLanguageProfileId: Yup.number().required(
-      intl.formatMessage(messages.validationLanguageProfileRequired)
     ),
     externalUrl: Yup.string()
       .url(intl.formatMessage(messages.validationApplicationUrl))
@@ -226,7 +215,7 @@ const LidarrModal = ({ onClose, lidarr, onSave }: LidarrModalProps) => {
         initialValues={{
           name: lidarr?.name,
           hostname: lidarr?.hostname,
-          port: lidarr?.port ?? 8989,
+          port: lidarr?.port ?? 8686,
           ssl: lidarr?.useSsl ?? false,
           apiKey: lidarr?.apiKey,
           baseUrl: lidarr?.baseUrl,
@@ -561,15 +550,6 @@ const LidarrModal = ({ onClose, lidarr, onSave }: LidarrModalProps) => {
                         <div className="error">{errors.rootFolder}</div>
                       )}
                   </div>
-                </div>
-                <div className="form-row">
-                  <label
-                    htmlFor="activeLanguageProfileId"
-                    className="text-label"
-                  >
-                    {intl.formatMessage(messages.languageprofile)}
-                    <span className="label-required">*</span>
-                  </label>
                 </div>
                 <div className="form-row">
                   <label htmlFor="tags" className="text-label">

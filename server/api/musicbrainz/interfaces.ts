@@ -1,5 +1,11 @@
 // Purpose: Interfaces for MusicBrainz data.
 
+export interface mbDefaultType {
+  media_type: string;
+  id: string;
+  tags: string[];
+}
+
 export enum mbArtistType {
   PERSON = 'Person',
   GROUP = 'Group',
@@ -9,8 +15,8 @@ export enum mbArtistType {
   OTHER = 'Other',
 }
 
-export interface mbArtist {
-  id: string;
+export interface mbArtist extends mbDefaultType {
+  media_type: 'artist';
   name: string;
   sortName: string;
   type: mbArtistType;
@@ -22,25 +28,22 @@ export interface mbArtist {
   area?: string;
   beginDate?: string;
   endDate?: string;
-  tags: string[];
 }
 
-export interface mbRecording {
-  id: string;
+export interface mbRecording extends mbDefaultType {
+  media_type: 'recording';
   title: string;
   artist: mbArtist[];
   length: number;
   firstReleased?: Date;
-  tags: string[];
 }
 
-export interface mbRelease {
-  id: string;
+export interface mbRelease extends mbDefaultType {
+  media_type: 'release';
   title: string;
   artist: mbArtist[];
   date?: Date;
   tracks?: mbRecording[];
-  tags: string[];
 }
 
 export enum mbReleaseGroupType {
@@ -51,14 +54,13 @@ export enum mbReleaseGroupType {
   OTHER = 'Other',
 }
 
-export interface mbReleaseGroup {
-  id: string;
+export interface mbReleaseGroup extends mbDefaultType {
+  media_type: 'release-group';
   title: string;
   artist: mbArtist[];
   type: mbReleaseGroupType;
   firstReleased?: Date;
   releases?: mbRelease[];
-  tags: string[];
 }
 
 export enum mbWorkType {
@@ -94,12 +96,11 @@ export enum mbWorkType {
   OTHER = 'Other',
 }
 
-export interface mbWork {
-  id: string;
+export interface mbWork extends mbDefaultType {
+  media_type: 'work';
   title: string;
   type: mbWorkType;
   artist: mbArtist[];
-  tags: string[];
 }
 
 export interface Artist {

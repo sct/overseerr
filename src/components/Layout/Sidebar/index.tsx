@@ -9,6 +9,7 @@ import {
   FilmIcon,
   SparklesIcon,
   TvIcon,
+  MusicalNoteIcon,
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -25,6 +26,7 @@ export const menuMessages = defineMessages({
   issues: 'Issues',
   users: 'Users',
   settings: 'Settings',
+  music: 'Music',
 });
 
 interface SidebarProps {
@@ -61,6 +63,12 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'browsetv',
     svgIcon: <TvIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/discover\/tv$/,
+  },
+  {
+    href: '/discover/music',
+    messagesKey: 'music',
+    svgIcon: <MusicalNoteIcon className="mr-3 h-6 w-6" />,
+    activeRegExp: /^\/discover\/music$/,
   },
   {
     href: '/requests',

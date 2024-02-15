@@ -7,8 +7,9 @@ import type { MediaRequest } from '@server/entity/MediaRequest';
 
 interface RequestModalProps {
   show: boolean;
-  type: 'movie' | 'tv' | 'collection';
+  type: 'movie' | 'tv' | 'collection' | 'music';
   tmdbId: number;
+  mbId: string;
   is4k?: boolean;
   editRequest?: MediaRequest;
   onComplete?: (newStatus: MediaStatus) => void;
@@ -20,6 +21,7 @@ const RequestModal = ({
   type,
   show,
   tmdbId,
+  mbId,
   is4k,
   editRequest,
   onComplete,
@@ -55,7 +57,7 @@ const RequestModal = ({
           is4k={is4k}
           editRequest={editRequest}
         />
-      ) : (
+      ) : type === 'collection' ? (
         <CollectionRequestModal
           onComplete={onComplete}
           onCancel={onCancel}
@@ -63,7 +65,9 @@ const RequestModal = ({
           onUpdating={onUpdating}
           is4k={is4k}
         />
-      )}
+      ) : type === 'music' ? (
+        <div>Music:{mbId}</div>
+      ) : null}
     </Transition>
   );
 };

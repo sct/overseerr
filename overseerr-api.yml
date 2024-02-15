@@ -648,6 +648,24 @@ components:
             oneOf:
               - $ref: '#/components/schemas/MovieResult'
               - $ref: '#/components/schemas/TvResult'
+    MusicResult:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        mediaType:
+          type: string
+        posterPath:
+          type: string
+        title:
+          type: string
+          example: Album Name
+        releaseDate:
+          type: string
+          example: 19923-12-03
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
     Genre:
       type: object
       properties:
@@ -4927,6 +4945,51 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TvResult'
+  /discover/musics:
+    get:
+      summary: Discover music
+      description: Returns a list of music in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: keywords
+          schema:
+            type: string
+            example: 1,2
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            example: popularity.desc
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 20
+                  totalResults:
+                    type: number
+                    example: 200
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/MusicResult'
+
   /discover/trending:
     get:
       summary: Trending movies and TV

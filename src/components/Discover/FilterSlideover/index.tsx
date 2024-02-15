@@ -44,7 +44,7 @@ const messages = defineMessages({
 type FilterSlideoverProps = {
   show: boolean;
   onClose: () => void;
-  type: 'movie' | 'tv';
+  type: 'movie' | 'tv' | 'music';
   currentFilters: FilterOptions;
 };
 
@@ -290,27 +290,29 @@ const FilterSlideover = ({
         <span className="text-lg font-semibold">
           {intl.formatMessage(messages.streamingservices)}
         </span>
-        <WatchProviderSelector
-          type={type}
-          region={currentFilters.watchRegion}
-          activeProviders={
-            currentFilters.watchProviders?.split('|').map((v) => Number(v)) ??
-            []
-          }
-          onChange={(region, providers) => {
-            if (providers.length) {
-              batchUpdateQueryParams({
-                watchRegion: region,
-                watchProviders: providers.join('|'),
-              });
-            } else {
-              batchUpdateQueryParams({
-                watchRegion: undefined,
-                watchProviders: undefined,
-              });
-            }
-          }}
-        />
+        {type in ['movie', 'tv']
+          ?(<WatchProviderSelector
+              type={type as 'movie' | 'tv'}
+              region={currentFilters.watchRegion}
+              activeProviders={
+                currentFilters.watchProviders?.split('|').map((v) => Number(v)) ??
+                []
+              }
+              onChange={(region, providers) => {
+                if (providers.length) {
+                  batchUpdateQueryParams({
+                    watchRegion: region,
+                    watchProviders: providers.join('|'),
+                  });
+                } else {
+                  batchUpdateQueryParams({
+                    watchRegion: undefined,
+                    watchProviders: undefined,
+                  });
+                }
+              }}
+            />)
+          : null}
         <div className="pt-4">
           <Button
             className="w-full"

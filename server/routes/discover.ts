@@ -1,3 +1,4 @@
+import MusicBrainz from '@server/api/musicbrainz';
 import PlexTvAPI from '@server/api/plextv';
 import type { SortOptions } from '@server/api/themoviedb';
 import TheMovieDb from '@server/api/themoviedb';
@@ -17,6 +18,7 @@ import {
   mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
+  mapReleaseGroupResult,
   mapTvResult,
 } from '@server/models/Search';
 import { mapNetwork } from '@server/models/Tv';
@@ -849,5 +851,41 @@ discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
     });
   }
 );
+
+discoverRoutes.get('/musics', async (req, res, next) => {
+  const mb = new MusicBrainz();
+  try {
+    const query = QueryFilterOptions.parse(req.query);
+    const keywords = query.keywords;
+    const results = mb.searchReleaseGroups({
+      query: keywords ?? '',
+      limit: 20,
+      offset: (Number(query.page) - 1) * 20,
+    });
+    const tmdbIds = [] as number[];
+    const mbIds = results.map((result) => result.id);
+    const media = await Media.getRelatedMedia(tmdbIds, mbIds);
+    return res.status(200).json({
+      page: query.page,
+      results: results.map((result) => {
+        mapReleaseGroupResult(
+          result,
+          media.find(
+            (med) => med.mbId === result.id && med.mediaType === MediaType.MUSIC
+          )
+        );
+      }),
+    });
+  } catch (e) {
+    logger.debug('Something went wrong retrieving popular series', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve popular series.',
+    });
+  }
+});
 
 export default discoverRoutes;

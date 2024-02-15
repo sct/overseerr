@@ -1,4 +1,14 @@
 import type {
+  mbArtist,
+  mbArtistType,
+  mbRecording,
+  mbRelease,
+  mbReleaseGroup,
+  mbReleaseGroupType,
+  mbWork,
+} from '@server/api/musicbrainz/interfaces';
+import getPosterFromMB from '@server/api/musicbrainz/poster';
+import type {
   TmdbCollectionResult,
   TmdbMovieDetails,
   TmdbMovieResult,
@@ -10,7 +20,17 @@ import type {
 import { MediaType as MainMediaType } from '@server/constants/media';
 import type Media from '@server/entity/Media';
 
-export type MediaType = 'tv' | 'movie' | 'person' | 'collection';
+export type MediaType =
+  | 'tv'
+  | 'movie'
+  | 'music'
+  | 'person'
+  | 'collection'
+  | 'release-group'
+  | 'release'
+  | 'recording'
+  | 'work'
+  | 'artist';
 
 interface SearchResult {
   id: number;
@@ -44,6 +64,14 @@ export interface TvResult extends SearchResult {
   firstAirDate: string;
 }
 
+export interface MusicResult extends SearchResult {
+  mediaType: 'music';
+  title: string;
+  originalTitle: string;
+  releaseDate: string;
+  mediaInfo?: Media;
+}
+
 export interface CollectionResult {
   id: number;
   mediaType: 'collection';
@@ -66,7 +94,74 @@ export interface PersonResult {
   knownFor: (MovieResult | TvResult)[];
 }
 
-export type Results = MovieResult | TvResult | PersonResult | CollectionResult;
+export interface ReleaseGroupResult {
+  id: string;
+  mediaType: 'release-group';
+  type: mbReleaseGroupType;
+  posterPath?: string;
+  title: string;
+  artist: ArtistResult[];
+  tags: string[];
+  mediaInfo?: Media;
+}
+
+export interface ReleaseResult {
+  id: string;
+  mediaType: 'release';
+  title: string;
+  artist: ArtistResult[];
+  posterPath?: string;
+  date?: Date;
+  tracks?: RecordingResult[];
+  tags: string[];
+  mediaInfo?: Media;
+}
+
+export interface RecordingResult {
+  id: string;
+  mediaType: 'recording';
+  title: string;
+  artist: ArtistResult[];
+  length: number;
+  firstReleased?: Date;
+  tags: string[];
+}
+
+export interface WorkResult {
+  id: string;
+  mediaType: 'work';
+  title: string;
+  artist: ArtistResult[];
+  tags: string[];
+}
+
+export interface ArtistResult {
+  id: string;
+  mediaType: 'artist';
+  name: string;
+  type: mbArtistType;
+  releases: ReleaseResult[];
+  recordings: RecordingResult[];
+  releaseGroups: ReleaseGroupResult[];
+  works: WorkResult[];
+  gender?: string;
+  area?: string;
+  beginDate?: string;
+  endDate?: string;
+  tags: string[];
+}
+
+export type Results =
+  | MovieResult
+  | TvResult
+  | MusicResult
+  | PersonResult
+  | CollectionResult
+  | ReleaseGroupResult
+  | ReleaseResult
+  | RecordingResult
+  | WorkResult
+  | ArtistResult;
 
 export const mapMovieResult = (
   movieResult: TmdbMovieResult,
@@ -144,12 +239,90 @@ export const mapPersonResult = (
   }),
 });
 
+export const mapReleaseGroupResult = (
+  releaseGroupResult: mbReleaseGroup,
+  media?: Media
+): ReleaseGroupResult => ({
+  id: releaseGroupResult.id,
+  mediaType: releaseGroupResult.media_type,
+  type: releaseGroupResult.type,
+  title: releaseGroupResult.title,
+  artist: releaseGroupResult.artist.map((artist) => mapArtistResult(artist)),
+  tags: releaseGroupResult.tags,
+  posterPath: getPosterFromMB(releaseGroupResult),
+  mediaInfo: media,
+});
+
+export const mapArtistResult = (artist: mbArtist): ArtistResult => ({
+  id: artist.id,
+  mediaType: 'artist',
+  name: artist.name,
+  type: artist.type,
+  releases: Array.isArray(artist.releases)
+    ? artist.releases.map((release) => mapReleaseResult(release))
+    : [],
+  recordings: Array.isArray(artist.recordings)
+    ? artist.recordings.map((recording) => mapRecordingResult(recording))
+    : [],
+  releaseGroups: Array.isArray(artist.releaseGroups)
+    ? artist.releaseGroups.map((releaseGroup) =>
+        mapReleaseGroupResult(releaseGroup)
+      )
+    : [],
+  works: Array.isArray(artist.works)
+    ? artist.works.map((work) => mapWorkResult(work))
+    : [],
+  tags: artist.tags,
+});
+
+export const mapReleaseResult = (
+  release: mbRelease,
+  media?: Media
+): ReleaseResult => ({
+  id: release.id,
+  mediaType: release.media_type,
+  title: release.title,
+  posterPath: getPosterFromMB(release),
+  artist: release.artist.map((artist) => mapArtistResult(artist)),
+  date: release.date,
+  tracks: Array.isArray(release.tracks)
+    ? release.tracks.map((track) => mapRecordingResult(track))
+    : [],
+  tags: release.tags,
+  mediaInfo: media,
+});
+
+export const mapRecordingResult = (
+  recording: mbRecording
+): RecordingResult => ({
+  id: recording.id,
+  mediaType: recording.media_type,
+  title: recording.title,
+  artist: recording.artist.map((artist) => mapArtistResult(artist)),
+  length: recording.length,
+  firstReleased: recording.firstReleased,
+  tags: recording.tags,
+});
+
+export const mapWorkResult = (work: mbWork): WorkResult => ({
+  id: work.id,
+  mediaType: work.media_type,
+  title: work.title,
+  artist: work.artist.map((artist) => mapArtistResult(artist)),
+  tags: work.tags,
+});
+
 export const mapSearchResults = (
   results: (
     | TmdbMovieResult
     | TmdbTvResult
     | TmdbPersonResult
     | TmdbCollectionResult
+    | mbArtist
+    | mbRecording
+    | mbRelease
+    | mbReleaseGroup
+    | mbWork
   )[],
   media?: Media[]
 ): Results[] =>
@@ -173,8 +346,26 @@ export const mapSearchResults = (
         );
       case 'collection':
         return mapCollectionResult(result);
-      default:
+      case 'person':
         return mapPersonResult(result);
+      case 'release-group':
+        return mapReleaseGroupResult(
+          result,
+          media?.find((req) => req.mbId === result.id)
+        );
+      case 'release':
+        return mapReleaseResult(
+          result,
+          media?.find((req) => req.mbId === result.id)
+        );
+      case 'recording':
+        return mapRecordingResult(result);
+      case 'work':
+        return mapWorkResult(result);
+      case 'artist':
+        return mapArtistResult(result);
+      default:
+        return result;
     }
   });
 
