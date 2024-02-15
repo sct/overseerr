@@ -7,6 +7,26 @@ declare module 'nodebrainz' {
     SearchOptions,
     Work,
   } from 'server/api/musicbrainz/interfaces';
+  interface RawSearchResponse {
+    created: string;
+    count: number;
+    offset: number;
+  }
+  export interface ArtistSearchResponse extends RawSearchResponse {
+    artists: Artist[];
+  }
+  export interface ReleaseSearchResponse extends RawSearchResponse {
+    releases: Release[];
+  }
+  export interface RecordingSearchResponse extends RawSearchResponse {
+    recordings: Recording[];
+  }
+  export interface ReleaseGroupSearchResponse extends RawSearchResponse {
+    'release-groups': Group[];
+  }
+  export interface WorkSearchResponse extends RawSearchResponse {
+    works: Work[];
+  }
   export default class BaseNodeBrainz {
     constructor(options: { userAgent: string });
     artist(artistId: string, { inc }: { inc: string }): Artist;
@@ -16,7 +36,16 @@ declare module 'nodebrainz' {
     work(workId: string, { inc }: { inc: string }): Work;
     search(
       type: string,
-      search: SearchOptions
-    ): Artist[] | Recording[] | Release[] | Group[] | Work[] | null;
+      search: SearchOptions,
+      callback: (
+        err: Error,
+        data:
+          | ArtistSearchResponse
+          | ReleaseSearchResponse
+          | RecordingSearchResponse
+          | ReleaseGroupSearchResponse
+          | WorkSearchResponse
+      ) => void
+    ): Promise<Artist[] | Release[] | Recording[] | Group[] | Work[]>;
   }
 }

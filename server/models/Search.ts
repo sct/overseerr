@@ -242,16 +242,18 @@ export const mapPersonResult = (
 export const mapReleaseGroupResult = (
   releaseGroupResult: mbReleaseGroup,
   media?: Media
-): ReleaseGroupResult => ({
-  id: releaseGroupResult.id,
-  mediaType: releaseGroupResult.media_type,
-  type: releaseGroupResult.type,
-  title: releaseGroupResult.title,
-  artist: releaseGroupResult.artist.map((artist) => mapArtistResult(artist)),
-  tags: releaseGroupResult.tags,
-  posterPath: getPosterFromMB(releaseGroupResult),
-  mediaInfo: media,
-});
+): ReleaseGroupResult => {
+  return {
+    id: releaseGroupResult.id,
+    mediaType: releaseGroupResult.media_type,
+    type: releaseGroupResult.type,
+    title: releaseGroupResult.title,
+    artist: releaseGroupResult.artist.map((artist) => mapArtistResult(artist)),
+    tags: releaseGroupResult.tags,
+    posterPath: getPosterFromMB(releaseGroupResult),
+    mediaInfo: media ?? undefined,
+  };
+};
 
 export const mapArtistResult = (artist: mbArtist): ArtistResult => ({
   id: artist.id,

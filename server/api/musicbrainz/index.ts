@@ -1,3 +1,11 @@
+import logger from '@server/logger';
+import type {
+  ArtistSearchResponse,
+  RecordingSearchResponse,
+  ReleaseGroupSearchResponse,
+  ReleaseSearchResponse,
+  WorkSearchResponse,
+} from 'nodebrainz';
 import BaseNodeBrainz from 'nodebrainz';
 import type {
   Artist,
@@ -179,13 +187,13 @@ function convertRelease(release: Release): mbRelease {
     media_type: 'release',
     id: release.id,
     title: release.title,
-    artist: release['artist-credit'].map(convertArtistCredit),
+    artist: (release['artist-credit'] ?? []).map(convertArtistCredit),
     date:
       release['release-events'] && release['release-events'].length > 0
         ? new Date(String(release['release-events'][0].date))
         : undefined,
-    tracks: release.media.flatMap(convertMedium),
-    tags: release.tags.map(convertTag),
+    tracks: (release.media ?? []).flatMap(convertMedium),
+    tags: (release.tags ?? []).map(convertTag),
   };
 }
 
@@ -194,12 +202,12 @@ function convertReleaseGroup(releaseGroup: Group): mbReleaseGroup {
     media_type: 'release-group',
     id: releaseGroup.id,
     title: releaseGroup.title,
-    artist: releaseGroup['artist-credit'].map(convertArtistCredit),
+    artist: (releaseGroup['artist-credit'] ?? []).map(convertArtistCredit),
     type:
       (releaseGroup['primary-type'] as mbReleaseGroupType) ||
       mbReleaseGroupType.OTHER,
     firstReleased: new Date(releaseGroup['first-release-date']),
-    tags: releaseGroup.tags.map((tag: Tag) => tag.name),
+    tags: (releaseGroup.tags ?? []).map((tag: Tag) => tag.name),
   };
 }
 
@@ -208,10 +216,10 @@ function convertRecording(recording: Recording): mbRecording {
     media_type: 'recording',
     id: recording.id,
     title: recording.title,
-    artist: recording['artist-credit'].map(convertArtistCredit),
+    artist: (recording['artist-credit'] ?? []).map(convertArtistCredit),
     length: recording.length,
     firstReleased: new Date(recording['first-release-date']),
-    tags: recording.tags.map(convertTag),
+    tags: (recording.tags ?? []).map(convertTag),
   };
 }
 
@@ -222,11 +230,11 @@ function convertArtist(artist: Artist): mbArtist {
     name: artist.name,
     sortName: artist['sort-name'],
     type: (artist.type as mbArtistType) || mbArtistType.OTHER,
-    recordings: artist.recordings.map(convertRecording),
-    releases: artist.releases.map(convertRelease),
-    releaseGroups: artist['release-groups'].map(convertReleaseGroup),
-    works: artist.works.map(convertWork),
-    tags: artist.tags.map(convertTag),
+    recordings: (artist.recordings ?? []).map(convertRecording),
+    releases: (artist.releases ?? []).map(convertRelease),
+    releaseGroups: (artist['release-groups'] ?? []).map(convertReleaseGroup),
+    works: (artist.works ?? []).map(convertWork),
+    tags: (artist.tags ?? []).map(convertTag),
   };
 }
 
@@ -236,8 +244,8 @@ function convertWork(work: Work): mbWork {
     id: work.id,
     title: work.title,
     type: (work.type as mbWorkType) || mbWorkType.OTHER,
-    artist: work.relations.map(convertRelation),
-    tags: work.tags.map(convertTag),
+    artist: (work.relations ?? []).map(convertRelation),
+    tags: (work.tags ?? []).map(convertTag),
   };
 }
 
@@ -248,7 +256,7 @@ function convertArtistCredit(artistCredit: ArtistCredit): mbArtist {
     name: artistCredit.artist.name,
     sortName: artistCredit.artist['sort-name'],
     type: (artistCredit.artist.type as mbArtistType) || mbArtistType.OTHER,
-    tags: artistCredit.artist.tags.map(convertTag),
+    tags: (artistCredit.artist.tags ?? []).map(convertTag),
   };
 }
 
@@ -259,7 +267,7 @@ function convertRelation(relation: Relation): mbArtist {
     name: relation.artist.name,
     sortName: relation.artist['sort-name'],
     type: (relation.artist.type as mbArtistType) || mbArtistType.OTHER,
-    tags: relation.artist.tags.map(convertTag),
+    tags: (relation.artist.tags ?? []).map(convertTag),
   };
 }
 
@@ -276,9 +284,9 @@ function convertTrack(track: Track): mbRecording {
     media_type: 'recording',
     id: track.id,
     title: track.title,
-    artist: track.recording['artist-credit'].map(convertArtistCredit),
+    artist: (track.recording['artist-credit'] ?? []).map(convertArtistCredit),
     length: track.recording.length,
-    tags: track.recording.tags.map(convertTag),
+    tags: (track.recording.tags ?? []).map(convertTag),
   };
 }
 
@@ -290,7 +298,7 @@ class MusicBrainz extends BaseNodeBrainz {
     });
   }
 
-  public searchMulti = (search: SearchOptions) => {
+  public searchMulti = async (search: SearchOptions) => {
     try {
       const artistSearch = searchOptionstoArtistSearchOptions(search);
       const recordingSearch = searchOptionstoRecordingSearchOptions(search);
@@ -298,11 +306,13 @@ class MusicBrainz extends BaseNodeBrainz {
         searchOptionstoReleaseGroupSearchOptions(search);
       const releaseSearch = searchOptionstoReleaseSearchOptions(search);
       const workSearch = searchOptionstoWorkSearchOptions(search);
-      const artistResults = this.searchArtists(artistSearch);
-      const recordingResults = this.searchRecordings(recordingSearch);
-      const releaseGroupResults = this.searchReleaseGroups(releaseGroupSearch);
-      const releaseResults = this.searchReleases(releaseSearch);
-      const workResults = this.searchWorks(workSearch);
+      const artistResults = await this.searchArtists(artistSearch);
+      const recordingResults = await this.searchRecordings(recordingSearch);
+      const releaseGroupResults = await this.searchReleaseGroups(
+        releaseGroupSearch
+      );
+      const releaseResults = await this.searchReleases(releaseSearch);
+      const workResults = await this.searchWorks(workSearch);
 
       const combinedResults = {
         status: 'ok',
@@ -326,54 +336,122 @@ class MusicBrainz extends BaseNodeBrainz {
     }
   };
 
-  public searchArtists = (search: ArtistSearchOptions) => {
+  public searchArtists = async (
+    search: ArtistSearchOptions
+  ): Promise<mbArtist[]> => {
     try {
-      const rawResults = this.search('artist', search) as Artist[];
-      const results = rawResults.map(convertArtist);
-      return results;
+      return await new Promise<mbArtist[]>((resolve, reject) => {
+        this.search('artist', search, (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            const rawResults = data as unknown as ArtistSearchResponse;
+            const results = rawResults.artists.map(convertArtist);
+            resolve(results);
+          }
+        });
+      });
     } catch (e) {
-      return [];
+      logger.error('Failed to search for artists', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbArtist[]>((resolve) => resolve([]));
     }
   };
 
-  public searchRecordings = (search: RecordingSearchOptions) => {
+  public searchRecordings = async (
+    search: RecordingSearchOptions
+  ): Promise<mbRecording[]> => {
     try {
-      const rawResults = this.search('recording', search) as Recording[];
-      const results = rawResults.map(convertRecording);
-      return results;
+      return await new Promise<mbRecording[]>((resolve, reject) => {
+        this.search('recording', search, (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            const rawResults = data as unknown as RecordingSearchResponse;
+            const results = rawResults.recordings.map(convertRecording);
+            resolve(results);
+          }
+        });
+      });
     } catch (e) {
-      return [];
+      logger.error('Failed to search for recordings', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbRecording[]>((resolve) => resolve([]));
     }
   };
 
   public searchReleaseGroups = (
     search: ReleaseGroupSearchOptions
-  ): mbReleaseGroup[] => {
+  ): Promise<mbReleaseGroup[]> => {
     try {
-      const rawResults = this.search('release-group', search) as Group[];
-      const results = rawResults.map(convertReleaseGroup);
-      return results;
+      return new Promise<mbReleaseGroup[]>((resolve, reject) => {
+        this.search('release-group', search, (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            const rawResults = data as unknown as ReleaseGroupSearchResponse;
+            const results =
+              rawResults['release-groups'].map(convertReleaseGroup);
+            resolve(results);
+          }
+        });
+      });
     } catch (e) {
-      return [];
+      logger.error('Failed to search for release groups', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbReleaseGroup[]>((resolve) => resolve([]));
     }
   };
 
-  public searchReleases = (search: ReleaseSearchOptions): mbRelease[] => {
+  public searchReleases = (
+    search: ReleaseSearchOptions
+  ): Promise<mbRelease[]> => {
     try {
-      const rawResults = this.search('release', search) as Release[];
-      const results = rawResults.map(convertRelease);
-      return results;
+      return new Promise<mbRelease[]>((resolve, reject) => {
+        this.search('release', search, (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            const rawResults = data as unknown as ReleaseSearchResponse;
+            const results = rawResults.releases.map(convertRelease);
+            resolve(results);
+          }
+        });
+      });
     } catch (e) {
-      return [];
+      logger.error('Failed to search for releases', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbRelease[]>((resolve) => resolve([]));
     }
   };
 
-  public searchWorks = (search: WorkSearchOptions) => {
+  public searchWorks = (search: WorkSearchOptions): Promise<mbWork[]> => {
     try {
-      const results = this.search('work', search);
-      return results;
+      return new Promise<mbWork[]>((resolve, reject) => {
+        this.search('work', search, (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            const rawResults = data as unknown as WorkSearchResponse;
+            const results = rawResults.works.map(convertWork);
+            resolve(results);
+          }
+        });
+      });
     } catch (e) {
-      return [];
+      logger.error('Failed to search for works', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbWork[]>((resolve) => resolve([]));
     }
   };
 

@@ -857,7 +857,7 @@ discoverRoutes.get('/musics', async (req, res, next) => {
   try {
     const query = QueryFilterOptions.parse(req.query);
     const keywords = query.keywords;
-    const results = mb.searchReleaseGroups({
+    const results = await mb.searchReleaseGroups({
       query: keywords ?? '',
       limit: 20,
       offset: (Number(query.page) - 1) * 20,
@@ -867,14 +867,14 @@ discoverRoutes.get('/musics', async (req, res, next) => {
     const media = await Media.getRelatedMedia(tmdbIds, mbIds);
     return res.status(200).json({
       page: query.page,
-      results: results.map((result) => {
+      results: results.map((result) =>
         mapReleaseGroupResult(
           result,
           media.find(
             (med) => med.mbId === result.id && med.mediaType === MediaType.MUSIC
           )
-        );
-      }),
+        )
+      ),
     });
   } catch (e) {
     logger.debug('Something went wrong retrieving popular series', {
