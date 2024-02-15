@@ -42,13 +42,13 @@ export type RequestOverrides = {
   server?: number;
   profile?: number;
   folder?: string;
-  tags?: number[];
+  tags?: number[] | string[];
   language?: number;
   user?: User;
 };
 
 interface AdvancedRequesterProps {
-  type: 'movie' | 'tv';
+  type: 'movie' | 'tv' | 'music';
   is4k: boolean;
   isAnime?: boolean;
   defaultOverrides?: RequestOverrides;
@@ -67,14 +67,14 @@ const AdvancedRequester = ({
   const intl = useIntl();
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const { data, error } = useSWR<ServiceCommonServer[]>(
-    `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
-    {
-      refreshInterval: 0,
-      refreshWhenHidden: false,
-      revalidateOnFocus: false,
-      revalidateOnMount: true,
-    }
-  );
+      `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
+      {
+        refreshInterval: 0,
+        refreshWhenHidden: false,
+        revalidateOnFocus: false,
+        revalidateOnMount: true,
+      }
+    );
   const [selectedServer, setSelectedServer] = useState<number | null>(
     defaultOverrides?.server !== undefined && defaultOverrides?.server >= 0
       ? defaultOverrides?.server
@@ -91,7 +91,7 @@ const AdvancedRequester = ({
     defaultOverrides?.language ?? -1
   );
 
-  const [selectedTags, setSelectedTags] = useState<number[]>(
+  const [selectedTags, setSelectedTags] = useState<number[] | string[]>(
     defaultOverrides?.tags ?? []
   );
 
@@ -99,7 +99,7 @@ const AdvancedRequester = ({
     useSWR<ServiceCommonServerWithDetails>(
       selectedServer !== null
         ? `/api/v1/service/${
-            type === 'movie' ? 'radarr' : 'sonarr'
+            type === 'movie' ? 'radarr' : (type === 'music' ? 'lidarr' : 'sonarr')
           }/${selectedServer}`
         : null,
       {

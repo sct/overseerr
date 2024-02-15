@@ -83,6 +83,7 @@ export interface SonarrSettings extends DVRSettings {
   animeTags?: number[];
   enableSeasonFolders: boolean;
 }
+export type LidarrSettings = ArrSettings;
 
 interface Quota {
   quotaLimit?: number;
