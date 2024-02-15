@@ -15,6 +15,7 @@ const defaultSettings = {
   localLogin: true,
   movie4kEnabled: false,
   series4kEnabled: false,
+  fallbackImage: '/images/overseerr_poster_not_found_logo_top.png',
   region: '',
   originalLanguage: '',
   partialRequestsEnabled: true,

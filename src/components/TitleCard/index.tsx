@@ -75,11 +75,11 @@ const TitleCard = ({
       Permission.REQUEST,
       mediaType === 'movie' || mediaType === 'collection'
         ? Permission.REQUEST_MOVIE
-        : Permission.REQUEST_TV,
+        : (mediaType === 'tv' ? Permission.REQUEST_TV : Permission.REQUEST_MUSIC),
     ],
     { type: 'or' }
   );
-  const tmdbOrMbId: boolean = mediaType in ['movie', 'tv', 'collection'];
+  const tmdbOrMbId: boolean = ['movie', 'tv', 'collection'].includes(mediaType);
   return (
     <div
       className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}
@@ -90,13 +90,7 @@ const TitleCard = ({
         mbId={tmdbOrMbId ? "" : (id as string)}
         show={showRequestModal}
         type={
-          mediaType === 'movie'
-            ? 'movie'
-            : mediaType === 'collection'
-            ? 'collection'
-            : mediaType === 'tv'
-            ? 'tv'
-            : 'music'
+          tmdbOrMbId ? mediaType as ('collection' | 'movie' | 'tv') : 'music'
         }
         onComplete={requestComplete}
         onUpdating={requestUpdating}
@@ -108,9 +102,7 @@ const TitleCard = ({
             ? 'scale-105 shadow-lg ring-gray-500'
             : 'scale-100 shadow ring-gray-700'
         }`}
-        style={{
-          paddingBottom: '150%',
-        }}
+        style={tmdbOrMbId ?{paddingBottom : '150%'} : {aspectRatio: '1/1'}}
         onMouseEnter={() => {
           if (!isTouch) {
             setShowDetail(true);
@@ -132,7 +124,7 @@ const TitleCard = ({
             alt=""
             src={
               image
-                ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
+                ? (tmdbOrMbId ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}` : image)
                 : `/images/overseerr_poster_not_found_logo_top.png`
             }
             layout="fill"

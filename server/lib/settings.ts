@@ -91,6 +91,7 @@ interface Quota {
 }
 
 export interface MainSettings {
+  fallbackImage: string;
   apiKey: string;
   applicationTitle: string;
   applicationUrl: string;
@@ -128,6 +129,7 @@ interface FullPublicSettings extends PublicSettings {
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
   vapidPublic: string;
+  fallbackImage: string;
   enablePushRegistration: boolean;
   locale: string;
   emailEnabled: boolean;
@@ -309,6 +311,7 @@ class Settings {
         trustProxy: false,
         partialRequestsEnabled: true,
         locale: 'en',
+        fallbackImage: '/images/overseerr_poster_not_found_logo_top.png',
       },
       plex: {
         name: '',
@@ -529,6 +532,9 @@ class Settings {
       locale: this.data.main.locale,
       emailEnabled: this.data.notifications.agents.email.enabled,
       newPlexLogin: this.data.main.newPlexLogin,
+      fallbackImage:
+        this.data.main.fallbackImage ??
+        '/images/overseerr_poster_not_found_logo_top.png',
     };
   }
 

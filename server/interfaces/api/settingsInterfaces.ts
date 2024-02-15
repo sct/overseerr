@@ -33,6 +33,7 @@ export interface PublicSettingsResponse {
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
   vapidPublic: string;
+  fallbackImage: string;
   enablePushRegistration: boolean;
   locale: string;
   emailEnabled: boolean;
