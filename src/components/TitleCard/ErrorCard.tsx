@@ -7,9 +7,10 @@ import { mutate } from 'swr';
 
 interface ErrorCardProps {
   id: number;
-  tmdbId: number;
+  tmdbId?: number;
   tvdbId?: number;
-  type: 'movie' | 'tv';
+  mbId?: string;
+  type: 'movie' | 'tv' | 'music';
   canExpand?: boolean;
 }
 
@@ -17,6 +18,7 @@ const messages = defineMessages({
   mediaerror: '{mediaType} Not Found',
   tmdbid: 'TMDB ID',
   tvdbid: 'TheTVDB ID',
+  mbId: 'MusicBrainz ID',
   cleardata: 'Clear Data',
 });
 
@@ -44,13 +46,17 @@ const Error = ({ id, tmdbId, tvdbId, type, canExpand }: ErrorCardProps) => {
           <div className="absolute left-0 right-0 flex items-center justify-between p-2">
             <div
               className={`pointer-events-none z-40 rounded-full shadow ${
-                type === 'movie' ? 'bg-blue-500' : 'bg-purple-600'
+                type === 'movie' ? 'bg-blue-500' :
+                type === 'tv' ? 'bg-purple-600'
+                : 'bg-green-600'
               }`}
             >
               <div className="flex h-4 items-center px-2 py-2 text-center text-xs font-medium uppercase tracking-wider text-white sm:h-5">
                 {type === 'movie'
                   ? intl.formatMessage(globalMessages.movie)
-                  : intl.formatMessage(globalMessages.tvshow)}
+                  : type === 'tv'
+                  ? intl.formatMessage(globalMessages.tvshow)
+                  : intl.formatMessage(globalMessages.music)}
               </div>
             </div>
             <div className="pointer-events-none z-40">
@@ -77,7 +83,9 @@ const Error = ({ id, tmdbId, tvdbId, type, canExpand }: ErrorCardProps) => {
                   mediaType: intl.formatMessage(
                     type === 'movie'
                       ? globalMessages.movie
-                      : globalMessages.tvshow
+                      : type === 'tv'
+                      ? globalMessages.tvshow
+                      : globalMessages.music
                   ),
                 })}
               </h1>

@@ -60,17 +60,24 @@ class Media {
   }
 
   public static async getMedia(
-    id: number,
+    id: number | string,
     mediaType: MediaType
   ): Promise<Media | undefined> {
     const mediaRepository = getRepository(Media);
 
     try {
-      const media = await mediaRepository.findOne({
-        where: { tmdbId: id, mediaType },
-        relations: { requests: true, issues: true },
-      });
-
+      let media: Media | null = null;
+      if (mediaType === MediaType.MOVIE || mediaType === MediaType.TV) {
+        media = await mediaRepository.findOne({
+          where: { tmdbId: Number(id), mediaType },
+          relations: { requests: true, issues: true },
+        });
+      } else if (mediaType === MediaType.MUSIC) {
+        media = await mediaRepository.findOne({
+          where: { mbId: String(id), mediaType },
+          relations: { requests: true, issues: true },
+        });
+      }
       return media ?? undefined;
     } catch (e) {
       logger.error(e.message);

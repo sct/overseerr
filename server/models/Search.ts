@@ -149,6 +149,7 @@ export interface ArtistResult {
   beginDate?: string;
   endDate?: string;
   tags: string[];
+  mediaInfo?: Media;
 }
 
 export type Results =
@@ -255,7 +256,10 @@ export const mapReleaseGroupResult = (
   };
 };
 
-export const mapArtistResult = (artist: mbArtist): ArtistResult => ({
+export const mapArtistResult = (
+  artist: mbArtist,
+  media?: Media
+): ArtistResult => ({
   id: artist.id,
   mediaType: 'artist',
   name: artist.name,
@@ -275,6 +279,7 @@ export const mapArtistResult = (artist: mbArtist): ArtistResult => ({
     ? artist.works.map((work) => mapWorkResult(work))
     : [],
   tags: artist.tags,
+  mediaInfo: media ?? undefined,
 });
 
 export const mapReleaseResult = (

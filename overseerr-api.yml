@@ -26,6 +26,8 @@ tags:
     description: Endpoints related to retrieving movies and their details.
   - name: tv
     description: Endpoints related to retrieving TV series and their details.
+  - name: music
+    description: Endpoints related to retrieving music and details about artists,...
   - name: other
     description: Endpoints related to other TMDB data
   - name: person
@@ -664,6 +666,159 @@ components:
         releaseDate:
           type: string
           example: 19923-12-03
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
+
+    ArtistResult:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        mediaType:
+          type: string
+          example: artist
+        title:
+          type: string
+          example: Album Name
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - mbArtistType
+        releases:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReleaseResult'
+        recordings:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordingResult'
+        releaseGroups:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReleaseGroupResult'
+        works:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkResult'
+        gender:
+          type: string
+        area:
+          type: string
+        beginDate:
+          type: string
+        endDate:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+
+    WorkResult:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        mediaType:
+          type: string
+          example: work
+        title:
+          type: string
+        artist:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistResult'
+        tags:
+          type: array
+          items:
+            type: string
+
+    RecordingResult:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        mediaType:
+          type: string
+          example: recording
+        title:
+          type: string
+        artist:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistResult'
+        length:
+          type: number
+        firstReleased:
+          type: string
+          format: date-time
+        tags:
+          type: array
+          items:
+            type: string
+
+    ReleaseResult:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        mediaType:
+          type: string
+          example: release
+        title:
+          type: string
+        artist:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistResult'
+        posterPath:
+          type: string
+        date:
+          type: string
+          format: date
+        tracks:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordingResult'
+        tags:
+          type: array
+          items:
+            type: string
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
+
+    ReleaseGroupResult:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        mediaType:
+          type: string
+          example: release-group
+        type:
+          type: string
+          enum:
+            - mbReleaseGroupType
+        posterPath:
+          type: string
+        title:
+          type: string
+        artist:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistResult'
+        tags:
+          type: array
+          items:
+            type: string
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
     Genre:
@@ -5932,6 +6087,26 @@ paths:
                       $ref: '#/components/schemas/CreditCrew'
                   id:
                     type: number
+  /music/artist/{artistId}:
+    get:
+      summary: Get artist details
+      description: Returns full artist details in a JSON object.
+      tags:
+        - music
+      parameters:
+        - in: path
+          name: artistId
+          required: true
+          schema:
+            type: string
+            example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+      responses:
+        '200':
+          description: Artist details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArtistResult'
   /media:
     get:
       summary: Get media
