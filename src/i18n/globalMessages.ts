@@ -19,6 +19,8 @@ const globalMessages = defineMessages({
   collection: 'Collection',
   tvshow: 'Series',
   tvshows: 'Series',
+  music: 'Music',
+  musics: 'Musics',
   cancel: 'Cancel',
   canceling: 'Canceling…',
   approve: 'Approve',

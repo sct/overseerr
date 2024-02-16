@@ -135,7 +135,9 @@ const TitleCard = ({
               className={`pointer-events-none z-40 rounded-full border bg-opacity-80 shadow-md ${
                 mediaType === 'movie' || mediaType === 'collection'
                   ? 'border-blue-500 bg-blue-600'
-                  : 'border-purple-600 bg-purple-600'
+                  : mediaType === 'tv'
+                  ? 'border-purple-600 bg-purple-600'
+                  : 'border-green-600 bg-green-600'
               }`}
             >
               <div className="flex h-4 items-center px-2 py-2 text-center text-xs font-medium uppercase tracking-wider text-white sm:h-5">
@@ -143,7 +145,10 @@ const TitleCard = ({
                   ? intl.formatMessage(globalMessages.movie)
                   : mediaType === 'collection'
                   ? intl.formatMessage(globalMessages.collection)
-                  : intl.formatMessage(globalMessages.tvshow)}
+                  : mediaType === 'tv'
+                  ? intl.formatMessage(globalMessages.tvshow)
+                  : intl.formatMessage(globalMessages.music)
+                  }
               </div>
             </div>
             {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (

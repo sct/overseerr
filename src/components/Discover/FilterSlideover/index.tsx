@@ -74,12 +74,13 @@ const FilterSlideover = ({
       onClose={() => onClose()}
     >
       <div className="flex flex-col space-y-4">
-        <div>
-          <div className="mb-2 text-lg font-semibold">
-            {intl.formatMessage(
-              type === 'movie' ? messages.releaseDate : messages.firstAirDate
-            )}
-          </div>
+        { type !== 'music' &&
+        (<div>
+            <div className="mb-2 text-lg font-semibold">
+              {intl.formatMessage(
+                type === 'movie' ? messages.releaseDate : messages.firstAirDate
+              )}
+            </div>
           <div className="relative z-40 flex space-x-2">
             <div className="flex flex-col">
               <div className="mb-2">{intl.formatMessage(messages.from)}</div>
@@ -124,7 +125,8 @@ const FilterSlideover = ({
               />
             </div>
           </div>
-        </div>
+        </div>)
+          }
         {type === 'movie' && (
           <>
             <span className="text-lg font-semibold">
@@ -138,17 +140,20 @@ const FilterSlideover = ({
             />
           </>
         )}
-        <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.genres)}
-        </span>
-        <GenreSelector
-          type={type}
-          defaultValue={currentFilters.genre}
-          isMulti
-          onChange={(value) => {
-            updateQueryParams('genre', value?.map((v) => v.value).join(','));
-          }}
-        />
+        { type !== 'music' && (
+        <>
+          <span className="text-lg font-semibold">
+            {intl.formatMessage(messages.genres)}
+          </span>
+          <GenreSelector
+            type={type}
+            defaultValue={currentFilters.genre}
+            isMulti
+            onChange={(value) => {
+              updateQueryParams('genre', value?.map((v) => v.value).join(','));
+            }}
+          />
+        </>)}
         <span className="text-lg font-semibold">
           {intl.formatMessage(messages.keywords)}
         </span>
@@ -156,9 +161,11 @@ const FilterSlideover = ({
           defaultValue={currentFilters.keywords}
           isMulti
           onChange={(value) => {
-            updateQueryParams('keywords', value?.map((v) => v.value).join(','));
+            updateQueryParams('keywords', type === 'music' ? value?.map((v) => v.label).join(' ') : value?.map((v) => v.value).join(','));
           }}
         />
+        { type !== 'music' && (
+        <>
         <span className="text-lg font-semibold">
           {intl.formatMessage(messages.originalLanguage)}
         </span>
@@ -313,6 +320,8 @@ const FilterSlideover = ({
               }}
             />)
           : null}
+        </>)
+        }
         <div className="pt-4">
           <Button
             className="w-full"

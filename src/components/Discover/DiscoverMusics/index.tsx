@@ -10,7 +10,7 @@ import {
 import FilterSlideover from '@app/components/Discover/FilterSlideover';
 import useDiscover from '@app/hooks/useDiscover';
 import Error from '@app/pages/_error';
-import { BarsArrowDownIcon, FunnelIcon } from '@heroicons/react/24/solid';
+import { FunnelIcon } from '@heroicons/react/24/solid';
 import type { MusicResult } from '@server/models/Search';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -55,11 +55,6 @@ const DiscoverMusics = () => {
       <div className="mb-4 flex flex-col justify-between lg:flex-row lg:items-end">
         <Header>{title}</Header>
         <div className="mt-2 flex flex-grow flex-col sm:flex-row lg:flex-grow-0">
-          <div className="mb-2 flex flex-grow sm:mb-0 sm:mr-2 lg:flex-grow-0">
-            <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-gray-100 sm:text-sm">
-              <BarsArrowDownIcon className="h-6 w-6" />
-            </span>
-          </div>
           <FilterSlideover
             type="music"
             currentFilters={preparedFilters}
