@@ -5,9 +5,6 @@ import type { ArtistResult,
               ReleaseResult,
               WorkResult,
               RecordingResult } from '@server/models/Search';
-import { da } from 'date-fns/locale';
-import e from 'express';
-import { has } from 'lodash';
 import { useInView } from 'react-intersection-observer';
 import useSWR from 'swr';
 
