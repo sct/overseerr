@@ -455,73 +455,144 @@ class MusicBrainz extends BaseNodeBrainz {
     }
   };
 
-  public getArtist = (artistId: string): mbArtist => {
+  public getArtist = (artistId: string): Promise<mbArtist> => {
     try {
-      const rawData = this.artist(artistId, {
-        inc: 'tags+recordings+releases+release-groups+works',
+      return new Promise<mbArtist>((resolve, reject) => {
+        this.artist(
+          artistId,
+          {
+            inc: 'tags+recordings+releases+release-groups+works',
+          },
+          (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              const results = convertArtist(data as Artist);
+              resolve(results);
+            }
+          }
+        );
       });
-      const artist: mbArtist = convertArtist(rawData);
-      return artist;
     } catch (e) {
-      throw new Error(
-        `[MusicBrainz] Failed to fetch artist details: ${e.message}`
+      logger.error('Failed to get artist', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbArtist>((resolve) => resolve({} as mbArtist));
+    }
+  };
+
+  public getRecording = (recordingId: string): Promise<mbRecording> => {
+    try {
+      return new Promise<mbRecording>((resolve, reject) => {
+        this.recording(
+          recordingId,
+          {
+            inc: 'tags+artists+releases',
+          },
+          (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              const results = convertRecording(data as Recording);
+              resolve(results);
+            }
+          }
+        );
+      });
+    } catch (e) {
+      logger.error('Failed to get recording', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbRecording>((resolve) => resolve({} as mbRecording));
+    }
+  };
+
+  public getReleaseGroup = (
+    releaseGroupId: string
+  ): Promise<mbReleaseGroup> => {
+    try {
+      return new Promise<mbReleaseGroup>((resolve, reject) => {
+        this.releaseGroup(
+          releaseGroupId,
+          {
+            inc: 'tags+artists+releases',
+          },
+          (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              const results = convertReleaseGroup(data as Group);
+              resolve(results);
+            }
+          }
+        );
+      });
+    } catch (e) {
+      logger.error('Failed to get release-group', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbReleaseGroup>((resolve) =>
+        resolve({} as mbReleaseGroup)
       );
     }
   };
 
-  public getRecording = (recordingId: string): mbRecording => {
+  public getRelease = (releaseId: string): Promise<mbRelease> => {
     try {
-      const rawData = this.recording(recordingId, {
-        inc: 'tags+artists+releases',
+      return new Promise<mbRelease>((resolve, reject) => {
+        this.release(
+          releaseId,
+          {
+            inc: 'tags+artists+recordings',
+          },
+          (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              const results = convertRelease(data as Release);
+              resolve(results);
+            }
+          }
+        );
       });
-      const recording: mbRecording = convertRecording(rawData);
-      return recording;
     } catch (e) {
-      throw new Error(
-        `[MusicBrainz] Failed to fetch recording details: ${e.message}`
-      );
+      logger.error('Failed to get release', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbRelease>((resolve) => resolve({} as mbRelease));
     }
   };
 
-  public getReleaseGroup(releaseGroupId: string): mbReleaseGroup {
+  public getWork = (workId: string): Promise<mbWork> => {
     try {
-      const rawData = this.releaseGroup(releaseGroupId, {
-        inc: 'tags+artists+releases',
+      return new Promise<mbWork>((resolve, reject) => {
+        this.work(
+          workId,
+          {
+            inc: 'tags+artist-rels',
+          },
+          (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              const results = convertWork(data as Work);
+              resolve(results);
+            }
+          }
+        );
       });
-      const releaseGroup: mbReleaseGroup = convertReleaseGroup(rawData);
-      return releaseGroup;
     } catch (e) {
-      throw new Error(
-        `[MusicBrainz] Failed to fetch release group details: ${e.message}`
-      );
-    }
-  }
-
-  public getRelease(releaseId: string): mbRelease {
-    try {
-      const rawData = this.release(releaseId, {
-        inc: 'tags+artists+recordings',
+      logger.error('Failed to get work', {
+        label: 'MusicBrainz',
+        message: e.message,
       });
-      const release: mbRelease = convertRelease(rawData);
-      return release;
-    } catch (e) {
-      throw new Error(
-        `[MusicBrainz] Failed to fetch release details: ${e.message}`
-      );
+      return new Promise<mbWork>((resolve) => resolve({} as mbWork));
     }
-  }
-
-  public getWork(workId: string): mbWork {
-    try {
-      const rawData = this.work(workId, { inc: 'tags+artist-rels' });
-      const work: mbWork = convertWork(rawData);
-      return work;
-    } catch (e) {
-      throw new Error(
-        `[MusicBrainz] Failed to fetch work details: ${e.message}`
-      );
-    }
-  }
+  };
 }
 
 export default MusicBrainz;

@@ -29,11 +29,31 @@ declare module 'nodebrainz' {
   }
   export default class BaseNodeBrainz {
     constructor(options: { userAgent: string });
-    artist(artistId: string, { inc }: { inc: string }): Artist;
-    recording(recordingId: string, { inc }: { inc: string }): Recording;
-    release(releaseId: string, { inc }: { inc: string }): Release;
-    releaseGroup(releaseGroupId: string, { inc }: { inc: string }): Group;
-    work(workId: string, { inc }: { inc: string }): Work;
+    artist(
+      artistId: string,
+      { inc }: { inc: string },
+      callback: (err: Error, data: Artist) => void
+    ): Promise<Artist>;
+    recording(
+      recordingId: string,
+      { inc }: { inc: string },
+      callback: (err: Error, data: Recording) => void
+    ): Promise<Recording>;
+    release(
+      releaseId: string,
+      { inc }: { inc: string },
+      callback: (err: Error, data: Release) => void
+    ): Promise<Release>;
+    releaseGroup(
+      releaseGroupId: string,
+      { inc }: { inc: string },
+      callback: (err: Error, data: Group) => void
+    ): Promise<Group>;
+    work(
+      workId: string,
+      { inc }: { inc: string },
+      callback: (err: Error, data: Work) => void
+    ): Promise<Work>;
     search(
       type: string,
       search: SearchOptions,

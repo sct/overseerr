@@ -847,6 +847,7 @@ discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
         title: item.title,
         mediaType: item.type === 'show' ? 'tv' : 'movie',
         tmdbId: item.tmdbId,
+        musicBrainzId: item.musicBrainzId,
       })),
     });
   }

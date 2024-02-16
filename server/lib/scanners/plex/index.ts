@@ -19,6 +19,7 @@ import { uniqWith } from 'lodash';
 const imdbRegex = new RegExp(/imdb:\/\/(tt[0-9]+)/);
 const tmdbRegex = new RegExp(/tmdb:\/\/([0-9]+)/);
 const tvdbRegex = new RegExp(/tvdb:\/\/([0-9]+)/);
+const mbRegex = new RegExp(/mbid:\/\/([0-9a-f-]+)/);
 const tmdbShowRegex = new RegExp(/themoviedb:\/\/([0-9]+)/);
 const plexRegex = new RegExp(/plex:\/\//);
 // Hama agent uses ASS naming, see details here:
@@ -209,6 +210,8 @@ class PlexScanner
         plexitem.type === 'season'
       ) {
         await this.processPlexShow(plexitem);
+      } else if (plexitem.type === 'artist') {
+        await this.processPlexArtist(plexitem);
       }
     } catch (e) {
       this.log('Failed to process Plex media', 'error', {
@@ -224,13 +227,18 @@ class PlexScanner
     const has4k = plexitem.Media.some(
       (media) => media.videoResolution === '4k'
     );
-
-    await this.processMovie(mediaIds.tmdbId, {
-      is4k: has4k && this.enable4kMovie,
-      mediaAddedAt: new Date(plexitem.addedAt * 1000),
-      ratingKey: plexitem.ratingKey,
-      title: plexitem.title,
-    });
+    if (mediaIds.tmdbId) {
+      await this.processMovie(mediaIds.tmdbId, {
+        is4k: has4k && this.enable4kMovie,
+        mediaAddedAt: new Date(plexitem.addedAt * 1000),
+        ratingKey: plexitem.ratingKey,
+        title: plexitem.title,
+      });
+    } else {
+      this.log('No TMDB ID found for movie', 'warn', {
+        title: plexitem.title,
+      });
+    }
   }
 
   private async processPlexMovieByTmdbId(
@@ -273,7 +281,9 @@ class PlexScanner
       await this.processHamaSpecials(metadata, mediaIds.tvdbId);
     }
 
-    const tvShow = await this.tmdb.getTvShow({ tvId: mediaIds.tmdbId });
+    const tvShow = await this.tmdb.getTvShow({
+      tvId: mediaIds.tmdbId as number,
+    });
 
     const seasons = tvShow.seasons;
     const processableSeasons: ProcessableSeason[] = [];
@@ -322,7 +332,7 @@ class PlexScanner
 
     if (mediaIds.tvdbId) {
       await this.processShow(
-        mediaIds.tmdbId,
+        mediaIds.tmdbId as number,
         mediaIds.tvdbId ?? tvShow.external_ids.tvdb_id,
         processableSeasons,
         {
@@ -331,6 +341,21 @@ class PlexScanner
           title: metadata.title,
         }
       );
+    }
+  }
+
+  private async processPlexArtist(plexitem: PlexLibraryItem) {
+    const mediaIds = await this.getMediaIds(plexitem);
+    if (mediaIds.mbId) {
+      await this.processArtist(mediaIds.mbId, {
+        mediaAddedAt: new Date(plexitem.addedAt * 1000),
+        ratingKey: plexitem.ratingKey,
+        title: plexitem.title,
+      });
+    } else {
+      this.log('No MusicBrainz ID found for artist', 'warn', {
+        title: plexitem.title,
+      });
     }
   }
 
@@ -372,6 +397,8 @@ class PlexScanner
         } else if (ref.id.match(tvdbRegex)) {
           const tvdbMatch = ref.id.match(tvdbRegex)?.[1];
           mediaIds.tvdbId = Number(tvdbMatch);
+        } else if (ref.id.match(mbRegex)) {
+          mediaIds.mbId = ref.id.match(mbRegex)?.[1] ?? undefined;
         }
       });
 
@@ -487,10 +514,16 @@ class PlexScanner
           }
         }
       }
+      // Check for MusicBrainz
+    } else if (plexitem.guid.match(mbRegex)) {
+      const mbMatch = plexitem.guid.match(mbRegex);
+      if (mbMatch) {
+        mediaIds.mbId = mbMatch[1];
+      }
     }
 
-    if (!mediaIds.tmdbId) {
-      throw new Error('Unable to find TMDB ID');
+    if (!mediaIds.tmdbId && !mediaIds.mbId) {
+      throw new Error('Unable to find either a TMDB ID or a MB ID');
     }
 
     // We check above if we have the TMDB ID, so we can safely assert the type below
