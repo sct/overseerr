@@ -9,7 +9,11 @@ import {
   InformationCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
-import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+  SecondaryType,
+} from '@server/constants/media';
 import type Media from '@server/entity/Media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import axios from 'axios';
@@ -43,10 +47,12 @@ interface ButtonOption {
 }
 
 interface RequestButtonProps {
-  mediaType: 'movie' | 'tv';
+  mediaType: 'movie' | 'tv' | 'music';
   onUpdate: () => void;
-  tmdbId: number;
+  tmdbId?: number;
   media?: Media;
+  mbId?: string;
+  secondaryType?: SecondaryType;
   isShowComplete?: boolean;
   is4kShowComplete?: boolean;
 }
@@ -56,6 +62,8 @@ const RequestButton = ({
   onUpdate,
   media,
   mediaType,
+  mbId,
+  secondaryType,
   isShowComplete = false,
   is4kShowComplete = false,
 }: RequestButtonProps) => {

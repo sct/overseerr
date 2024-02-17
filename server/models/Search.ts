@@ -82,6 +82,7 @@ export interface CollectionResult {
   backdropPath?: string;
   overview: string;
   originalLanguage: string;
+  mediaInfo?: Media;
 }
 
 export interface PersonResult {
@@ -92,6 +93,7 @@ export interface PersonResult {
   adult: boolean;
   mediaType: 'person';
   knownFor: (MovieResult | TvResult)[];
+  mediaInfo?: Media;
 }
 
 export interface ReleaseGroupResult {
@@ -100,6 +102,7 @@ export interface ReleaseGroupResult {
   type: mbReleaseGroupType;
   posterPath?: string;
   title: string;
+  releases: ReleaseResult[];
   artist: ArtistResult[];
   tags: string[];
   mediaInfo?: Media;
@@ -125,6 +128,7 @@ export interface RecordingResult {
   length: number;
   firstReleased?: Date;
   tags: string[];
+  mediaInfo?: Media;
 }
 
 export interface WorkResult {
@@ -133,6 +137,7 @@ export interface WorkResult {
   title: string;
   artist: ArtistResult[];
   tags: string[];
+  mediaInfo?: Media;
 }
 
 export interface ArtistResult {
@@ -250,6 +255,9 @@ export const mapReleaseGroupResult = (
     type: releaseGroupResult.type,
     title: releaseGroupResult.title,
     artist: releaseGroupResult.artist.map((artist) => mapArtistResult(artist)),
+    releases: (releaseGroupResult.releases ?? []).map((release) =>
+      mapReleaseResult(release)
+    ),
     tags: releaseGroupResult.tags,
     posterPath: getPosterFromMB(releaseGroupResult),
     mediaInfo: media ?? undefined,

@@ -2,6 +2,7 @@ import Slider from '@app/components/Slider';
 import MusicTitleCard from '@app/components/TitleCard/MusicTitleCard';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
 import { Permission, useUser } from '@app/hooks/useUser';
+import { SecondaryType } from '@server/constants/media';
 import type { MediaResultsResponse } from '@server/interfaces/api/mediaInterfaces';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
@@ -31,7 +32,7 @@ const RecentlyAddedSlider = () => {
 
   const videoMedias = (media?.results ?? []).filter((item) => ["movie", "tv"].includes(item.mediaType))
   const musicMedias = (media?.results ?? []).filter((item) => !["movie", "tv"].includes(item.mediaType))
-
+  console.log(musicMedias)
   return (
     <>
       <div className="slider-header">
@@ -69,7 +70,7 @@ const RecentlyAddedSlider = () => {
               key={`media-slider-item-${item.id}`}
               id={item.id}
               mbId={item.mbId ?? ''}
-              mediaType={item.mediaType as 'music'}
+              //type={item.secondaryType as SecondaryType}
             />
           )
         )}

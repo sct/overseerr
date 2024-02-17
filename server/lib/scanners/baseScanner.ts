@@ -1,5 +1,5 @@
 import TheMovieDb from '@server/api/themoviedb';
-import { MediaStatus, MediaType } from '@server/constants/media';
+import { MediaStatus, MediaType, SecondaryType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import Season from '@server/entity/Season';
@@ -567,7 +567,7 @@ class BaseScanner<T> {
       } else {
         const newMedia = new Media();
         newMedia.mbId = mbId;
-
+        newMedia.secondaryType = SecondaryType.ARTIST;
         newMedia.status = !processing
           ? MediaStatus.AVAILABLE
           : processing

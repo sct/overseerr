@@ -91,6 +91,9 @@ class Media {
   @Column({ type: 'varchar' })
   public mediaType: MediaType;
 
+  @Column({ type: 'varchar', nullable: true })
+  public secondaryType?: string;
+
   @Column({ nullable: true })
   @Index()
   public tmdbId?: number;

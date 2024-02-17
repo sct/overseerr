@@ -188,7 +188,7 @@ const TitleCard = ({
           >
             <div className="absolute inset-0 overflow-hidden rounded-xl">
               <Link
-                href={`/${mediaType}/${id}`}
+                href={tmdbOrMbId ? `/${mediaType}/${id}` : `/music/${mediaType}/${id as string}`}
               >
                 <a
                   className="absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left"

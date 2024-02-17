@@ -1,5 +1,6 @@
 import TitleCard from '@app/components/TitleCard';
 import { Permission, useUser } from '@app/hooks/useUser';
+import { SecondaryType } from '@server/constants/media';
 import type { ArtistResult,
               ReleaseGroupResult,
               ReleaseResult,
@@ -11,17 +12,15 @@ import useSWR from 'swr';
 export interface MusicBrainTitleCardProps {
   id: number;
   mbId: string;
-  mediaType: 'music';
-  type?: 'artist' | 'release-group' | 'release' | 'recording' | 'work';
+  type?: SecondaryType;
   canExpand?: boolean;
 }
 
-const TmdbTitleCard = ({
+const MusicTitleCard = ({
   id,
   mbId,
-  mediaType,
   canExpand,
-  type='artist'
+  type = SecondaryType.ARTIST,
 }: MusicBrainTitleCardProps) => {
   const { hasPermission } = useUser();
 
@@ -55,16 +54,16 @@ const TmdbTitleCard = ({
     const newData = data as ArtistResult;
     return (
       <TitleCard
-        id={id}
+        id={mbId}
         status={newData.mediaInfo?.status}
         title={newData.name}
-        mediaType={mediaType}
+        mediaType={data.mediaType}
         canExpand={canExpand}
       />
     );
   } else if (data.mediaType === 'release-group' || data.mediaType === 'release') {
     return (<TitleCard
-        id={data.id}
+        id={mbId}
         image={data.posterPath}
         status={data.mediaInfo?.status}
         title={data.title}
@@ -75,4 +74,4 @@ const TmdbTitleCard = ({
   return null;
 };
 
-export default TmdbTitleCard;
+export default MusicTitleCard;

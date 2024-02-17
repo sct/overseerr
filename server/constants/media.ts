@@ -11,6 +11,14 @@ export enum MediaType {
   MUSIC = 'music',
 }
 
+export enum SecondaryType {
+  ARTIST = 'artist',
+  RELEASE_GROUP = 'release-group',
+  RELEASE = 'release',
+  RECORDING = 'recording',
+  WORK = 'work',
+}
+
 export enum MediaStatus {
   UNKNOWN = 1,
   PENDING,
