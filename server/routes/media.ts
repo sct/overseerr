@@ -64,12 +64,35 @@ mediaRoutes.get('/', async (req, res, next) => {
       };
   }
 
+  let typeFilter: FindOneOptions<Media>['where'] = undefined;
+
+  switch (req.query.type) {
+    case 'movie':
+      typeFilter = {
+        mediaType: MediaType.MOVIE,
+      };
+      break;
+    case 'tv':
+      typeFilter = {
+        mediaType: MediaType.TV,
+      };
+      break;
+    case 'music':
+      typeFilter = {
+        mediaType: MediaType.MUSIC,
+      };
+      break;
+  }
+
   try {
     const [media, mediaCount] = await mediaRepository.findAndCount({
       order: sortFilter,
       where: statusFilter && {
-        status: statusFilter,
-      },
+          status: statusFilter,
+        } &&
+        typeFilter && {
+          ...typeFilter,
+        },
       take: pageSize,
       skip,
     });

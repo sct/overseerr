@@ -168,7 +168,7 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
         if (result) {
           return result;
         }
-        throw new Error(`[Lidarr] Artist not found (using Lidarr Id): ${id}`);
+        throw new Error(`Artist not found (using Lidarr Id): ${id}`);
       }
       const result = LidarrAPI.artists.find(
         (artist) => artist.foreignArtistId === id
@@ -176,9 +176,9 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
       if (result) {
         return result;
       }
-      throw new Error(`[Lidarr] Artist not found (using MusicBrainzId): ${id}`);
+      throw new Error(`Artist not found (using MusicBrainzId): ${id}`);
     } catch (e) {
-      throw new Error(`[Lidarr] Failed to retrieve artist: ${e.message}`);
+      throw new Error(`[Lidarr] ${e.message}`);
     }
   };
 

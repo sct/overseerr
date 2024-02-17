@@ -8,6 +8,7 @@ import {
   prepareFilterValues,
 } from '@app/components/Discover/constants';
 import FilterSlideover from '@app/components/Discover/FilterSlideover';
+import RecentlyAddedSlider from '@app/components/Discover/RecentlyAddedSlider';
 import useDiscover from '@app/hooks/useDiscover';
 import Error from '@app/pages/_error';
 import { FunnelIcon } from '@heroicons/react/24/solid';
@@ -20,8 +21,8 @@ const messages = defineMessages({
   discovermusics: 'Musics',
   activefilters:
     '{count, plural, one {# Active Filter} other {# Active Filters}}',
+  discovermoremusics: 'Discover More Musics',
 });
-
 
 const DiscoverMusics = () => {
   const intl = useIntl();
@@ -43,7 +44,7 @@ const DiscoverMusics = () => {
   );
   const [showFilters, setShowFilters] = useState(false);
 
-  if (error) {
+  if (error || !titles) {
     return <Error statusCode={500} />;
   }
 
@@ -71,6 +72,12 @@ const DiscoverMusics = () => {
               </span>
             </Button>
           </div>
+        </div>
+      </div>
+      <RecentlyAddedSlider type="music" />
+      <div className="slider-header">
+        <div className="slider-title">
+          <span>{intl.formatMessage(messages.discovermoremusics)}</span>
         </div>
       </div>
       <ListView

@@ -37,9 +37,6 @@ const messages = defineMessages({
   markavailable: 'Mark as Available',
   showmore: 'Show More',
   showless: 'Show Less',
-  streamingproviders: 'Currently Streaming On',
-  productioncountries:
-    'Production {countryCount, plural, one {Country} other {Countries}}',
   digitalrelease: 'Digital Release',
   physicalrelease: 'Physical Release',
   reportissue: 'Report an Issue',
@@ -189,9 +186,7 @@ const MusicDetails = ({
         {data.mediaType === SecondaryType.ARTIST && (
           <CachedImage
             alt=""
-            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${
-              (data as ArtistResult).fanartPath
-            }`}
+            src={(data as ArtistResult).fanartPath ?? ''}
             layout="fill"
             objectFit="cover"
             priority
@@ -226,7 +221,7 @@ const MusicDetails = ({
             alt=""
             layout="responsive"
             width={600}
-            height={900}
+            height={600}
             priority
           />
         </div>

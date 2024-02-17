@@ -5146,7 +5146,16 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/MusicResult'
-
+        '500':
+          description: An error occured while getting musics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Unable to retrieve release groups.
   /discover/trending:
     get:
       summary: Trending movies and TV
@@ -6140,6 +6149,12 @@ paths:
             type: string
             enum: [added, modified, mediaAdded]
             default: added
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [all,movie,tv,music]
+            default: all
       responses:
         '200':
           description: Returned media

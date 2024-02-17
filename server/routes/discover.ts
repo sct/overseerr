@@ -868,25 +868,25 @@ discoverRoutes.get('/musics', async (req, res, next) => {
     return res.status(200).json({
       page: query.page,
       results: await Promise.all(
-        results.map((result) =>
-          mapReleaseGroupResult(
+        results.map((result) => {
+          return mapReleaseGroupResult(
             result,
             media.find(
               (med) =>
                 med.mbId === result.id && med.mediaType === MediaType.MUSIC
             )
-          )
-        )
+          );
+        })
       ),
     });
   } catch (e) {
-    logger.debug('Something went wrong retrieving artists', {
+    logger.debug('Something went wrong retrieving release groups', {
       label: 'API',
       errorMessage: e.message,
     });
     return next({
       status: 500,
-      message: 'Unable to retrieve artists.',
+      message: 'Unable to retrieve release groups.',
     });
   }
 });

@@ -11,11 +11,16 @@ const messages = defineMessages({
   recentlyAddedMusic: 'Recently Added Music',
 });
 
-const RecentlyAddedSlider = () => {
+const RecentlyAddedSlider = ({
+  type = 'all',
+}: {
+  type?: 'all' | 'movie' | 'tv' | 'music';
+}) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
+  type = type ?? 'all';
   const { data: media, error: mediaError } = useSWR<MediaResultsResponse>(
-    '/api/v1/media?filter=allavailable&take=20&sort=mediaAdded',
+    `/api/v1/media?filter=allavailable&take=20&sort=mediaAdded&type=${type}`,
     { revalidateOnMount: true }
   );
 
@@ -36,42 +41,50 @@ const RecentlyAddedSlider = () => {
   );
   return (
     <>
-      <div className="slider-header">
-        <div className="slider-title">
-          <span>{intl.formatMessage(messages.recentlyAdded)}</span>
-        </div>
-      </div>
-      <Slider
-        sliderKey="media"
-        isLoading={!media}
-        items={videoMedias.map((item) => (
-          <TmdbTitleCard
-            key={`media-slider-item-${item.id}`}
-            id={item.id}
-            tmdbId={item.tmdbId as number}
-            tvdbId={item.tvdbId}
-            type={item.mediaType as 'movie' | 'tv'}
+      {videoMedias.length > 0 && (
+        <>
+          <div className="slider-header">
+            <div className="slider-title">
+              <span>{intl.formatMessage(messages.recentlyAdded)}</span>
+            </div>
+          </div>
+          <Slider
+            sliderKey="media"
+            isLoading={!media}
+            items={videoMedias.map((item) => (
+              <TmdbTitleCard
+                key={`media-slider-item-${item.id}`}
+                id={item.id}
+                tmdbId={item.tmdbId as number}
+                tvdbId={item.tvdbId}
+                type={item.mediaType as 'movie' | 'tv'}
+              />
+            ))}
           />
-        ))}
-      />
-      <div className="slider-header">
-        <div className="slider-title">
-          <span>{intl.formatMessage(messages.recentlyAddedMusic)}</span>
-        </div>
-      </div>
+        </>
+      )}
+      {musicMedias.length > 0 && (
+        <>
+          <div className="slider-header">
+            <div className="slider-title">
+              <span>{intl.formatMessage(messages.recentlyAddedMusic)}</span>
+            </div>
+          </div>
 
-      <Slider
-        sliderKey="media"
-        isLoading={!media}
-        items={musicMedias.map((item) => (
-          <MusicTitleCard
-            key={`media-slider-item-${item.id}`}
-            id={item.id}
-            mbId={item.mbId ?? ''}
-            //type={item.secondaryType as SecondaryType}
+          <Slider
+            sliderKey="media"
+            isLoading={!media}
+            items={musicMedias.map((item) => (
+              <MusicTitleCard
+                key={`media-slider-item-${item.id}`}
+                id={item.id}
+                mbId={item.mbId ?? ''}
+                //type={item.secondaryType as SecondaryType}
+              />
+            ))}
           />
-        ))}
-      />
+        </>
+      )}
     </>
   );
 };
