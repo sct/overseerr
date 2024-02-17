@@ -678,6 +678,8 @@ components:
         mediaType:
           type: string
           example: artist
+        posterPath:
+          type: string
         title:
           type: string
           example: Album Name

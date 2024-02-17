@@ -7,7 +7,9 @@ import type {
   mbReleaseGroupType,
   mbWork,
 } from '@server/api/musicbrainz/interfaces';
-import getPosterFromMB from '@server/api/musicbrainz/poster';
+import getPosterFromMB, {
+  getFanartFromMB,
+} from '@server/api/musicbrainz/poster';
 import type {
   TmdbCollectionResult,
   TmdbMovieDetails,
@@ -155,6 +157,8 @@ export interface ArtistResult {
   endDate?: string;
   tags: string[];
   mediaInfo?: Media;
+  posterPath?: string;
+  fanartPath?: string;
 }
 
 export type Results =
@@ -245,89 +249,111 @@ export const mapPersonResult = (
   }),
 });
 
-export const mapReleaseGroupResult = (
+export const mapReleaseGroupResult = async (
   releaseGroupResult: mbReleaseGroup,
   media?: Media
-): ReleaseGroupResult => {
+): Promise<ReleaseGroupResult> => {
   return {
     id: releaseGroupResult.id,
     mediaType: releaseGroupResult.media_type,
     type: releaseGroupResult.type,
     title: releaseGroupResult.title,
-    artist: releaseGroupResult.artist.map((artist) => mapArtistResult(artist)),
-    releases: (releaseGroupResult.releases ?? []).map((release) =>
-      mapReleaseResult(release)
+    artist: await Promise.all(
+      releaseGroupResult.artist.map((artist) => mapArtistResult(artist))
+    ),
+    releases: await Promise.all(
+      (releaseGroupResult.releases ?? []).map((release) =>
+        mapReleaseResult(release)
+      )
     ),
     tags: releaseGroupResult.tags,
-    posterPath: getPosterFromMB(releaseGroupResult),
+    posterPath: await getPosterFromMB(releaseGroupResult),
     mediaInfo: media ?? undefined,
   };
 };
 
-export const mapArtistResult = (
+export const mapArtistResult = async (
   artist: mbArtist,
   media?: Media
-): ArtistResult => ({
+): Promise<ArtistResult> => ({
   id: artist.id,
   mediaType: 'artist',
   name: artist.name,
   type: artist.type,
-  releases: Array.isArray(artist.releases)
-    ? artist.releases.map((release) => mapReleaseResult(release))
-    : [],
-  recordings: Array.isArray(artist.recordings)
-    ? artist.recordings.map((recording) => mapRecordingResult(recording))
-    : [],
-  releaseGroups: Array.isArray(artist.releaseGroups)
-    ? artist.releaseGroups.map((releaseGroup) =>
-        mapReleaseGroupResult(releaseGroup)
-      )
-    : [],
-  works: Array.isArray(artist.works)
-    ? artist.works.map((work) => mapWorkResult(work))
-    : [],
+  releases: await Promise.all(
+    Array.isArray(artist.releases)
+      ? artist.releases.map((release) => mapReleaseResult(release))
+      : []
+  ),
+  recordings: await Promise.all(
+    Array.isArray(artist.recordings)
+      ? artist.recordings.map((recording) => mapRecordingResult(recording))
+      : []
+  ),
+  releaseGroups: await Promise.all(
+    Array.isArray(artist.releaseGroups)
+      ? artist.releaseGroups.map((releaseGroup) =>
+          mapReleaseGroupResult(releaseGroup)
+        )
+      : []
+  ),
+  works: await Promise.all(
+    Array.isArray(artist.works)
+      ? artist.works.map((work) => mapWorkResult(work))
+      : []
+  ),
   tags: artist.tags,
   mediaInfo: media ?? undefined,
+  posterPath: await getPosterFromMB(artist),
+  fanartPath: await getFanartFromMB(artist),
 });
 
-export const mapReleaseResult = (
+export const mapReleaseResult = async (
   release: mbRelease,
   media?: Media
-): ReleaseResult => ({
+): Promise<ReleaseResult> => ({
   id: release.id,
   mediaType: release.media_type,
   title: release.title,
-  posterPath: getPosterFromMB(release),
-  artist: release.artist.map((artist) => mapArtistResult(artist)),
+  posterPath: await getPosterFromMB(release),
+  artist: await Promise.all(
+    release.artist.map((artist) => mapArtistResult(artist))
+  ),
   date: release.date,
-  tracks: Array.isArray(release.tracks)
-    ? release.tracks.map((track) => mapRecordingResult(track))
-    : [],
+  tracks: await Promise.all(
+    Array.isArray(release.tracks)
+      ? release.tracks.map((track) => mapRecordingResult(track))
+      : []
+  ),
   tags: release.tags,
   mediaInfo: media,
 });
 
-export const mapRecordingResult = (
+export const mapRecordingResult = async (
   recording: mbRecording
-): RecordingResult => ({
+): Promise<RecordingResult> => ({
   id: recording.id,
   mediaType: recording.media_type,
   title: recording.title,
-  artist: recording.artist.map((artist) => mapArtistResult(artist)),
+  artist: await Promise.all(
+    recording.artist.map((artist) => mapArtistResult(artist))
+  ),
   length: recording.length,
   firstReleased: recording.firstReleased,
   tags: recording.tags,
 });
 
-export const mapWorkResult = (work: mbWork): WorkResult => ({
+export const mapWorkResult = async (work: mbWork): Promise<WorkResult> => ({
   id: work.id,
   mediaType: work.media_type,
   title: work.title,
-  artist: work.artist.map((artist) => mapArtistResult(artist)),
+  artist: await Promise.all(
+    work.artist.map((artist) => mapArtistResult(artist))
+  ),
   tags: work.tags,
 });
 
-export const mapSearchResults = (
+export const mapSearchResults = async (
   results: (
     | TmdbMovieResult
     | TmdbTvResult
@@ -340,49 +366,52 @@ export const mapSearchResults = (
     | mbWork
   )[],
   media?: Media[]
-): Results[] =>
-  results.map((result) => {
-    switch (result.media_type) {
-      case 'movie':
-        return mapMovieResult(
-          result,
-          media?.find(
-            (req) =>
-              req.tmdbId === result.id && req.mediaType === MainMediaType.MOVIE
-          )
-        );
-      case 'tv':
-        return mapTvResult(
-          result,
-          media?.find(
-            (req) =>
-              req.tmdbId === result.id && req.mediaType === MainMediaType.TV
-          )
-        );
-      case 'collection':
-        return mapCollectionResult(result);
-      case 'person':
-        return mapPersonResult(result);
-      case 'release-group':
-        return mapReleaseGroupResult(
-          result,
-          media?.find((req) => req.mbId === result.id)
-        );
-      case 'release':
-        return mapReleaseResult(
-          result,
-          media?.find((req) => req.mbId === result.id)
-        );
-      case 'recording':
-        return mapRecordingResult(result);
-      case 'work':
-        return mapWorkResult(result);
-      case 'artist':
-        return mapArtistResult(result);
-      default:
-        return result;
-    }
-  });
+): Promise<Results[]> =>
+  await Promise.all(
+    results.map((result) => {
+      switch (result.media_type) {
+        case 'movie':
+          return mapMovieResult(
+            result,
+            media?.find(
+              (req) =>
+                req.tmdbId === result.id &&
+                req.mediaType === MainMediaType.MOVIE
+            )
+          );
+        case 'tv':
+          return mapTvResult(
+            result,
+            media?.find(
+              (req) =>
+                req.tmdbId === result.id && req.mediaType === MainMediaType.TV
+            )
+          );
+        case 'collection':
+          return mapCollectionResult(result);
+        case 'person':
+          return mapPersonResult(result);
+        case 'release-group':
+          return mapReleaseGroupResult(
+            result,
+            media?.find((req) => req.mbId === result.id)
+          );
+        case 'release':
+          return mapReleaseResult(
+            result,
+            media?.find((req) => req.mbId === result.id)
+          );
+        case 'recording':
+          return mapRecordingResult(result);
+        case 'work':
+          return mapWorkResult(result);
+        case 'artist':
+          return mapArtistResult(result);
+        default:
+          return result;
+      }
+    })
+  );
 
 export const mapMovieDetailsToResult = (
   movieDetails: TmdbMovieDetails

@@ -137,38 +137,80 @@ export interface Medium {
 }
 
 class LidarrAPI extends ServarrBase<{ musicId: number }> {
+  static lastArtistsUpdate = 0;
+  static artists: LidarrArtist[] = [];
+  static delay = 1000 * 60 * 5;
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
     super({ url, apiKey, cacheName: 'lidarr', apiName: 'Lidarr' });
+    if (LidarrAPI.lastArtistsUpdate < Date.now() - LidarrAPI.delay) {
+      this.getArtists();
+    }
   }
 
-  public getArtists = async (): Promise<LidarrArtist[]> => {
+  public getArtists = (): void => {
     try {
-      const response = await this.axios.get<LidarrArtist[]>('/artist');
-
-      return response.data;
+      LidarrAPI.lastArtistsUpdate = Date.now();
+      this.axios.get<LidarrArtist[]>('/artist').then((response) => {
+        LidarrAPI.artists = response.data;
+      });
     } catch (e) {
-      throw new Error(`[Lidarr] Failed to retrieve musics: ${e.message}`);
+      throw new Error(`[Lidarr] Failed to retrieve artists: ${e.message}`);
     }
   };
 
-  public async getAlbum({ mbId }: { mbId: string }): Promise<LidarrAlbum[]> {
+  public getArtist = (id: string | number): LidarrArtist => {
+    try {
+      if (LidarrAPI.lastArtistsUpdate < Date.now() - LidarrAPI.delay) {
+        this.getArtists();
+      }
+      if (typeof id === 'number') {
+        const result = LidarrAPI.artists.find((artist) => artist.id === id);
+        if (result) {
+          return result;
+        }
+        throw new Error(`[Lidarr] Artist not found (using Lidarr Id): ${id}`);
+      }
+      const result = LidarrAPI.artists.find(
+        (artist) => artist.foreignArtistId === id
+      );
+      if (result) {
+        return result;
+      }
+      throw new Error(`[Lidarr] Artist not found (using MusicBrainzId): ${id}`);
+    } catch (e) {
+      throw new Error(`[Lidarr] Failed to retrieve artist: ${e.message}`);
+    }
+  };
+
+  public getAlbums = async (): Promise<LidarrAlbum[]> => {
+    try {
+      const response = await this.axios.get<LidarrAlbum[]>('/album');
+      return response.data;
+    } catch (e) {
+      throw new Error(`[Lidarr] Failed to retrieve albums: ${e.message}`);
+    }
+  };
+
+  public async getAlbum({
+    artistId,
+    foreignAlbumId,
+    albumId,
+  }: {
+    artistId?: number;
+    foreignAlbumId?: string;
+    albumId?: number;
+  }): Promise<LidarrAlbum[]> {
     try {
       const response = await this.axios.get<LidarrAlbum[]>('/album', {
         params: {
-          foreignAlbumId: mbId,
+          artistId,
+          foreignAlbumId,
+          albumId,
         },
       });
-      if (response.data.length > 0) {
-        return response.data;
-      }
-      throw new Error('Album not found');
+      return response.data;
     } catch (e) {
-      logger.error('Error retrieving album by MUSICBRAINZ ID', {
-        label: 'Lidarr API',
-        errorMessage: e.message,
-        mbId: mbId,
-      });
-      throw new Error('Album not found');
+      throw new Error(`[Lidarr] Failed to retrieve album: ${e.message}`);
     }
   }
 
@@ -176,7 +218,9 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     options: LidarrAlbumOptions
   ): Promise<LidarrAlbum> => {
     try {
-      const albums = await this.getAlbum({ mbId: options.mbId.toString() });
+      const albums = await this.getAlbum({
+        foreignAlbumId: options.mbId.toString(),
+      });
       if (albums.length > 0) {
         logger.info(
           'Album is already monitored in Lidarr. Skipping add and returning success',

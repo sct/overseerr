@@ -1382,7 +1382,7 @@ export class MediaRequest {
         const musicbrainz = new MusicBrainz();
         const lidarr = new LidarrAPI({
           apiKey: lidarrSettings.apiKey,
-          url: LidarrAPI.buildUrl(lidarrSettings, '/api/v3'),
+          url: LidarrAPI.buildUrl(lidarrSettings, '/api/v1'),
         });
         const release = await musicbrainz.getRelease(String(this.media.mbId));
 

@@ -18,7 +18,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TitleCardProps {
-  id: number|string;
+  id: number | string;
   image?: string;
   summary?: string;
   year?: string;
@@ -75,7 +75,9 @@ const TitleCard = ({
       Permission.REQUEST,
       mediaType === 'movie' || mediaType === 'collection'
         ? Permission.REQUEST_MOVIE
-        : (mediaType === 'tv' ? Permission.REQUEST_TV : Permission.REQUEST_MUSIC),
+        : mediaType === 'tv'
+        ? Permission.REQUEST_TV
+        : Permission.REQUEST_MUSIC,
     ],
     { type: 'or' }
   );
@@ -87,10 +89,10 @@ const TitleCard = ({
     >
       <RequestModal
         tmdbId={tmdbOrMbId ? (id as number) : -1}
-        mbId={tmdbOrMbId ? "" : (id as string)}
+        mbId={tmdbOrMbId ? '' : (id as string)}
         show={showRequestModal}
         type={
-          tmdbOrMbId ? mediaType as ('collection' | 'movie' | 'tv') : 'music'
+          tmdbOrMbId ? (mediaType as 'collection' | 'movie' | 'tv') : 'music'
         }
         onComplete={requestComplete}
         onUpdating={requestUpdating}
@@ -102,7 +104,7 @@ const TitleCard = ({
             ? 'scale-105 shadow-lg ring-gray-500'
             : 'scale-100 shadow ring-gray-700'
         }`}
-        style={tmdbOrMbId ?{paddingBottom : '150%'} : {aspectRatio: '1/1'}}
+        style={tmdbOrMbId ? { paddingBottom: '150%' } : { aspectRatio: '1/1' }}
         onMouseEnter={() => {
           if (!isTouch) {
             setShowDetail(true);
@@ -124,7 +126,9 @@ const TitleCard = ({
             alt=""
             src={
               image
-                ? (tmdbOrMbId ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}` : image)
+                ? tmdbOrMbId
+                  ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
+                  : image
                 : `/images/overseerr_poster_not_found_logo_top.png`
             }
             layout="fill"
@@ -147,8 +151,7 @@ const TitleCard = ({
                   ? intl.formatMessage(globalMessages.collection)
                   : mediaType === 'tv'
                   ? intl.formatMessage(globalMessages.tvshow)
-                  : intl.formatMessage(globalMessages.music)
-                  }
+                  : intl.formatMessage(globalMessages.music)}
               </div>
             </div>
             {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (
@@ -188,7 +191,11 @@ const TitleCard = ({
           >
             <div className="absolute inset-0 overflow-hidden rounded-xl">
               <Link
-                href={tmdbOrMbId ? `/${mediaType}/${id}` : `/music/${mediaType}/${id as string}`}
+                href={
+                  tmdbOrMbId
+                    ? `/${mediaType}/${id}`
+                    : `/music/${mediaType}/${id as string}`
+                }
               >
                 <a
                   className="absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left"

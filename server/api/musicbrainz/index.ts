@@ -294,7 +294,10 @@ class MusicBrainz extends BaseNodeBrainz {
   constructor() {
     super({
       userAgent:
-        'Overseer-with-lidar-support/0.0.1 ( https://github.com/ano0002/overseerr )',
+        'Overseer-with-lidar-support/0.1 ( https://github.com/ano0002/overseerr )',
+      retryOn: true,
+      retryDelay: 3000,
+      retryCount: 3,
     });
   }
 

@@ -28,7 +28,12 @@ declare module 'nodebrainz' {
     works: Work[];
   }
   export default class BaseNodeBrainz {
-    constructor(options: { userAgent: string });
+    constructor(options: {
+      userAgent: string;
+      retryOn: boolean;
+      retryDelay: number;
+      retryCount: number;
+    });
     artist(
       artistId: string,
       { inc }: { inc: string },

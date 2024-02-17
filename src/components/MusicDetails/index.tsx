@@ -186,6 +186,17 @@ const MusicDetails = ({
       }}
     >
       <div className="media-page-bg-image">
+        {data.mediaType === SecondaryType.ARTIST && (
+          <CachedImage
+            alt=""
+            src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${
+              (data as ArtistResult).fanartPath
+            }`}
+            layout="fill"
+            objectFit="cover"
+            priority
+          />
+        )}
         <div
           className="absolute inset-0"
           style={{
@@ -207,7 +218,8 @@ const MusicDetails = ({
           <CachedImage
             src={
               data.mediaType === SecondaryType.RELEASE ||
-              data.mediaType === SecondaryType.RELEASE_GROUP
+              data.mediaType === SecondaryType.RELEASE_GROUP ||
+              data.mediaType === SecondaryType.ARTIST
                 ? (data.posterPath as string)
                 : ''
             }

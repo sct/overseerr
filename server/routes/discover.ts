@@ -863,28 +863,30 @@ discoverRoutes.get('/musics', async (req, res, next) => {
       limit: 20,
       offset: (Number(query.page) - 1) * 20,
     });
-    const tmdbIds = [] as number[];
     const mbIds = results.map((result) => result.id);
-    const media = await Media.getRelatedMedia(tmdbIds, mbIds);
+    const media = await Media.getRelatedMedia([], mbIds);
     return res.status(200).json({
       page: query.page,
-      results: results.map((result) =>
-        mapReleaseGroupResult(
-          result,
-          media.find(
-            (med) => med.mbId === result.id && med.mediaType === MediaType.MUSIC
+      results: await Promise.all(
+        results.map((result) =>
+          mapReleaseGroupResult(
+            result,
+            media.find(
+              (med) =>
+                med.mbId === result.id && med.mediaType === MediaType.MUSIC
+            )
           )
         )
       ),
     });
   } catch (e) {
-    logger.debug('Something went wrong retrieving popular series', {
+    logger.debug('Something went wrong retrieving artists', {
       label: 'API',
       errorMessage: e.message,
     });
     return next({
       status: 500,
-      message: 'Unable to retrieve popular series.',
+      message: 'Unable to retrieve artists.',
     });
   }
 });

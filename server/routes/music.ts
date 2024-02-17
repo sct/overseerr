@@ -15,16 +15,16 @@ musicRoutes.get('/artist/:id', async (req, res, next) => {
 
     const media = await Media.getMedia(artist.id, MediaType.MUSIC);
 
-    return res.status(200).json(mapArtistResult(artist, media));
+    return res.status(200).json(await mapArtistResult(artist, media));
   } catch (e) {
-    logger.debug('Something went wrong retrieving movie', {
+    logger.debug('Something went wrong retrieving artist', {
       label: 'API',
       errorMessage: e.message,
-      movieId: req.params.id,
+      artistId: req.params.id,
     });
     return next({
       status: 500,
-      message: 'Unable to retrieve movie.',
+      message: 'Unable to retrieve artist.',
     });
   }
 });

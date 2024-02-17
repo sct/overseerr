@@ -5,21 +5,32 @@ import useVerticalScroll from '@app/hooks/useVerticalScroll';
 import globalMessages from '@app/i18n/globalMessages';
 import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
 import type {
+  ArtistResult,
   CollectionResult,
   MovieResult,
-  PersonResult,
-  TvResult,
   MusicResult,
-  ArtistResult,
-  ReleaseResult,
-  ReleaseGroupResult,
-  WorkResult,
+  PersonResult,
   RecordingResult,
+  ReleaseGroupResult,
+  ReleaseResult,
+  TvResult,
+  WorkResult,
 } from '@server/models/Search';
 import { useIntl } from 'react-intl';
 
 type ListViewProps = {
-  items?: (TvResult | MovieResult | PersonResult | CollectionResult | MusicResult | ArtistResult | ReleaseResult | ReleaseGroupResult | WorkResult | RecordingResult)[];
+  items?: (
+    | TvResult
+    | MovieResult
+    | PersonResult
+    | CollectionResult
+    | MusicResult
+    | ArtistResult
+    | ReleaseResult
+    | ReleaseGroupResult
+    | WorkResult
+    | RecordingResult
+  )[];
   plexItems?: WatchlistItem[];
   isEmpty?: boolean;
   isLoading?: boolean;
@@ -49,9 +60,9 @@ const ListView = ({
           return (
             <li key={`${title.ratingKey}-${index}`}>
               <TmdbTitleCard
-                id={title.tmdbId}
-                tmdbId={title.tmdbId}
-                type={title.mediaType}
+                id={Number(title.tmdbId)}
+                tmdbId={Number(title.tmdbId)}
+                type={title.mediaType as 'movie' | 'tv'}
                 canExpand
               />
             </li>
@@ -124,6 +135,7 @@ const ListView = ({
                 <TitleCard
                   id={title.id}
                   title={title.name}
+                  image={title.posterPath}
                   mediaType={title.mediaType}
                   canExpand
                 />

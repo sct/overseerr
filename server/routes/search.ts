@@ -41,7 +41,7 @@ searchRoutes.get('/', async (req, res, next) => {
       page: results.page,
       totalPages: results.total_pages,
       totalResults: results.total_results,
-      results: mapSearchResults(results.results, media),
+      results: await mapSearchResults(results.results, media),
     });
   } catch (e) {
     logger.debug('Something went wrong retrieving search results', {
