@@ -27,6 +27,19 @@ declare module 'nodebrainz' {
   export interface WorkSearchResponse extends RawSearchResponse {
     works: Work[];
   }
+
+  export interface BrowseRequestParams {
+    limit?: number;
+    offset?: number;
+    artist?: string;
+    release?: string;
+    recording?: string;
+    'release-group'?: string;
+    work?: string;
+    // or anything else
+    [key: string]: string | number | undefined;
+  }
+
   export default class BaseNodeBrainz {
     constructor(options: {
       userAgent: string;
@@ -70,6 +83,39 @@ declare module 'nodebrainz' {
           | RecordingSearchResponse
           | ReleaseGroupSearchResponse
           | WorkSearchResponse
+      ) => void
+    ): Promise<Artist[] | Release[] | Recording[] | Group[] | Work[]>;
+    browse(
+      type: string,
+      data: BrowseRequestParams,
+      callback: (
+        err: Error,
+        data:
+          | {
+              'release-group-count': number;
+              'release-group-offset': number;
+              'release-groups': Group[];
+            }
+          | {
+              'release-count': number;
+              'release-offset': number;
+              releases: Release[];
+            }
+          | {
+              'recording-count': number;
+              'recording-offset': number;
+              recordings: Recording[];
+            }
+          | {
+              'work-count': number;
+              'work-offset': number;
+              works: Work[];
+            }
+          | {
+              'artist-count': number;
+              'artist-offset': number;
+              artists: Artist[];
+            }
       ) => void
     ): Promise<Artist[] | Release[] | Recording[] | Group[] | Work[]>;
   }
