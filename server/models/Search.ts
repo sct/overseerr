@@ -8,7 +8,7 @@ import type {
   mbWork,
 } from '@server/api/musicbrainz/interfaces';
 import getPosterFromMB, {
-  getFanartFromMB,
+  cachedFanartFromMB,
 } from '@server/api/musicbrainz/poster';
 import type {
   TmdbCollectionResult,
@@ -305,7 +305,7 @@ export const mapArtistResult = async (
   tags: artist.tags,
   mediaInfo: media ?? undefined,
   posterPath: await getPosterFromMB(artist),
-  fanartPath: await getFanartFromMB(artist),
+  fanartPath: await cachedFanartFromMB(artist),
 });
 
 export const mapReleaseResult = async (

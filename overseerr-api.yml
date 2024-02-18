@@ -6101,7 +6101,7 @@ paths:
   /music/artist/{artistId}:
     get:
       summary: Get artist details
-      description: Returns full artist details in a JSON object.
+      description: Returns artist details in a JSON object.
       tags:
         - music
       parameters:
@@ -6111,6 +6111,12 @@ paths:
           schema:
             type: string
             example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        - in: query
+          name: full
+          schema:
+            type: boolean
+            example: false
+            default: false
       responses:
         '200':
           description: Artist details
@@ -6118,6 +6124,46 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ArtistResult'
+  /music/release/{releaseId}:
+    get:
+      summary: Get release details
+      description: Returns full release details in a JSON object.
+      tags:
+        - music
+      parameters:
+        - in: path
+          name: releaseId
+          required: true
+          schema:
+            type: string
+            example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+      responses:
+        '200':
+          description: Release details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseResult'
+  /music/release-group/{releaseGroupId}:
+    get:
+      summary: Get release group details
+      description: Returns full release group details in a JSON object.
+      tags:
+        - music
+      parameters:
+        - in: path
+          name: releaseGroupId
+          required: true
+          schema:
+            type: string
+            example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+      responses:
+        '200':
+          description: Release Group details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReleaseGroupResult'
   /media:
     get:
       summary: Get media
