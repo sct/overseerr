@@ -1,6 +1,6 @@
 import TitleCard from '@app/components/TitleCard';
 import { Permission, useUser } from '@app/hooks/useUser';
-import { SecondaryType } from '@server/constants/media';
+import { MediaType, SecondaryType } from '@server/constants/media';
 import type {
   ArtistResult,
   RecordingResult,
@@ -16,6 +16,13 @@ export interface MusicBrainTitleCardProps {
   mbId: string;
   type?: SecondaryType;
   canExpand?: boolean;
+  displayType?: string;
+  preData?:
+    | ArtistResult
+    | ReleaseGroupResult
+    | ReleaseResult
+    | WorkResult
+    | RecordingResult;
 }
 
 const MusicTitleCard = ({
@@ -23,6 +30,7 @@ const MusicTitleCard = ({
   mbId,
   canExpand,
   type = SecondaryType.ARTIST,
+  displayType,
 }: MusicBrainTitleCardProps) => {
   const { hasPermission } = useUser();
 
@@ -76,6 +84,7 @@ const MusicTitleCard = ({
         title={data.title}
         mediaType={data.mediaType}
         canExpand={canExpand}
+        type={displayType ?? MediaType.MUSIC}
       />
     );
   }
