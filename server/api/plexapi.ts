@@ -204,6 +204,26 @@ class PlexAPI {
     };
   }
 
+  public async getMusicLibraryContents(
+    id: string,
+    { offset = 0, size = 50 }: { offset?: number; size?: number } = {}
+  ): Promise<{ totalSize: number; items: PlexLibraryItem[] }> {
+    const response = await this.getLibraryContents(id, { offset, size });
+
+    const response2 = await this.plexClient.query<PlexLibraryResponse>({
+      uri: `/library/sections/${id}/albums?includeGuids=1`,
+      extraHeaders: {
+        'X-Plex-Container-Start': `${offset}`,
+        'X-Plex-Container-Size': `${size}`,
+      },
+    });
+
+    return {
+      totalSize: response.totalSize + response2.MediaContainer.totalSize,
+      items: response.items.concat(response2.MediaContainer.Metadata) ?? [],
+    };
+  }
+
   public async getMetadata(
     key: string,
     options: { includeChildren?: boolean } = {}
@@ -241,7 +261,21 @@ class PlexAPI {
         'X-Plex-Container-Size': `500`,
       },
     });
-
+    if (mediaType === 'artist') {
+      const albumResponse = await this.plexClient.query<PlexLibraryResponse>({
+        uri: `/library/sections/${id}/albums&sort=addedAt%3Adesc&addedAt>>=${Math.floor(
+          options.addedAt / 1000
+        )}`,
+        extraHeaders: {
+          'X-Plex-Container-Start': `0`,
+          'X-Plex-Container-Size': `500`,
+        },
+      });
+      // concat the album and artist response mediacontainer.metadata
+      return response.MediaContainer.Metadata.concat(
+        albumResponse.MediaContainer.Metadata
+      );
+    }
     return response.MediaContainer.Metadata;
   }
 }

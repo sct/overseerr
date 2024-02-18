@@ -485,7 +485,11 @@ class MusicBrainz extends BaseNodeBrainz {
     }
   };
 
-  public getFullArtist = (artistId: string): Promise<mbArtist> => {
+  public getFullArtist = (
+    artistId: string,
+    maxElements = 25,
+    startOffset = 0
+  ): Promise<mbArtist> => {
     try {
       return new Promise<mbArtist>((resolve, reject) => {
         this.artist(
@@ -498,12 +502,26 @@ class MusicBrainz extends BaseNodeBrainz {
               reject(error);
             } else {
               const results = convertArtist(data as Artist);
-              results.releaseGroups = await this.getReleaseGroups(artistId);
-              /*
-              results.releases = await this.getReleases(artistId);
-              results.recordings = await this.getRecordings(artistId);
-              results.works = await this.getWorks(artistId);
-              */
+              results.releaseGroups = await this.getReleaseGroups(
+                artistId,
+                maxElements,
+                startOffset
+              );
+              results.releases = await this.getReleases(
+                artistId,
+                maxElements,
+                startOffset
+              );
+              results.recordings = await this.getRecordings(
+                artistId,
+                maxElements,
+                startOffset
+              );
+              results.works = await this.getWorks(
+                artistId,
+                maxElements,
+                startOffset
+              );
               resolve(results);
             }
           }
@@ -515,6 +533,88 @@ class MusicBrainz extends BaseNodeBrainz {
         message: e.message,
       });
       return new Promise<mbArtist>((resolve) => resolve({} as mbArtist));
+    }
+  };
+
+  public getRecordings = (
+    artistId: string,
+    maxElements = 50,
+    startOffset = 0
+  ): Promise<mbRecording[]> => {
+    try {
+      return new Promise<mbRecording[]>((resolve, reject) => {
+        this.browse(
+          'recording',
+          { artist: artistId, offset: startOffset },
+          async (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              data = data as {
+                'recording-count': number;
+                'recording-offset': number;
+                recordings: Recording[];
+              };
+              // Get the first 25 results
+              const total = data['recording-count'];
+              let results: mbRecording[] = await data.recordings.map(
+                convertRecording
+              );
+
+              // Slice the results into smaller chunks to avoid hitting the limit of 100
+
+              for (
+                let i = data.recordings.length + startOffset;
+                i < total && i < maxElements;
+                i += 100
+              ) {
+                results = results.concat(
+                  await new Promise<mbRecording[]>((resolve2, reject2) => {
+                    this.browse(
+                      'recording',
+                      {
+                        artist: artistId,
+                        offset: i,
+                        limit: 100,
+                      },
+                      (error, data) => {
+                        if (error) {
+                          reject2(error);
+                        } else {
+                          const results = (
+                            (
+                              data as {
+                                'recording-count': number;
+                                'recording-offset': number;
+                                recordings: Recording[];
+                              }
+                            ).recordings ?? []
+                          ).map(convertRecording);
+                          resolve2(results);
+                        }
+                      }
+                    );
+                  })
+                );
+              }
+              results = results.reduce((arr: mbRecording[], item) => {
+                const exists = !!arr.find((x) => x.title === item.title);
+                if (!exists) {
+                  arr.push(item);
+                }
+                return arr;
+              }, []);
+              resolve(results);
+            }
+          }
+        );
+      });
+    } catch (e) {
+      logger.error('Failed to get recordings by artist', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbRecording[]>((resolve) => resolve([]));
     }
   };
 
@@ -545,50 +645,74 @@ class MusicBrainz extends BaseNodeBrainz {
     }
   };
 
-  public getReleaseGroups = (artistId: string): Promise<mbReleaseGroup[]> => {
+  public getReleaseGroups = (
+    artistId: string,
+    maxElements = 50,
+    startOffset = 0
+  ): Promise<mbReleaseGroup[]> => {
     try {
       return new Promise<mbReleaseGroup[]>((resolve, reject) => {
         this.browse(
           'release-group',
-          { artist: artistId },
+          { artist: artistId, offset: startOffset },
           async (error, data) => {
             if (error) {
               reject(error);
             } else {
-              const results = await new Promise<mbReleaseGroup[]>(
-                (resolve2, reject2) => {
-                  this.browse(
-                    'release-group',
-                    {
-                      artist: artistId,
-                      limit:
-                        (
-                          data as {
-                            'release-group-count': number;
-                            'release-group-offset': number;
-                            'release-groups': Group[];
-                          }
-                        )['release-group-count'] ?? 25,
-                    },
-                    (error, data) => {
-                      if (error) {
-                        reject2(error);
-                      } else {
-                        const results = (
-                          (
-                            data as {
-                              'release-group-count': number;
-                              'release-group-offset': number;
-                              'release-groups': Group[];
-                            }
-                          )['release-groups'] ?? []
-                        ).map(convertReleaseGroup);
-                        resolve2(results);
-                      }
-                    }
-                  );
-                }
+              data = data as {
+                'release-group-count': number;
+                'release-group-offset': number;
+                'release-groups': Group[];
+              };
+              // Get the first 25 results
+              const total = data['release-group-count'];
+              let results: mbReleaseGroup[] = await data['release-groups'].map(
+                convertReleaseGroup
               );
+
+              // Slice the results into smaller chunks to avoid hitting the limit of 100
+
+              for (
+                let i = data['release-groups'].length + startOffset;
+                i < total && i < maxElements;
+                i += 100
+              ) {
+                results = results.concat(
+                  await new Promise<mbReleaseGroup[]>((resolve2, reject2) => {
+                    this.browse(
+                      'release-group',
+                      {
+                        artist: artistId,
+                        offset: i,
+                        limit: 100,
+                      },
+                      (error, data) => {
+                        if (error) {
+                          reject2(error);
+                        } else {
+                          const results = (
+                            (
+                              data as {
+                                'release-group-count': number;
+                                'release-group-offset': number;
+                                'release-groups': Group[];
+                              }
+                            )['release-groups'] ?? []
+                          ).map(convertReleaseGroup);
+                          resolve2(results);
+                        }
+                      }
+                    );
+                  })
+                );
+              }
+              results = results.reduce((arr: mbReleaseGroup[], item) => {
+                const exists = !!arr.find((x) => x.title === item.title);
+                if (!exists) {
+                  arr.push(item);
+                }
+                return arr;
+              }, []);
               resolve(results);
             }
           }
@@ -634,6 +758,88 @@ class MusicBrainz extends BaseNodeBrainz {
     }
   };
 
+  public getReleases = (
+    artistId: string,
+    maxElements = 50,
+    startOffset = 0
+  ): Promise<mbRelease[]> => {
+    try {
+      return new Promise<mbRelease[]>((resolve, reject) => {
+        this.browse(
+          'release',
+          { artist: artistId, offset: startOffset },
+          async (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              data = data as {
+                'release-count': number;
+                'release-offset': number;
+                releases: Release[];
+              };
+              // Get the first 25 results
+              const total = data['release-count'];
+              let results: mbRelease[] = await data.releases.map(
+                convertRelease
+              );
+
+              // Slice the results into smaller chunks to avoid hitting the limit of 100
+
+              for (
+                let i = data.releases.length + startOffset;
+                i < total && i < maxElements;
+                i += 100
+              ) {
+                results = results.concat(
+                  await new Promise<mbRelease[]>((resolve2, reject2) => {
+                    this.browse(
+                      'release',
+                      {
+                        artist: artistId,
+                        offset: i,
+                        limit: 100,
+                      },
+                      (error, data) => {
+                        if (error) {
+                          reject2(error);
+                        } else {
+                          const results = (
+                            (
+                              data as {
+                                'release-count': number;
+                                'release-offset': number;
+                                releases: Release[];
+                              }
+                            ).releases ?? []
+                          ).map(convertRelease);
+                          resolve2(results);
+                        }
+                      }
+                    );
+                  })
+                );
+              }
+              results = results.reduce((arr: mbRelease[], item) => {
+                const exists = !!arr.find((x) => x.title === item.title);
+                if (!exists) {
+                  arr.push(item);
+                }
+                return arr;
+              }, []);
+              resolve(results);
+            }
+          }
+        );
+      });
+    } catch (e) {
+      logger.error('Failed to get releases by artist', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbRelease[]>((resolve) => resolve([]));
+    }
+  };
+
   public getRelease = (releaseId: string): Promise<mbRelease> => {
     try {
       return new Promise<mbRelease>((resolve, reject) => {
@@ -658,6 +864,86 @@ class MusicBrainz extends BaseNodeBrainz {
         message: e.message,
       });
       return new Promise<mbRelease>((resolve) => resolve({} as mbRelease));
+    }
+  };
+
+  public getWorks = (
+    artistId: string,
+    maxElements = 50,
+    startOffset = 0
+  ): Promise<mbWork[]> => {
+    try {
+      return new Promise<mbWork[]>((resolve, reject) => {
+        this.browse(
+          'work',
+          { artist: artistId, offset: startOffset },
+          async (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              data = data as {
+                'work-count': number;
+                'work-offset': number;
+                works: Work[];
+              };
+              // Get the first 25 results
+              const total = data['work-count'];
+              let results: mbWork[] = await data.works.map(convertWork);
+
+              // Slice the results into smaller chunks to avoid hitting the limit of 100
+
+              for (
+                let i = data.works.length + startOffset;
+                i < total && i < maxElements;
+                i += 100
+              ) {
+                results = results.concat(
+                  await new Promise<mbWork[]>((resolve2, reject2) => {
+                    this.browse(
+                      'work',
+                      {
+                        artist: artistId,
+                        offset: i,
+                        limit: 100,
+                      },
+                      (error, data) => {
+                        if (error) {
+                          reject2(error);
+                        } else {
+                          const results = (
+                            (
+                              data as {
+                                'work-count': number;
+                                'work-offset': number;
+                                works: Work[];
+                              }
+                            ).works ?? []
+                          ).map(convertWork);
+                          resolve2(results);
+                        }
+                      }
+                    );
+                  })
+                );
+              }
+              results = results.reduce((arr: mbWork[], item) => {
+                const exists = !!arr.find((x) => x.title === item.title);
+                if (!exists) {
+                  arr.push(item);
+                }
+                return arr;
+              }, []);
+              resolve(results);
+            }
+          }
+        );
+      });
+    } catch (e) {
+      logger.error('Failed to get works by artist', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbWork[]>((resolve) => resolve([]));
     }
   };
 

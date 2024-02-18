@@ -6117,6 +6117,18 @@ paths:
             type: boolean
             example: false
             default: false
+        - in: query
+          name: maxElements
+          schema:
+            type: number
+            example: 50
+            default: 25
+        - in: query
+          name: offset
+          schema:
+            type: number
+            example: 25
+            default: 0
       responses:
         '200':
           description: Artist details

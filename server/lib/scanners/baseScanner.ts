@@ -590,6 +590,93 @@ class BaseScanner<T> {
     });
   }
 
+  protected async processAlbum(
+    mbId: string,
+    {
+      mediaAddedAt,
+      ratingKey,
+      serviceId,
+      externalServiceId,
+      processing = false,
+      title = 'Unknown Title',
+    }: ProcessOptions = {}
+  ): Promise<void> {
+    const mediaRepository = getRepository(Media);
+
+    await this.asyncLock.dispatch(mbId, async () => {
+      const existing = await this.getExisting(mbId, MediaType.MUSIC);
+
+      if (existing) {
+        let changedExisting = false;
+
+        if (existing['status'] !== MediaStatus.AVAILABLE) {
+          existing['status'] = processing
+            ? MediaStatus.PROCESSING
+            : MediaStatus.AVAILABLE;
+          if (mediaAddedAt) {
+            existing.mediaAddedAt = mediaAddedAt;
+          }
+          changedExisting = true;
+        }
+
+        if (!changedExisting && !existing.mediaAddedAt && mediaAddedAt) {
+          existing.mediaAddedAt = mediaAddedAt;
+          changedExisting = true;
+        }
+
+        if (ratingKey && existing['ratingKey'] !== ratingKey) {
+          existing['ratingKey'] = ratingKey;
+          changedExisting = true;
+        }
+
+        if (serviceId !== undefined && existing['serviceId'] !== serviceId) {
+          existing['serviceId'] = serviceId;
+          changedExisting = true;
+        }
+
+        if (
+          externalServiceId !== undefined &&
+          existing['externalServiceId'] !== externalServiceId
+        ) {
+          existing['externalServiceId'] = externalServiceId;
+          changedExisting = true;
+        }
+
+        if (changedExisting) {
+          await mediaRepository.save(existing);
+          this.log(
+            `Media for ${title} exists. Changes were detected and the title will be updated.`,
+            'info'
+          );
+        } else {
+          this.log(`Title already exists and no changes detected for ${title}`);
+        }
+      } else {
+        const newMedia = new Media();
+        newMedia.mbId = mbId;
+        newMedia.secondaryType = SecondaryType.RELEASE;
+        newMedia.status = !processing
+          ? MediaStatus.AVAILABLE
+          : processing
+          ? MediaStatus.PROCESSING
+          : MediaStatus.UNKNOWN;
+        newMedia.mediaType = MediaType.MUSIC;
+        newMedia.serviceId = serviceId;
+        newMedia.externalServiceId = externalServiceId;
+
+        if (mediaAddedAt) {
+          newMedia.mediaAddedAt = mediaAddedAt;
+        }
+
+        if (ratingKey) {
+          newMedia.ratingKey = ratingKey;
+        }
+        await mediaRepository.save(newMedia);
+        this.log(`Saved new media: ${title}`);
+      }
+    });
+  }
+
   /**
    * Call startRun from child class whenever a run is starting to
    * ensure required values are set

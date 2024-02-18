@@ -15,8 +15,12 @@ musicRoutes.get('/artist/:id', async (req, res, next) => {
   const mb = new MusicBrainz();
 
   try {
+    const offset = req.query.offset ? parseInt(req.query.offset as string) : 0;
+    const maxElements = req.query.maxElements
+      ? parseInt(req.query.maxElements as string)
+      : 25;
     const artist = req.query.full
-      ? await mb.getFullArtist(req.params.id)
+      ? await mb.getFullArtist(req.params.id, maxElements, offset)
       : await mb.getArtist(req.params.id);
 
     const media = await Media.getMedia(artist.id, MediaType.MUSIC);

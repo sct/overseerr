@@ -136,7 +136,13 @@ class PlexScanner
         for (const library of this.libraries) {
           this.currentLibrary = library;
           this.log(`Beginning to process library: ${library.name}`, 'info');
-          await this.paginateLibrary(library, { sessionId });
+          try {
+            await this.paginateLibrary(library, { sessionId });
+          } catch (e) {
+            this.log('Failed to paginate library', 'error', {
+              errorMessage: e.message,
+            });
+          }
         }
       }
       this.log(
@@ -165,12 +171,16 @@ class PlexScanner
     if (this.sessionId !== sessionId) {
       throw new Error('New session was started. Old session aborted.');
     }
-
-    const response = await this.plexClient.getLibraryContents(library.id, {
-      size: this.protectedBundleSize,
-      offset: start,
-    });
-
+    const response =
+      library.type === 'artist'
+        ? await this.plexClient.getMusicLibraryContents(library.id, {
+            size: this.protectedBundleSize,
+            offset: start,
+          })
+        : await this.plexClient.getLibraryContents(library.id, {
+            size: this.protectedBundleSize,
+            offset: start,
+          });
     this.progress = start;
     this.totalSize = response.totalSize;
 
@@ -212,6 +222,8 @@ class PlexScanner
         await this.processPlexShow(plexitem);
       } else if (plexitem.type === 'artist') {
         await this.processPlexArtist(plexitem);
+      } else if (plexitem.type === 'album') {
+        await this.processPlexAlbum(plexitem);
       }
     } catch (e) {
       this.log('Failed to process Plex media', 'error', {
@@ -354,6 +366,21 @@ class PlexScanner
       });
     } else {
       this.log('No MusicBrainz ID found for artist', 'warn', {
+        title: plexitem.title,
+      });
+    }
+  }
+
+  private async processPlexAlbum(plexitem: PlexLibraryItem) {
+    const mediaIds = await this.getMediaIds(plexitem);
+    if (mediaIds.mbId) {
+      await this.processAlbum(mediaIds.mbId, {
+        mediaAddedAt: new Date(plexitem.addedAt * 1000),
+        ratingKey: plexitem.ratingKey,
+        title: plexitem.title,
+      });
+    } else {
+      this.log('No MusicBrainz ID found for album', 'warn', {
         title: plexitem.title,
       });
     }
