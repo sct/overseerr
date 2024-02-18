@@ -50,5 +50,19 @@ async function getFanartFromMB(element: mbArtist): Promise<string | undefined> {
   }
 }
 
-export default getPosterFromMB;
-export { getFanartFromMB };
+const memoize = <T = unknown>(fn: (...val: T[]) => unknown) => {
+  const cache = new Map();
+  const cached = function (this: unknown, val: T) {
+    return cache.has(val)
+      ? cache.get(val)
+      : cache.set(val, fn.call(this, val) as ReturnType<typeof fn>) &&
+          cache.get(val);
+  };
+  cached.cache = cache;
+  return cached;
+};
+
+const cachedFanartFromMB = memoize(getFanartFromMB);
+
+export default memoize(getPosterFromMB);
+export { cachedFanartFromMB };

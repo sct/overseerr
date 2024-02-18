@@ -485,6 +485,39 @@ class MusicBrainz extends BaseNodeBrainz {
     }
   };
 
+  public getFullArtist = (artistId: string): Promise<mbArtist> => {
+    try {
+      return new Promise<mbArtist>((resolve, reject) => {
+        this.artist(
+          artistId,
+          {
+            inc: 'tags',
+          },
+          async (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              const results = convertArtist(data as Artist);
+              results.releaseGroups = await this.getReleaseGroups(artistId);
+              /*
+              results.releases = await this.getReleases(artistId);
+              results.recordings = await this.getRecordings(artistId);
+              results.works = await this.getWorks(artistId);
+              */
+              resolve(results);
+            }
+          }
+        );
+      });
+    } catch (e) {
+      logger.error('Failed to get full artist', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbArtist>((resolve) => resolve({} as mbArtist));
+    }
+  };
+
   public getRecording = (recordingId: string): Promise<mbRecording> => {
     try {
       return new Promise<mbRecording>((resolve, reject) => {
@@ -509,6 +542,64 @@ class MusicBrainz extends BaseNodeBrainz {
         message: e.message,
       });
       return new Promise<mbRecording>((resolve) => resolve({} as mbRecording));
+    }
+  };
+
+  public getReleaseGroups = (artistId: string): Promise<mbReleaseGroup[]> => {
+    try {
+      return new Promise<mbReleaseGroup[]>((resolve, reject) => {
+        this.browse(
+          'release-group',
+          { artist: artistId },
+          async (error, data) => {
+            if (error) {
+              reject(error);
+            } else {
+              const results = await new Promise<mbReleaseGroup[]>(
+                (resolve2, reject2) => {
+                  this.browse(
+                    'release-group',
+                    {
+                      artist: artistId,
+                      limit:
+                        (
+                          data as {
+                            'release-group-count': number;
+                            'release-group-offset': number;
+                            'release-groups': Group[];
+                          }
+                        )['release-group-count'] ?? 25,
+                    },
+                    (error, data) => {
+                      if (error) {
+                        reject2(error);
+                      } else {
+                        const results = (
+                          (
+                            data as {
+                              'release-group-count': number;
+                              'release-group-offset': number;
+                              'release-groups': Group[];
+                            }
+                          )['release-groups'] ?? []
+                        ).map(convertReleaseGroup);
+                        resolve2(results);
+                      }
+                    }
+                  );
+                }
+              );
+              resolve(results);
+            }
+          }
+        );
+      });
+    } catch (e) {
+      logger.error('Failed to get release-groups by artist', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<mbReleaseGroup[]>((resolve) => resolve([]));
     }
   };
 
