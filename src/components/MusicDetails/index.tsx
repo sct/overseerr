@@ -1,5 +1,6 @@
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
+import ListView from '@app/components/Common/ListView';
 import PageTitle from '@app/components/Common/PageTitle';
 import type { PlayButtonLink } from '@app/components/Common/PlayButton';
 import PlayButton from '@app/components/Common/PlayButton';
@@ -7,11 +8,11 @@ import Tooltip from '@app/components/Common/Tooltip';
 import IssueModal from '@app/components/IssueModal';
 import RequestButton from '@app/components/RequestButton';
 import StatusBadge from '@app/components/StatusBadge';
+import FetchedDataTitleCard from '@app/components/TitleCard/FetchedDataTitleCard';
 import useDeepLinks from '@app/hooks/useDeepLinks';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
-import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { ExclamationTriangleIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { MediaStatus, SecondaryType } from '@server/constants/media';
 import type {
@@ -29,8 +30,6 @@ import useSWR from 'swr';
 
 const messages = defineMessages({
   originaltitle: 'Original Title',
-  releasedate:
-    '{releaseCount, plural, one {Release Date} other {Release Dates}}',
   overview: 'Overview',
   recommendations: 'Recommendations',
   playonplex: 'Play on Plex',
@@ -41,6 +40,12 @@ const messages = defineMessages({
   physicalrelease: 'Physical Release',
   reportissue: 'Report an Issue',
   managemusic: 'Manage Music',
+  releases: 'Releases',
+  albums: 'Albums',
+  singles: 'Singles',
+  eps: 'EPs',
+  broadcasts: 'Broadcasts',
+  others: 'Others',
 });
 
 interface MusicDetailsProps {
@@ -66,11 +71,19 @@ const MusicDetails = ({
   const intl = useIntl();
   const [showIssueModal, setShowIssueModal] = useState(false);
 
-  let data,
-    to_explore = [];
+  const { data: fetched } = useSWR<
+    | ArtistResult
+    | ReleaseGroupResult
+    | ReleaseResult
+    | RecordingResult
+    | WorkResult
+  >(`/api/v1/music/${router.query.type}/${router.query.mbId}?full=true`);
+
+  let to_explore = [],
+    data;
   switch (type) {
     case SecondaryType.ARTIST:
-      data = artist;
+      data = fetched ?? artist;
       to_explore = [
         SecondaryType.RELEASE_GROUP,
         SecondaryType.RELEASE,
@@ -79,7 +92,7 @@ const MusicDetails = ({
       ];
       break;
     case SecondaryType.RELEASE_GROUP:
-      data = releaseGroup;
+      data = fetched ?? releaseGroup;
       to_explore = [
         SecondaryType.RELEASE,
         SecondaryType.RECORDING,
@@ -87,44 +100,18 @@ const MusicDetails = ({
       ];
       break;
     case SecondaryType.RELEASE:
-      data = release;
+      data = fetched ?? release;
       to_explore = [SecondaryType.RECORDING, SecondaryType.ARTIST];
       break;
     case SecondaryType.RECORDING:
-      data = recording;
+      data = fetched ?? recording;
       to_explore = [SecondaryType.ARTIST];
       break;
     case SecondaryType.WORK:
-      data = work;
+      data = fetched ?? work;
       to_explore = [SecondaryType.ARTIST];
       break;
   }
-
-  const {
-    data: info,
-    error: errorInfo,
-    mutate: revalidate,
-  } = useSWR<
-    | ArtistResult
-    | ReleaseGroupResult
-    | ReleaseResult
-    | RecordingResult
-    | WorkResult
-  >(`/api/v1/music/${router.query.type}/${router.query.mbId}`, {
-    fallbackData: data as
-      | ArtistResult
-      | ReleaseGroupResult
-      | ReleaseResult
-      | RecordingResult
-      | WorkResult,
-    refreshInterval: refreshIntervalHelper(
-      {
-        downloadStatus: data?.mediaInfo?.downloadStatus,
-        downloadStatus4k: data?.mediaInfo?.downloadStatus4k,
-      },
-      15000
-    ),
-  });
 
   const { plexUrl } = useDeepLinks({
     plexUrl: data?.mediaInfo?.plexUrl,
@@ -153,7 +140,7 @@ const MusicDetails = ({
   const title =
     data.mediaType !== SecondaryType.ARTIST ? data.title : data.name;
 
-  const datesDisplay: string =
+  const mainDateDisplay: string =
     type === SecondaryType.ARTIST &&
     (data as ArtistResult).beginDate &&
     (data as ArtistResult).endDate
@@ -169,9 +156,30 @@ const MusicDetails = ({
       ? `${(data as RecordingResult).firstReleased}`
       : '';
 
-  const releases: ReleaseResult[] = to_explore.includes(SecondaryType.RELEASE)
-    ? (data as ArtistResult | ReleaseGroupResult).releases
+  const releaseGroups: ReleaseGroupResult[] = to_explore.includes(
+    SecondaryType.RELEASE_GROUP
+  )
+    ? (data as ArtistResult).releaseGroups
+    : type === SecondaryType.RELEASE_GROUP
+    ? [data as ReleaseGroupResult]
     : [];
+
+  const categorizedReleaseGroupsType = releaseGroups.reduce(
+    (group: { [key: string]: ReleaseGroupResult[] }, item) => {
+      if (!group[item.type]) {
+        group[item.type] = [];
+      }
+      group[item.type].push(item);
+      return group;
+    },
+    {}
+  );
+
+  const albums = categorizedReleaseGroupsType['Album'] ?? [];
+  const singles = categorizedReleaseGroupsType['Single'] ?? [];
+  const eps = categorizedReleaseGroupsType['EP'] ?? [];
+  const broadcasts = categorizedReleaseGroupsType['Broadcast'] ?? [];
+  const others = categorizedReleaseGroupsType['Other'] ?? [];
 
   const tags: string[] = data.tags ?? [];
 
@@ -241,8 +249,8 @@ const MusicDetails = ({
           </div>
           <h1 data-testid="media-title">
             {title}{' '}
-            {datesDisplay !== '' && (
-              <span className="media-year">({datesDisplay})</span>
+            {mainDateDisplay !== '' && (
+              <span className="media-year">({mainDateDisplay})</span>
             )}
           </h1>
           <span className="media-attributes">
@@ -265,7 +273,8 @@ const MusicDetails = ({
             media={data.mediaInfo}
             mbId={data.id}
             secondaryType={type}
-            onUpdate={() => revalidate()}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onUpdate={() => {}}
           />
           {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
             (settings.currentSettings.movie4kEnabled &&
@@ -294,6 +303,106 @@ const MusicDetails = ({
             )}
         </div>
       </div>
+      {albums?.length > 0 && (
+        <>
+          <div className="slider-header">
+            <div className="slider-title">
+              <span>{intl.formatMessage(messages.albums)}</span>
+            </div>
+          </div>
+          <ListView
+            isLoading={false}
+            jsxItems={albums.map((item) => (
+              <FetchedDataTitleCard
+                key={`media-slider-item-${item.id}`}
+                data={item}
+              />
+            ))}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onScrollBottom={() => {}}
+          />
+        </>
+      )}
+      {singles?.length > 0 && (
+        <>
+          <div className="slider-header">
+            <div className="slider-title">
+              <span>{intl.formatMessage(messages.singles)}</span>
+            </div>
+          </div>
+          <ListView
+            isLoading={false}
+            jsxItems={singles.map((item) => (
+              <FetchedDataTitleCard
+                key={`media-slider-item-${item.id}`}
+                data={item}
+              />
+            ))}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onScrollBottom={() => {}}
+          />
+        </>
+      )}
+      {eps?.length > 0 && (
+        <>
+          <div className="slider-header">
+            <div className="slider-title">
+              <span>{intl.formatMessage(messages.eps)}</span>
+            </div>
+          </div>
+          <ListView
+            isLoading={false}
+            jsxItems={eps.map((item) => (
+              <FetchedDataTitleCard
+                key={`media-slider-item-${item.id}`}
+                data={item}
+              />
+            ))}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onScrollBottom={() => {}}
+          />
+        </>
+      )}
+      {broadcasts?.length > 0 && (
+        <>
+          <div className="slider-header">
+            <div className="slider-title">
+              <span>{intl.formatMessage(messages.broadcasts)}</span>
+            </div>
+          </div>
+          <ListView
+            isLoading={false}
+            jsxItems={broadcasts.map((item) => (
+              <FetchedDataTitleCard
+                key={`media-slider-item-${item.id}`}
+                data={item}
+              />
+            ))}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onScrollBottom={() => {}}
+          />
+        </>
+      )}
+      {others?.length > 0 && (
+        <>
+          <div className="slider-header">
+            <div className="slider-title">
+              <span>{intl.formatMessage(messages.others)}</span>
+            </div>
+          </div>
+          <ListView
+            isLoading={false}
+            jsxItems={others.map((item) => (
+              <FetchedDataTitleCard
+                key={`media-slider-item-${item.id}`}
+                data={item}
+              />
+            ))}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onScrollBottom={() => {}}
+          />
+        </>
+      )}
     </div>
   );
 };
