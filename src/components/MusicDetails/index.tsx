@@ -24,7 +24,7 @@ import type {
 } from '@server/models/Search';
 import 'country-flag-icons/3x2/flags.css';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
@@ -46,6 +46,7 @@ const messages = defineMessages({
   eps: 'EPs',
   broadcasts: 'Broadcasts',
   others: 'Others',
+  feats: 'Featured In',
 });
 
 interface MusicDetailsProps {
@@ -118,10 +119,6 @@ const MusicDetails = ({
     iOSPlexUrl: data?.mediaInfo?.iOSPlexUrl,
   });
 
-  if (!data) {
-    return <Error statusCode={404} />;
-  }
-
   const mediaLinks: PlayButtonLink[] = [];
 
   if (
@@ -137,23 +134,29 @@ const MusicDetails = ({
     });
   }
 
-  const title =
-    data.mediaType !== SecondaryType.ARTIST ? data.title : data.name;
+  const cleanDate = (date: Date | string | undefined) => {
+    date = date ?? '';
+    return new Date(date).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+  };
 
   const mainDateDisplay: string =
     type === SecondaryType.ARTIST &&
-    (data as ArtistResult).beginDate &&
+    cleanDate((data as ArtistResult).beginDate) &&
     (data as ArtistResult).endDate
-      ? `${(data as ArtistResult).beginDate} - ${
+      ? `${cleanDate((data as ArtistResult).beginDate)} - ${cleanDate(
           (data as ArtistResult).endDate
-        }`
+        )}`
       : type === SecondaryType.ARTIST && (data as ArtistResult).beginDate
-      ? `${(data as ArtistResult).beginDate}`
+      ? `${cleanDate((data as ArtistResult).beginDate)}`
       : type === SecondaryType.RELEASE && (data as ReleaseResult).date
-      ? `${(data as ReleaseResult).date}`
+      ? `${cleanDate((data as ReleaseResult).date)}`
       : type === SecondaryType.RECORDING &&
         (data as RecordingResult).firstReleased
-      ? `${(data as RecordingResult).firstReleased}`
+      ? `${cleanDate((data as RecordingResult).firstReleased)}`
       : '';
 
   const releaseGroups: ReleaseGroupResult[] = to_explore.includes(
@@ -175,11 +178,91 @@ const MusicDetails = ({
     {}
   );
 
-  const albums = categorizedReleaseGroupsType['Album'] ?? [];
-  const singles = categorizedReleaseGroupsType['Single'] ?? [];
-  const eps = categorizedReleaseGroupsType['EP'] ?? [];
-  const broadcasts = categorizedReleaseGroupsType['Broadcast'] ?? [];
-  const others = categorizedReleaseGroupsType['Other'] ?? [];
+  const [albums, setAlbums] = useState(
+    categorizedReleaseGroupsType['Album'] ?? []
+  );
+  const [singles, setSingles] = useState(
+    categorizedReleaseGroupsType['Single'] ?? []
+  );
+  const [eps, setEps] = useState(categorizedReleaseGroupsType['EP'] ?? []);
+  const [broadcasts, setBroadcasts] = useState(
+    categorizedReleaseGroupsType['Broadcast'] ?? []
+  );
+  const [others, setOthers] = useState(
+    categorizedReleaseGroupsType['Other'] ?? []
+  );
+
+  const [currentOffset, setCurrentOffset] = useState(0);
+
+  const [isLoading, setLoading] = useState(false);
+
+  const getMore = useCallback(() => {
+    if (data?.mediaType === SecondaryType.ARTIST) {
+      if (isLoading) {
+        return;
+      }
+      setLoading(true);
+      fetch(
+        `/api/v1/music/${router.query.type}/${
+          router.query.mbId
+        }?full=true&offset=${currentOffset + 25}`
+      )
+        .then((res) => res.json())
+        .then((res) => {
+          if (res) {
+            res = (res as ArtistResult).releaseGroups;
+            res = res.reduce(
+              ((
+                group: { [key: string]: ReleaseGroupResult[] },
+                item: ReleaseGroupResult
+              ) => {
+                if (!group[item.type]) {
+                  group[item.type] = [];
+                }
+                group[item.type].push(item);
+                return group;
+              }) ?? {},
+              {}
+            );
+            setAlbums((prev) => [...prev, ...(res['Album'] ?? [])]);
+            setSingles((prev) => [...prev, ...(res.Single ?? [])]);
+            setEps((prev) => [...prev, ...(res.EP ?? [])]);
+            setBroadcasts((prev) => [...prev, ...(res.Broadcast ?? [])]);
+            setOthers((prev) => [...prev, ...(res.Other ?? [])]);
+            setCurrentOffset(currentOffset + 25);
+            setLoading(false);
+          }
+        });
+    }
+  }, [
+    currentOffset,
+    data?.mediaType,
+    isLoading,
+    router.query.mbId,
+    router.query.type,
+  ]);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const bottom =
+        document.body.scrollHeight - window.scrollY - window.outerHeight <= 1;
+      if (bottom) {
+        getMore();
+      }
+    };
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [getMore]);
+
+  if (!data) {
+    return <Error statusCode={404} />;
+  }
+
+  const title =
+    data.mediaType !== SecondaryType.ARTIST ? data.title : data.name;
 
   const tags: string[] = data.tags ?? [];
 

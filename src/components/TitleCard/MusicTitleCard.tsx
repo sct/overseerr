@@ -1,6 +1,7 @@
 import TitleCard from '@app/components/TitleCard';
 import { Permission, useUser } from '@app/hooks/useUser';
-import { MediaType, SecondaryType } from '@server/constants/media';
+import type { SecondaryType } from '@server/constants/media';
+import { MediaType } from '@server/constants/media';
 import type {
   ArtistResult,
   RecordingResult,
@@ -29,9 +30,10 @@ const MusicTitleCard = ({
   id,
   mbId,
   canExpand,
-  type = SecondaryType.ARTIST,
+  type,
   displayType,
 }: MusicBrainTitleCardProps) => {
+  console.log(type);
   const { hasPermission } = useUser();
 
   const { ref, inView } = useInView({

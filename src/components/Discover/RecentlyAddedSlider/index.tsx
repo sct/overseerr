@@ -2,6 +2,7 @@ import Slider from '@app/components/Slider';
 import MusicTitleCard from '@app/components/TitleCard/MusicTitleCard';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
 import { Permission, useUser } from '@app/hooks/useUser';
+import type { SecondaryType } from '@server/constants/media';
 import type { MediaResultsResponse } from '@server/interfaces/api/mediaInterfaces';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
@@ -79,7 +80,8 @@ const RecentlyAddedSlider = ({
                 key={`media-slider-item-${item.id}`}
                 id={item.id}
                 mbId={item.mbId ?? ''}
-                //type={item.secondaryType as SecondaryType}
+                type={item.secondaryType as SecondaryType}
+                displayType={item.secondaryType as SecondaryType}
               />
             ))}
           />
