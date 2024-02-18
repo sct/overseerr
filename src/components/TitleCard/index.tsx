@@ -28,6 +28,7 @@ interface TitleCardProps {
   status?: MediaStatus;
   canExpand?: boolean;
   inProgress?: boolean;
+  type?: string;
 }
 
 const TitleCard = ({
@@ -40,6 +41,7 @@ const TitleCard = ({
   mediaType,
   inProgress = false,
   canExpand = false,
+  type,
 }: TitleCardProps) => {
   const isTouch = useIsTouch();
   const intl = useIntl();
@@ -151,6 +153,8 @@ const TitleCard = ({
                   ? intl.formatMessage(globalMessages.collection)
                   : mediaType === 'tv'
                   ? intl.formatMessage(globalMessages.tvshow)
+                  : mediaType === 'release-group'
+                  ? type
                   : intl.formatMessage(globalMessages.music)}
               </div>
             </div>

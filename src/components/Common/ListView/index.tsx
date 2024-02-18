@@ -31,6 +31,7 @@ type ListViewProps = {
     | WorkResult
     | RecordingResult
   )[];
+  jsxItems?: React.ReactNode[];
   plexItems?: WatchlistItem[];
   isEmpty?: boolean;
   isLoading?: boolean;
@@ -40,6 +41,7 @@ type ListViewProps = {
 
 const ListView = ({
   items,
+  jsxItems,
   isEmpty,
   isLoading,
   onScrollBottom,
@@ -187,6 +189,7 @@ const ListView = ({
 
           return <li key={`${title.id}-${index}`}>{titleCard}</li>;
         })}
+        {jsxItems}
         {isLoading &&
           !isReachingEnd &&
           [...Array(20)].map((_item, i) => (
