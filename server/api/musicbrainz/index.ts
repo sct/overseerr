@@ -203,6 +203,7 @@ function convertReleaseGroup(releaseGroup: Group): mbReleaseGroup {
     id: releaseGroup.id,
     title: releaseGroup.title,
     artist: (releaseGroup['artist-credit'] ?? []).map(convertArtistCredit),
+    releases: (releaseGroup.releases ?? []).map(convertRelease),
     type:
       (releaseGroup['primary-type'] as mbReleaseGroupType) ||
       mbReleaseGroupType.OTHER,

@@ -6149,6 +6149,24 @@ paths:
           schema:
             type: string
             example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        - in: query
+          name: full
+          schema:
+            type: boolean
+            example: false
+            default: false
+        - in: query
+          name: maxElements
+          schema:
+            type: number
+            example: 50
+            default: 25
+        - in: query
+          name: offset
+          schema:
+            type: number
+            example: 25
+            default: 0
       responses:
         '200':
           description: Release details
@@ -6169,6 +6187,24 @@ paths:
           schema:
             type: string
             example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
+        - in: query
+          name: full
+          schema:
+            type: boolean
+            example: false
+            default: false
+        - in: query
+          name: maxElements
+          schema:
+            type: number
+            example: 50
+            default: 25
+        - in: query
+          name: offset
+          schema:
+            type: number
+            example: 25
+            default: 0
       responses:
         '200':
           description: Release Group details
