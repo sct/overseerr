@@ -14,7 +14,11 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
 import { ExclamationTriangleIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { MediaStatus, SecondaryType } from '@server/constants/media';
-import type { ArtistResult, ReleaseGroupResult } from '@server/models/Search';
+import type {
+  ArtistResult,
+  ReleaseGroupResult,
+  ReleaseResult,
+} from '@server/models/Search';
 import 'country-flag-icons/3x2/flags.css';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
@@ -44,12 +48,24 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
   const intl = useIntl();
   const [showIssueModal, setShowIssueModal] = useState(false);
 
-  const categorize = (res: ReleaseGroupResult[]) =>
+  const categorizeRG = (res: ReleaseGroupResult[]) =>
     res.reduce((group: { [key: string]: ReleaseGroupResult[] }, item) => {
       if (!group[item.type]) {
-        group[item.type] = [];
+        group[item.type] = [item];
+      } else {
+        group[item.type].push(item);
       }
-      group[item.type].push(item);
+      return group;
+    }, {});
+
+  const categorizeR = (res: ReleaseResult[]) =>
+    res.reduce((group: { [key: string]: ReleaseResult[] }, item) => {
+      item.releaseGroupType = item.releaseGroupType ?? 'Other';
+      if (!group[item.releaseGroupType]) {
+        group[item.releaseGroupType] = [item];
+      } else {
+        group[item.releaseGroupType].push(item);
+      }
       return group;
     }, {});
 
@@ -89,17 +105,25 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
       ? `${cleanDate(data.beginDate)} - ${cleanDate(data.endDate)}`
       : cleanDate(data.beginDate);
 
+  /*
   const releaseGroups: ReleaseGroupResult[] = data.releaseGroups;
 
-  const categorizedReleaseGroupsType = categorize(releaseGroups);
+  const categorizedReleaseGroupsType = categorizeRG(releaseGroups);
 
-  const [categories, setCategories] = useState(
+  const [categoriesRG, setCategoriesRG] = useState(
     categorizedReleaseGroupsType ?? {}
   );
+  */
+
+  const releases: ReleaseResult[] = data.releases;
+
+  const categorizedReleasesType = categorizeR(releases);
+
+  const [categoriesR, setCategoriesR] = useState(categorizedReleasesType ?? {});
 
   const customMerge = (
-    oldData: { [key: string]: ReleaseGroupResult[] },
-    newData: { [key: string]: ReleaseGroupResult[] }
+    oldData: { [key: string]: unknown[] },
+    newData: { [key: string]: unknown[] }
   ) => {
     for (const key in newData) {
       if (oldData[key]) {
@@ -128,8 +152,17 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
       .then((res) => res.json())
       .then((res) => {
         if (res) {
-          res = categorize(res.releaseGroups ?? []);
-          setCategories((prev) => customMerge(prev, res));
+          /*
+          const rg = categorizeRG(res.releaseGroups ?? []);
+          setCategoriesRG(
+            (prev) =>
+              customMerge(prev, rg) as { [key: string]: ReleaseGroupResult[] }
+          );
+          */
+          const r = categorizeR(res.releases ?? []);
+          setCategoriesR(
+            (prev) => customMerge(prev, r) as { [key: string]: ReleaseResult[] }
+          );
           setCurrentOffset(currentOffset + 25);
           setLoading(false);
         }
@@ -165,6 +198,7 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
       style={{
         height: 493,
       }}
+      key={data.id}
     >
       <div className="media-page-bg-image">
         <CachedImage
@@ -256,8 +290,8 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
             )}
         </div>
       </div>
-      {Object.entries(categories).map(([type, category]) => (
-        <>
+      {Object.entries(categoriesR).map(([type, category]) => (
+        <div key={type}>
           <div className="slider-header">
             <div className="slider-title">
               <span>
@@ -269,16 +303,18 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
           </div>
           <ListView
             isLoading={false}
-            jsxItems={category.map((item) => (
-              <FetchedDataTitleCard
-                key={`media-slider-item-${item.id}`}
-                data={item}
-              />
-            ))}
+            jsxItems={category.map((item) => {
+              return (
+                <FetchedDataTitleCard
+                  key={`media-slider-item-${item.id}`}
+                  data={item}
+                />
+              );
+            })}
             // eslint-disable-next-line @typescript-eslint/no-empty-function
             onScrollBottom={() => {}}
           />
-        </>
+        </div>
       ))}
     </div>
   );

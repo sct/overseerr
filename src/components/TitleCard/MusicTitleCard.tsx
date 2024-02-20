@@ -33,7 +33,6 @@ const MusicTitleCard = ({
   type,
   displayType,
 }: MusicBrainTitleCardProps) => {
-  console.log(type);
   const { hasPermission } = useUser();
 
   const { ref, inView } = useInView({

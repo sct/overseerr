@@ -55,6 +55,7 @@ const FetchedDataTitleCard = ({
         title={data.title}
         mediaType={data.mediaType}
         canExpand={canExpand}
+        type={data.releaseGroupType ?? MediaType.MUSIC}
       />
     );
   }

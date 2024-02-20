@@ -12,7 +12,6 @@ import 'country-flag-icons/3x2/flags.css';
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
 
-
 interface MusicDetailsProps {
   type: SecondaryType;
   artist?: ArtistResult;
@@ -28,10 +27,10 @@ const MusicDetails = ({
 }: MusicDetailsProps) => {
   const router = useRouter();
   const { data: fetched } = useSWR<
-    | ArtistResult
-    | ReleaseGroupResult
-    | ReleaseResult
-  >(`/api/v1/music/${router.query.type}/${router.query.mbId}?full=true`);
+    ArtistResult | ReleaseGroupResult | ReleaseResult
+  >(
+    `/api/v1/music/${router.query.type}/${router.query.mbId}?full=true&maxElements=50`
+  );
 
   switch (type) {
     case SecondaryType.ARTIST:
