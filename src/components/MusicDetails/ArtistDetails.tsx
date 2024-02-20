@@ -7,6 +7,7 @@ import PlayButton from '@app/components/Common/PlayButton';
 import Tooltip from '@app/components/Common/Tooltip';
 import IssueModal from '@app/components/IssueModal';
 import RequestButton from '@app/components/RequestButton';
+import Slider from '@app/components/Slider';
 import StatusBadge from '@app/components/StatusBadge';
 import FetchedDataTitleCard from '@app/components/TitleCard/FetchedDataTitleCard';
 import useDeepLinks from '@app/hooks/useDeepLinks';
@@ -14,29 +15,19 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
 import { ExclamationTriangleIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { MediaStatus, SecondaryType } from '@server/constants/media';
-import type {
-  ArtistResult,
-  ReleaseGroupResult,
-  ReleaseResult,
-} from '@server/models/Search';
+import type { ArtistResult, ReleaseResult } from '@server/models/Search';
 import 'country-flag-icons/3x2/flags.css';
 import { useRouter } from 'next/router';
 import { useCallback, useEffect, useState } from 'react';
-import { defineMessage, defineMessages, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   overview: 'Overview',
   playonplex: 'Play on Plex',
   reportissue: 'Report an Issue',
   releases: 'Releases',
+  available: 'Available Albums',
 });
-
-const categoriesMessages = {
-  Album: defineMessage({ id: 'Albums', defaultMessage: 'Albums' }),
-  Single: defineMessage({ id: 'Singles', defaultMessage: 'Singles' }),
-  EP: defineMessage({ id: 'EPs', defaultMessage: 'EPs' }),
-  Other: defineMessage({ id: 'Other', defaultMessage: 'Other' }),
-};
 
 interface ArtistDetailsProp {
   artist: ArtistResult;
@@ -47,27 +38,6 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
   const router = useRouter();
   const intl = useIntl();
   const [showIssueModal, setShowIssueModal] = useState(false);
-
-  const categorizeRG = (res: ReleaseGroupResult[]) =>
-    res.reduce((group: { [key: string]: ReleaseGroupResult[] }, item) => {
-      if (!group[item.type]) {
-        group[item.type] = [item];
-      } else {
-        group[item.type].push(item);
-      }
-      return group;
-    }, {});
-
-  const categorizeR = (res: ReleaseResult[]) =>
-    res.reduce((group: { [key: string]: ReleaseResult[] }, item) => {
-      item.releaseGroupType = item.releaseGroupType ?? 'Other';
-      if (!group[item.releaseGroupType]) {
-        group[item.releaseGroupType] = [item];
-      } else {
-        group[item.releaseGroupType].push(item);
-      }
-      return group;
-    }, {});
 
   const data = artist;
 
@@ -105,35 +75,21 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
       ? `${cleanDate(data.beginDate)} - ${cleanDate(data.endDate)}`
       : cleanDate(data.beginDate);
 
-  /*
-  const releaseGroups: ReleaseGroupResult[] = data.releaseGroups;
-
-  const categorizedReleaseGroupsType = categorizeRG(releaseGroups);
-
-  const [categoriesRG, setCategoriesRG] = useState(
-    categorizedReleaseGroupsType ?? {}
-  );
-  */
-
-  const releases: ReleaseResult[] = data.releases;
-
-  const categorizedReleasesType = categorizeR(releases);
-
-  const [categoriesR, setCategoriesR] = useState(categorizedReleasesType ?? {});
-
-  const customMerge = (
-    oldData: { [key: string]: unknown[] },
-    newData: { [key: string]: unknown[] }
-  ) => {
-    for (const key in newData) {
-      if (oldData[key]) {
-        oldData[key].push(...newData[key]);
-      } else {
-        oldData[key] = newData[key];
-      }
-    }
-    return oldData;
+  const filteredAvailableReleases = (releases: ReleaseResult[]) => {
+    return releases.filter((release) => release.mediaInfo);
   };
+
+  const [releases, setReleases] = useState<ReleaseResult[]>(
+    data.releases ?? []
+  );
+
+  const [availableReleases, setAvailableReleases] = useState<ReleaseResult[]>(
+    filteredAvailableReleases(releases)
+  );
+
+  useEffect(() => {
+    setAvailableReleases((prev) => Array.from(new Set([...prev, ...releases])));
+  }, [releases]);
 
   const [currentOffset, setCurrentOffset] = useState(0);
 
@@ -152,22 +108,13 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
       .then((res) => res.json())
       .then((res) => {
         if (res) {
-          /*
-          const rg = categorizeRG(res.releaseGroups ?? []);
-          setCategoriesRG(
-            (prev) =>
-              customMerge(prev, rg) as { [key: string]: ReleaseGroupResult[] }
-          );
-          */
-          const r = categorizeR(res.releases ?? []);
-          setCategoriesR(
-            (prev) => customMerge(prev, r) as { [key: string]: ReleaseResult[] }
-          );
+          const r = res.releases ?? [];
+          setReleases(Array.from(new Set([...releases, ...r])));
           setCurrentOffset(currentOffset + 25);
           setLoading(false);
         }
       });
-  }, [currentOffset, isLoading, router.query.mbId]);
+  }, [currentOffset, isLoading, releases, router.query.mbId]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -290,32 +237,45 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
             )}
         </div>
       </div>
-      {Object.entries(categoriesR).map(([type, category]) => (
-        <div key={type}>
-          <div className="slider-header">
-            <div className="slider-title">
-              <span>
-                {intl.formatMessage(
-                  categoriesMessages[type as keyof typeof categoriesMessages]
-                )}
-              </span>
-            </div>
+      <div>
+        <div className="slider-header">
+          <div className="slider-title">
+            <span>{intl.formatMessage(messages.available)}</span>
           </div>
-          <ListView
-            isLoading={false}
-            jsxItems={category.map((item) => {
-              return (
-                <FetchedDataTitleCard
-                  key={`media-slider-item-${item.id}`}
-                  data={item}
-                />
-              );
-            })}
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            onScrollBottom={() => {}}
-          />
         </div>
-      ))}
+        <Slider
+          sliderKey="Available Releases"
+          isLoading={false}
+          items={availableReleases.map((item) => {
+            return (
+              <FetchedDataTitleCard
+                key={`media-slider-item-${item.id}`}
+                data={item}
+              />
+            );
+          })}
+        />
+      </div>
+      <div>
+        <div className="slider-header">
+          <div className="slider-title">
+            <span>{intl.formatMessage(messages.releases)}</span>
+          </div>
+        </div>
+        <ListView
+          isLoading={false}
+          jsxItems={releases.map((item) => {
+            return (
+              <FetchedDataTitleCard
+                key={`media-slider-item-${item.id}`}
+                data={item}
+              />
+            );
+          })}
+          // eslint-disable-next-line @typescript-eslint/no-empty-function
+          onScrollBottom={() => {}}
+        />
+      </div>
     </div>
   );
 };
