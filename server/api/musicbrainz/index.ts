@@ -194,6 +194,7 @@ function convertRelease(release: Release): mbRelease {
         : undefined,
     tracks: (release.media ?? []).flatMap(convertMedium),
     tags: (release.tags ?? []).map(convertTag),
+    releaseGroupType: release['release-group']?.['primary-type'] || 'Other',
   };
 }
 
@@ -558,9 +559,8 @@ class MusicBrainz extends BaseNodeBrainz {
               };
               // Get the first 25 results
               const total = data['recording-count'];
-              let results: mbRecording[] = await data.recordings.map(
-                convertRecording
-              );
+              let results: mbRecording[] =
+                data.recordings.map(convertRecording);
 
               // Slice the results into smaller chunks to avoid hitting the limit of 100
 
@@ -667,9 +667,8 @@ class MusicBrainz extends BaseNodeBrainz {
               };
               // Get the first 25 results
               const total = data['release-group-count'];
-              let results: mbReleaseGroup[] = await data['release-groups'].map(
-                convertReleaseGroup
-              );
+              let results: mbReleaseGroup[] =
+                data['release-groups'].map(convertReleaseGroup);
 
               // Slice the results into smaller chunks to avoid hitting the limit of 100
 
@@ -768,7 +767,7 @@ class MusicBrainz extends BaseNodeBrainz {
       return new Promise<mbRelease[]>((resolve, reject) => {
         this.browse(
           'release',
-          { artist: artistId, offset: startOffset },
+          { artist: artistId, offset: startOffset, inc: 'tags+release-groups' },
           async (error, data) => {
             if (error) {
               reject(error);
@@ -780,9 +779,7 @@ class MusicBrainz extends BaseNodeBrainz {
               };
               // Get the first 25 results
               const total = data['release-count'];
-              let results: mbRelease[] = await data.releases.map(
-                convertRelease
-              );
+              let results: mbRelease[] = data.releases.map(convertRelease);
 
               // Slice the results into smaller chunks to avoid hitting the limit of 100
 
@@ -799,6 +796,7 @@ class MusicBrainz extends BaseNodeBrainz {
                         artist: artistId,
                         offset: i,
                         limit: 100,
+                        inc: 'tags+release-groups',
                       },
                       (error, data) => {
                         if (error) {
@@ -889,7 +887,7 @@ class MusicBrainz extends BaseNodeBrainz {
               };
               // Get the first 25 results
               const total = data['work-count'];
-              let results: mbWork[] = await data.works.map(convertWork);
+              let results: mbWork[] = data.works.map(convertWork);
 
               // Slice the results into smaller chunks to avoid hitting the limit of 100
 

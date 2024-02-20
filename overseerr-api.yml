@@ -795,7 +795,8 @@ components:
             type: string
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
-
+        releaseGroupType:
+          type: string
     ReleaseGroupResult:
       type: object
       properties:
@@ -823,6 +824,10 @@ components:
             type: string
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
+        releases:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReleaseResult'
     Genre:
       type: object
       properties:

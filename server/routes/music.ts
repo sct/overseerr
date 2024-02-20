@@ -25,7 +25,13 @@ musicRoutes.get('/artist/:id', async (req, res, next) => {
 
     const media = await Media.getMedia(artist.id, MediaType.MUSIC);
 
-    return res.status(200).json(await mapArtistResult(artist, media));
+    const results = await mapArtistResult(artist, media);
+
+    for (const release of results.releases) {
+      release.mediaInfo = await Media.getMedia(release.id, MediaType.MUSIC);
+    }
+
+    return res.status(200).json(results);
   } catch (e) {
     logger.debug('Something went wrong retrieving artist', {
       label: 'API',
@@ -69,9 +75,13 @@ musicRoutes.get('/release-group/:id', async (req, res, next) => {
 
     const media = await Media.getMedia(releaseGroup.id, MediaType.MUSIC);
 
-    return res
-      .status(200)
-      .json(await mapReleaseGroupResult(releaseGroup, media));
+    const results = await mapReleaseGroupResult(releaseGroup, media);
+
+    for (const release of results.releases) {
+      release.mediaInfo = await Media.getMedia(release.id, MediaType.MUSIC);
+    }
+
+    return res.status(200).json(results);
   } catch (e) {
     logger.debug('Something went wrong retrieving release group', {
       label: 'API',
