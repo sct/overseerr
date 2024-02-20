@@ -85,6 +85,24 @@ class Media {
     }
   }
 
+  public static async getChildMedia(
+    parentId: number
+  ): Promise<Media[] | undefined> {
+    const mediaRepository = getRepository(Media);
+
+    try {
+      const media = await mediaRepository.find({
+        where: { parentRatingKey: parentId },
+        relations: { requests: true, issues: true },
+      });
+
+      return media;
+    } catch (e) {
+      logger.error(e.message);
+      return undefined;
+    }
+  }
+
   @PrimaryGeneratedColumn()
   public id: number;
 
@@ -167,6 +185,12 @@ class Media {
 
   @Column({ nullable: true, type: 'varchar' })
   public ratingKey4k?: string | null;
+
+  @Column({ nullable: true, type: 'varchar' })
+  public title?: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  public parentRatingKey?: number;
 
   public serviceUrl?: string;
   public serviceUrl4k?: string;

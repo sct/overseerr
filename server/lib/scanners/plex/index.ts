@@ -378,6 +378,7 @@ class PlexScanner
         mediaAddedAt: new Date(plexitem.addedAt * 1000),
         ratingKey: plexitem.ratingKey,
         title: plexitem.title,
+        parentRatingKey: plexitem.parentRatingKey,
       });
     } else {
       this.log('No MusicBrainz ID found for album', 'warn', {

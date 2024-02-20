@@ -149,9 +149,6 @@ export interface ArtistResult {
   name: string;
   type: mbArtistType;
   releases: ReleaseResult[];
-  recordings: RecordingResult[];
-  releaseGroups: ReleaseGroupResult[];
-  works: WorkResult[];
   gender?: string;
   area?: string;
   beginDate?: string;
@@ -284,23 +281,6 @@ export const mapArtistResult = async (
   releases: await Promise.all(
     Array.isArray(artist.releases)
       ? artist.releases.map((release) => mapReleaseResult(release))
-      : []
-  ),
-  recordings: await Promise.all(
-    Array.isArray(artist.recordings)
-      ? artist.recordings.map((recording) => mapRecordingResult(recording))
-      : []
-  ),
-  releaseGroups: await Promise.all(
-    Array.isArray(artist.releaseGroups)
-      ? artist.releaseGroups.map((releaseGroup) =>
-          mapReleaseGroupResult(releaseGroup)
-        )
-      : []
-  ),
-  works: await Promise.all(
-    Array.isArray(artist.works)
-      ? artist.works.map((work) => mapWorkResult(work))
       : []
   ),
   tags: artist.tags,

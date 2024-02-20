@@ -40,6 +40,7 @@ interface ProcessOptions {
   externalServiceSlug?: string;
   title?: string;
   processing?: boolean;
+  parentRatingKey?: string;
 }
 
 export interface ProcessableSeason {
@@ -567,6 +568,7 @@ class BaseScanner<T> {
       } else {
         const newMedia = new Media();
         newMedia.mbId = mbId;
+        newMedia.title = title;
         newMedia.secondaryType = SecondaryType.ARTIST;
         newMedia.status = !processing
           ? MediaStatus.AVAILABLE
@@ -599,6 +601,7 @@ class BaseScanner<T> {
       externalServiceId,
       processing = false,
       title = 'Unknown Title',
+      parentRatingKey = undefined,
     }: ProcessOptions = {}
   ): Promise<void> {
     const mediaRepository = getRepository(Media);
@@ -654,6 +657,10 @@ class BaseScanner<T> {
       } else {
         const newMedia = new Media();
         newMedia.mbId = mbId;
+        newMedia.title = title;
+        newMedia.parentRatingKey = parentRatingKey
+          ? Number(parentRatingKey.match(/(\d+)/)?.[0])
+          : undefined;
         newMedia.secondaryType = SecondaryType.RELEASE;
         newMedia.status = !processing
           ? MediaStatus.AVAILABLE
