@@ -1,12 +1,9 @@
 import MusicBrainz from '@server/api/musicbrainz';
-import { MediaType } from '@server/constants/media';
+import { MediaType, SecondaryType } from '@server/constants/media';
 import Media from '@server/entity/Media';
 import logger from '@server/logger';
-import {
-  mapArtistResult,
-  mapReleaseGroupResult,
-  mapReleaseResult,
-} from '@server/models/Search';
+import type { ReleaseResult } from '@server/models/Search';
+import { mapArtistResult, mapReleaseResult } from '@server/models/Search';
 import { Router } from 'express';
 
 const musicRoutes = Router();
@@ -27,9 +24,55 @@ musicRoutes.get('/artist/:id', async (req, res, next) => {
 
     const results = await mapArtistResult(artist, media);
 
-    for (const release of results.releases) {
-      release.mediaInfo = await Media.getMedia(release.id, MediaType.MUSIC);
+    let existingReleaseMedia: Media[] = [];
+    if (media) {
+      existingReleaseMedia =
+        (await Media.getChildMedia(Number(media.ratingKey) ?? 0)) ?? [];
     }
+
+    let newReleases: ReleaseResult[] = await Promise.all(
+      existingReleaseMedia.map(async (releaseMedia) => {
+        return await mapReleaseResult(
+          {
+            id: <string>releaseMedia.mbId,
+            media_type: SecondaryType.RELEASE,
+            title: <string>releaseMedia.title,
+            artist: [],
+            tags: [],
+          },
+          releaseMedia
+        );
+      })
+    );
+    newReleases = newReleases.slice(offset, offset + maxElements);
+
+    for (const release of results.releases) {
+      if (newReleases.length >= maxElements) {
+        break;
+      }
+      if (newReleases.find((r: ReleaseResult) => r.id === release.id)) {
+        continue;
+      }
+      if (newReleases.find((r: ReleaseResult) => r.title === release.title)) {
+        if (
+          newReleases.find(
+            (r: ReleaseResult) => r.mediaInfo && !release.mediaInfo
+          )
+        ) {
+          continue;
+        }
+        if (
+          newReleases.find(
+            (r: ReleaseResult) => !r.mediaInfo && !release.mediaInfo
+          )
+        ) {
+          continue;
+        }
+      }
+      newReleases.push(release);
+    }
+
+    results.releases = newReleases;
 
     return res.status(200).json(results);
   } catch (e) {
@@ -63,34 +106,6 @@ musicRoutes.get('/release/:id', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Unable to retrieve release.',
-    });
-  }
-});
-
-musicRoutes.get('/release-group/:id', async (req, res, next) => {
-  const mb = new MusicBrainz();
-
-  try {
-    const releaseGroup = await mb.getReleaseGroup(req.params.id);
-
-    const media = await Media.getMedia(releaseGroup.id, MediaType.MUSIC);
-
-    const results = await mapReleaseGroupResult(releaseGroup, media);
-
-    for (const release of results.releases) {
-      release.mediaInfo = await Media.getMedia(release.id, MediaType.MUSIC);
-    }
-
-    return res.status(200).json(results);
-  } catch (e) {
-    logger.debug('Something went wrong retrieving release group', {
-      label: 'API',
-      errorMessage: e.message,
-      releaseGroupId: req.params.id,
-    });
-    return next({
-      status: 500,
-      message: 'Unable to retrieve release group.',
     });
   }
 });

@@ -504,22 +504,7 @@ class MusicBrainz extends BaseNodeBrainz {
               reject(error);
             } else {
               const results = convertArtist(data as Artist);
-              results.releaseGroups = await this.getReleaseGroups(
-                artistId,
-                maxElements,
-                startOffset
-              );
               results.releases = await this.getReleases(
-                artistId,
-                maxElements,
-                startOffset
-              );
-              results.recordings = await this.getRecordings(
-                artistId,
-                maxElements,
-                startOffset
-              );
-              results.works = await this.getWorks(
                 artistId,
                 maxElements,
                 startOffset

@@ -668,7 +668,6 @@ components:
           example: 19923-12-03
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
-
     ArtistResult:
       type: object
       properties:
@@ -695,18 +694,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ReleaseResult'
-        recordings:
-          type: array
-          items:
-            $ref: '#/components/schemas/RecordingResult'
-        releaseGroups:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReleaseGroupResult'
-        works:
-          type: array
-          items:
-            $ref: '#/components/schemas/WorkResult'
         gender:
           type: string
         area:
@@ -719,27 +706,6 @@ components:
           type: array
           items:
             type: string
-
-    WorkResult:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
-        mediaType:
-          type: string
-          example: work
-        title:
-          type: string
-        artist:
-          type: array
-          items:
-            $ref: '#/components/schemas/ArtistResult'
-        tags:
-          type: array
-          items:
-            type: string
-
     RecordingResult:
       type: object
       properties:
@@ -797,37 +763,6 @@ components:
           $ref: '#/components/schemas/MediaInfo'
         releaseGroupType:
           type: string
-    ReleaseGroupResult:
-      type: object
-      properties:
-        id:
-          type: string
-          example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
-        mediaType:
-          type: string
-          example: release-group
-        type:
-          type: string
-          enum:
-            - mbReleaseGroupType
-        posterPath:
-          type: string
-        title:
-          type: string
-        artist:
-          type: array
-          items:
-            $ref: '#/components/schemas/ArtistResult'
-        tags:
-          type: array
-          items:
-            type: string
-        mediaInfo:
-          $ref: '#/components/schemas/MediaInfo'
-        releases:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReleaseResult'
     Genre:
       type: object
       properties:
@@ -6179,44 +6114,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ReleaseResult'
-  /music/release-group/{releaseGroupId}:
-    get:
-      summary: Get release group details
-      description: Returns full release group details in a JSON object.
-      tags:
-        - music
-      parameters:
-        - in: path
-          name: releaseGroupId
-          required: true
-          schema:
-            type: string
-            example: 87f17f8a-c0e2-406c-a149-8c8e311bf330
-        - in: query
-          name: full
-          schema:
-            type: boolean
-            example: false
-            default: false
-        - in: query
-          name: maxElements
-          schema:
-            type: number
-            example: 50
-            default: 25
-        - in: query
-          name: offset
-          schema:
-            type: number
-            example: 25
-            default: 0
-      responses:
-        '200':
-          description: Release Group details
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ReleaseGroupResult'
   /media:
     get:
       summary: Get media
