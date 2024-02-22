@@ -9,7 +9,7 @@ import { MediaStatus, SecondaryType } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import { Permission } from '@server/lib/permissions';
-import type { ReleaseResult } from '@server/models/Search';
+import type { ArtistResult } from '@server/models/Search';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -20,11 +20,11 @@ const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
   requestCancel: 'Request for <strong>{title}</strong> canceled.',
-  requestreleasetitle: 'Request Release',
+  requestartisttitle: 'Request Artist',
   edit: 'Edit Request',
   approve: 'Approve Request',
   cancel: 'Cancel Request',
-  pendingrequest: 'Pending Release Request',
+  pendingrequest: 'Pending Artist Request',
   requestfrom: "{username}'s request is pending approval.",
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request for <strong>{title}</strong> edited successfully!',
@@ -41,7 +41,7 @@ interface RequestModalProps extends React.HTMLAttributes<HTMLDivElement> {
   onUpdating?: (isUpdating: boolean) => void;
 }
 
-const ReleaseRequestModal = ({
+const ArtistRequestModal = ({
   onCancel,
   onComplete,
   mbId,
@@ -52,12 +52,9 @@ const ReleaseRequestModal = ({
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
   const { addToast } = useToasts();
-  const { data, error } = useSWR<ReleaseResult>(
-    `/api/v1/music/release/${mbId}`,
-    {
-      revalidateOnMount: true,
-    }
-  );
+  const { data, error } = useSWR<ArtistResult>(`/api/v1/music/artist/${mbId}`, {
+    revalidateOnMount: true,
+  });
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const { data: quota } = useSWR<QuotaResponse>(
@@ -90,7 +87,7 @@ const ReleaseRequestModal = ({
       const response = await axios.post<MediaRequest>('/api/v1/request', {
         mediaId: data?.id,
         mediaType: 'music',
-        secondaryType: 'release',
+        secondaryType: 'artist',
         ...overrideParams,
       });
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
@@ -107,7 +104,7 @@ const ReleaseRequestModal = ({
         addToast(
           <span>
             {intl.formatMessage(messages.requestSuccess, {
-              title: data?.title,
+              title: data?.name,
               strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             })}
           </span>,
@@ -140,7 +137,7 @@ const ReleaseRequestModal = ({
         addToast(
           <span>
             {intl.formatMessage(messages.requestCancel, {
-              title: data?.title,
+              title: data?.name,
               strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             })}
           </span>,
@@ -158,7 +155,7 @@ const ReleaseRequestModal = ({
     try {
       await axios.put(`/api/v1/request/${editRequest?.id}`, {
         mediaType: 'music',
-        secondaryType: 'release',
+        secondaryType: 'artist',
         serverId: requestOverrides?.server,
         profileId: requestOverrides?.profile,
         rootFolder: requestOverrides?.folder,
@@ -178,7 +175,7 @@ const ReleaseRequestModal = ({
               ? messages.requestApproved
               : messages.requestedited,
             {
-              title: data?.title,
+              title: data?.name,
               strong: (msg: React.ReactNode) => <strong>{msg}</strong>,
             }
           )}
@@ -211,7 +208,7 @@ const ReleaseRequestModal = ({
         backgroundClickable
         onCancel={onCancel}
         title={intl.formatMessage(messages.pendingrequest)}
-        subTitle={data?.title}
+        subTitle={data?.name}
         onOk={() =>
           hasPermission(Permission.MANAGE_REQUESTS)
             ? updateRequest(true)
@@ -266,7 +263,7 @@ const ReleaseRequestModal = ({
           hasPermission(Permission.MANAGE_REQUESTS)) && (
           <AdvancedRequester
             type="music"
-            secondaryType={SecondaryType.RELEASE}
+            secondaryType={SecondaryType.ARTIST}
             requestUser={editRequest.requestedBy}
             defaultOverrides={{
               folder: editRequest.rootFolder,
@@ -299,8 +296,8 @@ const ReleaseRequestModal = ({
       onCancel={onCancel}
       onOk={sendRequest}
       okDisabled={isUpdating || quota?.music.restricted}
-      title={intl.formatMessage(messages.requestreleasetitle)}
-      subTitle={data?.title}
+      title={intl.formatMessage(messages.requestartisttitle)}
+      subTitle={data?.name}
       okText={
         isUpdating
           ? intl.formatMessage(globalMessages.requesting)
@@ -320,7 +317,7 @@ const ReleaseRequestModal = ({
       {(quota?.music.limit ?? 0) > 0 && (
         <QuotaDisplay
           mediaType="music"
-          secondaryType={SecondaryType.RELEASE}
+          secondaryType={SecondaryType.ARTIST}
           quota={quota?.music}
           userOverride={
             requestOverrides?.user && requestOverrides.user.id !== user?.id
@@ -333,7 +330,7 @@ const ReleaseRequestModal = ({
         hasPermission(Permission.MANAGE_REQUESTS)) && (
         <AdvancedRequester
           type="music"
-          secondaryType={SecondaryType.RELEASE}
+          secondaryType={SecondaryType.ARTIST}
           onChange={(overrides) => {
             setRequestOverrides(overrides);
           }}
@@ -343,4 +340,4 @@ const ReleaseRequestModal = ({
   );
 };
 
-export default ReleaseRequestModal;
+export default ArtistRequestModal;

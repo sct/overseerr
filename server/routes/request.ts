@@ -173,7 +173,6 @@ requestRoutes.post<
       });
     }
     const request = await MediaRequest.request(req.body, req.user);
-
     return res.status(201).json(request);
   } catch (error) {
     if (!(error instanceof Error)) {
@@ -189,7 +188,10 @@ requestRoutes.post<
       case NoSeasonsAvailableError:
         return next({ status: 202, message: error.message });
       default:
-        return next({ status: 500, message: error.message });
+        return next({
+          status: 500,
+          message: error.message,
+        });
     }
   }
 });

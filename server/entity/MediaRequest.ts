@@ -1,6 +1,9 @@
 import MusicBrainz from '@server/api/musicbrainz';
 import type { mbRelease } from '@server/api/musicbrainz/interfaces';
-import type { LidarrAlbumOptions } from '@server/api/servarr/lidarr';
+import type {
+  LidarrAlbumOptions,
+  LidarrArtistOptions,
+} from '@server/api/servarr/lidarr';
 import LidarrAPI from '@server/api/servarr/lidarr';
 import type { RadarrMovieOptions } from '@server/api/servarr/radarr';
 import RadarrAPI from '@server/api/servarr/radarr';
@@ -153,7 +156,9 @@ export class MediaRequest {
       requestBody.mediaType === MediaType.MOVIE
         ? await tmdb.getMovie({ movieId: requestBody.mediaId })
         : requestBody.mediaType === MediaType.MUSIC
-        ? await musicbrainz.getRelease(requestBody.mediaId)
+        ? requestBody.secondaryType === SecondaryType.RELEASE
+          ? await musicbrainz.getRelease(requestBody.mediaId)
+          : await musicbrainz.getArtist(requestBody.mediaId)
         : await tmdb.getTvShow({ tvId: requestBody.mediaId });
 
     let media =
@@ -162,7 +167,7 @@ export class MediaRequest {
             where: {
               mbId: requestBody.mediaId,
               mediaType: MediaType.MUSIC,
-              secondaryType: SecondaryType.RELEASE,
+              secondaryType: requestBody.secondaryType,
             },
             relations: ['requests'],
           })
@@ -180,7 +185,7 @@ export class MediaRequest {
           mbId: requestBody.mediaId,
           status: MediaStatus.PENDING,
           mediaType: MediaType.MUSIC,
-          secondaryType: SecondaryType.RELEASE,
+          secondaryType: requestBody.secondaryType,
           title: (metaMedia as mbRelease).title,
         });
       } else if (requestBody.mediaType === MediaType.MOVIE) {
@@ -460,6 +465,7 @@ export class MediaRequest {
 
       const request = new MediaRequest({
         type: MediaType.MUSIC,
+        secondaryType: (requestBody as MusicRequestBody).secondaryType,
         media,
         requestedBy: requestUser,
         // If the user is an admin or has the "auto approve" permission, automatically approve the request
@@ -1396,8 +1402,6 @@ export class MediaRequest {
           apiKey: lidarrSettings.apiKey,
           url: LidarrAPI.buildUrl(lidarrSettings, '/api/v1'),
         });
-        const release = await musicbrainz.getRelease(String(this.media.mbId));
-
         const media = await mediaRepository.findOne({
           where: { id: this.media.id },
         });
@@ -1456,53 +1460,110 @@ export class MediaRequest {
           return;
         }
 
-        const lidarrAlbumOptions: LidarrAlbumOptions = {
-          profileId: qualityProfile,
-          qualityProfileId: qualityProfile,
-          rootFolderPath: rootFolder,
-          title: release.title,
-          mbId: release.releaseGroup?.id ?? release.id,
-          monitored: true,
-          tags: tags.map((tag) => String(tag)),
-          searchNow: !lidarrSettings.preventSearch,
-        };
+        if (this.media.secondaryType === SecondaryType.RELEASE) {
+          const release = await musicbrainz.getRelease(String(this.media.mbId));
 
-        // Run this asynchronously so we don't wait for it on the UI side
-        lidarr
-          .addAlbum(lidarrAlbumOptions)
-          .then(async (lidarrAlbum) => {
-            // We grab media again here to make sure we have the latest version of it
-            const media = await mediaRepository.findOne({
-              where: { id: this.media.id },
-            });
+          const lidarrAlbumOptions: LidarrAlbumOptions = {
+            profileId: qualityProfile,
+            qualityProfileId: qualityProfile,
+            rootFolderPath: rootFolder,
+            title: release.title,
+            mbId: release.releaseGroup?.id ?? release.id,
+            monitored: true,
+            tags: tags.map((tag) => String(tag)),
+            searchNow: !lidarrSettings.preventSearch,
+          };
 
-            if (!media) {
-              throw new Error('Media data not found');
-            }
+          // Run this asynchronously so we don't wait for it on the UI side
+          lidarr
+            .addAlbum(lidarrAlbumOptions)
+            .then(async (lidarrAlbum) => {
+              // We grab media again here to make sure we have the latest version of it
+              const media = await mediaRepository.findOne({
+                where: { id: this.media.id },
+              });
 
-            media['externalServiceId'] = lidarrAlbum.id;
-            media['externalServiceSlug'] = lidarrAlbum.disambiguation;
-            media['serviceId'] = lidarrSettings?.id;
-            await mediaRepository.save(media);
-          })
-          .catch(async () => {
-            const requestRepository = getRepository(MediaRequest);
-
-            this.status = MediaRequestStatus.FAILED;
-            requestRepository.save(this);
-
-            logger.warn(
-              'Something went wrong sending music request to Lidarr, marking status as FAILED',
-              {
-                label: 'Media Request',
-                requestId: this.id,
-                mediaId: this.media.id,
-                lidarrAlbumOptions,
+              if (!media) {
+                throw new Error('Media data not found');
               }
-            );
 
-            this.sendNotification(media, Notification.MEDIA_FAILED);
-          });
+              media['externalServiceId'] = lidarrAlbum.id;
+              media['externalServiceSlug'] = lidarrAlbum.disambiguation;
+              media['serviceId'] = lidarrSettings?.id;
+              await mediaRepository.save(media);
+            })
+            .catch(async () => {
+              const requestRepository = getRepository(MediaRequest);
+
+              this.status = MediaRequestStatus.FAILED;
+              requestRepository.save(this);
+
+              logger.warn(
+                'Something went wrong sending music request to Lidarr, marking status as FAILED',
+                {
+                  label: 'Media Request',
+                  requestId: this.id,
+                  mediaId: this.media.id,
+                  lidarrAlbumOptions,
+                }
+              );
+
+              this.sendNotification(media, Notification.MEDIA_FAILED);
+            });
+        } else if (this.media.secondaryType === SecondaryType.ARTIST) {
+          const artist = await musicbrainz.getArtist(String(this.media.mbId));
+
+          const lidarrArtistOptions: LidarrArtistOptions = {
+            profileId: qualityProfile,
+            qualityProfileId: qualityProfile,
+            rootFolderPath: rootFolder,
+            mbId: artist.id,
+            monitored: true,
+            tags: tags.map((tag) => String(tag)),
+            searchNow: !lidarrSettings.preventSearch,
+            monitorNewItems: 'all',
+            monitor: 'all',
+            searchForMissingAlbums: true,
+          };
+
+          // Run this asynchronously so we don't wait for it on the UI side
+          lidarr
+            .addArtist(lidarrArtistOptions)
+            .then(async (lidarrArtist) => {
+              // We grab media again here to make sure we have the latest version of it
+              const media = await mediaRepository.findOne({
+                where: { id: this.media.id },
+              });
+
+              if (!media) {
+                throw new Error('Media data not found');
+              }
+
+              media['externalServiceId'] = lidarrArtist.id;
+              media['externalServiceSlug'] = lidarrArtist.disambiguation;
+              media['serviceId'] = lidarrSettings?.id;
+              await mediaRepository.save(media);
+            })
+            .catch(async () => {
+              const requestRepository = getRepository(MediaRequest);
+
+              this.status = MediaRequestStatus.FAILED;
+              requestRepository.save(this);
+
+              logger.warn(
+                'Something went wrong sending music request to Lidarr, marking status as FAILED',
+                {
+                  label: 'Media Request',
+                  requestId: this.id,
+                  mediaId: this.media.id,
+                  lidarrArtistOptions,
+                }
+              );
+
+              this.sendNotification(media, Notification.MEDIA_FAILED);
+            });
+        }
+
         logger.info('Sent request to Lidarr', {
           label: 'Media Request',
           requestId: this.id,
@@ -1604,20 +1665,34 @@ export class MediaRequest {
           ],
         });
       } else if (this.type === MediaType.MUSIC) {
-        const music = await musicbrainz.getRelease(media.mbId as string);
-        notificationManager.sendNotification(type, {
-          media,
-          request: this,
-          notifyAdmin,
-          notifySystem,
-          notifyUser: notifyAdmin ? undefined : this.requestedBy,
-          event,
-          subject: `${music.title}${
-            music.date ? ` (${music.date.toLocaleDateString()})` : ''
-          }`,
-          message: music.artist.map((artist) => artist.name).join(', '),
-          image: `http://coverartarchive.org/release/${music.id}/front-250`,
-        });
+        if (this.media.secondaryType === SecondaryType.RELEASE) {
+          const music = await musicbrainz.getRelease(media.mbId as string);
+          notificationManager.sendNotification(type, {
+            media,
+            request: this,
+            notifyAdmin,
+            notifySystem,
+            notifyUser: notifyAdmin ? undefined : this.requestedBy,
+            event,
+            subject: `${music.title}${
+              music.date ? ` (${music.date.toLocaleDateString()})` : ''
+            }`,
+            message: music.artist.map((artist) => artist.name).join(', '),
+            image: `http://coverartarchive.org/release/${music.id}/front-250`,
+          });
+        } else if (this.media.secondaryType === SecondaryType.ARTIST) {
+          const artist = await musicbrainz.getArtist(media.mbId as string);
+          notificationManager.sendNotification(type, {
+            media,
+            request: this,
+            notifyAdmin,
+            notifySystem,
+            notifyUser: notifyAdmin ? undefined : this.requestedBy,
+            event,
+            subject: artist.name,
+            image: `http://coverartarchive.org/artist/${artist.id}/front-250`,
+          });
+        }
       }
     } catch (e) {
       logger.error('Something went wrong sending media notification(s)', {

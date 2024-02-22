@@ -116,7 +116,7 @@ export interface ReleaseResult {
   title: string;
   artist: ArtistResult[];
   posterPath?: string;
-  date?: Date;
+  date?: Date | string;
   tracks?: RecordingResult[];
   tags: string[];
   mediaInfo?: Media;

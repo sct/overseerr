@@ -1,4 +1,4 @@
-import type { MediaType } from '@server/constants/media';
+import type { MediaType, SecondaryType } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { PaginatedResponse } from './common';
 
@@ -30,6 +30,7 @@ export interface TvRequestBody extends VideoRequestBody {
 }
 
 export interface MusicRequestBody extends MediaRequestBody {
+  secondaryType: SecondaryType;
   mediaType: MediaType.MUSIC;
   mediaId: string;
 }

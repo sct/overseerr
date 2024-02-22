@@ -1267,6 +1267,8 @@ components:
           type: string
           example: '2020-09-12T10:00:27.000Z'
           readOnly: true
+        secondaryType:
+          type: string
     Cast:
       type: object
       properties:
@@ -5429,6 +5431,9 @@ paths:
                 userId:
                   type: number
                   nullable: true
+                secondaryType:
+                  type: string
+                  enum: [release,artist]
               required:
                 - mediaType
                 - mediaId

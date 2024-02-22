@@ -12,6 +12,19 @@ export interface LidarrAlbumOptions {
   searchNow: boolean;
 }
 
+export interface LidarrArtistOptions {
+  profileId: number;
+  qualityProfileId: number;
+  rootFolderPath: string;
+  mbId: string;
+  monitored: boolean;
+  tags: string[];
+  searchNow: boolean;
+  monitorNewItems: string;
+  monitor: string;
+  searchForMissingAlbums: boolean;
+}
+
 export interface LidarrMusic {
   id: number;
   title: string;
@@ -310,6 +323,7 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
         tags: options.tags,
         monitored: options.monitored,
         artist: artist,
+        rootFolderPath: options.rootFolderPath,
         addOptions: {
           searchForNewAlbum: options.searchNow,
         },
@@ -332,6 +346,52 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
         mbId: options.mbId,
       });
       throw new Error(`[Lidarr] Failed to add album: ${options.mbId}`);
+    }
+  };
+
+  public addArtist = async (
+    options: LidarrArtistOptions
+  ): Promise<LidarrArtist> => {
+    try {
+      const artist = await this.getArtist(options.mbId);
+      if (artist.id) {
+        logger.info('Artist is already monitored in Lidarr. Skipping add.', {
+          label: 'Lidarr',
+          artistId: artist.id,
+          artistName: artist.artistName,
+        });
+        return artist;
+      }
+
+      const response = await this.axios.post<LidarrArtist>('/artist', {
+        ...artist,
+        qualityProfileId: options.qualityProfileId,
+        monitored: true,
+        monitorNewItems: options.monitorNewItems,
+        rootFolderPath: options.rootFolderPath,
+        addOptions: {
+          monitor: options.monitor,
+          searchForMissingAlbums: options.searchForMissingAlbums,
+        },
+      });
+
+      if (response.data.id) {
+        logger.info('Lidarr accepted request', { label: 'Lidarr' });
+      } else {
+        logger.error('Failed to add artist to Lidarr', {
+          label: 'Lidarr',
+          mbId: options.mbId,
+        });
+        throw new Error('Failed to add artist to Lidarr');
+      }
+      return response.data;
+    } catch (e) {
+      logger.error('Error adding artist by MUSICBRAINZ ID', {
+        label: 'Lidarr API',
+        errorMessage: e.message,
+        mbId: options.mbId,
+      });
+      throw new Error(`[Lidarr] Failed to add artist: ${options.mbId}`);
     }
   };
 }

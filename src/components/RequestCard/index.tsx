@@ -19,6 +19,7 @@ import {
 import { MediaRequestStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { MovieDetails } from '@server/models/Movie';
+import type { ArtistResult, ReleaseResult } from '@server/models/Search';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
@@ -42,8 +43,32 @@ const messages = defineMessages({
   unknowntitle: 'Unknown Title',
 });
 
-const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
-  return (movie as MovieDetails).title !== undefined;
+const isMovie = (
+  movie: MovieDetails | TvDetails | ReleaseResult | ArtistResult
+): movie is MovieDetails => {
+  // Check if the object doesn't have a mediaType property and does have a title property then it's a movie
+  return !('mediaType' in movie) && 'title' in movie;
+};
+
+const isTv = (
+  tv: MovieDetails | TvDetails | ReleaseResult | ArtistResult
+): tv is TvDetails => {
+  // Check if the object doesn't have a mediaType property and does have a name property then it's a tv show
+  return !('mediaType' in tv) && 'name' in tv;
+};
+
+const isRelease = (
+  release: MovieDetails | TvDetails | ReleaseResult | ArtistResult
+): release is ReleaseResult => {
+  // Check if the object has a mediaType property and does have a title property then it's a release
+  return 'mediaType' in release && 'title' in release;
+};
+
+const isArtist = (
+  artist: MovieDetails | TvDetails | ReleaseResult | ArtistResult
+): artist is ArtistResult => {
+  // Check if the object has a mediaType property and does have a name property then it's an artist
+  return 'mediaType' in artist && 'name' in artist;
 };
 
 const RequestCardPlaceholder = () => {
@@ -205,7 +230,10 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
 
 interface RequestCardProps {
   request: MediaRequest;
-  onTitleData?: (requestId: number, title: MovieDetails | TvDetails) => void;
+  onTitleData?: (
+    requestId: number,
+    title: MovieDetails | TvDetails | ReleaseResult | ArtistResult
+  ) => void;
 }
 
 const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
@@ -224,9 +252,9 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
       ? `/api/v1/tv/${request.media.tmdbId}`
       : `/api/v1/music/${request.media.secondaryType}/${request.media.mbId}`;
 
-  const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? `${url}` : null
-  );
+  const { data: title, error } = useSWR<
+    MovieDetails | TvDetails | ReleaseResult | ArtistResult
+  >(inView ? `${url}` : null);
   const {
     data: requestData,
     error: requestError,
@@ -321,7 +349,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
         className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 bg-cover bg-center p-4 text-gray-400 shadow ring-1 ring-gray-700 sm:w-96"
         data-testid="request-card"
       >
-        {title.backdropPath && (
+        {(isMovie(title) || isTv(title)) && title.backdropPath && (
           <div className="absolute inset-0 z-0">
             <CachedImage
               alt=""
@@ -343,20 +371,28 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
           data-testid="request-card-title"
         >
           <div className="hidden text-xs font-medium text-white sm:flex">
-            {(isMovie(title) ? title.releaseDate : title.firstAirDate)?.slice(
-              0,
-              4
-            )}
+            {(isMovie(title)
+              ? title.releaseDate
+              : isTv(title)
+              ? title.firstAirDate
+              : isRelease(title)
+              ? title.date?.toDateString()
+              : isArtist(title)
+              ? title.beginDate
+              : ''
+            )?.slice(0, 4)}
           </div>
           <Link
             href={
               request.type === 'movie'
                 ? `/movie/${requestData.media.tmdbId}`
-                : `/tv/${requestData.media.tmdbId}`
+                : request.type === 'tv'
+                ? `/tv/${requestData.media.tmdbId}`
+                : `/music/${requestData.media.secondaryType}/${requestData.media.mbId}`
             }
           >
             <a className="overflow-hidden overflow-ellipsis whitespace-nowrap text-base font-bold text-white hover:underline sm:text-lg">
-              {isMovie(title) ? title.title : title.name}
+              {isMovie(title) || isRelease(title) ? title.title : title.name}
             </a>
           </Link>
           {hasPermission(
@@ -378,7 +414,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               </Link>
             </div>
           )}
-          {!isMovie(title) && request.seasons.length > 0 && (
+          {isTv(title) && request.seasons.length > 0 && (
             <div className="my-0.5 hidden items-center text-sm sm:my-1 sm:flex">
               <span className="mr-2 font-bold ">
                 {intl.formatMessage(messages.seasons, {
@@ -423,7 +459,9 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                     requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
                   ]
                 }
-                title={isMovie(title) ? title.title : title.name}
+                title={
+                  isMovie(title) || isRelease(title) ? title.title : title.name
+                }
                 inProgress={
                   (
                     requestData.media[

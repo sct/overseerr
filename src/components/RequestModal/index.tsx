@@ -1,3 +1,4 @@
+import ArtistRequestModal from '@app/components/RequestModal/ArtistRequestModal';
 import CollectionRequestModal from '@app/components/RequestModal/CollectionRequestModal';
 import MovieRequestModal from '@app/components/RequestModal/MovieRequestModal';
 import ReleaseRequestModal from '@app/components/RequestModal/ReleaseRequestModal';
@@ -70,6 +71,14 @@ const RequestModal = ({
         />
       ) : type === 'music' && secondaryType === 'release' ? (
         <ReleaseRequestModal
+          onComplete={onComplete}
+          onCancel={onCancel}
+          mbId={mbId as string}
+          onUpdating={onUpdating}
+          editRequest={editRequest}
+        />
+      ) : type === 'music' && secondaryType === 'artist' ? (
+        <ArtistRequestModal
           onComplete={onComplete}
           onCancel={onCancel}
           mbId={mbId as string}
