@@ -220,7 +220,9 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
-      : `/api/v1/tv/${request.media.tmdbId}`;
+      : request.type === 'tv'
+      ? `/api/v1/tv/${request.media.tmdbId}`
+      : `/api/v1/music/${request.media.secondaryType}/${request.media.mbId}`;
 
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}` : null

@@ -731,6 +731,36 @@ components:
           items:
             type: string
 
+    ReleaseGroupResult:
+      type: object
+      properties:
+        id:
+          type: string
+        mediaType:
+          type: string
+          enum: ['release-group']
+        type:
+          type: string
+          enum: ['Album', 'Single', 'EP', 'Broadcast', 'Other']
+        posterPath:
+          type: string
+          nullable: true
+        title:
+          type: string
+        releases:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReleaseResult'
+        artist:
+          type: array
+          items:
+            $ref: '#/components/schemas/ArtistResult'
+        tags:
+          type: array
+          items:
+            type: string
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
     ReleaseResult:
       type: object
       properties:
@@ -761,8 +791,8 @@ components:
             type: string
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
-        releaseGroupType:
-          type: string
+        releaseGroup:
+          $ref: '#/components/schemas/ReleaseGroupResult'
     Genre:
       type: object
       properties:
@@ -5085,7 +5115,7 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/MusicResult'
+                      $ref: '#/components/schemas/ReleaseResult'
         '500':
           description: An error occured while getting musics
           content:
@@ -5367,10 +5397,12 @@ paths:
               properties:
                 mediaType:
                   type: string
-                  enum: [movie, tv]
+                  enum: [movie, tv, music]
                   example: movie
                 mediaId:
-                  type: number
+                  oneOf:
+                    - type: number
+                    - type: string
                   example: 123
                 tvdbId:
                   type: number
@@ -5481,7 +5513,7 @@ paths:
               properties:
                 mediaType:
                   type: string
-                  enum: [movie, tv]
+                  enum: [movie, tv, music]
                 seasons:
                   type: array
                   items:
@@ -6149,7 +6181,7 @@ paths:
           name: type
           schema:
             type: string
-            enum: [all,movie,tv,music]
+            enum: [all,movie,tv,music,artist,release]
             default: all
       responses:
         '200':

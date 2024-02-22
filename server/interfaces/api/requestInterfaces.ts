@@ -32,6 +32,4 @@ export interface TvRequestBody extends VideoRequestBody {
 export interface MusicRequestBody extends MediaRequestBody {
   mediaType: MediaType.MUSIC;
   mediaId: string;
-  albumId?: number;
-  artistId?: number;
 }

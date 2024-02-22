@@ -18,7 +18,7 @@ import {
   mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
-  mapReleaseGroupResult,
+  mapReleaseResult,
   mapTvResult,
 } from '@server/models/Search';
 import { mapNetwork } from '@server/models/Tv';
@@ -858,7 +858,7 @@ discoverRoutes.get('/musics', async (req, res, next) => {
   try {
     const query = QueryFilterOptions.parse(req.query);
     const keywords = query.keywords;
-    const results = await mb.searchReleaseGroups({
+    const results = await mb.searchReleases({
       query: keywords ?? '',
       limit: 20,
       offset: (Number(query.page) - 1) * 20,
@@ -869,7 +869,7 @@ discoverRoutes.get('/musics', async (req, res, next) => {
       page: query.page,
       results: await Promise.all(
         results.map((result) => {
-          return mapReleaseGroupResult(
+          return mapReleaseResult(
             result,
             media.find(
               (med) =>

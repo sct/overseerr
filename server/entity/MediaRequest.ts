@@ -1,4 +1,5 @@
 import MusicBrainz from '@server/api/musicbrainz';
+import type { mbRelease } from '@server/api/musicbrainz/interfaces';
 import type { LidarrAlbumOptions } from '@server/api/servarr/lidarr';
 import LidarrAPI from '@server/api/servarr/lidarr';
 import type { RadarrMovieOptions } from '@server/api/servarr/radarr';
@@ -15,6 +16,7 @@ import {
   MediaRequestStatus,
   MediaStatus,
   MediaType,
+  SecondaryType,
 } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import type {
@@ -151,7 +153,7 @@ export class MediaRequest {
       requestBody.mediaType === MediaType.MOVIE
         ? await tmdb.getMovie({ movieId: requestBody.mediaId })
         : requestBody.mediaType === MediaType.MUSIC
-        ? await musicbrainz.getReleaseGroup(requestBody.mediaId)
+        ? await musicbrainz.getRelease(requestBody.mediaId)
         : await tmdb.getTvShow({ tvId: requestBody.mediaId });
 
     let media =
@@ -159,7 +161,8 @@ export class MediaRequest {
         ? await mediaRepository.findOne({
             where: {
               mbId: requestBody.mediaId,
-              mediaType: requestBody.mediaType,
+              mediaType: MediaType.MUSIC,
+              secondaryType: SecondaryType.RELEASE,
             },
             relations: ['requests'],
           })
@@ -176,7 +179,9 @@ export class MediaRequest {
         media = new Media({
           mbId: requestBody.mediaId,
           status: MediaStatus.PENDING,
-          mediaType: requestBody.mediaType,
+          mediaType: MediaType.MUSIC,
+          secondaryType: SecondaryType.RELEASE,
+          title: (metaMedia as mbRelease).title,
         });
       } else if (requestBody.mediaType === MediaType.MOVIE) {
         media = new Media({
@@ -525,6 +530,9 @@ export class MediaRequest {
   @Column({ type: 'varchar' })
   public type: MediaType;
 
+  @Column({ type: 'varchar', nullable: true })
+  public secondaryType?: SecondaryType;
+
   @RelationCount((request: MediaRequest) => request.seasons)
   public seasonCount: number;
 
@@ -590,7 +598,11 @@ export class MediaRequest {
   @AfterUpdate()
   @AfterInsert()
   public async sendMedia(): Promise<void> {
-    await Promise.all([this.sendToRadarr(), this.sendToSonarr()]);
+    await Promise.all([
+      this.sendToRadarr(),
+      this.sendToSonarr(),
+      this.sendToLidarr(),
+    ]);
   }
 
   @AfterInsert()
@@ -1449,7 +1461,7 @@ export class MediaRequest {
           qualityProfileId: qualityProfile,
           rootFolderPath: rootFolder,
           title: release.title,
-          mbId: release.id,
+          mbId: release.releaseGroup?.id ?? release.id,
           monitored: true,
           tags: tags.map((tag) => String(tag)),
           searchNow: !lidarrSettings.preventSearch,
@@ -1545,7 +1557,6 @@ export class MediaRequest {
           event = `${this.is4k ? '4K ' : ''}${mediaType} Request Failed`;
           break;
       }
-
       if (this.type === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: media.tmdbId as number });
         notificationManager.sendNotification(type, {
@@ -1593,7 +1604,7 @@ export class MediaRequest {
           ],
         });
       } else if (this.type === MediaType.MUSIC) {
-        const music = await musicbrainz.getReleaseGroup(media.mbId as string);
+        const music = await musicbrainz.getRelease(media.mbId as string);
         notificationManager.sendNotification(type, {
           media,
           request: this,
@@ -1602,12 +1613,10 @@ export class MediaRequest {
           notifyUser: notifyAdmin ? undefined : this.requestedBy,
           event,
           subject: `${music.title}${
-            music.firstReleased
-              ? '(' + music.firstReleased.toLocaleDateString() + ')'
-              : ''
+            music.date ? ` (${music.date.toLocaleDateString()})` : ''
           }`,
           message: music.artist.map((artist) => artist.name).join(', '),
-          image: `http://coverartarchive.org/release-group/${music.id}/front-250`,
+          image: `http://coverartarchive.org/release/${music.id}/front-250`,
         });
       }
     } catch (e) {

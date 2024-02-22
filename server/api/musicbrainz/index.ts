@@ -194,7 +194,7 @@ function convertRelease(release: Release): mbRelease {
         : undefined,
     tracks: (release.media ?? []).flatMap(convertMedium),
     tags: (release.tags ?? []).map(convertTag),
-    releaseGroupType: release['release-group']?.['primary-type'] || 'Other',
+    releaseGroup: convertReleaseGroup(release['release-group'] ?? {}),
   };
 }
 
@@ -830,7 +830,7 @@ class MusicBrainz extends BaseNodeBrainz {
         this.release(
           releaseId,
           {
-            inc: 'tags+artists+recordings',
+            inc: 'tags+artists+recordings+release-groups',
           },
           (error, data) => {
             if (error) {

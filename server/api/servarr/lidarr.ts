@@ -54,6 +54,7 @@ export interface LidarrAlbum {
 }
 
 export interface LidarrArtist {
+  addOptions?: { monitor: string; searchForMissingAlbums: boolean };
   artistMetadataId: number;
   status: string;
   ended: boolean;
@@ -193,7 +194,6 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
 
   public async getAlbum({
     artistId,
-    foreignAlbumId,
     albumId,
   }: {
     artistId?: number;
@@ -204,7 +204,6 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
       const response = await this.axios.get<LidarrAlbum[]>('/album', {
         params: {
           artistId,
-          foreignAlbumId,
           albumId,
         },
       });
@@ -214,23 +213,117 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     }
   }
 
+  public async getAlbumByMusicBrainzId(mbId: string): Promise<LidarrAlbum> {
+    try {
+      const response = await this.axios.get<LidarrAlbum[]>('/album/lookup', {
+        params: {
+          term: `mbid:` + mbId,
+        },
+      });
+      if (!response.data[0]) {
+        throw new Error('Album not found');
+      }
+
+      return response.data[0];
+    } catch (e) {
+      logger.error('Error retrieving album by MusicBrainz ID', {
+        label: 'Midarr API',
+        errorMessage: e.message,
+        mbId: mbId,
+      });
+      throw new Error('Album not found');
+    }
+  }
+
   public addAlbum = async (
     options: LidarrAlbumOptions
   ): Promise<LidarrAlbum> => {
     try {
-      const albums = await this.getAlbum({
-        foreignAlbumId: options.mbId.toString(),
-      });
-      if (albums.length > 0) {
+      const album = await this.getAlbumByMusicBrainzId(options.mbId);
+
+      // album exists in Lidarr but is neither downloaded nor monitored
+      if (album.id && !album.monitored) {
+        const response = await this.axios.post<LidarrAlbum>(`/album`, {
+          ...album,
+          title: options.title,
+          qualityProfileId: options.qualityProfileId,
+          profileId: options.profileId,
+          foreignAlbumId: options.mbId.toString(),
+          tags: options.tags,
+          rootFolderPath: options.rootFolderPath,
+          monitored: options.monitored,
+          addOptions: {
+            searchForNewAlbum: options.searchNow,
+          },
+        });
+
+        if (response.data.monitored) {
+          logger.info(
+            'Found existing title in Lidarr and set it to monitored.',
+            {
+              label: 'Lidarr',
+              albumId: response.data.id,
+              albumTitle: response.data.title,
+            }
+          );
+          logger.debug('Lidarr update details', {
+            label: 'Lidarr',
+            album: response.data,
+          });
+
+          return response.data;
+        } else {
+          logger.error('Failed to update existing album in Lidarr.', {
+            label: 'Lidarr',
+            options,
+          });
+          throw new Error('Failed to update existing album in Lidarr');
+        }
+      }
+
+      if (album.id) {
         logger.info(
           'Album is already monitored in Lidarr. Skipping add and returning success',
           { label: 'Lidarr' }
         );
-        return albums[0];
+        return album;
       }
-      const response = await this.axios.put<LidarrAlbum>('/album', {
-        params: { id: options.mbId },
+
+      const artist = album.artist;
+      artist.monitored = true;
+      artist.monitorNewItems = 'all';
+      artist.qualityProfileId = options.qualityProfileId;
+      artist.rootFolderPath = options.rootFolderPath;
+      artist.addOptions = {
+        monitor: 'none',
+        searchForMissingAlbums: false,
+      };
+
+      album.anyReleaseOk = true;
+
+      const response = await this.axios.post<LidarrAlbum>(`/album/`, {
+        ...album,
+        title: options.title,
+        qualityProfileId: options.qualityProfileId,
+        profileId: options.profileId,
+        foreignAlbumId: options.mbId.toString(),
+        tags: options.tags,
+        monitored: options.monitored,
+        artist: artist,
+        addOptions: {
+          searchForNewAlbum: options.searchNow,
+        },
       });
+
+      if (response.data.id) {
+        logger.info('Lidarr accepted request', { label: 'Lidarr' });
+      } else {
+        logger.error('Failed to add album to Lidarr', {
+          label: 'Lidarr',
+          options,
+        });
+        throw new Error('Failed to add album to Lidarr');
+      }
       return response.data;
     } catch (e) {
       logger.error('Error adding album by MUSICBRAINZ ID', {

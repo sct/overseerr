@@ -6,6 +6,7 @@ import globalMessages from '@app/i18n/globalMessages';
 import { formatBytes } from '@app/utils/numberHelpers';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronDownIcon } from '@heroicons/react/24/solid';
+import type { SecondaryType } from '@server/constants/media';
 import type {
   ServiceCommonServer,
   ServiceCommonServerWithDetails,
@@ -49,7 +50,8 @@ export type RequestOverrides = {
 
 interface AdvancedRequesterProps {
   type: 'movie' | 'tv' | 'music';
-  is4k: boolean;
+  secondaryType?: SecondaryType;
+  is4k?: boolean;
   isAnime?: boolean;
   defaultOverrides?: RequestOverrides;
   requestUser?: User;
@@ -67,14 +69,16 @@ const AdvancedRequester = ({
   const intl = useIntl();
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const { data, error } = useSWR<ServiceCommonServer[]>(
-      `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
-      {
-        refreshInterval: 0,
-        refreshWhenHidden: false,
-        revalidateOnFocus: false,
-        revalidateOnMount: true,
-      }
-    );
+    `/api/v1/service/${
+      type === 'movie' ? 'radarr' : type === 'music' ? 'lidarr' : 'sonarr'
+    }`,
+    {
+      refreshInterval: 0,
+      refreshWhenHidden: false,
+      revalidateOnFocus: false,
+      revalidateOnMount: true,
+    }
+  );
   const [selectedServer, setSelectedServer] = useState<number | null>(
     defaultOverrides?.server !== undefined && defaultOverrides?.server >= 0
       ? defaultOverrides?.server
@@ -99,7 +103,7 @@ const AdvancedRequester = ({
     useSWR<ServiceCommonServerWithDetails>(
       selectedServer !== null
         ? `/api/v1/service/${
-            type === 'movie' ? 'radarr' : (type === 'music' ? 'lidarr' : 'sonarr')
+            type === 'movie' ? 'radarr' : type === 'music' ? 'lidarr' : 'sonarr'
           }/${selectedServer}`
         : null,
       {
@@ -133,7 +137,9 @@ const AdvancedRequester = ({
                 Permission.REQUEST,
                 type === 'movie'
                   ? Permission.REQUEST_MOVIE
-                  : Permission.REQUEST_TV,
+                  : type === 'tv'
+                  ? Permission.REQUEST_TV
+                  : Permission.REQUEST_MUSIC,
               ],
           user.permissions,
           { type: 'or' }

@@ -1,5 +1,5 @@
 import TautulliAPI from '@server/api/tautulli';
-import { MediaStatus, MediaType } from '@server/constants/media';
+import { MediaStatus, MediaType, SecondaryType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { User } from '@server/entity/User';
@@ -80,6 +80,18 @@ mediaRoutes.get('/', async (req, res, next) => {
     case 'music':
       typeFilter = {
         mediaType: MediaType.MUSIC,
+      };
+      break;
+    case 'artist':
+      typeFilter = {
+        mediaType: MediaType.MUSIC,
+        secondaryType: SecondaryType.ARTIST,
+      };
+      break;
+    case 'release':
+      typeFilter = {
+        mediaType: MediaType.MUSIC,
+        secondaryType: SecondaryType.RELEASE,
       };
       break;
   }

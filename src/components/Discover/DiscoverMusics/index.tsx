@@ -12,7 +12,7 @@ import RecentlyAddedSlider from '@app/components/Discover/RecentlyAddedSlider';
 import useDiscover from '@app/hooks/useDiscover';
 import Error from '@app/pages/_error';
 import { FunnelIcon } from '@heroicons/react/24/solid';
-import type { MusicResult } from '@server/models/Search';
+import type { ReleaseResult } from '@server/models/Search';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -38,7 +38,7 @@ const DiscoverMusics = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MusicResult, unknown, FilterOptions>(
+  } = useDiscover<ReleaseResult, unknown, FilterOptions>(
     '/api/v1/discover/musics',
     preparedFilters
   );
@@ -74,7 +74,7 @@ const DiscoverMusics = () => {
           </div>
         </div>
       </div>
-      <RecentlyAddedSlider type="music" />
+      <RecentlyAddedSlider type="artist" />
       <div className="slider-header">
         <div className="slider-title">
           <span>{intl.formatMessage(messages.discovermoremusics)}</span>

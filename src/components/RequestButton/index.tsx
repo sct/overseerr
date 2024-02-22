@@ -9,11 +9,8 @@ import {
   InformationCircleIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
-import {
-  MediaRequestStatus,
-  MediaStatus,
-  SecondaryType,
-} from '@server/constants/media';
+import type { SecondaryType } from '@server/constants/media';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type Media from '@server/entity/Media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import axios from 'axios';
@@ -278,6 +275,8 @@ const RequestButton = ({
         Permission.REQUEST,
         mediaType === 'movie'
           ? Permission.REQUEST_MOVIE
+          : mediaType === 'music'
+          ? Permission.REQUEST_MUSIC
           : Permission.REQUEST_TV,
       ],
       { type: 'or' }
@@ -369,6 +368,8 @@ const RequestButton = ({
     <>
       <RequestModal
         tmdbId={tmdbId}
+        mbId={mbId}
+        secondaryType={secondaryType}
         show={showRequestModal}
         type={mediaType}
         editRequest={editRequest ? activeRequest : undefined}
@@ -378,18 +379,20 @@ const RequestButton = ({
         }}
         onCancel={() => setShowRequestModal(false)}
       />
-      <RequestModal
-        tmdbId={tmdbId}
-        show={showRequest4kModal}
-        type={mediaType}
-        editRequest={editRequest ? active4kRequest : undefined}
-        is4k
-        onComplete={() => {
-          onUpdate();
-          setShowRequest4kModal(false);
-        }}
-        onCancel={() => setShowRequest4kModal(false)}
-      />
+      {mediaType !== 'music' && (
+        <RequestModal
+          tmdbId={tmdbId}
+          show={showRequest4kModal}
+          type={mediaType}
+          editRequest={editRequest ? active4kRequest : undefined}
+          is4k
+          onComplete={() => {
+            onUpdate();
+            setShowRequest4kModal(false);
+          }}
+          onCancel={() => setShowRequest4kModal(false)}
+        />
+      )}
       <ButtonWithDropdown
         text={
           <>

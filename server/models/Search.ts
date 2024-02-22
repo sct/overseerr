@@ -120,7 +120,7 @@ export interface ReleaseResult {
   tracks?: RecordingResult[];
   tags: string[];
   mediaInfo?: Media;
-  releaseGroupType?: string;
+  releaseGroup?: ReleaseGroupResult;
 }
 
 export interface RecordingResult {
@@ -307,7 +307,9 @@ export const mapReleaseResult = async (
       : []
   ),
   tags: release.tags,
-  releaseGroupType: release.releaseGroupType,
+  releaseGroup: release.releaseGroup
+    ? await mapReleaseGroupResult(release.releaseGroup)
+    : undefined,
   mediaInfo: media,
 });
 

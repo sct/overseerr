@@ -44,7 +44,7 @@ export interface mbRelease extends mbDefaultType {
   artist: mbArtist[];
   date?: Date;
   tracks?: mbRecording[];
-  releaseGroupType?: string;
+  releaseGroup?: mbReleaseGroup;
 }
 
 export enum mbReleaseGroupType {

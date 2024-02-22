@@ -15,7 +15,7 @@ const messages = defineMessages({
 const RecentlyAddedSlider = ({
   type = 'all',
 }: {
-  type?: 'all' | 'movie' | 'tv' | 'music';
+  type?: 'all' | 'movie' | 'tv' | 'music' | 'artist' | 'release';
 }) => {
   const intl = useIntl();
   const { hasPermission } = useUser();

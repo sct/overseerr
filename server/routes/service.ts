@@ -1,6 +1,6 @@
+import LidarrAPI from '@server/api/servarr/lidarr';
 import RadarrAPI from '@server/api/servarr/radarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
-import LidarrAPI from '@server/api/servarr/lidarr';
 import TheMovieDb from '@server/api/themoviedb';
 import type {
   ServiceCommonServer,
@@ -212,7 +212,6 @@ serviceRoutes.get<{ tmdbId: string }>(
 
 serviceRoutes.get('/lidarr', async (req, res) => {
   const settings = getSettings();
-
   const filteredLidarrServers: ServiceCommonServer[] = settings.lidarr.map(
     (lidarr) => ({
       id: lidarr.id,
