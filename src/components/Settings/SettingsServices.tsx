@@ -1,19 +1,23 @@
+import LidarrLogo from '@app/assets/services/lidarr.svg';
 import RadarrLogo from '@app/assets/services/radarr.svg';
 import SonarrLogo from '@app/assets/services/sonarr.svg';
-import LidarrLogo from '@app/assets/services/lidarr.svg';
 import Alert from '@app/components/Common/Alert';
 import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import Modal from '@app/components/Common/Modal';
 import PageTitle from '@app/components/Common/PageTitle';
+import LidarrModal from '@app/components/Settings/LidarrModal';
 import RadarrModal from '@app/components/Settings/RadarrModal';
 import SonarrModal from '@app/components/Settings/SonarrModal';
-import LidarrModal from '@app/components/Settings/LidarrModal';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
-import type { RadarrSettings, SonarrSettings, LidarrSettings } from '@server/lib/settings';
+import type {
+  LidarrSettings,
+  RadarrSettings,
+  SonarrSettings,
+} from '@server/lib/settings';
 import axios from 'axios';
 import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -269,7 +273,7 @@ const SettingsServices = () => {
       )}
       {editLidarrModal.open && (
         <LidarrModal
-          sonarr={editLidarrModal.lidarr}
+          lidarr={editLidarrModal.lidarr}
           onClose={() => setEditLidarrModal({ open: false, lidarr: null })}
           onSave={() => {
             revalidateLidarr();
@@ -301,7 +305,11 @@ const SettingsServices = () => {
           }
           title={intl.formatMessage(messages.deleteServer, {
             serverType:
-              deleteServerModal.type === 'radarr' ? 'Radarr' : (deleteServerModal.type === 'sonarr' ? 'Sonarr' : 'Lidarr'),
+              deleteServerModal.type === 'radarr'
+                ? 'Radarr'
+                : deleteServerModal.type === 'sonarr'
+                ? 'Sonarr'
+                : 'Lidarr',
           })}
         >
           {intl.formatMessage(messages.deleteserverconfirm)}
@@ -495,8 +503,7 @@ const SettingsServices = () => {
                     mediaType: intl.formatMessage(messages.mediaTypeSeries),
                   })}
                 />
-              ) : null
-              )}
+              ) : null)}
             <ul className="grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
               {lidarrData.map((lidarr) => (
                 <ServerInstance

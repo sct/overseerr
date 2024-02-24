@@ -17,7 +17,6 @@ const CachedImage = ({ src, ...props }: ImageProps) => {
     setImageUrl(currentSettings?.fallbackImage);
   };
 
-
   if (typeof imageUrl === 'string' && imageUrl.startsWith('http')) {
     const parsedUrl = new URL(imageUrl);
 
@@ -26,8 +25,15 @@ const CachedImage = ({ src, ...props }: ImageProps) => {
     }
   }
 
-
-  return <Image unoptimized loader={imageLoader} src={imageUrl} onError={handleError} {...props} />;
+  return (
+    <Image
+      unoptimized
+      loader={imageLoader}
+      src={imageUrl}
+      onError={handleError}
+      {...props}
+    />
+  );
 };
 
 export default CachedImage;

@@ -17,12 +17,14 @@ function getPosterFromMB(
     });
     try {
       const artist = (lidarr as LidarrAPI).getArtist(element.id);
-      return LidarrAPI.buildUrl(
-        lidarrSettings,
-        (artist.images ?? [{ coverType: 'poster', url: undefined }]).find(
-          (i) => i.coverType === 'poster'
-        )?.url
-      );
+      if (artist.images.find((i) => i.coverType === 'poster')?.url) {
+        return LidarrAPI.buildUrl(
+          lidarrSettings,
+          artist.images.find((i) => i.coverType === 'poster')?.url
+        );
+      } else {
+        return undefined;
+      }
     } catch (e) {
       return undefined;
     }
