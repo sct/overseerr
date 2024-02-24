@@ -153,7 +153,7 @@ export interface Medium {
 class LidarrAPI extends ServarrBase<{ musicId: number }> {
   static lastArtistsUpdate = 0;
   static artists: LidarrArtist[] = [];
-  static delay = 1000 * 60 * 5;
+  static delay = 1000 * 60;
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
     super({ url, apiKey, cacheName: 'lidarr', apiName: 'Lidarr' });
     if (LidarrAPI.lastArtistsUpdate < Date.now() - LidarrAPI.delay) {
@@ -195,6 +195,28 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
       throw new Error(`[Lidarr] ${e.message}`);
     }
   };
+
+  public async getArtistByMusicBrainzId(mbId: string): Promise<LidarrArtist> {
+    try {
+      const response = await this.axios.get<LidarrArtist[]>('/artist/lookup', {
+        params: {
+          term: `mbid:` + mbId,
+        },
+      });
+      if (!response.data[0]) {
+        throw new Error('Artist not found');
+      }
+
+      return response.data[0];
+    } catch (e) {
+      logger.error('Error retrieving artist by MusicBrainz ID', {
+        label: 'Midarr API',
+        errorMessage: e.message,
+        mbId: mbId,
+      });
+      throw new Error('Artist not found');
+    }
+  }
 
   public getAlbums = async (): Promise<LidarrAlbum[]> => {
     try {
@@ -254,64 +276,28 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     try {
       const album = await this.getAlbumByMusicBrainzId(options.mbId);
 
-      // album exists in Lidarr but is neither downloaded nor monitored
-      if (album.id && !album.monitored) {
-        const response = await this.axios.post<LidarrAlbum>(`/album`, {
-          ...album,
-          title: options.title,
-          qualityProfileId: options.qualityProfileId,
-          profileId: options.profileId,
-          foreignAlbumId: options.mbId.toString(),
-          tags: options.tags,
-          rootFolderPath: options.rootFolderPath,
-          monitored: options.monitored,
-          addOptions: {
-            searchForNewAlbum: options.searchNow,
-          },
-        });
-
-        if (response.data.monitored) {
-          logger.info(
-            'Found existing title in Lidarr and set it to monitored.',
-            {
-              label: 'Lidarr',
-              albumId: response.data.id,
-              albumTitle: response.data.title,
-            }
-          );
-          logger.debug('Lidarr update details', {
-            label: 'Lidarr',
-            album: response.data,
-          });
-
-          return response.data;
-        } else {
-          logger.error('Failed to update existing album in Lidarr.', {
-            label: 'Lidarr',
-            options,
-          });
-          throw new Error('Failed to update existing album in Lidarr');
-        }
-      }
-
       if (album.id) {
         logger.info(
-          'Album is already monitored in Lidarr. Skipping add and returning success',
+          'Album is already monitored in Lidarr. Starting search for download.',
           { label: 'Lidarr' }
         );
+        this.axios.post(`/command`, {
+          name: 'AlbumSearch',
+          albumIds: [album.id],
+        });
         return album;
       }
 
       const artist = album.artist;
+
       artist.monitored = true;
       artist.monitorNewItems = 'all';
       artist.qualityProfileId = options.qualityProfileId;
       artist.rootFolderPath = options.rootFolderPath;
       artist.addOptions = {
         monitor: 'none',
-        searchForMissingAlbums: false,
+        searchForMissingAlbums: true,
       };
-
       album.anyReleaseOk = true;
 
       const response = await this.axios.post<LidarrAlbum>(`/album/`, {
@@ -353,7 +339,7 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     options: LidarrArtistOptions
   ): Promise<LidarrArtist> => {
     try {
-      const artist = await this.getArtist(options.mbId);
+      const artist = await this.getArtistByMusicBrainzId(options.mbId);
       if (artist.id) {
         logger.info('Artist is already monitored in Lidarr. Skipping add.', {
           label: 'Lidarr',
@@ -366,6 +352,7 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
       const response = await this.axios.post<LidarrArtist>('/artist', {
         ...artist,
         qualityProfileId: options.qualityProfileId,
+        metadataProfileId: options.profileId,
         monitored: true,
         monitorNewItems: options.monitorNewItems,
         rootFolderPath: options.rootFolderPath,

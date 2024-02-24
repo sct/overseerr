@@ -376,7 +376,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               : isTv(title)
               ? title.firstAirDate
               : isRelease(title)
-              ? title.date?.toDateString()
+              ? (title.date as string)
               : isArtist(title)
               ? title.beginDate
               : ''
