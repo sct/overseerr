@@ -239,6 +239,13 @@ export const KeywordSelector = ({
             value: keyword.id,
           }))
         );
+      } else {
+        setDefaultDataValue(
+          defaultValue.split(',').map((keyword, idx) => ({
+            label: keyword,
+            value: idx,
+          }))
+        );
       }
     };
 
