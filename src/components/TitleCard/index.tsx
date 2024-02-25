@@ -11,6 +11,7 @@ import globalMessages from '@app/i18n/globalMessages';
 import { withProperties } from '@app/utils/typeHelpers';
 import { Transition } from '@headlessui/react';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import type { SecondaryType } from '@server/constants/media';
 import { MediaStatus } from '@server/constants/media';
 import type { MediaType } from '@server/models/Search';
 import Link from 'next/link';
@@ -101,6 +102,7 @@ const TitleCard = ({
         onComplete={requestComplete}
         onUpdating={requestUpdating}
         onCancel={closeModal}
+        {...(tmdbOrMbId ? {} : { secondaryType: mediaType as SecondaryType })}
       />
       <div
         className={`relative transform-gpu cursor-default overflow-hidden rounded-xl bg-gray-800 bg-cover outline-none ring-1 transition duration-300 ${

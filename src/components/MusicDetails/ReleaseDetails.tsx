@@ -166,16 +166,13 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProp) => {
           <span className="media-attributes">
             By&nbsp;
             {data.artist.map((artist, index) => (
-              <>
+              <div key={`artist-${index}`}>
                 {' '}
-                <Link
-                  href={`/music/artist/${artist.id}`}
-                  key={`artist-${index}`}
-                >
+                <Link href={`/music/artist/${artist.id}`}>
                   <a className="hover:underline">{artist.name}</a>
                 </Link>
                 {index < data.artist.length - 1 ? ', ' : ''}
-              </>
+              </div>
             ))}
           </span>
         </div>
