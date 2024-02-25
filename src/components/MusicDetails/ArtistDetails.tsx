@@ -90,7 +90,15 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
   );
 
   useEffect(() => {
-    setAvailableReleases((prev) => Array.from(new Set([...prev, ...releases])));
+    setAvailableReleases((prev) =>
+      Array.from(
+        new Set(
+          [...prev, ...releases].filter(
+            (release) => release.mediaInfo?.status === MediaStatus.AVAILABLE
+          )
+        )
+      )
+    );
   }, [releases]);
 
   const [currentOffset, setCurrentOffset] = useState(0);
@@ -250,23 +258,27 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
             ))}
           </div>
         )}
-        <div className="slider-header">
-          <div className="slider-title">
-            <span>{intl.formatMessage(messages.available)}</span>
-          </div>
-        </div>
-        <Slider
-          sliderKey="Available Releases"
-          isLoading={false}
-          items={availableReleases.map((item) => {
-            return (
-              <FetchedDataTitleCard
-                key={`media-slider-item-${item.id}`}
-                data={item}
-              />
-            );
-          })}
-        />
+        {availableReleases.length > 0 && (
+          <>
+            <div className="slider-header">
+              <div className="slider-title">
+                <span>{intl.formatMessage(messages.available)}</span>
+              </div>
+            </div>
+            <Slider
+              sliderKey="Available Releases"
+              isLoading={false}
+              items={availableReleases.map((item) => {
+                return (
+                  <FetchedDataTitleCard
+                    key={`media-slider-item-${item.id}`}
+                    data={item}
+                  />
+                );
+              })}
+            />
+          </>
+        )}
       </div>
       <div>
         <div className="slider-header">
