@@ -4435,6 +4435,11 @@ paths:
             type: number
             example: 1
             default: 1
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [movie,tv,music]
       responses:
         '200':
           description: Results
@@ -4455,7 +4460,9 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Keyword'
+                      oneOf:
+                        - $ref: '#/components/schemas/Keyword'
+                        - type: string
   /search/company:
     get:
       summary: Search for companies

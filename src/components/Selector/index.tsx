@@ -43,12 +43,14 @@ type SingleVal = {
 type BaseSelectorMultiProps = {
   defaultValue?: string;
   isMulti: true;
+  type?: 'movie' | 'tv' | 'music';
   onChange: (value: MultiValue<SingleVal> | null) => void;
 };
 
 type BaseSelectorSingleProps = {
   defaultValue?: string;
   isMulti?: false;
+  type?: 'movie' | 'tv' | 'music';
   onChange: (value: SingleValue<SingleVal> | null) => void;
 };
 
@@ -206,6 +208,7 @@ export const GenreSelector = ({
 export const KeywordSelector = ({
   isMulti,
   defaultValue,
+  type,
   onChange,
 }: BaseSelectorMultiProps | BaseSelectorSingleProps) => {
   const intl = useIntl();
@@ -219,41 +222,53 @@ export const KeywordSelector = ({
         return;
       }
 
-      const keywords = await Promise.all(
-        defaultValue.split(',').map(async (keywordId) => {
-          const keyword = await axios.get<Keyword>(
-            `/api/v1/keyword/${keywordId}`
-          );
+      if (type !== 'music') {
+        const keywords = await Promise.all(
+          defaultValue.split(',').map(async (keywordId) => {
+            const keyword = await axios.get<Keyword>(
+              `/api/v1/keyword/${keywordId}`
+            );
 
-          return keyword.data;
-        })
-      );
+            return keyword.data;
+          })
+        );
 
-      setDefaultDataValue(
-        keywords.map((keyword) => ({
-          label: keyword.name,
-          value: keyword.id,
-        }))
-      );
+        setDefaultDataValue(
+          keywords.map((keyword) => ({
+            label: keyword.name,
+            value: keyword.id,
+          }))
+        );
+      }
     };
 
     loadDefaultKeywords();
-  }, [defaultValue]);
+  }, [defaultValue, type]);
 
   const loadKeywordOptions = async (inputValue: string) => {
-    const results = await axios.get<TmdbKeywordSearchResponse>(
+    const results = await axios.get<TmdbKeywordSearchResponse | string[]>(
       '/api/v1/search/keyword',
       {
         params: {
           query: encodeURIExtraParams(inputValue),
+          type,
         },
       }
     );
 
-    return results.data.results.map((result) => ({
-      label: result.name,
-      value: result.id,
-    }));
+    if (type === 'music') {
+      return (results.data as string[]).map((result, idx) => ({
+        label: result,
+        value: idx,
+      }));
+    } else {
+      return (results.data as TmdbKeywordSearchResponse).results.map(
+        (result) => ({
+          label: result.name,
+          value: result.id,
+        })
+      );
+    }
   };
 
   return (

@@ -282,5 +282,5 @@ export interface SearchOptions {
   artistname?: string;
   albumname?: string;
   recordingname?: string;
-  tag?: string;
+  tags?: string[];
 }

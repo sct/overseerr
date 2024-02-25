@@ -74,7 +74,9 @@ const DiscoverMusics = () => {
           </div>
         </div>
       </div>
-      <RecentlyAddedSlider type="artist" />
+      {Object.keys(preparedFilters).length === 0 && (
+        <RecentlyAddedSlider type="artist" />
+      )}
       <div className="slider-header">
         <div className="slider-title">
           <span>{intl.formatMessage(messages.discovermoremusics)}</span>

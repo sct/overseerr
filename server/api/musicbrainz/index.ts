@@ -1,9 +1,11 @@
 import logger from '@server/logger';
 import type {
   ArtistSearchResponse,
+  luceneSearchOptions,
   RecordingSearchResponse,
   ReleaseGroupSearchResponse,
   ReleaseSearchResponse,
+  TagSearchResponse,
   WorkSearchResponse,
 } from 'nodebrainz';
 import BaseNodeBrainz from 'nodebrainz';
@@ -29,14 +31,14 @@ import { mbArtistType, mbReleaseGroupType, mbWorkType } from './interfaces';
 
 interface ArtistSearchOptions {
   query: string;
-  tag?: string; // (part of) a tag attached to the artist
+  tags?: string[]; // (part of) a tag attached to the artist
   limit?: number;
   offset?: number;
 }
 
 interface RecordingSearchOptions {
   query: string;
-  tag?: string; // (part of) a tag attached to the recording
+  tags?: string[]; // (part of) a tag attached to the recording
   artistname?: string; // (part of) the name of any of the recording artists
   release?: string; // the name of a release that the recording appears on
   offset?: number;
@@ -46,7 +48,7 @@ interface RecordingSearchOptions {
 interface ReleaseSearchOptions {
   query: string;
   artistname?: string; // (part of) the name of any of the release artists
-  tag?: string; // (part of) a tag attached to the release
+  tags?: string[]; // (part of) a tag attached to the release
   limit?: number;
   offset?: number;
 }
@@ -54,7 +56,7 @@ interface ReleaseSearchOptions {
 interface ReleaseGroupSearchOptions {
   query: string;
   artistname?: string; // (part of) the name of any of the release group artists
-  tag?: string; // (part of) a tag attached to the release group
+  tags?: string[]; // (part of) a tag attached to the release group
   limit?: number;
   offset?: number;
 }
@@ -62,7 +64,7 @@ interface ReleaseGroupSearchOptions {
 interface WorkSearchOptions {
   query: string;
   artist?: string; // (part of) the name of an artist related to the work (e.g. a composer or lyricist)
-  tag?: string; // (part of) a tag attached to the work
+  tags?: string[]; // (part of) a tag attached to the work
   limit?: number;
   offset?: number;
 }
@@ -73,34 +75,8 @@ function searchOptionstoArtistSearchOptions(
   const data: ArtistSearchOptions = {
     query: options.query,
   };
-  if (options.tag) {
-    data.tag = options.tag;
-  }
-  if (options.limit) {
-    data.limit = options.limit;
-  } else {
-    data.limit = 25;
-  }
-  if (options.page) {
-    data.offset = (options.page - 1) * data.limit;
-  }
-  return data;
-}
-
-function searchOptionstoRecordingSearchOptions(
-  options: SearchOptions
-): RecordingSearchOptions {
-  const data: RecordingSearchOptions = {
-    query: options.query,
-  };
-  if (options.tag) {
-    data.tag = options.tag;
-  }
-  if (options.artistname) {
-    data.artistname = options.artistname;
-  }
-  if (options.albumname) {
-    data.release = options.albumname;
+  if (options.tags) {
+    data.tags = options.tags;
   }
   if (options.limit) {
     data.limit = options.limit;
@@ -122,54 +98,8 @@ function searchOptionstoReleaseSearchOptions(
   if (options.artistname) {
     data.artistname = options.artistname;
   }
-  if (options.tag) {
-    data.tag = options.tag;
-  }
-  if (options.limit) {
-    data.limit = options.limit;
-  } else {
-    data.limit = 25;
-  }
-  if (options.page) {
-    data.offset = (options.page - 1) * data.limit;
-  }
-  return data;
-}
-
-function searchOptionstoReleaseGroupSearchOptions(
-  options: SearchOptions
-): ReleaseGroupSearchOptions {
-  const data: ReleaseGroupSearchOptions = {
-    query: options.query,
-  };
-  if (options.artistname) {
-    data.artistname = options.artistname;
-  }
-  if (options.tag) {
-    data.tag = options.tag;
-  }
-  if (options.limit) {
-    data.limit = options.limit;
-  } else {
-    data.limit = 25;
-  }
-  if (options.page) {
-    data.offset = (options.page - 1) * data.limit;
-  }
-  return data;
-}
-
-function searchOptionstoWorkSearchOptions(
-  options: SearchOptions
-): WorkSearchOptions {
-  const data: WorkSearchOptions = {
-    query: options.query,
-  };
-  if (options.artistname) {
-    data.artist = options.artistname;
-  }
-  if (options.tag) {
-    data.tag = options.tag;
+  if (options.tags) {
+    data.tags = options.tags;
   }
   if (options.limit) {
     data.limit = options.limit;
@@ -292,6 +222,37 @@ function convertTrack(track: Track): mbRecording {
   };
 }
 
+function processReleaseSearchParams(
+  search: ReleaseSearchOptions
+): luceneSearchOptions {
+  const processedSearchParams: luceneSearchOptions = {
+    query: search.query,
+    limit: search.limit,
+    offset: search.offset,
+  };
+  if (search.artistname) {
+    processedSearchParams.query += ` AND artist:${search.artistname}`;
+  }
+  if (search.tags) {
+    processedSearchParams.query += ` AND tag:${search.tags.join(' AND tag:')}`;
+  }
+  return processedSearchParams;
+}
+
+function processArtistSearchParams(
+  search: ArtistSearchOptions
+): luceneSearchOptions {
+  const processedSearchParams: luceneSearchOptions = {
+    query: search.query,
+    limit: search.limit,
+    offset: search.offset,
+  };
+  if (search.tags) {
+    processedSearchParams.query += ` AND tag:${search.tags.join(' AND tag:')}`;
+  }
+  return processedSearchParams;
+}
+
 class MusicBrainz extends BaseNodeBrainz {
   constructor() {
     super({
@@ -306,26 +267,14 @@ class MusicBrainz extends BaseNodeBrainz {
   public searchMulti = async (search: SearchOptions) => {
     try {
       const artistSearch = searchOptionstoArtistSearchOptions(search);
-      const recordingSearch = searchOptionstoRecordingSearchOptions(search);
-      const releaseGroupSearch =
-        searchOptionstoReleaseGroupSearchOptions(search);
       const releaseSearch = searchOptionstoReleaseSearchOptions(search);
-      const workSearch = searchOptionstoWorkSearchOptions(search);
       const artistResults = await this.searchArtists(artistSearch);
-      const recordingResults = await this.searchRecordings(recordingSearch);
-      const releaseGroupResults = await this.searchReleaseGroups(
-        releaseGroupSearch
-      );
       const releaseResults = await this.searchReleases(releaseSearch);
-      const workResults = await this.searchWorks(workSearch);
 
       const combinedResults = {
         status: 'ok',
         artistResults,
-        recordingResults,
-        releaseGroupResults,
         releaseResults,
-        workResults,
       };
 
       return combinedResults;
@@ -333,10 +282,7 @@ class MusicBrainz extends BaseNodeBrainz {
       return {
         status: 'error',
         artistResults: [],
-        recordingResults: [],
-        releaseGroupResults: [],
         releaseResults: [],
-        workResults: [],
       };
     }
   };
@@ -346,7 +292,8 @@ class MusicBrainz extends BaseNodeBrainz {
   ): Promise<mbArtist[]> => {
     try {
       return await new Promise<mbArtist[]>((resolve, reject) => {
-        this.search('artist', search, (error, data) => {
+        const processedSearch = processArtistSearchParams(search);
+        this.luceneSearch('artist', processedSearch, (error, data) => {
           if (error) {
             reject(error);
           } else {
@@ -418,8 +365,9 @@ class MusicBrainz extends BaseNodeBrainz {
     search: ReleaseSearchOptions
   ): Promise<mbRelease[]> => {
     try {
+      const processedSearchParams = processReleaseSearchParams(search);
       return new Promise<mbRelease[]>((resolve, reject) => {
-        this.search('release', search, (error, data) => {
+        this.luceneSearch('release', processedSearchParams, (error, data) => {
           if (error) {
             reject(error);
           } else {
@@ -457,6 +405,28 @@ class MusicBrainz extends BaseNodeBrainz {
         message: e.message,
       });
       return new Promise<mbWork[]>((resolve) => resolve([]));
+    }
+  };
+
+  public searchTags = (query: string): Promise<string[]> => {
+    try {
+      return new Promise<string[]>((resolve, reject) => {
+        this.search('tag', { tag: query }, (error, data) => {
+          if (error) {
+            reject(error);
+          } else {
+            const rawResults = data as TagSearchResponse;
+            const results = rawResults.tags.map((tag) => tag.name);
+            resolve(results);
+          }
+        });
+      });
+    } catch (e) {
+      logger.error('Failed to search for tags', {
+        label: 'MusicBrainz',
+        message: e.message,
+      });
+      return new Promise<string[]>((resolve) => resolve([]));
     }
   };
 

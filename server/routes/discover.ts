@@ -15,6 +15,7 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { mapProductionCompany } from '@server/models/Movie';
 import {
+  mapArtistResult,
   mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
@@ -857,27 +858,47 @@ discoverRoutes.get('/musics', async (req, res, next) => {
   const mb = new MusicBrainz();
   try {
     const query = QueryFilterOptions.parse(req.query);
-    const keywords = query.keywords;
-    const results = await mb.searchReleases({
-      query: keywords ?? '',
+    const results = await mb.searchMulti({
+      query: '',
+      tags: query.keywords ? decodeURIComponent(query.keywords).split(',') : [],
       limit: 20,
-      offset: (Number(query.page) - 1) * 20,
+      page: Number(query.page),
     });
-    const mbIds = results.map((result) => result.id);
+    const mbIds = results.releaseResults
+      .map((result) => result.id)
+      .concat(results.artistResults.map((result) => result.id));
     const media = await Media.getRelatedMedia([], mbIds);
-    return res.status(200).json({
-      page: query.page,
-      results: await Promise.all(
-        results.map((result) => {
+    const resultsWithMedia = [
+      ...(await Promise.all(
+        results.artistResults.map((result) => {
+          return mapArtistResult(
+            result,
+            media.find(
+              (med) =>
+                med.mbId === result.id &&
+                med.mediaType === MediaType.MUSIC &&
+                med.secondaryType === 'artist'
+            )
+          );
+        })
+      )),
+      ...(await Promise.all(
+        results.releaseResults.map((result) => {
           return mapReleaseResult(
             result,
             media.find(
               (med) =>
-                med.mbId === result.id && med.mediaType === MediaType.MUSIC
+                med.mbId === result.id &&
+                med.mediaType === MediaType.MUSIC &&
+                med.secondaryType === 'release'
             )
           );
         })
-      ),
+      )),
+    ];
+    return res.status(200).json({
+      page: query.page,
+      results: resultsWithMedia,
     });
   } catch (e) {
     logger.debug('Something went wrong retrieving release groups', {

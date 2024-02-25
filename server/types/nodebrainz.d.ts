@@ -28,6 +28,13 @@ declare module 'nodebrainz' {
     works: Work[];
   }
 
+  export interface TagSearchResponse extends RawSearchResponse {
+    tags: {
+      score: number;
+      name: string;
+    }[];
+  }
+
   export interface BrowseRequestParams {
     limit?: number;
     offset?: number;
@@ -38,6 +45,12 @@ declare module 'nodebrainz' {
     work?: string;
     // or anything else
     [key: string]: string | number | undefined;
+  }
+
+  export interface luceneSearchOptions {
+    query: string;
+    limit?: number;
+    offset?: number;
   }
 
   export default class BaseNodeBrainz {
@@ -83,6 +96,7 @@ declare module 'nodebrainz' {
           | RecordingSearchResponse
           | ReleaseGroupSearchResponse
           | WorkSearchResponse
+          | TagSearchResponse
       ) => void
     ): Promise<Artist[] | Release[] | Recording[] | Group[] | Work[]>;
     browse(
@@ -116,6 +130,20 @@ declare module 'nodebrainz' {
               'artist-offset': number;
               artists: Artist[];
             }
+      ) => void
+    ): Promise<Artist[] | Release[] | Recording[] | Group[] | Work[]>;
+    luceneSearch(
+      type: string,
+      search: luceneSearchOptions,
+      callback: (
+        err: Error,
+        data:
+          | ArtistSearchResponse
+          | ReleaseSearchResponse
+          | RecordingSearchResponse
+          | ReleaseGroupSearchResponse
+          | WorkSearchResponse
+          | TagSearchResponse
       ) => void
     ): Promise<Artist[] | Release[] | Recording[] | Group[] | Work[]>;
   }

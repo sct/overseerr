@@ -1,3 +1,4 @@
+import MusicBrainz from '@server/api/musicbrainz';
 import TheMovieDb from '@server/api/themoviedb';
 import type { TmdbSearchMultiResponse } from '@server/api/themoviedb/interfaces';
 import Media from '@server/entity/Media';
@@ -57,15 +58,22 @@ searchRoutes.get('/', async (req, res, next) => {
 });
 
 searchRoutes.get('/keyword', async (req, res, next) => {
-  const tmdb = new TheMovieDb();
-
   try {
-    const results = await tmdb.searchKeyword({
-      query: req.query.query as string,
-      page: Number(req.query.page),
-    });
+    if (!req.query.type || req.query.type !== 'music') {
+      const tmdb = new TheMovieDb();
+      const results = await tmdb.searchKeyword({
+        query: req.query.query as string,
+        page: Number(req.query.page),
+      });
 
-    return res.status(200).json(results);
+      return res.status(200).json(results);
+    } else {
+      const mb = new MusicBrainz();
+
+      const results = await mb.searchTags(req.query.query as string);
+
+      return res.status(200).json(results);
+    }
   } catch (e) {
     logger.debug('Something went wrong retrieving keyword search results', {
       label: 'API',
