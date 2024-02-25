@@ -4,8 +4,10 @@ import PageTitle from '@app/components/Common/PageTitle';
 import useDiscover from '@app/hooks/useDiscover';
 import Error from '@app/pages/_error';
 import type {
+  ArtistResult,
   MovieResult,
   PersonResult,
+  ReleaseResult,
   TvResult,
 } from '@server/models/Search';
 import { useRouter } from 'next/router';
@@ -28,7 +30,9 @@ const Search = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MovieResult | TvResult | PersonResult>(
+  } = useDiscover<
+    MovieResult | TvResult | PersonResult | ArtistResult | ReleaseResult
+  >(
     `/api/v1/search`,
     {
       query: router.query.query,
@@ -54,6 +58,7 @@ const Search = () => {
         }
         isReachingEnd={isReachingEnd}
         onScrollBottom={fetchMore}
+        force_big={true}
       />
     </>
   );

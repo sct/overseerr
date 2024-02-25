@@ -171,6 +171,27 @@ export type Results =
   | WorkResult
   | ArtistResult;
 
+export type MbSearchMultiResponse = {
+  page: number;
+  total_pages: number;
+  total_results: number;
+  results: (mbRelease | mbArtist)[];
+};
+
+export type MixedSearchResponse = {
+  page: number;
+  total_pages: number;
+  total_results: number;
+  results: (
+    | mbArtist
+    | mbRelease
+    | TmdbMovieResult
+    | TmdbTvResult
+    | TmdbPersonResult
+    | TmdbCollectionResult
+  )[];
+};
+
 export const mapMovieResult = (
   movieResult: TmdbMovieResult,
   media?: Media
@@ -390,7 +411,10 @@ export const mapSearchResults = async (
         case 'work':
           return mapWorkResult(result);
         case 'artist':
-          return mapArtistResult(result);
+          return mapArtistResult(
+            result,
+            media?.find((req) => req.mbId === result.id)
+          );
         default:
           return result;
       }

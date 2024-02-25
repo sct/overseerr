@@ -4,6 +4,10 @@ import type { TmdbSearchMultiResponse } from '@server/api/themoviedb/interfaces'
 import Media from '@server/entity/Media';
 import { findSearchProvider } from '@server/lib/search';
 import logger from '@server/logger';
+import type {
+  MbSearchMultiResponse,
+  MixedSearchResponse,
+} from '@server/models/Search';
 import { mapSearchResults } from '@server/models/Search';
 import { Router } from 'express';
 
@@ -12,7 +16,10 @@ const searchRoutes = Router();
 searchRoutes.get('/', async (req, res, next) => {
   const queryString = req.query.query as string;
   const searchProvider = findSearchProvider(queryString.toLowerCase());
-  let results: TmdbSearchMultiResponse;
+  let results:
+    | MixedSearchResponse
+    | TmdbSearchMultiResponse
+    | MbSearchMultiResponse;
 
   try {
     if (searchProvider) {
@@ -32,11 +39,32 @@ searchRoutes.get('/', async (req, res, next) => {
         page: Number(req.query.page),
         language: (req.query.language as string) ?? req.locale,
       });
+
+      const mb = new MusicBrainz();
+
+      const mbResults = await mb.searchMulti({
+        query: queryString,
+        page: Number(req.query.page),
+      });
+
+      const releaseResults = mbResults.releaseResults;
+      const artistResults = mbResults.artistResults;
+
+      results = {
+        ...results,
+        results: [...results.results, ...releaseResults, ...artistResults],
+      };
     }
 
-    const media = await Media.getRelatedMedia(
-      results.results.map((result) => result.id)
-    );
+    const mbIds = results.results
+      .filter((result) => typeof result.id === 'string')
+      .map((result) => result.id as string);
+
+    const tmdbIds = results.results
+      .filter((result) => typeof result.id === 'number')
+      .map((result) => result.id as number);
+
+    const media = await Media.getRelatedMedia(tmdbIds, mbIds);
 
     return res.status(200).json({
       page: results.page,

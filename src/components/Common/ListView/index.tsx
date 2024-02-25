@@ -37,6 +37,7 @@ type ListViewProps = {
   isLoading?: boolean;
   isReachingEnd?: boolean;
   onScrollBottom: () => void;
+  force_big?: boolean;
 };
 
 const ListView = ({
@@ -47,6 +48,7 @@ const ListView = ({
   onScrollBottom,
   isReachingEnd,
   plexItems,
+  force_big = false,
 }: ListViewProps) => {
   const intl = useIntl();
   useVerticalScroll(onScrollBottom, !isLoading && !isEmpty && !isReachingEnd);
@@ -140,6 +142,7 @@ const ListView = ({
                   image={title.posterPath}
                   mediaType={title.mediaType}
                   canExpand
+                  force_big={force_big}
                 />
               );
               break;
@@ -151,6 +154,7 @@ const ListView = ({
                   title={title.title}
                   mediaType={title.mediaType}
                   canExpand
+                  force_big={force_big}
                 />
               );
               break;

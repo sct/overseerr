@@ -4416,6 +4416,8 @@ paths:
                         - $ref: '#/components/schemas/MovieResult'
                         - $ref: '#/components/schemas/TvResult'
                         - $ref: '#/components/schemas/PersonResult'
+                        - $ref: '#/components/schemas/ArtistResult'
+                        - $ref: '#/components/schemas/ReleaseResult'
   /search/keyword:
     get:
       summary: Search for keywords

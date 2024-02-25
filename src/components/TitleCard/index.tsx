@@ -29,6 +29,7 @@ interface TitleCardProps {
   canExpand?: boolean;
   inProgress?: boolean;
   type?: string;
+  force_big?: boolean;
 }
 
 const TitleCard = ({
@@ -42,6 +43,7 @@ const TitleCard = ({
   inProgress = false,
   canExpand = false,
   type,
+  force_big = false,
 }: TitleCardProps) => {
   const isTouch = useIsTouch();
   const intl = useIntl();
@@ -106,7 +108,11 @@ const TitleCard = ({
             ? 'scale-105 shadow-lg ring-gray-500'
             : 'scale-100 shadow ring-gray-700'
         }`}
-        style={tmdbOrMbId ? { paddingBottom: '150%' } : { aspectRatio: '1/1' }}
+        style={
+          tmdbOrMbId || force_big
+            ? { paddingBottom: '150%' }
+            : { aspectRatio: '1/1' }
+        }
         onMouseEnter={() => {
           if (!isTouch) {
             setShowDetail(true);
