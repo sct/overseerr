@@ -52,7 +52,7 @@ searchRoutes.get('/', async (req, res, next) => {
 
       results = {
         ...results,
-        results: [...results.results, ...releaseResults, ...artistResults],
+        results: [...results.results, ...artistResults, ...releaseResults],
       };
     }
 
