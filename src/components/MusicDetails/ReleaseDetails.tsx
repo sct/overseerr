@@ -4,6 +4,7 @@ import List from '@app/components/Common/List';
 import PageTitle from '@app/components/Common/PageTitle';
 import type { PlayButtonLink } from '@app/components/Common/PlayButton';
 import PlayButton from '@app/components/Common/PlayButton';
+import Tag from '@app/components/Common/Tag';
 import Tooltip from '@app/components/Common/Tooltip';
 import IssueModal from '@app/components/IssueModal';
 import RequestButton from '@app/components/RequestButton';
@@ -15,6 +16,7 @@ import { ExclamationTriangleIcon, PlayIcon } from '@heroicons/react/24/outline';
 import { MediaStatus, SecondaryType } from '@server/constants/media';
 import type { RecordingResult, ReleaseResult } from '@server/models/Search';
 import 'country-flag-icons/3x2/flags.css';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -161,11 +163,7 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProp) => {
               <span className="media-year">({mainDateDisplay})</span>
             )}
           </h1>
-          <span className="media-attributes">
-            {tags.map((t, k) => (
-              <span key={k}>{t}</span>
-            ))}
-          </span>
+          <span className="media-attributes"></span>
         </div>
         <div className="media-actions">
           <PlayButton links={mediaLinks} />
@@ -197,6 +195,20 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProp) => {
         </div>
       </div>
       <div>
+        {tags.length > 0 && (
+          <div className="mt-6">
+            {tags.map((keyword, idx) => (
+              <Link
+                href={`/discover/music?keywords=${keyword}`}
+                key={`keyword-id-${idx}`}
+              >
+                <a className="mb-2 mr-2 inline-flex last:mr-0">
+                  <Tag>{keyword}</Tag>
+                </a>
+              </Link>
+            ))}
+          </div>
+        )}
         <List title={intl.formatMessage(messages.tracks)}>
           {tracks.map((track, index) => (
             <div key={index}>
