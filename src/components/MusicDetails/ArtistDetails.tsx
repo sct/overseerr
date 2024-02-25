@@ -67,12 +67,13 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
     const out = a;
     b.forEach((item) => {
       if (
-        !a.some(
+        !a.some((i) => i.id === item.id) &&
+        (!a.some(
           (i) =>
             i.releaseGroup?.id === item.releaseGroup?.id ||
             i.title === item.title
         ) ||
-        item.mediaInfo?.status === MediaStatus.AVAILABLE
+          item.mediaInfo?.status === MediaStatus.AVAILABLE)
       ) {
         out.push(item);
       }
