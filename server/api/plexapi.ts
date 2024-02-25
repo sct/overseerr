@@ -3,6 +3,12 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import NodePlexAPI from 'plex-api';
 
+const SEARCHTYPES = {
+  movie: 1,
+  show: 2,
+  artist: '8,9',
+};
+
 export interface PlexLibraryItem {
   ratingKey: string;
   parentRatingKey?: string;
@@ -253,29 +259,14 @@ class PlexAPI {
     mediaType: 'movie' | 'show' | 'artist'
   ): Promise<PlexLibraryItem[]> {
     const response = await this.plexClient.query<PlexLibraryResponse>({
-      uri: `/library/sections/${id}/all?type=${mediaType}&sort=addedAt%3Adesc&addedAt>>=${Math.floor(
-        options.addedAt / 1000
-      )}`,
+      uri: `/library/sections/${id}/all?type=${
+        SEARCHTYPES[mediaType]
+      }&sort=addedAt%3Adesc&addedAt>>=${Math.floor(options.addedAt / 1000)}`,
       extraHeaders: {
         'X-Plex-Container-Start': `0`,
         'X-Plex-Container-Size': `500`,
       },
     });
-    if (mediaType === 'artist') {
-      const albumResponse = await this.plexClient.query<PlexLibraryResponse>({
-        uri: `/library/sections/${id}/albums&sort=addedAt%3Adesc&addedAt>>=${Math.floor(
-          options.addedAt / 1000
-        )}`,
-        extraHeaders: {
-          'X-Plex-Container-Start': `0`,
-          'X-Plex-Container-Size': `500`,
-        },
-      });
-      // concat the album and artist response mediacontainer.metadata
-      return response.MediaContainer.Metadata.concat(
-        albumResponse.MediaContainer.Metadata
-      );
-    }
     return response.MediaContainer.Metadata;
   }
 }
