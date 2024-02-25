@@ -159,9 +159,13 @@ const TitleCard = ({
                   ? intl.formatMessage(globalMessages.collection)
                   : mediaType === 'tv'
                   ? intl.formatMessage(globalMessages.tvshow)
+                  : mediaType === 'release'
+                  ? intl.formatMessage(globalMessages.release)
+                  : mediaType === 'artist'
+                  ? intl.formatMessage(globalMessages.artist)
                   : mediaType === 'release-group'
                   ? type
-                  : intl.formatMessage(globalMessages.music)}
+                  : ''}
               </div>
             </div>
             {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (
