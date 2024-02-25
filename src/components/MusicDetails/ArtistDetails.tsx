@@ -63,6 +63,23 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
     });
   }
 
+  const smartMerge = (a: ReleaseResult[], b: ReleaseResult[]) => {
+    const out = a;
+    b.forEach((item) => {
+      if (
+        !a.some(
+          (i) =>
+            i.releaseGroup?.id === item.releaseGroup?.id ||
+            i.title === item.title
+        ) ||
+        item.mediaInfo?.status === MediaStatus.AVAILABLE
+      ) {
+        out.push(item);
+      }
+    });
+    return out;
+  };
+
   const cleanDate = (date: Date | string | undefined) => {
     date = date ?? '';
     return new Date(date).toLocaleDateString('en-US', {
@@ -91,12 +108,8 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
 
   useEffect(() => {
     setAvailableReleases((prev) =>
-      Array.from(
-        new Set(
-          [...prev, ...releases].filter(
-            (release) => release.mediaInfo?.status === MediaStatus.AVAILABLE
-          )
-        )
+      smartMerge(prev, releases).filter(
+        (release) => release.mediaInfo?.status === MediaStatus.AVAILABLE
       )
     );
   }, [releases]);
@@ -119,7 +132,7 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
       .then((res) => {
         if (res) {
           const r = res.releases ?? [];
-          setReleases(Array.from(new Set([...releases, ...r])));
+          setReleases(smartMerge(releases, r));
           setCurrentOffset(currentOffset + 25);
           setLoading(false);
         }

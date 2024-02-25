@@ -34,10 +34,6 @@ const MusicPage: NextPage<MusicPageProps> = ({ music }) => {
       );
     case SecondaryType.RELEASE:
       return <MusicDetails type={SecondaryType.RELEASE} release={music} />;
-    case SecondaryType.RECORDING:
-      return <MusicDetails type={SecondaryType.RECORDING} recording={music} />;
-    case SecondaryType.WORK:
-      return <MusicDetails type={SecondaryType.WORK} work={music} />;
     default:
       return <Error statusCode={404} />;
   }
@@ -62,7 +58,6 @@ export const getServerSideProps: GetServerSideProps<MusicPageProps> = async (
         : undefined,
     }
   );
-
   return {
     props: {
       music: response.data,
