@@ -163,7 +163,21 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProp) => {
               <span className="media-year">({mainDateDisplay})</span>
             )}
           </h1>
-          <span className="media-attributes"></span>
+          <span className="media-attributes">
+            By&nbsp;
+            {data.artist.map((artist, index) => (
+              <>
+                {' '}
+                <Link
+                  href={`/music/artist/${artist.id}`}
+                  key={`artist-${index}`}
+                >
+                  <a className="hover:underline">{artist.name}</a>
+                </Link>
+                {index < data.artist.length - 1 ? ', ' : ''}
+              </>
+            ))}
+          </span>
         </div>
         <div className="media-actions">
           <PlayButton links={mediaLinks} />

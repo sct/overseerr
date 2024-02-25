@@ -2,9 +2,9 @@ import LidarrAPI from '@server/api/servarr/lidarr';
 import { getSettings } from '@server/lib/settings';
 import type { mbArtist, mbRelease, mbReleaseGroup } from './interfaces';
 
-function getPosterFromMB(
+async function getPosterFromMB(
   element: mbRelease | mbReleaseGroup | mbArtist
-): string | undefined {
+): Promise<string | undefined> {
   if (element.media_type === 'artist') {
     const settings = getSettings();
     const lidarrSettings = settings.lidarr.find((lidarr) => lidarr.isDefault);
@@ -16,7 +16,7 @@ function getPosterFromMB(
       url: LidarrAPI.buildUrl(lidarrSettings, '/api/v1'),
     });
     try {
-      const artist = (lidarr as LidarrAPI).getArtist(element.id);
+      const artist = await (lidarr as LidarrAPI).getArtist(element.id);
       if (artist.images.find((i) => i.coverType === 'poster')?.url) {
         return LidarrAPI.buildUrl(
           lidarrSettings,
@@ -43,7 +43,7 @@ async function getFanartFromMB(element: mbArtist): Promise<string | undefined> {
     url: LidarrAPI.buildUrl(lidarrSettings, '/api/v1'),
   });
   try {
-    const artist = lidarr.getArtist(element.id);
+    const artist = await lidarr.getArtist(element.id);
     return (
       artist.images ?? [{ coverType: 'fanart', remoteUrl: undefined }]
     ).filter((i) => i.coverType === 'fanart')[0].remoteUrl;

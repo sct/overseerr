@@ -231,10 +231,12 @@ function processReleaseSearchParams(
     offset: search.offset,
   };
   if (search.artistname) {
-    processedSearchParams.query += ` AND artist:${search.artistname}`;
+    processedSearchParams.query += ` AND artist:"${search.artistname}"`;
   }
   if (search.tags) {
-    processedSearchParams.query += ` AND tag:${search.tags.join(' AND tag:')}`;
+    processedSearchParams.query += ` AND tag:"${search.tags.join(
+      '" AND tag:"'
+    )}"`;
   }
   return processedSearchParams;
 }
@@ -248,7 +250,9 @@ function processArtistSearchParams(
     offset: search.offset,
   };
   if (search.tags) {
-    processedSearchParams.query += ` AND tag:${search.tags.join(' AND tag:')}`;
+    processedSearchParams.query += ` AND tag:"${search.tags.join(
+      '" AND tag:"'
+    )}"`;
   }
   return processedSearchParams;
 }

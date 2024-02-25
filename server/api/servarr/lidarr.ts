@@ -172,7 +172,7 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     }
   };
 
-  public getArtist = (id: string | number): LidarrArtist => {
+  public getArtist = async (id: string | number): Promise<LidarrArtist> => {
     try {
       if (LidarrAPI.lastArtistsUpdate < Date.now() - LidarrAPI.delay) {
         this.getArtists();
@@ -190,7 +190,11 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
       if (result) {
         return result;
       }
-      throw new Error(`Artist not found (using MusicBrainzId): ${id}`);
+      const artist = await this.getArtistByMusicBrainzId(id);
+      if (artist) {
+        return artist;
+      }
+      throw new Error(`Artist not found (using MusicBrainz Id): ${id}`);
     } catch (e) {
       throw new Error(`[Lidarr] ${e.message}`);
     }

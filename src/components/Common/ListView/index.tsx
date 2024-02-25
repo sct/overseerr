@@ -138,8 +138,8 @@ const ListView = ({
               titleCard = (
                 <TitleCard
                   id={title.id}
-                  title={title.name}
                   image={title.posterPath}
+                  title={title.name}
                   mediaType={title.mediaType}
                   canExpand
                   force_big={force_big}

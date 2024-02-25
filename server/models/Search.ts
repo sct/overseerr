@@ -286,7 +286,7 @@ export const mapReleaseGroupResult = async (
       )
     ),
     tags: releaseGroupResult.tags,
-    posterPath: getPosterFromMB(releaseGroupResult),
+    posterPath: await getPosterFromMB(releaseGroupResult),
     mediaInfo: media ?? undefined,
   };
 };

@@ -5101,11 +5101,6 @@ paths:
           schema:
             type: string
             example: 1,2
-        - in: query
-          name: sortBy
-          schema:
-            type: string
-            example: popularity.desc
       responses:
         '200':
           description: Results
@@ -5126,7 +5121,9 @@ paths:
                   results:
                     type: array
                     items:
-                      $ref: '#/components/schemas/ReleaseResult'
+                      anyOf:
+                        - $ref: '#/components/schemas/ReleaseResult'
+                        - $ref: '#/components/schemas/ArtistResult'
         '500':
           description: An error occured while getting musics
           content:
