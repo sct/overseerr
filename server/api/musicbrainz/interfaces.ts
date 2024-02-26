@@ -283,4 +283,5 @@ export interface SearchOptions {
   albumname?: string;
   recordingname?: string;
   tags?: string[];
+  tag?: string;
 }

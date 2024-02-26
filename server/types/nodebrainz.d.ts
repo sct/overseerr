@@ -6,7 +6,7 @@ declare module 'nodebrainz' {
     Release,
     SearchOptions,
     Work,
-  } from 'server/api/musicbrainz/interfaces';
+  } from '@server/api/musicbrainz/interfaces';
   interface RawSearchResponse {
     created: string;
     count: number;
@@ -87,7 +87,7 @@ declare module 'nodebrainz' {
     ): Promise<Work>;
     search(
       type: string,
-      search: SearchOptions,
+      search: SearchOptions | { tag: string },
       callback: (
         err: Error,
         data:

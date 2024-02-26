@@ -4,11 +4,13 @@
     "target": "ES2020",
     "module": "commonjs",
     "outDir": "../dist",
+    "strict": true,
     "noEmit": false,
     "baseUrl": ".",
     "paths": {
       "@server/*": ["*"]
-    }
+    },
+    "typeRoots": ["../node_modules/*", "./types/*"],
   },
-  "include": ["**/*.ts", "type/**/*.d.ts"]
+  "include": ["**/*.ts", "**/*.d.ts"]
 }
