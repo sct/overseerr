@@ -7,9 +7,9 @@ import {
   CogIcon,
   ExclamationTriangleIcon,
   FilmIcon,
+  MusicalNoteIcon,
   SparklesIcon,
   TvIcon,
-  MusicalNoteIcon,
   UsersIcon,
   XMarkIcon,
 } from '@heroicons/react/24/outline';
@@ -22,6 +22,7 @@ export const menuMessages = defineMessages({
   dashboard: 'Discover',
   browsemovies: 'Movies',
   browsetv: 'Series',
+  browsemusic: 'Music',
   requests: 'Requests',
   issues: 'Issues',
   users: 'Users',
