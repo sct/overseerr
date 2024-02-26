@@ -10,7 +10,8 @@
     "paths": {
       "@server/*": ["*"]
     },
-    "typeRoots": ["../node_modules/*", "./types/*"],
+    "typeRoots": ["../node_modules/*", "./types"],
+
   },
-  "include": ["**/*.ts", "**/*.d.ts"]
+  "include": ["**/*.ts"],
 }
