@@ -414,6 +414,7 @@ export const mapSearchResults = (
       | mbReleaseGroup
       | mbWork
   ) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mapFunction: (result: any, media?: Media) => Promise<any> =
       mapFunctions[result.media_type];
     if (mapFunction) {
@@ -422,7 +423,11 @@ export const mapSearchResults = (
     }
   };
 
-  return Promise.all(results.map((result) => transformResults(result)));
+  const out = Promise.all(
+    results.map((result) => transformResults(result)).filter((result) => result)
+  );
+
+  return out;
 };
 export const mapMovieDetailsToResult = (
   movieDetails: TmdbMovieDetails
