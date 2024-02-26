@@ -14,6 +14,7 @@ import { Router } from 'express';
 const searchRoutes = Router();
 
 searchRoutes.get('/', async (req, res, next) => {
+  console.time('search');
   const queryString = req.query.query as string;
   const searchProvider = findSearchProvider(queryString.toLowerCase());
   let results:
@@ -32,30 +33,35 @@ searchRoutes.get('/', async (req, res, next) => {
         query: queryString,
       });
     } else {
+      console.time('initTmdb');
       const tmdb = new TheMovieDb();
-
+      console.timeEnd('initTmdb');
+      console.time('searchMultiTmdb');
       results = await tmdb.searchMulti({
         query: queryString,
         page: Number(req.query.page),
         language: (req.query.language as string) ?? req.locale,
       });
-
+      console.timeEnd('searchMultiTmdb');
+      console.time('initMb');
       const mb = new MusicBrainz();
-
+      console.timeEnd('initMb');
+      console.time('searchMultiMb');
       const mbResults = await mb.searchMulti({
         query: queryString,
         page: Number(req.query.page),
       });
-
+      console.timeEnd('searchMultiMb');
       const releaseResults = mbResults.releaseResults;
       const artistResults = mbResults.artistResults;
-
+      console.time('mergeResults');
       results = {
         ...results,
         results: [...results.results, ...artistResults, ...releaseResults],
       };
+      console.timeEnd('mergeResults');
     }
-
+    console.time('getRelatedMedia');
     const mbIds = results.results
       .filter((result) => typeof result.id === 'string')
       .map((result) => result.id as string);
@@ -65,12 +71,16 @@ searchRoutes.get('/', async (req, res, next) => {
       .map((result) => result.id as number);
 
     const media = await Media.getRelatedMedia(tmdbIds, mbIds);
-
+    console.timeEnd('getRelatedMedia');
+    console.time('mapSearchResults');
+    const mappedResults = await mapSearchResults(results.results, media);
+    console.timeEnd('mapSearchResults');
+    console.timeEnd('search');
     return res.status(200).json({
       page: results.page,
       totalPages: results.total_pages,
       totalResults: results.total_results,
-      results: await mapSearchResults(results.results, media),
+      results: mappedResults,
     });
   } catch (e) {
     logger.debug('Something went wrong retrieving search results', {

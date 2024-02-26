@@ -19,7 +19,6 @@ import type {
   TmdbTvDetails,
   TmdbTvResult,
 } from '@server/api/themoviedb/interfaces';
-import { MediaType as MainMediaType } from '@server/constants/media';
 import type Media from '@server/entity/Media';
 
 export type MediaType =
@@ -192,10 +191,10 @@ export type MixedSearchResponse = {
   )[];
 };
 
-export const mapMovieResult = (
+export const mapMovieResult = async (
   movieResult: TmdbMovieResult,
   media?: Media
-): MovieResult => ({
+): Promise<MovieResult> => ({
   id: movieResult.id,
   mediaType: 'movie',
   adult: movieResult.adult,
@@ -214,10 +213,10 @@ export const mapMovieResult = (
   mediaInfo: media,
 });
 
-export const mapTvResult = (
+export const mapTvResult = async (
   tvResult: TmdbTvResult,
   media?: Media
-): TvResult => ({
+): Promise<TvResult> => ({
   id: tvResult.id,
   firstAirDate: tvResult.first_air_date,
   genreIds: tvResult.genre_ids,
@@ -236,9 +235,11 @@ export const mapTvResult = (
   mediaInfo: media,
 });
 
-export const mapCollectionResult = (
-  collectionResult: TmdbCollectionResult
-): CollectionResult => ({
+export const mapCollectionResult = async (
+  collectionResult: TmdbCollectionResult,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _media?: Media
+): Promise<CollectionResult> => ({
   id: collectionResult.id,
   mediaType: collectionResult.media_type || 'collection',
   adult: collectionResult.adult,
@@ -250,22 +251,26 @@ export const mapCollectionResult = (
   posterPath: collectionResult.poster_path,
 });
 
-export const mapPersonResult = (
-  personResult: TmdbPersonResult
-): PersonResult => ({
+export const mapPersonResult = async (
+  personResult: TmdbPersonResult,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _media?: Media
+): Promise<PersonResult> => ({
   id: personResult.id,
   name: personResult.name,
   popularity: personResult.popularity,
   adult: personResult.adult,
   mediaType: personResult.media_type,
   profilePath: personResult.profile_path,
-  knownFor: personResult.known_for.map((result) => {
-    if (result.media_type === 'movie') {
-      return mapMovieResult(result);
-    }
+  knownFor: await Promise.all(
+    personResult.known_for.map((result) => {
+      if (result.media_type === 'movie') {
+        return mapMovieResult(result);
+      }
 
-    return mapTvResult(result);
-  }),
+      return mapTvResult(result);
+    })
+  ),
 });
 
 export const mapReleaseGroupResult = async (
@@ -335,7 +340,9 @@ export const mapReleaseResult = async (
 });
 
 export const mapRecordingResult = async (
-  recording: mbRecording
+  recording: mbRecording,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _media?: Media
 ): Promise<RecordingResult> => ({
   id: recording.id,
   mediaType: recording.media_type,
@@ -348,7 +355,11 @@ export const mapRecordingResult = async (
   tags: recording.tags,
 });
 
-export const mapWorkResult = async (work: mbWork): Promise<WorkResult> => ({
+export const mapWorkResult = async (
+  work: mbWork,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _media?: Media
+): Promise<WorkResult> => ({
   id: work.id,
   mediaType: work.media_type,
   title: work.title,
@@ -358,7 +369,7 @@ export const mapWorkResult = async (work: mbWork): Promise<WorkResult> => ({
   tags: work.tags,
 });
 
-export const mapSearchResults = async (
+export const mapSearchResults = (
   results: (
     | TmdbMovieResult
     | TmdbTvResult
@@ -371,56 +382,48 @@ export const mapSearchResults = async (
     | mbWork
   )[],
   media?: Media[]
-): Promise<Results[]> =>
-  await Promise.all(
-    results.map((result) => {
-      switch (result.media_type) {
-        case 'movie':
-          return mapMovieResult(
-            result,
-            media?.find(
-              (req) =>
-                req.tmdbId === result.id &&
-                req.mediaType === MainMediaType.MOVIE
-            )
-          );
-        case 'tv':
-          return mapTvResult(
-            result,
-            media?.find(
-              (req) =>
-                req.tmdbId === result.id && req.mediaType === MainMediaType.TV
-            )
-          );
-        case 'collection':
-          return mapCollectionResult(result);
-        case 'person':
-          return mapPersonResult(result);
-        case 'release-group':
-          return mapReleaseGroupResult(
-            result,
-            media?.find((req) => req.mbId === result.id)
-          );
-        case 'release':
-          return mapReleaseResult(
-            result,
-            media?.find((req) => req.mbId === result.id)
-          );
-        case 'recording':
-          return mapRecordingResult(result);
-        case 'work':
-          return mapWorkResult(result);
-        case 'artist':
-          return mapArtistResult(
-            result,
-            media?.find((req) => req.mbId === result.id)
-          );
-        default:
-          return result;
-      }
-    })
-  );
+): Promise<Results[]> => {
+  const mediaLookup = new Map();
+  if (media) {
+    media.forEach((item) => {
+      mediaLookup.set(item.tmdbId || item.mbId, item);
+    });
+  }
 
+  const mapFunctions = {
+    movie: mapMovieResult,
+    tv: mapTvResult,
+    collection: mapCollectionResult,
+    person: mapPersonResult,
+    'release-group': mapReleaseGroupResult,
+    release: mapReleaseResult,
+    recording: mapRecordingResult,
+    work: mapWorkResult,
+    artist: mapArtistResult,
+  };
+
+  const transformResults = (
+    result:
+      | TmdbMovieResult
+      | TmdbTvResult
+      | TmdbPersonResult
+      | TmdbCollectionResult
+      | mbArtist
+      | mbRecording
+      | mbRelease
+      | mbReleaseGroup
+      | mbWork
+  ) => {
+    const mapFunction: (result: any, media?: Media) => Promise<any> =
+      mapFunctions[result.media_type];
+    if (mapFunction) {
+      const mediaItem = mediaLookup.get(result.id);
+      return mapFunction(result, mediaItem);
+    }
+  };
+
+  return Promise.all(results.map((result) => transformResults(result)));
+};
 export const mapMovieDetailsToResult = (
   movieDetails: TmdbMovieDetails
 ): TmdbMovieResult => ({
