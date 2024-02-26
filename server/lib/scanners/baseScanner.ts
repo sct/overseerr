@@ -1,3 +1,4 @@
+import type { LidarrRelease } from '@server/api/servarr/lidarr';
 import TheMovieDb from '@server/api/themoviedb';
 import { MediaStatus, MediaType, SecondaryType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
@@ -41,6 +42,10 @@ interface ProcessOptions {
   title?: string;
   processing?: boolean;
   parentRatingKey?: string;
+}
+
+interface ProcessGroupOptions extends ProcessOptions {
+  releases?: LidarrRelease[];
 }
 
 export interface ProcessableSeason {
@@ -653,6 +658,109 @@ class BaseScanner<T> {
           );
         } else {
           this.log(`Title already exists and no changes detected for ${title}`);
+        }
+      } else {
+        const newMedia = new Media();
+        newMedia.mbId = mbId;
+        newMedia.title = title;
+        newMedia.parentRatingKey = parentRatingKey
+          ? Number(parentRatingKey.match(/(\d+)/)?.[0])
+          : undefined;
+        newMedia.secondaryType = SecondaryType.RELEASE;
+        newMedia.status = !processing
+          ? MediaStatus.AVAILABLE
+          : processing
+          ? MediaStatus.PROCESSING
+          : MediaStatus.UNKNOWN;
+        newMedia.mediaType = MediaType.MUSIC;
+        newMedia.serviceId = serviceId;
+        newMedia.externalServiceId = externalServiceId;
+
+        if (mediaAddedAt) {
+          newMedia.mediaAddedAt = mediaAddedAt;
+        }
+
+        if (ratingKey) {
+          newMedia.ratingKey = ratingKey;
+        }
+        await mediaRepository.save(newMedia);
+        this.log(`Saved new media: ${title}`);
+      }
+    });
+  }
+
+  protected async processGroup(
+    mbId: string,
+    {
+      mediaAddedAt,
+      ratingKey,
+      serviceId,
+      externalServiceId,
+      processing = false,
+      title = 'Unknown Title',
+      parentRatingKey = undefined,
+      releases = [],
+    }: ProcessGroupOptions = {}
+  ): Promise<void> {
+    const mediaRepository = getRepository(Media);
+
+    await this.asyncLock.dispatch(mbId, async () => {
+      const existings = (
+        await Promise.all(
+          releases.map((release) =>
+            this.getExisting(release.foreignReleaseId, MediaType.MUSIC)
+          )
+        )
+      ).filter((existing) => existing !== null) as Media[];
+
+      if (existings.length > 0) {
+        for (const existing of existings) {
+          let changedExisting = false;
+
+          if (existing['status'] !== MediaStatus.AVAILABLE) {
+            existing['status'] = processing
+              ? MediaStatus.PROCESSING
+              : MediaStatus.AVAILABLE;
+            if (mediaAddedAt) {
+              existing.mediaAddedAt = mediaAddedAt;
+            }
+            changedExisting = true;
+          }
+
+          if (!changedExisting && !existing.mediaAddedAt && mediaAddedAt) {
+            existing.mediaAddedAt = mediaAddedAt;
+            changedExisting = true;
+          }
+
+          if (ratingKey && existing['ratingKey'] !== ratingKey) {
+            existing['ratingKey'] = ratingKey;
+            changedExisting = true;
+          }
+
+          if (serviceId !== undefined && existing['serviceId'] !== serviceId) {
+            existing['serviceId'] = serviceId;
+            changedExisting = true;
+          }
+
+          if (
+            externalServiceId !== undefined &&
+            existing['externalServiceId'] !== externalServiceId
+          ) {
+            existing['externalServiceId'] = externalServiceId;
+            changedExisting = true;
+          }
+
+          if (changedExisting) {
+            await mediaRepository.save(existing);
+            this.log(
+              `Media for ${title} exists. Changes were detected and the title will be updated.`,
+              'info'
+            );
+          } else {
+            this.log(
+              `Title already exists and no changes detected for ${title}`
+            );
+          }
         }
       } else {
         const newMedia = new Media();

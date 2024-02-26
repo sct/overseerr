@@ -90,11 +90,12 @@ class LidarrScanner
       return;
     }
     try {
-      await this.processAlbum(lidarrAlbum.foreignAlbumId, {
+      await this.processGroup(lidarrAlbum.foreignAlbumId, {
         serviceId: this.currentServer.id,
         externalServiceId: lidarrAlbum.id,
         title: lidarrAlbum.title,
         processing: !lidarrAlbum.anyReleaseOk,
+        releases: lidarrAlbum.releases,
       });
     } catch (e) {
       this.log('Failed to process Lidarr media', 'error', {
