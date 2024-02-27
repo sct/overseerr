@@ -349,23 +349,42 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
         className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 bg-cover bg-center p-4 text-gray-400 shadow ring-1 ring-gray-700 sm:w-96"
         data-testid="request-card"
       >
-        {(isMovie(title) || isTv(title)) && title.backdropPath && (
-          <div className="absolute inset-0 z-0">
-            <CachedImage
-              alt=""
-              src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
-              layout="fill"
-              objectFit="cover"
-            />
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  'linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%)',
-              }}
-            />
-          </div>
-        )}
+        {isMovie(title) || isTv(title)
+          ? title.backdropPath && (
+              <div className="absolute inset-0 z-0">
+                <CachedImage
+                  alt=""
+                  src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
+                  layout="fill"
+                  objectFit="cover"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%)',
+                  }}
+                />
+              </div>
+            )
+          : isArtist(title) &&
+            title.fanartPath && (
+              <div className="absolute inset-0 z-0">
+                <CachedImage
+                  alt=""
+                  src={title.fanartPath}
+                  layout="fill"
+                  objectFit="cover"
+                />
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage:
+                      'linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%)',
+                  }}
+                />
+              </div>
+            )}
         <div
           className="relative z-10 flex min-w-0 flex-1 flex-col pr-4"
           data-testid="request-card-title"
@@ -610,19 +629,25 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
           href={
             request.type === 'movie'
               ? `/movie/${requestData.media.tmdbId}`
-              : `/tv/${requestData.media.tmdbId}`
+              : request.type === 'tv'
+              ? `/tv/${requestData.media.tmdbId}`
+              : `/music/${requestData.media.secondaryType}/${requestData.media.mbId}`
           }
         >
           <a className="w-20 flex-shrink-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-md shadow-sm transition duration-300 hover:scale-105 hover:shadow-md sm:w-28">
             <CachedImage
               src={
-                title.posterPath
-                  ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                isMovie(title) || isTv(title)
+                  ? title.posterPath
+                    ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                    : '/images/overseerr_poster_not_found.png'
+                  : title.posterPath
+                  ? title.posterPath
                   : '/images/overseerr_poster_not_found.png'
               }
               alt=""
               layout="responsive"
-              width={600}
+              width={isMovie(title) || isTv(title) ? 600 : 900}
               height={900}
             />
           </a>
