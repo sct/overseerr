@@ -703,6 +703,8 @@
   "components.Settings.Notifications.discordsettingsfailed": "Не удалось сохранить настройки уведомлений Discord.",
   "components.Settings.Notifications.chatIdTip": "Начните чат со своим ботом, добавьте <GetIdBotLink>@get_id_bot</GetIdBotLink> и выполните команду <code>/my_id</code>",
   "components.Settings.Notifications.chatId": "ID чата",
+  "components.Settings.Notifications.messageThreadId": "ID топика",
+  "components.Settings.Notifications.messageThreadIdTip": "Если в вашей группе включены топики, Вы можете указать ID нужного топика тут",
   "components.Settings.Notifications.botUsernameTip": "Разрешить пользователям начинать чат с вашим ботом и настраивать свои собственные уведомления",
   "components.Settings.Notifications.botUsername": "Имя бота",
   "components.Settings.Notifications.botAvatarUrl": "URL аватара бота",
