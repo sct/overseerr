@@ -61,7 +61,7 @@ class PlexOAuth {
     const plexProductName =
       applicationName === this.DEFAULT_APPLICATION_NAME
         ? applicationName
-        : `${applicationName} - Overseerr`;
+        : `${applicationName} - ${this.DEFAULT_APPLICATION_NAME}`;
 
     const browser = Bowser.getParser(window.navigator.userAgent);
     this.plexHeaders = {
