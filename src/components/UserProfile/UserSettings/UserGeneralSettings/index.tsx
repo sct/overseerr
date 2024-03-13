@@ -55,8 +55,8 @@ const messages = defineMessages({
   plexwatchlistsyncseries: 'Auto-Request Series',
   plexwatchlistsyncseriestip:
     'Automatically request series on your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink>',
-  hideTags: 'Hide Tags',
-  hideTagsTip: 'Hide tags in Movie/Series detail page',
+  collapsetags: 'Collapse Tags',
+  collapsetagstip: 'Collapse tags by default in Movie/Series detail page',
 });
 
 const UserGeneralSettings = () => {
@@ -132,7 +132,7 @@ const UserGeneralSettings = () => {
           tvQuotaDays: data?.tvQuotaDays,
           watchlistSyncMovies: data?.watchlistSyncMovies,
           watchlistSyncTv: data?.watchlistSyncTv,
-          hideTags: data?.hideTags,
+          collapseTags: data?.collapseTags,
         }}
         validationSchema={UserGeneralSettingsSchema}
         enableReinitialize
@@ -152,7 +152,7 @@ const UserGeneralSettings = () => {
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
               watchlistSyncMovies: values.watchlistSyncMovies,
               watchlistSyncTv: values.watchlistSyncTv,
-              hideTags: values.hideTags,
+              collapseTags: values.collapseTags,
             });
 
             if (currentUser?.id === user?.id && setLocale) {
@@ -339,19 +339,19 @@ const UserGeneralSettings = () => {
                 </div>
               </div>
               <div className="form-row">
-                <label htmlFor="hideTags" className="checkbox-label">
-                  <span>{intl.formatMessage(messages.hideTags)}</span>
+                <label htmlFor="collapseTags" className="checkbox-label">
+                  <span>{intl.formatMessage(messages.collapsetags)}</span>
                   <span className="label-tip">
-                    {intl.formatMessage(messages.hideTagsTip)}
+                    {intl.formatMessage(messages.collapsetagstip)}
                   </span>
                 </label>
                 <div className="form-input-area">
                   <Field
                     type="checkbox"
-                    id="hideTags"
-                    name="hideTags"
+                    id="collapseTags"
+                    name="collapseTags"
                     onChange={() => {
-                      setFieldValue('hideTags', !values.hideTags);
+                      setFieldValue('collapseTags', !values.collapseTags);
                     }}
                   />
                 </div>
