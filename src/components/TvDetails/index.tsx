@@ -46,6 +46,7 @@ import { IssueStatus } from '@server/constants/issue';
 import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { Crew } from '@server/models/common';
 import type { TvDetails as TvDetailsType } from '@server/models/Tv';
+import { hasFlag } from 'country-flag-icons';
 import 'country-flag-icons/3x2/flags.css';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
