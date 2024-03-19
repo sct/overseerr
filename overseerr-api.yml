@@ -6355,7 +6355,7 @@ paths:
     post:
       summary: Update an issue's status
       description: |
-        Updates an issue's status to approved or declined. Also returns the issue in a JSON object.
+        Updates an issue's status to open or resolved. Also returns the issue in a JSON object.
 
         Requires the `MANAGE_ISSUES` permission or `ADMIN`.
       tags:
