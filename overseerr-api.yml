@@ -4987,7 +4987,7 @@ paths:
       description: |
         Creates a new request with the provided media ID and type. The `REQUEST` permission is required.
 
-        If the user has the `ADMIN` or `AUTO_APPROVE` permissions, their request will be auomatically approved.
+        If the user has the `ADMIN` or `AUTO_APPROVE` permissions, their request will be automatically approved.
       tags:
         - request
       requestBody:
