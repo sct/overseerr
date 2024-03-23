@@ -159,7 +159,7 @@
     "prettier": "2.8.4",
     "prettier-plugin-organize-imports": "3.2.2",
     "prettier-plugin-tailwindcss": "0.2.3",
-    "semantic-release": "^18.0.0",
+    "semantic-release": "18.0.0",
     "semantic-release-docker-buildx": "1.0.1",
     "tailwindcss": "3.2.7",
     "ts-node": "10.9.1",
