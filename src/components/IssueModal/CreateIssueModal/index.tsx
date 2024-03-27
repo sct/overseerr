@@ -72,8 +72,12 @@ const CreateIssueModal = ({
   const availableSeasons = (data?.mediaInfo?.seasons ?? [])
     .filter(
       (season) =>
-        season.status === MediaStatus.AVAILABLE ||
-        season.status === MediaStatus.PARTIALLY_AVAILABLE ||
+        (settings.currentSettings.seriesEnabled &&
+          hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+            type: 'or',
+          }) &&
+          (season.status === MediaStatus.AVAILABLE ||
+            season.status === MediaStatus.PARTIALLY_AVAILABLE)) ||
         (settings.currentSettings.series4kEnabled &&
           hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
             type: 'or',

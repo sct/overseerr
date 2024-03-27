@@ -149,7 +149,13 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (plexUrl) {
+  if (
+    settings.currentSettings.seriesEnabled &&
+    plexUrl &&
+    hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+      type: 'or',
+    })
+  ) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: plexUrl,
@@ -337,16 +343,28 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
         </div>
         <div className="media-title">
           <div className="media-status">
-            <StatusBadge
-              status={data.mediaInfo?.status}
-              downloadItem={data.mediaInfo?.downloadStatus}
-              title={data.name}
-              inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
-              tmdbId={data.mediaInfo?.tmdbId}
-              mediaType="tv"
-              plexUrl={plexUrl}
-              serviceUrl={data.mediaInfo?.serviceUrl}
-            />
+            {settings.currentSettings.seriesEnabled &&
+              hasPermission(
+                [
+                  Permission.MANAGE_REQUESTS,
+                  Permission.REQUEST,
+                  Permission.REQUEST_TV,
+                ],
+                {
+                  type: 'or',
+                }
+              ) && (
+                <StatusBadge
+                  status={data.mediaInfo?.status}
+                  downloadItem={data.mediaInfo?.downloadStatus}
+                  title={data.name}
+                  inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
+                  tmdbId={data.mediaInfo?.tmdbId}
+                  mediaType="tv"
+                  plexUrl={plexUrl}
+                  serviceUrl={data.mediaInfo?.serviceUrl}
+                />
+              )}
             {settings.currentSettings.series4kEnabled &&
               hasPermission(
                 [
@@ -404,8 +422,12 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
             isShowComplete={isComplete}
             is4kShowComplete={is4kComplete}
           />
-          {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
-            data.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE ||
+          {((settings.currentSettings.seriesEnabled &&
+            hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+              type: 'or',
+            }) &&
+            (data.mediaInfo?.status === MediaStatus.AVAILABLE ||
+              data?.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE)) ||
             (settings.currentSettings.series4kEnabled &&
               hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
                 type: 'or',
@@ -524,6 +546,18 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               .reverse()
               .filter((season) => season.seasonNumber !== 0)
               .map((season) => {
+                const showNon4k =
+                  settings.currentSettings.seriesEnabled &&
+                  hasPermission(
+                    [
+                      Permission.MANAGE_REQUESTS,
+                      Permission.REQUEST,
+                      Permission.REQUEST_TV,
+                    ],
+                    {
+                      type: 'or',
+                    }
+                  );
                 const show4k =
                   settings.currentSettings.series4kEnabled &&
                   hasPermission(
@@ -588,65 +622,75 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                           </div>
                           {((!mSeason &&
                             request?.status === MediaRequestStatus.APPROVED) ||
-                            mSeason?.status === MediaStatus.PROCESSING) && (
-                            <>
-                              <div className="hidden md:flex">
-                                <Badge badgeType="primary">
-                                  {intl.formatMessage(globalMessages.requested)}
-                                </Badge>
-                              </div>
-                              <div className="flex md:hidden">
-                                <StatusBadgeMini
-                                  status={MediaStatus.PROCESSING}
-                                />
-                              </div>
-                            </>
-                          )}
+                            mSeason?.status === MediaStatus.PROCESSING) &&
+                            showNon4k && (
+                              <>
+                                <div className="hidden md:flex">
+                                  <Badge badgeType="primary">
+                                    {intl.formatMessage(
+                                      globalMessages.requested
+                                    )}
+                                  </Badge>
+                                </div>
+                                <div className="flex md:hidden">
+                                  <StatusBadgeMini
+                                    status={MediaStatus.PROCESSING}
+                                  />
+                                </div>
+                              </>
+                            )}
                           {((!mSeason &&
                             request?.status === MediaRequestStatus.PENDING) ||
-                            mSeason?.status === MediaStatus.PENDING) && (
-                            <>
-                              <div className="hidden md:flex">
-                                <Badge badgeType="warning">
-                                  {intl.formatMessage(globalMessages.pending)}
-                                </Badge>
-                              </div>
-                              <div className="flex md:hidden">
-                                <StatusBadgeMini status={MediaStatus.PENDING} />
-                              </div>
-                            </>
-                          )}
+                            mSeason?.status === MediaStatus.PENDING) &&
+                            showNon4k && (
+                              <>
+                                <div className="hidden md:flex">
+                                  <Badge badgeType="warning">
+                                    {intl.formatMessage(globalMessages.pending)}
+                                  </Badge>
+                                </div>
+                                <div className="flex md:hidden">
+                                  <StatusBadgeMini
+                                    status={MediaStatus.PENDING}
+                                  />
+                                </div>
+                              </>
+                            )}
                           {mSeason?.status ===
-                            MediaStatus.PARTIALLY_AVAILABLE && (
-                            <>
-                              <div className="hidden md:flex">
-                                <Badge badgeType="success">
-                                  {intl.formatMessage(
-                                    globalMessages.partiallyavailable
-                                  )}
-                                </Badge>
-                              </div>
-                              <div className="flex md:hidden">
-                                <StatusBadgeMini
-                                  status={MediaStatus.PARTIALLY_AVAILABLE}
-                                />
-                              </div>
-                            </>
-                          )}
-                          {mSeason?.status === MediaStatus.AVAILABLE && (
-                            <>
-                              <div className="hidden md:flex">
-                                <Badge badgeType="success">
-                                  {intl.formatMessage(globalMessages.available)}
-                                </Badge>
-                              </div>
-                              <div className="flex md:hidden">
-                                <StatusBadgeMini
-                                  status={MediaStatus.AVAILABLE}
-                                />
-                              </div>
-                            </>
-                          )}
+                            MediaStatus.PARTIALLY_AVAILABLE &&
+                            showNon4k && (
+                              <>
+                                <div className="hidden md:flex">
+                                  <Badge badgeType="success">
+                                    {intl.formatMessage(
+                                      globalMessages.partiallyavailable
+                                    )}
+                                  </Badge>
+                                </div>
+                                <div className="flex md:hidden">
+                                  <StatusBadgeMini
+                                    status={MediaStatus.PARTIALLY_AVAILABLE}
+                                  />
+                                </div>
+                              </>
+                            )}
+                          {mSeason?.status === MediaStatus.AVAILABLE &&
+                            showNon4k && (
+                              <>
+                                <div className="hidden md:flex">
+                                  <Badge badgeType="success">
+                                    {intl.formatMessage(
+                                      globalMessages.available
+                                    )}
+                                  </Badge>
+                                </div>
+                                <div className="flex md:hidden">
+                                  <StatusBadgeMini
+                                    status={MediaStatus.AVAILABLE}
+                                  />
+                                </div>
+                              </>
+                            )}
                           {((!mSeason4k &&
                             request4k?.status ===
                               MediaRequestStatus.APPROVED) ||

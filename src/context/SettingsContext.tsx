@@ -13,6 +13,8 @@ const defaultSettings = {
   applicationUrl: '',
   hideAvailable: false,
   localLogin: true,
+  movieEnabled: false,
+  seriesEnabled: false,
   movie4kEnabled: false,
   series4kEnabled: false,
   region: '',
