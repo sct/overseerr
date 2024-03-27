@@ -211,7 +211,14 @@ export interface NotificationAgentGotify extends NotificationAgentConfig {
   };
 }
 
+export interface NotificationAgentApprise extends NotificationAgentConfig {
+  options: {
+    url: string;
+  };
+}
+
 export enum NotificationAgentKey {
+  APPRISE = 'apprise',
   DISCORD = 'discord',
   EMAIL = 'email',
   GOTIFY = 'gotify',
@@ -224,6 +231,7 @@ export enum NotificationAgentKey {
 }
 
 interface NotificationAgents {
+  apprise: NotificationAgentApprise;
   discord: NotificationAgentDiscord;
   email: NotificationAgentEmail;
   gotify: NotificationAgentGotify;
@@ -395,6 +403,13 @@ class Settings {
             options: {
               url: '',
               token: '',
+            },
+          },
+          apprise: {
+            enabled: false,
+            types: 0,
+            options: {
+              url: '',
             },
           },
         },
