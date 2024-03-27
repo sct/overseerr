@@ -90,6 +90,16 @@ const ExternalLinkBlock = ({
           <TraktLogo />
         </a>
       )}
+      {tmdbId && (
+        <a
+          href={`https://letterboxd.com/tmdb/${tmdbId}/`}
+          className="w-8 opacity-50 transition duration-300 hover:opacity-100"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <TraktLogo />
+        </a>
+      )}
     </div>
   );
 };
