@@ -57,6 +57,7 @@ export interface DVRSettings {
   activeDirectory: string;
   tags: number[];
   is4k: boolean;
+  isAnime: boolean;
   isDefault: boolean;
   externalUrl?: string;
   syncEnabled: boolean;
