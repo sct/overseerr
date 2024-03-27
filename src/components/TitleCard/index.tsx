@@ -11,6 +11,7 @@ import globalMessages from '@app/i18n/globalMessages';
 import { withProperties } from '@app/utils/typeHelpers';
 import { Transition } from '@headlessui/react';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import type { SecondaryType } from '@server/constants/media';
 import { MediaStatus } from '@server/constants/media';
 import type { MediaType } from '@server/models/Search';
 import Link from 'next/link';
@@ -18,7 +19,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TitleCardProps {
-  id: number;
+  id: number | string;
   image?: string;
   summary?: string;
   year?: string;
@@ -28,6 +29,8 @@ interface TitleCardProps {
   status?: MediaStatus;
   canExpand?: boolean;
   inProgress?: boolean;
+  type?: string;
+  force_big?: boolean;
 }
 
 const TitleCard = ({
@@ -40,6 +43,8 @@ const TitleCard = ({
   mediaType,
   inProgress = false,
   canExpand = false,
+  type,
+  force_big = false,
 }: TitleCardProps) => {
   const isTouch = useIsTouch();
   const intl = useIntl();
@@ -75,29 +80,29 @@ const TitleCard = ({
       Permission.REQUEST,
       mediaType === 'movie' || mediaType === 'collection'
         ? Permission.REQUEST_MOVIE
-        : Permission.REQUEST_TV,
+        : mediaType === 'tv'
+        ? Permission.REQUEST_TV
+        : Permission.REQUEST_MUSIC,
     ],
     { type: 'or' }
   );
-
+  const tmdbOrMbId: boolean = ['movie', 'tv', 'collection'].includes(mediaType);
   return (
     <div
       className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}
       data-testid="title-card"
     >
       <RequestModal
-        tmdbId={id}
+        tmdbId={tmdbOrMbId ? (id as number) : -1}
+        mbId={tmdbOrMbId ? '' : (id as string)}
         show={showRequestModal}
         type={
-          mediaType === 'movie'
-            ? 'movie'
-            : mediaType === 'collection'
-            ? 'collection'
-            : 'tv'
+          tmdbOrMbId ? (mediaType as 'collection' | 'movie' | 'tv') : 'music'
         }
         onComplete={requestComplete}
         onUpdating={requestUpdating}
         onCancel={closeModal}
+        {...(tmdbOrMbId ? {} : { secondaryType: mediaType as SecondaryType })}
       />
       <div
         className={`relative transform-gpu cursor-default overflow-hidden rounded-xl bg-gray-800 bg-cover outline-none ring-1 transition duration-300 ${
@@ -105,9 +110,11 @@ const TitleCard = ({
             ? 'scale-105 shadow-lg ring-gray-500'
             : 'scale-100 shadow ring-gray-700'
         }`}
-        style={{
-          paddingBottom: '150%',
-        }}
+        style={
+          tmdbOrMbId || force_big
+            ? { paddingBottom: '150%' }
+            : { aspectRatio: '1/1' }
+        }
         onMouseEnter={() => {
           if (!isTouch) {
             setShowDetail(true);
@@ -129,7 +136,9 @@ const TitleCard = ({
             alt=""
             src={
               image
-                ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
+                ? tmdbOrMbId
+                  ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
+                  : image
                 : `/images/overseerr_poster_not_found_logo_top.png`
             }
             layout="fill"
@@ -140,7 +149,9 @@ const TitleCard = ({
               className={`pointer-events-none z-40 rounded-full border bg-opacity-80 shadow-md ${
                 mediaType === 'movie' || mediaType === 'collection'
                   ? 'border-blue-500 bg-blue-600'
-                  : 'border-purple-600 bg-purple-600'
+                  : mediaType === 'tv'
+                  ? 'border-purple-600 bg-purple-600'
+                  : 'border-green-600 bg-green-600'
               }`}
             >
               <div className="flex h-4 items-center px-2 py-2 text-center text-xs font-medium uppercase tracking-wider text-white sm:h-5">
@@ -148,7 +159,15 @@ const TitleCard = ({
                   ? intl.formatMessage(globalMessages.movie)
                   : mediaType === 'collection'
                   ? intl.formatMessage(globalMessages.collection)
-                  : intl.formatMessage(globalMessages.tvshow)}
+                  : mediaType === 'tv'
+                  ? intl.formatMessage(globalMessages.tvshow)
+                  : mediaType === 'release'
+                  ? intl.formatMessage(globalMessages.release)
+                  : mediaType === 'artist'
+                  ? intl.formatMessage(globalMessages.artist)
+                  : mediaType === 'release-group'
+                  ? type
+                  : ''}
               </div>
             </div>
             {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (
@@ -178,7 +197,7 @@ const TitleCard = ({
 
           <Transition
             as={Fragment}
-            show={!image || showDetail || showRequestModal}
+            show={showDetail || showRequestModal}
             enter="transition-opacity"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -189,11 +208,9 @@ const TitleCard = ({
             <div className="absolute inset-0 overflow-hidden rounded-xl">
               <Link
                 href={
-                  mediaType === 'movie'
-                    ? `/movie/${id}`
-                    : mediaType === 'collection'
-                    ? `/collection/${id}`
-                    : `/tv/${id}`
+                  tmdbOrMbId
+                    ? `/${mediaType}/${id}`
+                    : `/music/${mediaType}/${id as string}`
                 }
               >
                 <a

@@ -26,14 +26,18 @@ export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
 
     try {
       if (entity.media.mediaType === MediaType.MOVIE) {
-        const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
+        const movie = await tmdb.getMovie({
+          movieId: Number(entity.media.tmdbId),
+        });
 
         title = `${movie.title}${
           movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
         }`;
         image = `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`;
       } else {
-        const tvshow = await tmdb.getTvShow({ tvId: entity.media.tmdbId });
+        const tvshow = await tmdb.getTvShow({
+          tvId: Number(entity.media.tmdbId),
+        });
 
         title = `${tvshow.name}${
           tvshow.first_air_date ? ` (${tvshow.first_air_date.slice(0, 4)})` : ''

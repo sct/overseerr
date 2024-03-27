@@ -35,12 +35,14 @@ import { URL } from 'url';
 import notificationRoutes from './notifications';
 import radarrRoutes from './radarr';
 import sonarrRoutes from './sonarr';
+import lidarrRoutes from './lidarr';
 
 const settingsRoutes = Router();
 
 settingsRoutes.use('/notifications', notificationRoutes);
 settingsRoutes.use('/radarr', radarrRoutes);
 settingsRoutes.use('/sonarr', sonarrRoutes);
+settingsRoutes.use('/lidarr', lidarrRoutes)
 settingsRoutes.use('/discover', discoverSettingRoutes);
 
 const filteredMainSettings = (

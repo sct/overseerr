@@ -10,6 +10,11 @@ import {
   RequestPermissionError,
 } from '@server/entity/MediaRequest';
 import { User } from '@server/entity/User';
+import type {
+  MusicRequestBody,
+  TvRequestBody,
+  VideoRequestBody,
+} from '@server/interfaces/api/requestInterfaces';
 import logger from '@server/logger';
 import { Permission } from './permissions';
 
@@ -45,6 +50,7 @@ class WatchlistSync {
           Permission.AUTO_REQUEST,
           Permission.AUTO_REQUEST_MOVIE,
           Permission.AUTO_APPROVE_TV,
+          Permission.AUTO_REQUEST_MUSIC,
         ],
         { type: 'or' }
       )
@@ -65,7 +71,8 @@ class WatchlistSync {
     const response = await plexTvApi.getWatchlist({ size: 200 });
 
     const mediaItems = await Media.getRelatedMedia(
-      response.items.map((i) => i.tmdbId)
+      response.items.map((i) => i.tmdbId) as number[],
+      response.items.map((i) => i.musicBrainzId) as string[]
     );
 
     const unavailableItems = response.items.filter(
@@ -74,7 +81,8 @@ class WatchlistSync {
         !mediaItems.find(
           (m) =>
             m.tmdbId === i.tmdbId &&
-            ((m.status !== MediaStatus.UNKNOWN && m.mediaType === 'movie') ||
+            ((m.status !== MediaStatus.UNKNOWN &&
+              (m.mediaType === 'movie' || m.mediaType === 'music')) ||
               (m.mediaType === 'tv' && m.status === MediaStatus.AVAILABLE))
         )
     );
@@ -112,13 +120,17 @@ class WatchlistSync {
 
         await MediaRequest.request(
           {
-            mediaId: mediaItem.tmdbId,
+            mediaId: mediaItem.tmdbId ?? mediaItem.musicBrainzId,
             mediaType:
-              mediaItem.type === 'show' ? MediaType.TV : MediaType.MOVIE,
+              mediaItem.type === 'show'
+                ? MediaType.TV
+                : mediaItem.type === 'movie'
+                ? MediaType.MOVIE
+                : MediaType.MUSIC,
             seasons: mediaItem.type === 'show' ? 'all' : undefined,
-            tvdbId: mediaItem.tvdbId,
-            is4k: false,
-          },
+            tvdbId: mediaItem.tvdbId ?? undefined,
+            is4k: ['movie', 'show'].includes(mediaItem.type) ? false : false,
+          } as MusicRequestBody | TvRequestBody | VideoRequestBody,
           user,
           { isAutoRequest: true }
         );

@@ -4,7 +4,7 @@ import type { LanguageProfile } from '@server/api/servarr/sonarr';
 export interface ServiceCommonServer {
   id: number;
   name: string;
-  is4k: boolean;
+  is4k?: boolean;
   isDefault: boolean;
   activeProfileId: number;
   activeDirectory: string;
@@ -12,7 +12,7 @@ export interface ServiceCommonServer {
   activeAnimeProfileId?: number;
   activeAnimeDirectory?: string;
   activeAnimeLanguageProfileId?: number;
-  activeTags: number[];
+  activeTags: number[] | string[];
   activeAnimeTags?: number[];
 }
 

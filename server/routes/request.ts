@@ -15,8 +15,10 @@ import {
 import SeasonRequest from '@server/entity/SeasonRequest';
 import { User } from '@server/entity/User';
 import type {
-  MediaRequestBody,
+  MusicRequestBody,
   RequestResultsResponse,
+  TvRequestBody,
+  VideoRequestBody,
 } from '@server/interfaces/api/requestInterfaces';
 import { Permission } from '@server/lib/permissions';
 import logger from '@server/logger';
@@ -158,38 +160,41 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
   }
 );
 
-requestRoutes.post<never, MediaRequest, MediaRequestBody>(
-  '/',
-  async (req, res, next) => {
-    try {
-      if (!req.user) {
+requestRoutes.post<
+  never,
+  MediaRequest,
+  MusicRequestBody | VideoRequestBody | TvRequestBody
+>('/', async (req, res, next) => {
+  try {
+    if (!req.user) {
+      return next({
+        status: 401,
+        message: 'You must be logged in to request media.',
+      });
+    }
+    const request = await MediaRequest.request(req.body, req.user);
+    return res.status(201).json(request);
+  } catch (error) {
+    if (!(error instanceof Error)) {
+      return;
+    }
+
+    switch (error.constructor) {
+      case RequestPermissionError:
+      case QuotaRestrictedError:
+        return next({ status: 403, message: error.message });
+      case DuplicateMediaRequestError:
+        return next({ status: 409, message: error.message });
+      case NoSeasonsAvailableError:
+        return next({ status: 202, message: error.message });
+      default:
         return next({
-          status: 401,
-          message: 'You must be logged in to request media.',
+          status: 500,
+          message: error.message,
         });
-      }
-      const request = await MediaRequest.request(req.body, req.user);
-
-      return res.status(201).json(request);
-    } catch (error) {
-      if (!(error instanceof Error)) {
-        return;
-      }
-
-      switch (error.constructor) {
-        case RequestPermissionError:
-        case QuotaRestrictedError:
-          return next({ status: 403, message: error.message });
-        case DuplicateMediaRequestError:
-          return next({ status: 409, message: error.message });
-        case NoSeasonsAvailableError:
-          return next({ status: 202, message: error.message });
-        default:
-          return next({ status: 500, message: error.message });
-      }
     }
   }
-);
+});
 
 requestRoutes.get('/count', async (_req, res, next) => {
   const requestRepository = getRepository(MediaRequest);

@@ -16,6 +16,7 @@ import type {
   UserWatchDataResponse,
 } from '@server/interfaces/api/userInterfaces';
 import type { MovieDetails } from '@server/models/Movie';
+import type { ArtistResult, ReleaseResult } from '@server/models/Search';
 import type { TvDetails } from '@server/models/Tv';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -38,7 +39,7 @@ const messages = defineMessages({
     'Media added to your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink> will appear here.',
 });
 
-type MediaTitle = MovieDetails | TvDetails;
+type MediaTitle = MovieDetails | TvDetails | ReleaseResult | ArtistResult;
 
 const UserProfile = () => {
   const intl = useIntl();
@@ -126,11 +127,13 @@ const UserProfile = () => {
             key={user.id}
             isDarker
             backgroundImages={Object.values(availableTitles)
-              .filter((media) => media.backdropPath)
-              .map(
-                (media) =>
-                  `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
-              )
+              .filter((media) => 'backdropPath' in media && media.backdropPath)
+              .map((media) => {
+                if ('backdropPath' in media) {
+                  return `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`;
+                }
+                return '';
+              })
               .slice(0, 6)}
           />
         </div>
@@ -354,10 +357,10 @@ const UserProfile = () => {
               })}
               items={watchlistItems?.results.map((item) => (
                 <TmdbTitleCard
-                  id={item.tmdbId}
+                  id={item.tmdbId as number}
                   key={`watchlist-slider-item-${item.ratingKey}`}
-                  tmdbId={item.tmdbId}
-                  type={item.mediaType}
+                  tmdbId={item.tmdbId as number}
+                  type={item.mediaType as 'movie' | 'tv'}
                 />
               ))}
             />
@@ -381,9 +384,9 @@ const UserProfile = () => {
                 <TmdbTitleCard
                   key={`media-slider-item-${item.id}`}
                   id={item.id}
-                  tmdbId={item.tmdbId}
+                  tmdbId={item.tmdbId as number}
                   tvdbId={item.tvdbId}
-                  type={item.mediaType}
+                  type={item.mediaType as 'movie' | 'tv'}
                 />
               ))}
             />

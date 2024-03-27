@@ -9,7 +9,7 @@ export interface Library {
   id: string;
   name: string;
   enabled: boolean;
-  type: 'show' | 'movie';
+  type: 'show' | 'movie' | 'artist';
   lastScan?: number;
 }
 
@@ -44,7 +44,7 @@ export interface TautulliSettings {
   externalUrl?: string;
 }
 
-export interface DVRSettings {
+export interface ArrSettings {
   id: number;
   name: string;
   hostname: string;
@@ -55,13 +55,17 @@ export interface DVRSettings {
   activeProfileId: number;
   activeProfileName: string;
   activeDirectory: string;
-  tags: number[];
-  is4k: boolean;
   isDefault: boolean;
   externalUrl?: string;
   syncEnabled: boolean;
   preventSearch: boolean;
   tagRequests: boolean;
+  tags: string[] | number[];
+}
+
+export interface DVRSettings extends ArrSettings {
+  is4k: boolean;
+  tags: number[];
 }
 
 export interface RadarrSettings extends DVRSettings {
@@ -79,6 +83,7 @@ export interface SonarrSettings extends DVRSettings {
   animeTags?: number[];
   enableSeasonFolders: boolean;
 }
+export type LidarrSettings = ArrSettings;
 
 interface Quota {
   quotaLimit?: number;
@@ -86,6 +91,7 @@ interface Quota {
 }
 
 export interface MainSettings {
+  fallbackImage: string;
   apiKey: string;
   applicationTitle: string;
   applicationUrl: string;
@@ -95,6 +101,7 @@ export interface MainSettings {
   defaultQuotas: {
     movie: Quota;
     tv: Quota;
+    music: Quota;
   };
   hideAvailable: boolean;
   localLogin: boolean;
@@ -122,6 +129,7 @@ interface FullPublicSettings extends PublicSettings {
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
   vapidPublic: string;
+  fallbackImage: string;
   enablePushRegistration: boolean;
   locale: string;
   emailEnabled: boolean;
@@ -250,6 +258,7 @@ export type JobId =
   | 'plex-watchlist-sync'
   | 'radarr-scan'
   | 'sonarr-scan'
+  | 'lidarr-scan'
   | 'download-sync'
   | 'download-sync-reset'
   | 'image-cache-cleanup'
@@ -264,6 +273,7 @@ interface AllSettings {
   tautulli: TautulliSettings;
   radarr: RadarrSettings[];
   sonarr: SonarrSettings[];
+  lidarr: ArrSettings[];
   public: PublicSettings;
   notifications: NotificationSettings;
   jobs: Record<JobId, JobSettings>;
@@ -291,6 +301,7 @@ class Settings {
         defaultQuotas: {
           movie: {},
           tv: {},
+          music: {},
         },
         hideAvailable: false,
         localLogin: true,
@@ -300,6 +311,7 @@ class Settings {
         trustProxy: false,
         partialRequestsEnabled: true,
         locale: 'en',
+        fallbackImage: '/images/overseerr_poster_not_found_logo_top.png',
       },
       plex: {
         name: '',
@@ -311,6 +323,7 @@ class Settings {
       tautulli: {},
       radarr: [],
       sonarr: [],
+      lidarr: [],
       public: {
         initialized: false,
       },
@@ -415,6 +428,9 @@ class Settings {
         'sonarr-scan': {
           schedule: '0 30 4 * * *',
         },
+        'lidarr-scan': {
+          schedule: '0 0 5 * * *',
+        },
         'availability-sync': {
           schedule: '0 0 5 * * *',
         },
@@ -478,6 +494,14 @@ class Settings {
     this.data.sonarr = data;
   }
 
+  get lidarr(): ArrSettings[] {
+    return this.data.lidarr;
+  }
+
+  set lidarr(data: ArrSettings[]) {
+    this.data.lidarr = data;
+  }
+
   get public(): PublicSettings {
     return this.data.public;
   }
@@ -508,6 +532,9 @@ class Settings {
       locale: this.data.main.locale,
       emailEnabled: this.data.notifications.agents.email.enabled,
       newPlexLogin: this.data.main.newPlexLogin,
+      fallbackImage:
+        this.data.main.fallbackImage ??
+        '/images/overseerr_poster_not_found_logo_top.png',
     };
   }
 

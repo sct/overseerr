@@ -8,6 +8,15 @@ export enum MediaRequestStatus {
 export enum MediaType {
   MOVIE = 'movie',
   TV = 'tv',
+  MUSIC = 'music',
+}
+
+export enum SecondaryType {
+  ARTIST = 'artist',
+  RELEASE_GROUP = 'release-group',
+  RELEASE = 'release',
+  RECORDING = 'recording',
+  WORK = 'work',
 }
 
 export enum MediaStatus {
