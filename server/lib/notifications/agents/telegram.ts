@@ -18,6 +18,7 @@ interface TelegramMessagePayload {
   text: string;
   parse_mode: string;
   chat_id: string;
+  message_thread_id: string;
   disable_notification: boolean;
 }
 
@@ -26,6 +27,7 @@ interface TelegramPhotoPayload {
   caption: string;
   parse_mode: string;
   chat_id: string;
+  message_thread_id: string;
   disable_notification: boolean;
 }
 
@@ -178,6 +180,7 @@ class TelegramAgent
         await axios.post(endpoint, {
           ...notificationPayload,
           chat_id: settings.options.chatId,
+          message_thread_id: settings.options.messageThreadId,
           disable_notification: !!settings.options.sendSilently,
         } as TelegramMessagePayload | TelegramPhotoPayload);
       } catch (e) {
