@@ -48,6 +48,17 @@ export interface QualityProfile {
   name: string;
 }
 
+interface QueueStatus {
+  id: number;
+  totalCount: number;
+  count: number;
+  unknownCount: number;
+  errors: boolean;
+  warnings: boolean;
+  unknownErrors: boolean;
+  unknownWarnings: boolean;
+}
+
 interface QueueItem {
   size: number;
   title: string;
@@ -155,13 +166,28 @@ class ServarrBase<QueueItemAppendT> extends ExternalAPI {
     }
   };
 
+  public getQueueStatus = async (): Promise<QueueStatus> => {
+    try {
+      const response = await this.axios.get<QueueStatus>(`/queue/status`);
+
+      return response.data;
+    } catch (e) {
+      throw new Error(
+        `[${this.apiName}] Failed to retrieve queue status: ${e.message}`
+      );
+    }
+  };
+
   public getQueue = async (): Promise<(QueueItem & QueueItemAppendT)[]> => {
     try {
+      const { totalCount } = await this.getQueueStatus();
+
       const response = await this.axios.get<QueueResponse<QueueItemAppendT>>(
         `/queue`,
         {
           params: {
             includeEpisode: true,
+            pageSize: totalCount,
           },
         }
       );
