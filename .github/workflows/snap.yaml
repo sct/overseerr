@@ -29,7 +29,7 @@ jobs:
           - armhf
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Prepare
         id: prepare
         run: |
@@ -40,14 +40,14 @@ jobs:
             echo "RELEASE=edge" >> $GITHUB_OUTPUT
           fi
       - name: Set Up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Build Snap Package
         uses: diddlesnaps/snapcraft-multiarch-action@v1
         id: build
         with:
           architecture: ${{ matrix.architecture }}
       - name: Upload Snap Package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: overseerr-snap-package-${{ matrix.architecture }}
           path: ${{ steps.build.outputs.snap }}
