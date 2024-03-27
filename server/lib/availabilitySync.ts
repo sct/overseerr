@@ -42,7 +42,7 @@ class AvailabilitySync {
         where: { id: 1 },
       });
 
-      if (admin) {
+      if (admin?.plexToken) {
         this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
       } else {
         logger.error('An admin is not configured.');
