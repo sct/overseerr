@@ -1238,6 +1238,8 @@ components:
               type: string
             chatId:
               type: string
+            messageThreadId:
+              type: string
             sendSilently:
               type: boolean
     PushbulletSettings:
@@ -1719,6 +1721,9 @@ components:
           type: string
           nullable: true
         telegramChatId:
+          type: string
+          nullable: true
+        telegramMessageThreadId:
           type: string
           nullable: true
         telegramSendSilently:
