@@ -16,7 +16,7 @@ import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
@@ -211,6 +211,7 @@ const CollectionRequestModal = ({
             ? MediaStatus.UNKNOWN
             : MediaStatus.PARTIALLY_AVAILABLE
         );
+        mutate('/api/v1/request/count');
       }
 
       addToast(
@@ -230,7 +231,16 @@ const CollectionRequestModal = ({
     } finally {
       setIsUpdating(false);
     }
-  }, [requestOverrides, data, onComplete, addToast, intl, selectedParts, is4k]);
+  }, [
+    requestOverrides,
+    data?.parts,
+    data?.name,
+    onComplete,
+    addToast,
+    intl,
+    selectedParts,
+    is4k,
+  ]);
 
   const hasAutoApprove = hasPermission(
     [

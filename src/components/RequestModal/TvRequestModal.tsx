@@ -106,6 +106,7 @@ const TvRequestModal = ({
 
     if (onUpdating) {
       onUpdating(true);
+      mutate('/api/v1/request/count');
     }
 
     try {
@@ -128,6 +129,7 @@ const TvRequestModal = ({
         await axios.delete(`/api/v1/request/${editRequest.id}`);
       }
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+      mutate('/api/v1/request/count');
 
       addToast(
         <span>
@@ -176,6 +178,7 @@ const TvRequestModal = ({
 
     if (onUpdating) {
       onUpdating(true);
+      mutate('/api/v1/request/count');
     }
 
     try {
