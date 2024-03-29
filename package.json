@@ -177,18 +177,11 @@
     }
   },
   "lint-staged": {
-    "**/*.{ts,tsx,js}": [
-      "prettier --write",
-      "eslint"
-    ],
-    "**/*.{json,md,css}": [
-      "prettier --write"
-    ]
+    "**/*.{ts,tsx,js}": ["prettier --write", "eslint"],
+    "**/*.{json,md,css}": ["prettier --write"]
   },
   "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
+    "extends": ["@commitlint/config-conventional"]
   },
   "release": {
     "plugins": [
@@ -204,10 +197,7 @@
       [
         "@semantic-release/git",
         {
-          "assets": [
-            "package.json",
-            "CHANGELOG.md"
-          ],
+          "assets": ["package.json", "CHANGELOG.md"],
           "message": "chore(release): ${nextRelease.version}"
         }
       ],
@@ -219,9 +209,7 @@
         }
       ]
     ],
-    "branches": [
-      "master"
-    ],
+    "branches": ["main"],
     "npmPublish": false,
     "publish": [
       {
@@ -229,15 +217,8 @@
         "buildArgs": {
           "COMMIT_TAG": "$GIT_SHA"
         },
-        "imageNames": [
-          "sctx/overseerr",
-          "ghcr.io/sct/overseerr"
-        ],
-        "platforms": [
-          "linux/amd64",
-          "linux/arm64",
-          "linux/arm/v7"
-        ]
+        "imageNames": ["sctx/overseerr", "ghcr.io/sct/overseerr"],
+        "platforms": ["linux/amd64", "linux/arm64", "linux/arm/v7"]
       },
       "@semantic-release/github"
     ]
