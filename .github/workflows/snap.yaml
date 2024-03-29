@@ -3,7 +3,7 @@ name: Publish Snap
 on:
   push:
     branches:
-      - develop
+      - na
 
 jobs:
   jobs:
