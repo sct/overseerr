@@ -40,8 +40,11 @@ class PlexOAuth {
   private popup?: Window;
 
   private authToken?: string;
+  private DEFAULT_APPLICATION_NAME = 'Overseerr';
 
-  public initializeHeaders(): void {
+  public initializeHeaders(
+    applicationName = this.DEFAULT_APPLICATION_NAME
+  ): void {
     if (!window) {
       throw new Error(
         'Window is not defined. Are you calling this in the browser?'
@@ -55,10 +58,15 @@ class PlexOAuth {
       clientId = uuid;
     }
 
+    const plexProductName =
+      applicationName === this.DEFAULT_APPLICATION_NAME
+        ? applicationName
+        : `${applicationName} - ${this.DEFAULT_APPLICATION_NAME}`;
+
     const browser = Bowser.getParser(window.navigator.userAgent);
     this.plexHeaders = {
       Accept: 'application/json',
-      'X-Plex-Product': 'Overseerr',
+      'X-Plex-Product': plexProductName,
       'X-Plex-Version': 'Plex OAuth',
       'X-Plex-Client-Identifier': clientId,
       'X-Plex-Model': 'Plex OAuth',
@@ -93,8 +101,8 @@ class PlexOAuth {
     this.openPopup({ title: 'Plex Auth', w: 600, h: 700 });
   }
 
-  public async login(): Promise<string> {
-    this.initializeHeaders();
+  public async login(applicationName?: string): Promise<string> {
+    this.initializeHeaders(applicationName);
     await this.getPin();
 
     if (!this.plexHeaders || !this.pin) {
