@@ -10,10 +10,10 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import type { PlayButtonLink } from '@app/components/Common/PlayButton';
 import PlayButton from '@app/components/Common/PlayButton';
-import Tag from '@app/components/Common/Tag';
 import Tooltip from '@app/components/Common/Tooltip';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import IssueModal from '@app/components/IssueModal';
+import KeywordDisclosure from '@app/components/KeywordDisclosure';
 import ManageSlideOver from '@app/components/ManageSlideOver';
 import MediaSlider from '@app/components/MediaSlider';
 import PersonCard from '@app/components/PersonCard';
@@ -464,20 +464,10 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               </div>
             </>
           )}
-          {data.keywords.length > 0 && (
-            <div className="mt-6">
-              {data.keywords.map((keyword) => (
-                <Link
-                  href={`/discover/movies?keywords=${keyword.id}`}
-                  key={`keyword-id-${keyword.id}`}
-                >
-                  <a className="mb-2 mr-2 inline-flex last:mr-0">
-                    <Tag>{keyword.name}</Tag>
-                  </a>
-                </Link>
-              ))}
-            </div>
-          )}
+          <KeywordDisclosure
+            keywords={data.keywords}
+            type="movies"
+          ></KeywordDisclosure>
         </div>
         <div className="media-overview-right">
           {data.collection && (
