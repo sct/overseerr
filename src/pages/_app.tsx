@@ -52,12 +52,16 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/hu.json');
     case 'it':
       return import('../i18n/locale/it.json');
+    case 'id':
+      return import('../i18n/locale/id.json');
     case 'ja':
       return import('../i18n/locale/ja.json');
     case 'ko':
       return import('../i18n/locale/ko.json');
     case 'lt':
       return import('../i18n/locale/lt.json');
+    case 'mi':
+      return import('../i18n/locale/mi.json');
     case 'nb-NO':
       return import('../i18n/locale/nb_NO.json');
     case 'nl':
@@ -78,6 +82,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/sv.json');
     case 'uk':
       return import('../i18n/locale/uk.json');
+    case 'tr':
+      return import('../i18n/locale/tr.json');
     case 'zh-CN':
       return import('../i18n/locale/zh_Hans.json');
     case 'zh-TW':

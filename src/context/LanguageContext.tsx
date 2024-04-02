@@ -15,9 +15,11 @@ export type AvailableLocale =
   | 'hr'
   | 'hu'
   | 'it'
+  | 'id'
   | 'ja'
   | 'ko'
   | 'lt'
+  | 'mi'
   | 'nb-NO'
   | 'nl'
   | 'pl'
@@ -27,6 +29,7 @@ export type AvailableLocale =
   | 'sq'
   | 'sr'
   | 'sv'
+  | 'tr'
   | 'uk'
   | 'zh-CN'
   | 'zh-TW';
@@ -89,6 +92,10 @@ export const availableLanguages: AvailableLanguageObject = {
     code: 'hu',
     display: 'Magyar',
   },
+  mi: {
+    code: 'mi',
+    display: 'Maori',
+  },
   nl: {
     code: 'nl',
     display: 'Nederlands',
@@ -140,6 +147,14 @@ export const availableLanguages: AvailableLanguageObject = {
   ko: {
     code: 'ko',
     display: '한국어',
+  },
+  id: {
+    code: 'id',
+    display: 'Indonesian',
+  },
+  tr: {
+    code: 'tr',
+    display: 'Turkish',
   },
   uk: {
     code: 'uk',
