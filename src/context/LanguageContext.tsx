@@ -2,6 +2,7 @@ import React from 'react';
 
 export type AvailableLocale =
   | 'ar'
+  | 'bg'
   | 'ca'
   | 'cs'
   | 'da'
@@ -34,6 +35,10 @@ type AvailableLanguageObject = Record<
 >;
 
 export const availableLanguages: AvailableLanguageObject = {
+  bg: {
+    code: 'bg',
+    display: 'Bulgarian',
+  },
   ca: {
     code: 'ca',
     display: 'Català',

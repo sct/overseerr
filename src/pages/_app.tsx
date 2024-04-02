@@ -28,6 +28,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
   switch (locale) {
     case 'ar':
       return import('../i18n/locale/ar.json');
+    case 'bg':
+      return import('../i18n/locale/bg.json');
     case 'ca':
       return import('../i18n/locale/ca.json');
     case 'cs':
