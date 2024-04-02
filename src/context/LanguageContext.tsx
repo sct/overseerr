@@ -26,6 +26,7 @@ export type AvailableLocale =
   | 'pt-BR'
   | 'pt-PT'
   | 'ru'
+  | 'sk'
   | 'sq'
   | 'sr'
   | 'sv'
@@ -94,7 +95,7 @@ export const availableLanguages: AvailableLanguageObject = {
   },
   mi: {
     code: 'mi',
-    display: 'Maori',
+    display: 'Māori',
   },
   nl: {
     code: 'nl',
@@ -132,6 +133,10 @@ export const availableLanguages: AvailableLanguageObject = {
     code: 'ru',
     display: 'pусский',
   },
+  Slovak: {
+    code: 'sk',
+    display: 'Slovák',
+  },
   sr: {
     code: 'sr',
     display: 'српски језик',
@@ -150,15 +155,15 @@ export const availableLanguages: AvailableLanguageObject = {
   },
   id: {
     code: 'id',
-    display: 'Indonesian',
+    display: 'Bahasa Indonesia',
   },
   tr: {
     code: 'tr',
-    display: 'Turkish',
+    display: 'Türkçe',
   },
   uk: {
     code: 'uk',
-    display: 'Ukrainian',
+    display: 'українська мова',
   },
   'zh-TW': {
     code: 'zh-TW',
