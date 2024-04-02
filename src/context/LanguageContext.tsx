@@ -2,6 +2,7 @@ import React from 'react';
 
 export type AvailableLocale =
   | 'ar'
+  | 'bg'
   | 'ca'
   | 'cs'
   | 'da'
@@ -9,6 +10,7 @@ export type AvailableLocale =
   | 'en'
   | 'el'
   | 'es'
+  | 'fi'
   | 'fr'
   | 'hr'
   | 'hu'
@@ -25,6 +27,7 @@ export type AvailableLocale =
   | 'sq'
   | 'sr'
   | 'sv'
+  | 'uk'
   | 'zh-CN'
   | 'zh-TW';
 
@@ -34,6 +37,10 @@ type AvailableLanguageObject = Record<
 >;
 
 export const availableLanguages: AvailableLanguageObject = {
+  bg: {
+    code: 'bg',
+    display: 'Bulgarian',
+  },
   ca: {
     code: 'ca',
     display: 'Català',
@@ -57,6 +64,10 @@ export const availableLanguages: AvailableLanguageObject = {
   es: {
     code: 'es',
     display: 'Español',
+  },
+  fi: {
+    code: 'fi',
+    display: 'Finnish',
   },
   fr: {
     code: 'fr',
@@ -129,6 +140,10 @@ export const availableLanguages: AvailableLanguageObject = {
   ko: {
     code: 'ko',
     display: '한국어',
+  },
+  uk: {
+    code: 'uk',
+    display: 'Ukrainian',
   },
   'zh-TW': {
     code: 'zh-TW',

@@ -28,6 +28,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
   switch (locale) {
     case 'ar':
       return import('../i18n/locale/ar.json');
+    case 'bg':
+      return import('../i18n/locale/bg.json');
     case 'ca':
       return import('../i18n/locale/ca.json');
     case 'cs':
@@ -40,6 +42,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/el.json');
     case 'es':
       return import('../i18n/locale/es.json');
+    case 'fi':
+      return import('../i18n/locale/fi.json');
     case 'fr':
       return import('../i18n/locale/fr.json');
     case 'hr':
@@ -72,6 +76,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/sr.json');
     case 'sv':
       return import('../i18n/locale/sv.json');
+    case 'uk':
+      return import('../i18n/locale/uk.json');
     case 'zh-CN':
       return import('../i18n/locale/zh_Hans.json');
     case 'zh-TW':
