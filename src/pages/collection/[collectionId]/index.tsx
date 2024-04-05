@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps<
   CollectionPageProps
 > = async (ctx) => {
   const response = await axios.get<Collection>(
-    `http://localhost:${process.env.PORT || 5055}/api/v1/collection/${
+    `http://${process.env.HOST || 'localhost'}:${process.env.PORT || 5055}/api/v1/collection/${
       ctx.query.collectionId
     }`,
     {
