@@ -125,6 +125,8 @@ docker-compose up -d
 
 Please refer to the [Docker Desktop for Windows user manual](https://docs.docker.com/docker-for-windows/) for details on how to install Docker on Windows. There is no need to install a Linux distro if using named volumes like in the example below.
 
+It is adviced to use the command-line where possible, as docker-desktop has fewer options to set up your container than CLI. Additionally, docker containers made within your shell will still be able to be managed from within docker desktop.
+
 {% hint style="danger" %}
 **WSL2 will need to be installed to prevent DB corruption!** Please see the [Docker Desktop WSL 2 backend documentation](https://docs.docker.com/docker-for-windows/wsl/) for instructions on how to enable WSL2. The commands below will only work with WSL2 installed!
 {% endhint %}
