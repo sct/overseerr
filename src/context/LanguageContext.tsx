@@ -15,22 +15,18 @@ export type AvailableLocale =
   | 'hr'
   | 'hu'
   | 'it'
-  | 'id'
   | 'ja'
   | 'ko'
   | 'lt'
-  | 'mi'
   | 'nb-NO'
   | 'nl'
   | 'pl'
   | 'pt-BR'
   | 'pt-PT'
   | 'ru'
-  | 'sk'
   | 'sq'
   | 'sr'
   | 'sv'
-  | 'tr'
   | 'uk'
   | 'zh-CN'
   | 'zh-TW';
@@ -93,10 +89,6 @@ export const availableLanguages: AvailableLanguageObject = {
     code: 'hu',
     display: 'Magyar',
   },
-  mi: {
-    code: 'mi',
-    display: 'Māori',
-  },
   nl: {
     code: 'nl',
     display: 'Nederlands',
@@ -133,10 +125,6 @@ export const availableLanguages: AvailableLanguageObject = {
     code: 'ru',
     display: 'pусский',
   },
-  Slovak: {
-    code: 'sk',
-    display: 'Slovák',
-  },
   sr: {
     code: 'sr',
     display: 'српски језик',
@@ -152,14 +140,6 @@ export const availableLanguages: AvailableLanguageObject = {
   ko: {
     code: 'ko',
     display: '한국어',
-  },
-  id: {
-    code: 'id',
-    display: 'Bahasa Indonesia',
-  },
-  tr: {
-    code: 'tr',
-    display: 'Türkçe',
   },
   uk: {
     code: 'uk',
