@@ -214,7 +214,7 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
       return response.data[0];
     } catch (e) {
       logger.error('Error retrieving artist by MusicBrainz ID', {
-        label: 'Midarr API',
+        label: 'Lidarr API',
         errorMessage: e.message,
         mbId: mbId,
       });
@@ -266,7 +266,7 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
       return response.data[0];
     } catch (e) {
       logger.error('Error retrieving album by MusicBrainz ID', {
-        label: 'Midarr API',
+        label: 'Lidarr API',
         errorMessage: e.message,
         mbId: mbId,
       });
