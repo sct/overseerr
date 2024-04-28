@@ -19,5 +19,6 @@
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "files.associations": {
     "globals.css": "tailwindcss"
-  }
+  },
+  "sqltools.useNodeRuntime": true
 }
