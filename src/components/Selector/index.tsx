@@ -395,14 +395,20 @@ export const WatchProviderSelector = ({
                     role="button"
                     tabIndex={0}
                   >
-                    <CachedImage
-                      src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
-                      alt=""
-                      layout="responsive"
-                      width={1}
-                      height={1}
-                      className="rounded-lg"
-                    />
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'relative',
+                      }}
+                    >
+                      <CachedImage
+                        src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
+                        alt=""
+                        className="rounded-lg"
+                        fill
+                      />
+                    </div>
                     {isActive && (
                       <div className="pointer-events-none absolute -top-1 -left-1 flex items-center justify-center text-indigo-100 opacity-90">
                         <CheckCircleIcon className="h-6 w-6" />
@@ -437,14 +443,20 @@ export const WatchProviderSelector = ({
                       role="button"
                       tabIndex={0}
                     >
-                      <CachedImage
-                        src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
-                        alt=""
-                        layout="responsive"
-                        width={1}
-                        height={1}
-                        className="rounded-lg"
-                      />
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          position: 'relative',
+                        }}
+                      >
+                        <CachedImage
+                          src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
+                          alt=""
+                          className="rounded-lg"
+                          fill
+                        />
+                      </div>
                       {isActive && (
                         <div className="pointer-events-none absolute -top-1 -left-1 flex items-center justify-center text-indigo-100 opacity-90">
                           <CheckCircleIcon className="h-6 w-6" />
