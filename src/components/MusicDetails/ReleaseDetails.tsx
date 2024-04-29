@@ -168,8 +168,11 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProp) => {
             {data.artist.map((artist, index) => (
               <div key={`artist-${index}`}>
                 {' '}
-                <Link href={`/music/artist/${artist.id}`}>
-                  <a className="hover:underline">{artist.name}</a>
+                <Link
+                  href={`/music/artist/${artist.id}`}
+                  className="hover:underline"
+                >
+                  {artist.name}
                 </Link>
                 {index < data.artist.length - 1 ? ', ' : ''}
               </div>
@@ -212,10 +215,9 @@ const ReleaseDetails = ({ release }: ReleaseDetailsProp) => {
               <Link
                 href={`/discover/music?keywords=${keyword}`}
                 key={`keyword-id-${idx}`}
+                className="mb-2 mr-2 inline-flex last:mr-0"
               >
-                <a className="mb-2 mr-2 inline-flex last:mr-0">
-                  <Tag>{keyword}</Tag>
-                </a>
+                <Tag>{keyword}</Tag>
               </Link>
             ))}
           </div>

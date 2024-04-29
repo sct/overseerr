@@ -131,17 +131,18 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
                   { type: 'or' }
                 ) && (
                   <div className="card-field !hidden sm:!block">
-                    <Link href={`/users/${requestData.requestedBy.id}`}>
-                      <a className="group flex items-center">
-                        <img
-                          src={requestData.requestedBy.avatar}
-                          alt=""
-                          className="avatar-sm"
-                        />
-                        <span className="truncate group-hover:underline">
-                          {requestData.requestedBy.displayName}
-                        </span>
-                      </a>
+                    <Link
+                      href={`/users/${requestData.requestedBy.id}`}
+                      className="group flex items-center"
+                    >
+                      <img
+                        src={requestData.requestedBy.avatar}
+                        alt=""
+                        className="avatar-sm"
+                      />
+                      <span className="truncate group-hover:underline">
+                        {requestData.requestedBy.displayName}
+                      </span>
                     </Link>
                   </div>
                 )}
@@ -409,27 +410,27 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                 ? `/tv/${requestData.media.tmdbId}`
                 : `/music/${requestData.media.secondaryType}/${requestData.media.mbId}`
             }
+            className="overflow-hidden overflow-ellipsis whitespace-nowrap text-base font-bold text-white hover:underline sm:text-lg"
           >
-            <a className="overflow-hidden overflow-ellipsis whitespace-nowrap text-base font-bold text-white hover:underline sm:text-lg">
-              {isMovie(title) || isRelease(title) ? title.title : title.name}
-            </a>
+            {isMovie(title) || isRelease(title) ? title.title : title.name}
           </Link>
           {hasPermission(
             [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
             { type: 'or' }
           ) && (
             <div className="card-field">
-              <Link href={`/users/${requestData.requestedBy.id}`}>
-                <a className="group flex items-center">
-                  <img
-                    src={requestData.requestedBy.avatar}
-                    alt=""
-                    className="avatar-sm object-cover"
-                  />
-                  <span className="truncate font-semibold group-hover:text-white group-hover:underline">
-                    {requestData.requestedBy.displayName}
-                  </span>
-                </a>
+              <Link
+                href={`/users/${requestData.requestedBy.id}`}
+                className="group flex items-center"
+              >
+                <img
+                  src={requestData.requestedBy.avatar}
+                  alt=""
+                  className="avatar-sm object-cover"
+                />
+                <span className="truncate font-semibold group-hover:text-white group-hover:underline">
+                  {requestData.requestedBy.displayName}
+                </span>
               </Link>
             </div>
           )}
@@ -633,24 +634,23 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               ? `/tv/${requestData.media.tmdbId}`
               : `/music/${requestData.media.secondaryType}/${requestData.media.mbId}`
           }
+          className="w-20 flex-shrink-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-md shadow-sm transition duration-300 hover:scale-105 hover:shadow-md sm:w-28"
         >
-          <a className="w-20 flex-shrink-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-md shadow-sm transition duration-300 hover:scale-105 hover:shadow-md sm:w-28">
-            <CachedImage
-              src={
-                isMovie(title) || isTv(title)
-                  ? title.posterPath
-                    ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
-                    : '/images/overseerr_poster_not_found.png'
-                  : title.posterPath
-                  ? title.posterPath
+          <CachedImage
+            src={
+              isMovie(title) || isTv(title)
+                ? title.posterPath
+                  ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
                   : '/images/overseerr_poster_not_found.png'
-              }
-              alt=""
-              layout="responsive"
-              width={isMovie(title) || isTv(title) ? 600 : 900}
-              height={900}
-            />
-          </a>
+                : title.posterPath
+                ? title.posterPath
+                : '/images/overseerr_poster_not_found.png'
+            }
+            alt=""
+            layout="responsive"
+            width={isMovie(title) || isTv(title) ? 600 : 900}
+            height={900}
+          />
         </Link>
       </div>
     </>

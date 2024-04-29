@@ -264,10 +264,9 @@ const ArtistDetails = ({ artist }: ArtistDetailsProp) => {
               <Link
                 href={`/discover/music?keywords=${keyword}`}
                 key={`keyword-id-${idx}`}
+                className="mb-2 mr-2 inline-flex last:mr-0"
               >
-                <a className="mb-2 mr-2 inline-flex last:mr-0">
-                  <Tag>{keyword}</Tag>
-                </a>
+                <Tag>{keyword}</Tag>
               </Link>
             ))}
           </div>
