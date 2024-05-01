@@ -13,6 +13,8 @@ export type AvailableLocale =
   | 'fi'
   | 'fr'
   | 'hr'
+  | 'he'
+  | 'hi'
   | 'hu'
   | 'it'
   | 'ja'
@@ -23,6 +25,7 @@ export type AvailableLocale =
   | 'pl'
   | 'pt-BR'
   | 'pt-PT'
+  | 'ro'
   | 'ru'
   | 'sq'
   | 'sr'
@@ -73,6 +76,14 @@ export const availableLanguages: AvailableLanguageObject = {
     code: 'fr',
     display: 'Français',
   },
+  he: {
+    code: 'he',
+    display: 'Hebrew',
+  },
+  hi: {
+    code: 'hi',
+    display: 'Hindi',
+  },
   hr: {
     code: 'hr',
     display: 'Hrvatski',
@@ -120,6 +131,10 @@ export const availableLanguages: AvailableLanguageObject = {
   el: {
     code: 'el',
     display: 'Ελληνικά',
+  },
+  ro: {
+    code: 'ro',
+    display: 'Romanian',
   },
   ru: {
     code: 'ru',
