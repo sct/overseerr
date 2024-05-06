@@ -1,4 +1,4 @@
-import PlexTvAPI from '@server/api/plextv';
+import { PlexTvAPI } from '@server/api/plextv';
 import TautulliAPI from '@server/api/tautulli';
 import { MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';

@@ -25,6 +25,7 @@ const defaultSettings = {
   emailEnabled: false,
   newPlexLogin: true,
   plexLoginEnabled: false,
+  enableForwardAuth: true,
 };
 
 export const SettingsContext = React.createContext<SettingsContextProps>({

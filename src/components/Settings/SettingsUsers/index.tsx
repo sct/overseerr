@@ -27,6 +27,9 @@ const messages = defineMessages({
   tvRequestLimitLabel: 'Global Series Request Limit',
   defaultPermissions: 'Default Permissions',
   defaultPermissionsTip: 'Initial permissions assigned to new users',
+  enableForwardAuth: 'Enable Forward Auth Via Plex Token',
+  enableForwardAuthTip:
+    'Allow Plex users to be authenticated via Forward Auth (via <b>X-Plex-Token</b> header)',
 });
 
 const SettingsUsers = () => {
@@ -66,6 +69,7 @@ const SettingsUsers = () => {
             tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
             tvQuotaDays: data?.defaultQuotas.tv.quotaDays ?? 7,
             defaultPermissions: data?.defaultPermissions ?? 0,
+            enableForwardAuth: data?.enableForwardAuth,
           }}
           enableReinitialize
           onSubmit={async (values) => {
@@ -84,6 +88,7 @@ const SettingsUsers = () => {
                   },
                 },
                 defaultPermissions: values.defaultPermissions,
+                enableForwardAuth: values.enableForwardAuth,
               });
               mutate('/api/v1/settings/public');
 
@@ -136,6 +141,29 @@ const SettingsUsers = () => {
                       name="newPlexLogin"
                       onChange={() => {
                         setFieldValue('newPlexLogin', !values.newPlexLogin);
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="enableForwardAuth" className="checkbox-label">
+                    {intl.formatMessage(messages.enableForwardAuth)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.enableForwardAuthTip, {
+                        b: (msg: React.ReactNode) => <b>{msg}</b>,
+                      })}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="enableForwardAuth"
+                      name="enableForwardAuth"
+                      onChange={() => {
+                        setFieldValue(
+                          'enableForwardAuth',
+                          !values.enableForwardAuth
+                        );
                       }}
                     />
                   </div>
