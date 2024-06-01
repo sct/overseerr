@@ -49,7 +49,7 @@ class PushbulletAgent
     let body = payload.message ?? '';
 
     if (payload.request) {
-      body += `\n\nRequested By: ${payload.request.requestedBy.displayName}`;
+      body += `\n\nDemandé par: ${payload.request.requestedBy.displayName}`;
 
       let status = '';
       switch (type) {
@@ -60,33 +60,33 @@ class PushbulletAgent
               : 'Processing';
           break;
         case Notification.MEDIA_PENDING:
-          status = 'Pending Approval';
+          status = 'En attente de validation';
           break;
         case Notification.MEDIA_APPROVED:
         case Notification.MEDIA_AUTO_APPROVED:
-          status = 'Processing';
+          status = 'Demandé';
           break;
         case Notification.MEDIA_AVAILABLE:
-          status = 'Available';
+          status = 'Disponible';
           break;
         case Notification.MEDIA_DECLINED:
-          status = 'Declined';
+          status = 'Refusée';
           break;
         case Notification.MEDIA_FAILED:
-          status = 'Failed';
+          status = 'Échouée';
           break;
       }
 
       if (status) {
-        body += `\nRequest Status: ${status}`;
+        body += `\nStatut de la demande: ${status}`;
       }
     } else if (payload.comment) {
-      body += `\n\nComment from ${payload.comment.user.displayName}:\n${payload.comment.message}`;
+      body += `\n\nCommenté par ${payload.comment.user.displayName}:\n${payload.comment.message}`;
     } else if (payload.issue) {
-      body += `\n\nReported By: ${payload.issue.createdBy.displayName}`;
-      body += `\nIssue Type: ${IssueTypeName[payload.issue.issueType]}`;
-      body += `\nIssue Status: ${
-        payload.issue.status === IssueStatus.OPEN ? 'Open' : 'Resolved'
+      body += `\n\nSignalé par : ${payload.issue.createdBy.displayName}`;
+      body += `\nType d'issue : ${IssueTypeName[payload.issue.issueType]}`;
+      body += `\nStatut de l'issue : ${
+        payload.issue.status === IssueStatus.OPEN ? 'Ouverte' : 'Résolue'
       }`;
     }
 

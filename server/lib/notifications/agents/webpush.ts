@@ -58,51 +58,41 @@ class WebPushAgent
         message = payload.message;
         break;
       case Notification.MEDIA_AUTO_REQUESTED:
-        message = `Automatically submitted a new ${
-          is4k ? '4K ' : ''
-        }${mediaType} request.`;
+        message = `Demande automatique de ${mediaType} envoyée.`;
         break;
       case Notification.MEDIA_APPROVED:
-        message = `Your ${
-          is4k ? '4K ' : ''
-        }${mediaType} request has been approved.`;
+        message = `Votre requête de ${mediaType} a été approuvée.`;
         break;
       case Notification.MEDIA_AUTO_APPROVED:
-        message = `Automatically approved a new ${
-          is4k ? '4K ' : ''
-        }${mediaType} request from ${
+        message = `Requête de type ${mediaType} automatiquement approuvée. Demandé par ${
           payload.request?.requestedBy.displayName
         }.`;
         break;
       case Notification.MEDIA_AVAILABLE:
-        message = `Your ${
-          is4k ? '4K ' : ''
-        }${mediaType} request is now available!`;
+        message = `Votre requête de ${mediaType} est disponible !`;
         break;
       case Notification.MEDIA_DECLINED:
-        message = `Your ${is4k ? '4K ' : ''}${mediaType} request was declined.`;
+        message = `Votre requête de ${mediaType} a été rejetée.`;
         break;
       case Notification.MEDIA_FAILED:
-        message = `Failed to process ${is4k ? '4K ' : ''}${mediaType} request.`;
+        message = `Impossible de télécharger votre requête de ${mediaType}.`;
         break;
       case Notification.MEDIA_PENDING:
-        message = `Approval required for a new ${
-          is4k ? '4K ' : ''
-        }${mediaType} request from ${
+        message = `Validation requise pour un/une ${mediaType} de ${
           payload.request?.requestedBy.displayName
         }.`;
         break;
       case Notification.ISSUE_CREATED:
-        message = `A new ${issueType} was reported by ${payload.issue?.createdBy.displayName}.`;
+        message = `Une nouvelle ${issueType} a été ouverte par ${payload.issue?.createdBy.displayName}.`;
         break;
       case Notification.ISSUE_COMMENT:
-        message = `${payload.comment?.user.displayName} commented on the ${issueType}.`;
+        message = `${payload.comment?.user.displayName} a commenté ${issueType}.`;
         break;
       case Notification.ISSUE_RESOLVED:
-        message = `The ${issueType} was marked as resolved by ${payload.issue?.modifiedBy?.displayName}!`;
+        message = `${issueType} a été marquée comme résolue par ${payload.issue?.modifiedBy?.displayName}!`;
         break;
       case Notification.ISSUE_REOPENED:
-        message = `The ${issueType} was reopened by ${payload.issue?.modifiedBy?.displayName}.`;
+        message = `${issueType} a été réouverte par ${payload.issue?.modifiedBy?.displayName}.`;
         break;
       default:
         return {

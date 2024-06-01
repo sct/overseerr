@@ -1164,42 +1164,42 @@ export class MediaRequest {
     const tmdb = new TheMovieDb();
 
     try {
-      const mediaType = this.type === MediaType.MOVIE ? 'Movie' : 'Series';
+      const mediaType = this.type === MediaType.MOVIE ? 'Film' : 'Série';
       let event: string | undefined;
       let notifyAdmin = true;
       let notifySystem = true;
 
       switch (type) {
         case Notification.MEDIA_APPROVED:
-          event = `${this.is4k ? '4K ' : ''}${mediaType} Request Approved`;
+          event = `${this.is4k ? '4K ' : ''} Requête de ${mediaType} approuvée`;
           notifyAdmin = false;
           break;
         case Notification.MEDIA_DECLINED:
-          event = `${this.is4k ? '4K ' : ''}${mediaType} Request Declined`;
+          event = `${this.is4k ? '4K ' : ''}Requête de ${mediaType} refusée`;
           notifyAdmin = false;
           break;
         case Notification.MEDIA_PENDING:
-          event = `New ${this.is4k ? '4K ' : ''}${mediaType} Request`;
+          event = `New ${this.is4k ? '4K ' : ''}Requête de ${mediaType}`;
           break;
         case Notification.MEDIA_AUTO_REQUESTED:
           event = `${
             this.is4k ? '4K ' : ''
-          }${mediaType} Request Automatically Submitted`;
+          }Requête de ${mediaType} automatiquement envoyée`;
           notifyAdmin = false;
           notifySystem = false;
           break;
         case Notification.MEDIA_AUTO_APPROVED:
           event = `${
             this.is4k ? '4K ' : ''
-          }${mediaType} Request Automatically Approved`;
+          }Requête de ${mediaType} automatiquement approuvée`;
           break;
         case Notification.MEDIA_FAILED:
-          event = `${this.is4k ? '4K ' : ''}${mediaType} Request Failed`;
+          event = `${this.is4k ? '4K ' : ''}Requête de ${mediaType} échouée`;
           break;
       }
 
       if (this.type === MediaType.MOVIE) {
-        const movie = await tmdb.getMovie({ movieId: media.tmdbId });
+        const movie = await tmdb.getMovie({ movieId: media.tmdbId, language: 'fr' });
         notificationManager.sendNotification(type, {
           media,
           request: this,
@@ -1218,7 +1218,7 @@ export class MediaRequest {
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
         });
       } else if (this.type === MediaType.TV) {
-        const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
+        const tv = await tmdb.getTvShow({ tvId: media.tmdbId, language: 'fr' });
         notificationManager.sendNotification(type, {
           media,
           request: this,
@@ -1237,7 +1237,7 @@ export class MediaRequest {
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
           extra: [
             {
-              name: 'Requested Seasons',
+              name: 'Saisons demandées',
               value: this.seasons
                 .map((season) => season.seasonNumber)
                 .join(', '),
