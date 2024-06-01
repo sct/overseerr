@@ -363,6 +363,24 @@ class PlexTvAPI extends ExternalAPI {
       };
     }
   }
+
+  public async pingToken() {
+    try {
+      const response = await this.axios.get('/api/v2/ping', {
+        headers: {
+          'X-Plex-Client-Identifier': uuidv4(),
+        },
+      });
+      if (!response?.data?.pong) {
+        throw new Error('No pong response');
+      }
+    } catch (e) {
+      logger.error('Failed to ping token', {
+        label: 'Plex Refresh Token',
+        errorMessage: e.message,
+      });
+    }
+  }
 }
 
 export default PlexTvAPI;
