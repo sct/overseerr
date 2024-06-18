@@ -59,6 +59,13 @@ class ImageProxy {
   ): Promise<{ size: number; imageCount: number }> {
     const cacheDirectory = path.join(baseCacheDirectory, key);
 
+    //Verify if the cache directory exists else create it
+    try {
+      await promises.access(cacheDirectory);
+    } catch (e) {
+      await promises.mkdir(cacheDirectory, { recursive: true });
+    }
+
     const imageTotalSize = await ImageProxy.getDirectorySize(cacheDirectory);
     const imageCount = await ImageProxy.getImageCount(cacheDirectory);
 
