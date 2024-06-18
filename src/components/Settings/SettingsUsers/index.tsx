@@ -25,6 +25,7 @@ const messages = defineMessages({
   newPlexLoginTip: 'Allow Plex users to sign in without first being imported',
   movieRequestLimitLabel: 'Global Movie Request Limit',
   tvRequestLimitLabel: 'Global Series Request Limit',
+  musicRequestLimitLabel: 'Global Music Request Limit',
   defaultPermissions: 'Default Permissions',
   defaultPermissionsTip: 'Initial permissions assigned to new users',
 });
@@ -65,6 +66,8 @@ const SettingsUsers = () => {
             movieQuotaDays: data?.defaultQuotas.movie.quotaDays ?? 7,
             tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
             tvQuotaDays: data?.defaultQuotas.tv.quotaDays ?? 7,
+            musicQuotaLimit: data?.defaultQuotas.music.quotaLimit ?? 0,
+            musicQuotaDays: data?.defaultQuotas.music.quotaDays ?? 7,
             defaultPermissions: data?.defaultPermissions ?? 0,
           }}
           enableReinitialize
@@ -81,6 +84,10 @@ const SettingsUsers = () => {
                   tv: {
                     quotaLimit: values.tvQuotaLimit,
                     quotaDays: values.tvQuotaDays,
+                  },
+                  music: {
+                    quotaLimit: values.musicQuotaLimit,
+                    quotaDays: values.musicQuotaDays,
                   },
                 },
                 defaultPermissions: values.defaultPermissions,
@@ -167,6 +174,21 @@ const SettingsUsers = () => {
                       mediaType="tv"
                       defaultDays={values.tvQuotaDays}
                       defaultLimit={values.tvQuotaLimit}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="applicationTitle" className="text-label">
+                    {intl.formatMessage(messages.musicRequestLimitLabel)}
+                  </label>
+                  <div className="form-input-area">
+                    <QuotaSelector
+                      onChange={setFieldValue}
+                      dayFieldName="musicQuotaDays"
+                      limitFieldName="musicQuotaLimit"
+                      mediaType="music"
+                      defaultDays={values.musicQuotaDays}
+                      defaultLimit={values.musicQuotaLimit}
                     />
                   </div>
                 </div>
