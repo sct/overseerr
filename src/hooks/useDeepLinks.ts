@@ -19,7 +19,7 @@ const useDeepLinks = ({
   useEffect(() => {
     if (
       /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-      (navigator.userAgent === 'MacIntel' && navigator.maxTouchPoints > 1)
+      (navigator.userAgent.includes('Mac') && navigator.maxTouchPoints > 1)
     ) {
       setReturnedPlexUrl(iOSPlexUrl);
       setReturnedPlexUrl4k(iOSPlexUrl4k);
