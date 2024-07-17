@@ -1,5 +1,6 @@
 import Button from '@app/components/Common/Button';
 import MultiRangeSlider from '@app/components/Common/MultiRangeSlider';
+import SlideCheckbox from '@app/components/Common/SlideCheckbox';
 import SlideOver from '@app/components/Common/SlideOver';
 import type { FilterOptions } from '@app/components/Discover/constants';
 import { countActiveFilters } from '@app/components/Discover/constants';
@@ -39,6 +40,7 @@ const messages = defineMessages({
   runtime: 'Runtime',
   streamingservices: 'Streaming Services',
   voteCount: 'Number of votes between {minValue} and {maxValue}',
+  hideAvailable: 'Hide available titles',
 });
 
 type FilterSlideoverProps = {
@@ -285,6 +287,20 @@ const FilterSlideover = ({
               minValue: currentFilters.voteCountGte ?? 0,
               maxValue: currentFilters.voteCountLte ?? 1000,
             })}
+          />
+        </div>
+        <div className="flex items-center justify-between">
+          <span className="text-lg font-semibold">
+            {intl.formatMessage(messages.hideAvailable)}
+          </span>
+          <SlideCheckbox
+            checked={currentFilters.hideAvailable === 'true'}
+            onClick={() => {
+              updateQueryParams(
+                'hideAvailable',
+                currentFilters.hideAvailable === 'true' ? undefined : 'true'
+              );
+            }}
           />
         </div>
         <span className="text-lg font-semibold">

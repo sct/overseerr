@@ -2,7 +2,7 @@ import PlexTvAPI from '@server/api/plextv';
 import type { SortOptions } from '@server/api/themoviedb';
 import TheMovieDb from '@server/api/themoviedb';
 import type { TmdbKeyword } from '@server/api/themoviedb/interfaces';
-import { MediaType } from '@server/constants/media';
+import { MediaStatus, MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { User } from '@server/entity/User';
@@ -70,6 +70,7 @@ const QueryFilterOptions = z.object({
   network: z.coerce.string().optional(),
   watchProviders: z.coerce.string().optional(),
   watchRegion: z.coerce.string().optional(),
+  hideAvailable: z.coerce.boolean().optional(),
 });
 
 export type FilterOptions = z.infer<typeof QueryFilterOptions>;
@@ -108,6 +109,15 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       data.results.map((result) => result.id)
     );
 
+    let filteredResults = data.results;
+
+    if (query.hideAvailable) {
+      filteredResults = filteredResults.filter((result) => {
+        const mediaItem = media.find((req) => req.tmdbId === result.id);
+        return !(mediaItem?.status === MediaStatus.AVAILABLE);
+      });
+    }
+
     let keywordData: TmdbKeyword[] = [];
     if (keywords) {
       const splitKeywords = keywords.split(',');
@@ -124,7 +134,7 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       totalPages: data.total_pages,
       totalResults: data.total_results,
       keywords: keywordData,
-      results: data.results.map((result) =>
+      results: filteredResults.map((result) =>
         mapMovieResult(
           result,
           media.find(
@@ -385,6 +395,15 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       data.results.map((result) => result.id)
     );
 
+    let filteredResults = data.results;
+
+    if (query.hideAvailable) {
+      filteredResults = filteredResults.filter((result) => {
+        const mediaItem = media.find((req) => req.tmdbId === result.id);
+        return !(mediaItem?.status === MediaStatus.AVAILABLE);
+      });
+    }
+
     let keywordData: TmdbKeyword[] = [];
     if (keywords) {
       const splitKeywords = keywords.split(',');
@@ -401,7 +420,7 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       totalPages: data.total_pages,
       totalResults: data.total_results,
       keywords: keywordData,
-      results: data.results.map((result) =>
+      results: filteredResults.map((result) =>
         mapTvResult(
           result,
           media.find(

@@ -4244,6 +4244,11 @@ paths:
           schema:
             type: string
             example: 8|9
+        - in: query
+          name: hideAvailable
+          schema:
+            type: boolean
+            example: true
       responses:
         '200':
           description: Results
@@ -4533,6 +4538,11 @@ paths:
           schema:
             type: string
             example: 8|9
+        - in: query
+          name: hideAvailable
+          schema:
+            type: boolean
+            example: true
       responses:
         '200':
           description: Results

@@ -108,6 +108,7 @@ export const QueryFilterOptions = z.object({
   voteCountGte: z.string().optional(),
   watchRegion: z.string().optional(),
   watchProviders: z.string().optional(),
+  hideAvailable: z.string().optional(),
 });
 
 export type FilterOptions = z.infer<typeof QueryFilterOptions>;
@@ -185,6 +186,10 @@ export const prepareFilterValues = (
 
   if (values.watchRegion) {
     filterValues.watchRegion = values.watchRegion;
+  }
+
+  if (values.hideAvailable) {
+    filterValues.hideAvailable = values.hideAvailable;
   }
 
   return filterValues;
