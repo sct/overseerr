@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-101-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-104-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -204,6 +204,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/RemiRigal"><img src="https://avatars.githubusercontent.com/u/19256051?v=4?s=100" width="100px;" alt="RemiRigal"/><br /><sub><b>RemiRigal</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=RemiRigal" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="http://josephrisk.com"><img src="https://avatars.githubusercontent.com/u/18372584?v=4?s=100" width="100px;" alt="Joseph Risk"/><br /><sub><b>Joseph Risk</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=j0srisk" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/Loetwiek"><img src="https://avatars.githubusercontent.com/u/79059734?v=4?s=100" width="100px;" alt="Loetwiek"/><br /><sub><b>Loetwiek</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Loetwiek" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Fuochi"><img src="https://avatars.githubusercontent.com/u/4720478?v=4?s=100" width="100px;" alt="Fuochi"/><br /><sub><b>Fuochi</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Fuochi" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/demrich"><img src="https://avatars.githubusercontent.com/u/30092389?v=4?s=100" width="100px;" alt="David Emrich"/><br /><sub><b>David Emrich</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=demrich" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://maxtrier.dk"><img src="https://avatars.githubusercontent.com/u/5898152?v=4?s=100" width="100px;" alt="Max T. Kristiansen"/><br /><sub><b>Max T. Kristiansen</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=maxnatamo" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

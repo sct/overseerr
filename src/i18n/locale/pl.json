@@ -1220,5 +1220,8 @@
   "components.Discover.updatefailed": "Wystąpił problem podczas aktualizowania ustawień odnajdywania.",
   "components.Settings.SettingsMain.apikey": "Klucz API",
   "components.Settings.SettingsMain.cacheImagesTip": "Pamięć podręczna dla obrazów pochodzących z zewnętrznych źródeł (wymaga znacznej ilości miejsca na dysku)",
-  "components.Settings.SettingsMain.toastSettingsFailure": "Coś poszło nie tak podczas zapisywania ustawień."
+  "components.Settings.SettingsMain.toastSettingsFailure": "Coś poszło nie tak podczas zapisywania ustawień.",
+  "i18n.collection": "Kolekcja",
+  "components.MovieDetails.imdbuserscore": "Ocena użytkowników IMDB",
+  "components.Settings.SonarrModal.seriesType": "Typ serialu"
 }
