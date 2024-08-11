@@ -19,7 +19,6 @@ import useSWR from 'swr';
 import * as Yup from 'yup';
 
 const messages = defineMessages({
-  validationMessageRequired: 'You must provide a description',
   whatswrong: "What's wrong?",
   providedetail:
     'Please provide a detailed explanation of the issue you encountered.',
@@ -84,9 +83,7 @@ const CreateIssueModal = ({
     .map((season) => season.seasonNumber);
 
   const CreateIssueModalSchema = Yup.object().shape({
-    message: Yup.string().required(
-      intl.formatMessage(messages.validationMessageRequired)
-    ),
+    message: Yup.string().notRequired(),
   });
 
   return (
@@ -292,7 +289,6 @@ const CreateIssueModal = ({
             <div className="mt-4 flex-col space-y-2">
               <label htmlFor="message">
                 {intl.formatMessage(messages.whatswrong)}
-                <span className="label-required">*</span>
               </label>
               <Field
                 as="textarea"
