@@ -132,6 +132,11 @@ export interface PlexWatchlistItem {
   title: string;
 }
 
+export interface PlexWatchlistCache {
+  etag: string;
+  response: WatchlistResponse;
+}
+
 class PlexTvAPI extends ExternalAPI {
   private authToken: string;
 
@@ -275,6 +280,11 @@ class PlexTvAPI extends ExternalAPI {
     items: PlexWatchlistItem[];
   }> {
     try {
+      const watchlistCache = cacheManager.getCache('plexwatchlist');
+      let cachedWatchlist = watchlistCache.data.get<PlexWatchlistCache>(
+        this.authToken
+      );
+
       const response = await this.axios.get<WatchlistResponse>(
         '/library/sections/watchlist/all',
         {
@@ -282,12 +292,29 @@ class PlexTvAPI extends ExternalAPI {
             'X-Plex-Container-Start': offset,
             'X-Plex-Container-Size': size,
           },
+          headers: {
+            'If-None-Match': cachedWatchlist?.etag,
+          },
           baseURL: 'https://metadata.provider.plex.tv',
+          validateStatus: (status) => status < 400, // Allow HTTP 304 to return without error
         }
       );
 
+      // If we don't recieve HTTP 304, the watchlist has been updated and we need to update the cache.
+      if (response.status >= 200 && response.status <= 299) {
+        cachedWatchlist = {
+          etag: response.headers.etag,
+          response: response.data,
+        };
+
+        watchlistCache.data.set<PlexWatchlistCache>(
+          this.authToken,
+          cachedWatchlist
+        );
+      }
+
       const watchlistDetails = await Promise.all(
-        (response.data.MediaContainer.Metadata ?? []).map(
+        (cachedWatchlist?.response.MediaContainer.Metadata ?? []).map(
           async (watchlistItem) => {
             const detailedResponse = await this.getRolling<MetadataResponse>(
               `/library/metadata/${watchlistItem.ratingKey}`,
@@ -335,7 +362,7 @@ class PlexTvAPI extends ExternalAPI {
       return {
         offset,
         size,
-        totalSize: response.data.MediaContainer.totalSize,
+        totalSize: cachedWatchlist?.response.MediaContainer.totalSize ?? 0,
         items: filteredList,
       };
     } catch (e) {
