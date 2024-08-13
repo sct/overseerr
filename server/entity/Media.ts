@@ -316,9 +316,21 @@ class Media {
         );
 
         if (server) {
-          this.serviceUrl = server.externalUrl
-            ? `${server.externalUrl}/movie/${this.externalServiceSlug}`
-            : LidarrAPI.buildUrl(server, `/movie/${this.externalServiceSlug}`);
+          if (this.secondaryType === 'artist') {
+            this.serviceUrl = server.externalUrl
+              ? `${server.externalUrl}/artist/${this.externalServiceSlug}`
+              : LidarrAPI.buildUrl(
+                  server,
+                  `/artist/${this.externalServiceSlug}`
+                );
+          } else {
+            this.serviceUrl = server.externalUrl
+              ? `${server.externalUrl}/album/${this.externalServiceSlug}`
+              : LidarrAPI.buildUrl(
+                  server,
+                  `/album/${this.externalServiceSlug}`
+                );
+          }
         }
       }
     }
