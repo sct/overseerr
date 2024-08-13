@@ -449,7 +449,7 @@ components:
           example: false
         externalUrl:
           type: string
-          example: http://radarr.example.com
+          example: http://sonarr.example.com
         syncEnabled:
           type: boolean
           example: false
