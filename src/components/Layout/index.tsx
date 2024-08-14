@@ -1,8 +1,6 @@
 import MobileMenu from '@app/components/Layout/MobileMenu';
 import PullToRefresh from '@app/components/Layout/PullToRefresh';
-import SearchInput, {
-  MusicSearchInput,
-} from '@app/components/Layout/SearchInput';
+import SearchInput from '@app/components/Layout/SearchInput';
 import Sidebar from '@app/components/Layout/Sidebar';
 import UserDropdown from '@app/components/Layout/UserDropdown';
 import type { AvailableLocale } from '@app/context/LanguageContext';
@@ -12,10 +10,16 @@ import { useUser } from '@app/hooks/useUser';
 import { ArrowLeftIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 type LayoutProps = {
   children: React.ReactNode;
 };
+
+const messages = defineMessages({
+  searchPlaceholder: 'Search Movies & TV',
+  musicSearchPlaceholder: 'Search Music',
+});
 
 const Layout = ({ children }: LayoutProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -24,6 +28,7 @@ const Layout = ({ children }: LayoutProps) => {
   const router = useRouter();
   const { currentSettings } = useSettings();
   const { setLocale } = useLocale();
+  const intl = useIntl();
 
   useEffect(() => {
     if (setLocale && user) {
@@ -92,8 +97,14 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <ArrowLeftIcon className="w-7" />
             </button>
-            <SearchInput />
-            <MusicSearchInput />
+            <SearchInput
+              pathname="/search"
+              placeholder={intl.formatMessage(messages.searchPlaceholder)}
+            />
+            <SearchInput
+              pathname="/music-search"
+              placeholder={intl.formatMessage(messages.musicSearchPlaceholder)}
+            />
             <div className="flex items-center">
               <UserDropdown />
             </div>
