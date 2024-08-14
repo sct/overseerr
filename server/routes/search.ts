@@ -38,16 +38,9 @@ searchRoutes.get('/', async (req, res, next) => {
         page: Number(req.query.page),
         language: (req.query.language as string) ?? req.locale,
       });
-      const mb = new MusicBrainz();
-      const mbResults = await mb.searchMulti({
-        query: queryString,
-        page: Number(req.query.page),
-      });
-      const releaseResults = mbResults.releaseResults;
-      const artistResults = mbResults.artistResults;
       results = {
         ...results,
-        results: [...results.results, ...artistResults, ...releaseResults],
+        results: [...results.results],
       };
     }
     const mbIds = results.results
@@ -77,6 +70,39 @@ searchRoutes.get('/', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Unable to retrieve search results.',
+    });
+  }
+});
+
+searchRoutes.get('/music', async (req, res, next) => {
+  const queryString = req.query.query as string;
+  const page = Number(req.query.page);
+  try {
+    const mb = new MusicBrainz();
+    const mbResults = await mb.searchMulti({
+      query: queryString,
+      page: page,
+    });
+    const releaseResults = mbResults.releaseResults;
+    const artistResults = mbResults.artistResults;
+    const mappedResults = await mapSearchResults(
+      [...artistResults, ...releaseResults],
+      []
+    );
+
+    return res.status(200).json({
+      page: page,
+      results: mappedResults,
+    });
+  } catch (e) {
+    logger.debug('Something went wrong retrieving music search results', {
+      label: 'API',
+      errorMessage: e.message,
+      query: req.query.query,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve music search results.',
     });
   }
 });

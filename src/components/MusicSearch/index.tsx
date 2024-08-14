@@ -3,11 +3,7 @@ import ListView from '@app/components/Common/ListView';
 import PageTitle from '@app/components/Common/PageTitle';
 import useDiscover from '@app/hooks/useDiscover';
 import Error from '@app/pages/_error';
-import type {
-  MovieResult,
-  PersonResult,
-  TvResult,
-} from '@server/models/Search';
+import type { ArtistResult, ReleaseResult } from '@server/models/Search';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -16,7 +12,7 @@ const messages = defineMessages({
   searchresults: 'Search Results',
 });
 
-const Search = () => {
+const MusicSearch = () => {
   const intl = useIntl();
   const router = useRouter();
 
@@ -28,8 +24,8 @@ const Search = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MovieResult | TvResult | PersonResult>(
-    `/api/v1/search`,
+  } = useDiscover<ArtistResult | ReleaseResult>(
+    `/api/v1/search/music`,
     {
       query: router.query.query,
     },
@@ -60,4 +56,4 @@ const Search = () => {
   );
 };
 
-export default Search;
+export default MusicSearch;

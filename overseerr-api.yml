@@ -4422,6 +4422,40 @@ paths:
                         - $ref: '#/components/schemas/MovieResult'
                         - $ref: '#/components/schemas/TvResult'
                         - $ref: '#/components/schemas/PersonResult'
+  /search/music:
+    get:
+      summary: Search for artist or releases
+      description: Returns a list of artists or releases.
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+            example: 'Eminem'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  results:
+                    type: array
+                    items:
+                      anyOf:
                         - $ref: '#/components/schemas/ArtistResult'
                         - $ref: '#/components/schemas/ReleaseResult'
   /search/keyword:
@@ -4447,7 +4481,7 @@ paths:
           name: type
           schema:
             type: string
-            enum: [movie,tv,music]
+            enum: [movie, tv, music]
       responses:
         '200':
           description: Results
@@ -5445,7 +5479,7 @@ paths:
                   nullable: true
                 secondaryType:
                   type: string
-                  enum: [release,artist]
+                  enum: [release, artist]
               required:
                 - mediaType
                 - mediaId
@@ -6198,7 +6232,7 @@ paths:
           name: type
           schema:
             type: string
-            enum: [all,movie,tv,music,artist,release]
+            enum: [all, movie, tv, music, artist, release]
             default: all
       responses:
         '200':

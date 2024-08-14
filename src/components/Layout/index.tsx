@@ -1,6 +1,8 @@
 import MobileMenu from '@app/components/Layout/MobileMenu';
 import PullToRefresh from '@app/components/Layout/PullToRefresh';
-import SearchInput from '@app/components/Layout/SearchInput';
+import SearchInput, {
+  MusicSearchInput,
+} from '@app/components/Layout/SearchInput';
 import Sidebar from '@app/components/Layout/Sidebar';
 import UserDropdown from '@app/components/Layout/UserDropdown';
 import type { AvailableLocale } from '@app/context/LanguageContext';
@@ -91,6 +93,7 @@ const Layout = ({ children }: LayoutProps) => {
               <ArrowLeftIcon className="w-7" />
             </button>
             <SearchInput />
+            <MusicSearchInput />
             <div className="flex items-center">
               <UserDropdown />
             </div>
