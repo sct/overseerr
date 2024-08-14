@@ -10,16 +10,10 @@ import { useUser } from '@app/hooks/useUser';
 import { ArrowLeftIcon, Bars3BottomLeftIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
 
 type LayoutProps = {
   children: React.ReactNode;
 };
-
-const messages = defineMessages({
-  searchPlaceholder: 'Search Movies & TV',
-  musicSearchPlaceholder: 'Search Music',
-});
 
 const Layout = ({ children }: LayoutProps) => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
@@ -28,7 +22,6 @@ const Layout = ({ children }: LayoutProps) => {
   const router = useRouter();
   const { currentSettings } = useSettings();
   const { setLocale } = useLocale();
-  const intl = useIntl();
 
   useEffect(() => {
     if (setLocale && user) {
@@ -78,7 +71,7 @@ const Layout = ({ children }: LayoutProps) => {
             WebkitBackdropFilter: isScrolled ? 'blur(5px)' : undefined,
           }}
         >
-          <div className="flex flex-1 items-center justify-between px-4 md:pr-4 md:pl-4">
+          <div className="flex flex-1 justify-between px-4 md:pr-4 md:pl-4 landscape:items-center ">
             <button
               className={`mr-2 hidden text-white sm:block ${
                 isScrolled ? 'opacity-90' : 'opacity-70'
@@ -97,14 +90,7 @@ const Layout = ({ children }: LayoutProps) => {
             >
               <ArrowLeftIcon className="w-7" />
             </button>
-            <SearchInput
-              pathname="/search"
-              placeholder={intl.formatMessage(messages.searchPlaceholder)}
-            />
-            <SearchInput
-              pathname="/music-search"
-              placeholder={intl.formatMessage(messages.musicSearchPlaceholder)}
-            />
+            <SearchInput />
             <div className="flex items-center">
               <UserDropdown />
             </div>

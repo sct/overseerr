@@ -13,17 +13,16 @@ interface SearchObject {
   searchOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   setSearchValue: Dispatch<SetStateAction<string>>;
+  setLastRoute: Dispatch<SetStateAction<Nullable<Url>>>;
   clear: () => void;
 }
 
-const useSearchInput = (pathname = '/search'): SearchObject => {
+const useSearchInput = (): SearchObject => {
   const router = useRouter();
   const [searchOpen, setIsOpen] = useState(false);
   const [lastRoute, setLastRoute] = useState<Nullable<Url>>(null);
   const [searchValue, debouncedValue, setSearchValue] = useDebouncedState(
-    router.pathname.startsWith(pathname)
-      ? (router.query.query as string) ?? ''
-      : ''
+    (router.query.query as string) ?? ''
   );
 
   /**
@@ -34,8 +33,11 @@ const useSearchInput = (pathname = '/search'): SearchObject => {
    * in a new route. If we are, then we only replace the history.
    */
   useEffect(() => {
-    if (debouncedValue !== '' && searchOpen) {
-      if (router.pathname.startsWith(pathname)) {
+    if (
+      router.pathname.startsWith('/search') ||
+      router.pathname.startsWith('/music-search')
+    ) {
+      if (debouncedValue !== '' && searchOpen) {
         router.replace({
           pathname: router.pathname,
           query: {
@@ -43,14 +45,6 @@ const useSearchInput = (pathname = '/search'): SearchObject => {
             query: debouncedValue,
           },
         });
-      } else {
-        setLastRoute(router.asPath);
-        router
-          .push({
-            pathname: pathname,
-            query: { query: debouncedValue },
-          })
-          .then(() => window.scrollTo(0, 0));
       }
     }
   }, [debouncedValue]);
@@ -64,7 +58,8 @@ const useSearchInput = (pathname = '/search'): SearchObject => {
   useEffect(() => {
     if (
       searchValue === '' &&
-      router.pathname.startsWith(pathname) &&
+      (router.pathname.startsWith('/search') ||
+        router.pathname.startsWith('/music-search')) &&
       !searchOpen
     ) {
       if (lastRoute) {
@@ -92,21 +87,21 @@ const useSearchInput = (pathname = '/search'): SearchObject => {
    */
   useEffect(() => {
     if (
-      router.pathname.startsWith(pathname) &&
-      router.query.query !== debouncedValue
+      !(
+        router.pathname.startsWith('/search') ||
+        router.pathname.startsWith('/music-search')
+      ) &&
+      !router.query.query
     ) {
-      setSearchValue(
-        router.query.query
-          ? decodeURIComponent(router.query.query as string)
-          : ''
-      );
-
-      if (!router.pathname.startsWith(pathname) && !router.query.query) {
-        setIsOpen(false);
+      setIsOpen(false);
+    } else {
+      if (router.query.query !== debouncedValue) {
+        setSearchValue(
+          router.query.query
+            ? decodeURIComponent(router.query.query as string)
+            : ''
+        );
       }
-    }
-
-    if (router.pathname.startsWith(pathname)) {
       setIsOpen(true);
     }
   }, [router, setSearchValue]);
@@ -121,6 +116,7 @@ const useSearchInput = (pathname = '/search'): SearchObject => {
     searchOpen,
     setIsOpen,
     setSearchValue,
+    setLastRoute,
     clear,
   };
 };
