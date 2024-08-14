@@ -20,7 +20,6 @@ const globalMessages = defineMessages({
   tvshow: 'Series',
   tvshows: 'Series',
   music: 'Music',
-  musics: 'Musics',
   artist: 'Artist',
   release: 'Release',
   cancel: 'Cancel',

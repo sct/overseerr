@@ -11,9 +11,9 @@ import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
 const messages = defineMessages({
-  discovermusics: {
+  discovermusic: {
     defaultMessage: 'Your Downloaded Artists',
-    id: 'discover.downloadedmusics',
+    id: 'discover.downloadedmusic',
   },
 });
 
@@ -29,7 +29,7 @@ const mediaResultsToArtistResults = (results: Media[]): ArtistResult[] => {
   }));
 };
 
-const DiscoverMusics = () => {
+const DiscoverMusic = () => {
   const intl = useIntl();
 
   const [artists, setArtists] = useState<ArtistResult[]>([]);
@@ -39,7 +39,7 @@ const DiscoverMusics = () => {
 
   const isEmpty = useMemo(() => artists.length === 0, [artists]);
 
-  const title = intl.formatMessage(messages.discovermusics);
+  const title = intl.formatMessage(messages.discovermusic);
 
   const fetchMore = () => {
     setIsLoadingMore(true);
@@ -95,4 +95,4 @@ const DiscoverMusics = () => {
   );
 };
 
-export default DiscoverMusics;
+export default DiscoverMusic;

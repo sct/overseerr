@@ -5089,7 +5089,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TvResult'
-  /discover/musics:
+  /discover/music:
     get:
       summary: Discover music
       description: Returns a list of music in a JSON object.
@@ -5131,7 +5131,7 @@ paths:
                         - $ref: '#/components/schemas/ReleaseResult'
                         - $ref: '#/components/schemas/ArtistResult'
         '500':
-          description: An error occured while getting musics
+          description: An error occured while getting music
           content:
             application/json:
               schema:

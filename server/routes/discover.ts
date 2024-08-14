@@ -879,7 +879,7 @@ discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
   }
 );
 
-discoverRoutes.get('/musics', async (req, res, next) => {
+discoverRoutes.get('/music', async (req, res, next) => {
   const mb = new MusicBrainz();
   try {
     const query = QueryFilterOptions.parse(req.query);

@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  searchPlaceholder: 'Search Musics, Movies & TV',
+  searchPlaceholder: 'Search Movies & TV',
 });
 
 const SearchInput = () => {

@@ -1,8 +1,8 @@
-import DiscoverMusics from '@app/components/Discover/DiscoverMusics';
+import DiscoverMusic from '@app/components/Discover/DiscoverMusic';
 import type { NextPage } from 'next';
 
-const DiscoverMusicsPage: NextPage = () => {
-  return <DiscoverMusics />;
+const DiscoverMusicPage: NextPage = () => {
+  return <DiscoverMusic />;
 };
 
-export default DiscoverMusicsPage;
+export default DiscoverMusicPage;
