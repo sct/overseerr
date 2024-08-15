@@ -278,45 +278,52 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     options: LidarrAlbumOptions
   ): Promise<LidarrAlbum> => {
     try {
-      const album = await this.getAlbumByMusicBrainzId(options.mbId);
+      let album = await this.getAlbumByMusicBrainzId(options.mbId);
 
-      if (album.id) {
-        logger.info(
-          'Album is already monitored in Lidarr. Starting search for download.',
-          { label: 'Lidarr' }
-        );
-        this.axios.post(`/command`, {
-          name: 'AlbumSearch',
-          albumIds: [album.id],
+      if (!album.artist.monitored) {
+        logger.info('Artist is not already in Lidarr. Monitoring artist.', {
+          label: 'Lidarr',
+          albumId: album.id,
+          albumTitle: album.title,
         });
-        return album;
+
+        const artist = album.artist;
+
+        const artist_options: LidarrArtistOptions = {
+          profileId: options.profileId,
+          qualityProfileId: options.qualityProfileId,
+          rootFolderPath: options.rootFolderPath,
+          mbId: artist.foreignArtistId,
+          monitored: true,
+          tags: [],
+          searchNow: true,
+          monitorNewItems: 'none',
+          searchForMissingAlbums: false,
+          monitor: 'none',
+        };
+
+        await this.addArtist(artist_options);
+
+        album = await this.getAlbumByMusicBrainzId(options.mbId);
       }
 
-      const artist = album.artist;
+      if (!album.monitored) {
+        logger.info(
+          'Album is not already monitored in Lidarr. Monitoring it before download.\nalbumId: ' +
+            album.id,
+          { label: 'Lidarr' }
+        );
+        await this.axios.put<LidarrAlbum>(`album/monitor/`, {
+          albumIds: [album.id],
+          monitored: true,
+        });
+      }
 
-      artist.monitored = true;
-      artist.monitorNewItems = 'all';
-      artist.qualityProfileId = options.qualityProfileId;
-      artist.rootFolderPath = options.rootFolderPath;
-      artist.addOptions = {
-        monitor: 'none',
-        searchForMissingAlbums: true,
-      };
-      album.anyReleaseOk = true;
+      logger.info('Starting search for album in Lidarr.', { label: 'Lidarr' });
 
-      const response = await this.axios.post<LidarrAlbum>(`/album/`, {
-        ...album,
-        title: options.title,
-        qualityProfileId: options.qualityProfileId,
-        profileId: options.profileId,
-        foreignAlbumId: options.mbId.toString(),
-        tags: options.tags,
-        monitored: options.monitored,
-        artist: artist,
-        rootFolderPath: options.rootFolderPath,
-        addOptions: {
-          searchForNewAlbum: options.searchNow,
-        },
+      const response = await this.axios.post(`/command`, {
+        name: 'AlbumSearch',
+        albumIds: [album.id],
       });
 
       if (response.data.id) {
