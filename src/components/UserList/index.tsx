@@ -28,8 +28,10 @@ import type { UserResultsResponse } from '@server/interfaces/api/userInterfaces'
 import { hasPermission } from '@server/lib/permissions';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
+import { debounce } from 'lodash';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import type React from 'react';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -82,7 +84,52 @@ const messages = defineMessages({
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 
-const UserList = () => {
+const UserListContainer = () => {
+  const intl = useIntl();
+  const [searchString, setSearchString] = useState<string>('');
+
+  const debounceSetSearchString = debounce((str: string) => {
+    setSearchString(str);
+  }, 200);
+
+  return (
+    <>
+      <div className="flex flex-col justify-between lg:flex-row lg:items-end">
+        <div className="mt-2 flex flex-grow flex-col lg:flex-grow-0 lg:flex-row">
+          <div className="mb-2 flex flex-grow flex-col justify-between sm:flex-row lg:mb-0 lg:flex-grow-0">
+            <div className="relative flex w-full items-center text-white focus-within:text-gray-200">
+              <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
+                <MagnifyingGlassIcon className="h-5 w-5" />
+              </div>
+              <input
+                id="user_search"
+                type="search"
+                style={{
+                  paddingRight: searchString.length > 0 ? '1.75rem' : '',
+                }}
+                className="block w-full rounded-full border border-gray-600 bg-gray-900 bg-opacity-80 py-2 pl-10 text-white placeholder-gray-300 hover:border-gray-500 focus:border-gray-500 focus:bg-opacity-100 focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-base"
+                autoComplete="off"
+                placeholder={intl.formatMessage(
+                  messages.searchUsersPlaceholder
+                )}
+                onChange={(e) => {
+                  debounceSetSearchString(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <UserList searchString={searchString} />
+    </>
+  );
+};
+
+interface UserListProps {
+  searchString?: string;
+}
+
+const UserList = ({ searchString }: UserListProps) => {
   const intl = useIntl();
   const router = useRouter();
   const settings = useSettings();
@@ -90,7 +137,6 @@ const UserList = () => {
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const [currentSort, setCurrentSort] = useState<Sort>('displayname');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
-  const [searchString, setSearchString] = useState<string>('');
 
   const page = router.query.page ? Number(router.query.page) : 1;
   const pageIndex = page - 1;
@@ -103,7 +149,7 @@ const UserList = () => {
   } = useSWR<UserResultsResponse>(
     `/api/v1/user?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
-    }&sort=${currentSort}`
+    }&searchQuery=${searchString ? searchString : '%00'}&sort=${currentSort}`
   );
 
   const [isDeleting, setDeleting] = useState(false);
@@ -529,32 +575,7 @@ const UserList = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-between lg:flex-row lg:items-end">
-        <div className="mt-2 flex flex-grow flex-col lg:flex-grow-0 lg:flex-row">
-          <div className="mb-2 flex flex-grow flex-col justify-between sm:flex-row lg:mb-0 lg:flex-grow-0">
-            <div className="relative flex w-full items-center text-white focus-within:text-gray-200">
-              <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
-                <MagnifyingGlassIcon className="h-5 w-5" />
-              </div>
-              <input
-                id="user_search"
-                type="search"
-                style={{
-                  paddingRight: searchString.length > 0 ? '1.75rem' : '',
-                }}
-                className="block w-full rounded-full border border-gray-600 bg-gray-900 bg-opacity-80 py-2 pl-10 text-white placeholder-gray-300 hover:border-gray-500 focus:border-gray-500 focus:bg-opacity-100 focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-base"
-                autoComplete="off"
-                placeholder={intl.formatMessage(
-                  messages.searchUsersPlaceholder
-                )}
-                onChange={(e) => {
-                  setSearchString(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
+
       <Table>
         <thead>
           <tr>
@@ -779,4 +800,4 @@ const UserList = () => {
   );
 };
 
-export default UserList;
+export default UserListContainer;
