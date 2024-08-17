@@ -30,7 +30,17 @@ router.get('/', async (req, res, next) => {
   try {
     const pageSize = req.query.take ? Number(req.query.take) : 10;
     const skip = req.query.skip ? Number(req.query.skip) : 0;
+    const searchQuery =
+      req.query.searchQuery === 'null' || req.query.searchQuery === null
+        ? null
+        : req.query.searchQuery;
     let query = getRepository(User).createQueryBuilder('user');
+
+    if (searchQuery) {
+      await query.where('user.email like :query OR user.username like :query', {
+        query: `%${searchQuery}%`,
+      });
+    }
 
     switch (req.query.sort) {
       case 'updated':
