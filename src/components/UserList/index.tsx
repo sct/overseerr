@@ -109,7 +109,9 @@ const UserList = () => {
   } = useSWR<UserResultsResponse>(
     `/api/v1/user?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
-    }&searchQuery=${searchString ? searchString : '%00'}&sort=${currentSort}`
+    }&searchQuery=${
+      searchString ? encodeURIComponent(searchString) : '%00'
+    }&sort=${currentSort}`
   );
 
   const [isDeleting, setDeleting] = useState(false);
@@ -550,12 +552,14 @@ const UserList = () => {
           />
         </div>
       </div>
-      {data && !isLoading ? (
+      {!data && isLoading ? (
+        <LoadingSpinner />
+      ) : (
         <Table>
           <thead>
             <tr>
               <Table.TH>
-                {(data.results ?? []).length > 1 && (
+                {(data?.results ?? []).length > 1 && (
                   <input
                     type="checkbox"
                     id="selectAll"
@@ -573,7 +577,7 @@ const UserList = () => {
               <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
               <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
               <Table.TH className="text-right">
-                {(data.results ?? []).length > 1 && (
+                {(data?.results ?? []).length > 1 && (
                   <Button
                     buttonType="warning"
                     onClick={() => setShowBulkEditModal(true)}
@@ -706,15 +710,15 @@ const UserList = () => {
                 >
                   <div className="hidden lg:flex lg:flex-1">
                     <p className="text-sm">
-                      {data.results.length > 0 &&
+                      {(data?.results ?? []).length > 0 &&
                         intl.formatMessage(globalMessages.showingresults, {
                           from: pageIndex * currentPageSize + 1,
                           to:
-                            data.results.length < currentPageSize
+                            (data?.results ?? []).length < currentPageSize
                               ? pageIndex * currentPageSize +
-                                data.results.length
+                                (data?.results ?? []).length
                               : (pageIndex + 1) * currentPageSize,
-                          total: data.pageInfo.results,
+                          total: data?.pageInfo.results ?? 0,
                           strong: (msg: React.ReactNode) => (
                             <span className="font-medium">{msg}</span>
                           ),
@@ -772,8 +776,6 @@ const UserList = () => {
             </tr>
           </Table.TBody>
         </Table>
-      ) : (
-        <LoadingSpinner />
       )}
     </>
   );
