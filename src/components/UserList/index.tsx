@@ -531,7 +531,7 @@ const UserList = () => {
         </div>
       </div>
       <div className="flex flex-col justify-between lg:flex-row lg:items-end">
-        <div className="relative mt-2 flex w-1/4 items-center text-white focus-within:text-gray-200">
+        <div className="relative mt-2 flex w-full items-center text-white focus-within:text-gray-200 lg:mt-4 lg:w-1/3 lg:max-w-md">
           <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
             <MagnifyingGlassIcon className="h-5 w-5" />
           </div>
