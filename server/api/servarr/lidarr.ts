@@ -278,62 +278,84 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     options: LidarrAlbumOptions
   ): Promise<LidarrAlbum> => {
     try {
-      let album = await this.getAlbumByMusicBrainzId(options.mbId);
-
-      if (!album.artist.monitored) {
-        logger.info('Artist is not already in Lidarr. Monitoring artist.', {
-          label: 'Lidarr',
-          albumId: album.id,
-          albumTitle: album.title,
-        });
-
-        const artist = album.artist;
-
-        const artist_options: LidarrArtistOptions = {
-          profileId: options.profileId,
-          qualityProfileId: options.qualityProfileId,
-          rootFolderPath: options.rootFolderPath,
-          mbId: artist.foreignArtistId,
-          monitored: true,
-          tags: [],
-          searchNow: true,
-          monitorNewItems: 'none',
-          searchForMissingAlbums: false,
-          monitor: 'none',
-        };
-
-        await this.addArtist(artist_options);
-
-        album = await this.getAlbumByMusicBrainzId(options.mbId);
-      }
-
-      if (!album.monitored) {
+      const album = await this.getAlbumByMusicBrainzId(options.mbId);
+      let response;
+      if (!album.id) {
         logger.info(
-          'Album is not already monitored in Lidarr. Monitoring it before download.\nalbumId: ' +
-            album.id,
+          'Album is not already in Lidarr. Monitoring it and downloading.',
           { label: 'Lidarr' }
         );
-        await this.axios.put<LidarrAlbum>(`album/monitor/`, {
-          albumIds: [album.id],
+        const settings = {
+          ...album,
+          artistId: album.artistId ?? 0,
+          foreignAlbumId: options.mbId,
           monitored: true,
+          anyReleaseOk: true,
+          profileId: options.profileId,
+          artist: {
+            ...album.artist,
+            qualityProfileId: options.qualityProfileId,
+            monitored: true,
+            monitorNewItems: 'none',
+            folder: album.artist.artistName,
+            added: '0001-01-01T00:00:00Z',
+            addOptions: {
+              searchForMissingAlbums: true,
+            },
+            rootFolderPath: options.rootFolderPath,
+            images: [],
+            links: [],
+          },
+          addOptions: {
+            searchForNewAlbum: options.searchNow,
+          },
+        };
+        response = await this.axios.post<LidarrAlbum>(`album/`, settings);
+
+        if (response.data.id) {
+          logger.info('Lidarr accepted request', { label: 'Lidarr' });
+          return response.data;
+        } else {
+          logger.error('Failed to add album to Lidarr', {
+            label: 'Lidarr',
+            options,
+          });
+          throw new Error('Failed to add album to Lidarr');
+        }
+      }
+      logger.info('Monitoring album in Lidarr', { label: 'Lidarr' });
+      response = await this.axios.put(`/album/monitor`, {
+        albumIds: [album.id],
+        monitored: true,
+      });
+
+      if (response.data[0].id) {
+        logger.info('Lidarr accepted request', { label: 'Lidarr' });
+      } else {
+        logger.error('Failed to monitor album in Lidarr', {
+          label: 'Lidarr',
+          options,
         });
+        throw new Error('Failed to monitor album in Lidarr');
       }
 
-      logger.info('Starting search for album in Lidarr.', { label: 'Lidarr' });
+      logger.info('Starting search for monitored album in Lidarr.', {
+        label: 'Lidarr',
+      });
 
-      const response = await this.axios.post(`/command`, {
+      response = await this.axios.post(`/command`, {
         name: 'AlbumSearch',
         albumIds: [album.id],
       });
 
       if (response.data.id) {
-        logger.info('Lidarr accepted request', { label: 'Lidarr' });
+        logger.info('Lidarr accepted download request', { label: 'Lidarr' });
       } else {
-        logger.error('Failed to add album to Lidarr', {
+        logger.error('Lidarr refused download request', {
           label: 'Lidarr',
           options,
         });
-        throw new Error('Failed to add album to Lidarr');
+        throw new Error('Lidarr refused download request');
       }
       return response.data;
     } catch (e) {
@@ -368,7 +390,7 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
         monitorNewItems: options.monitorNewItems,
         rootFolderPath: options.rootFolderPath,
         addOptions: {
-          monitor: options.monitor,
+          monitor: options.monitor, //all,future,missing,existing,first,latest,none
           searchForMissingAlbums: options.searchForMissingAlbums,
         },
       });
