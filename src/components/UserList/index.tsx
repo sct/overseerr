@@ -84,52 +84,7 @@ const messages = defineMessages({
 
 type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 
-const UserListContainer = () => {
-  const intl = useIntl();
-  const [searchString, setSearchString] = useState<string>('');
-
-  const debounceSetSearchString = debounce((str: string) => {
-    setSearchString(str);
-  }, 200);
-
-  return (
-    <>
-      <div className="flex flex-col justify-between lg:flex-row lg:items-end">
-        <div className="mt-2 flex flex-grow flex-col lg:flex-grow-0 lg:flex-row">
-          <div className="mb-2 flex flex-grow flex-col justify-between sm:flex-row lg:mb-0 lg:flex-grow-0">
-            <div className="relative flex w-full items-center text-white focus-within:text-gray-200">
-              <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
-                <MagnifyingGlassIcon className="h-5 w-5" />
-              </div>
-              <input
-                id="user_search"
-                type="search"
-                style={{
-                  paddingRight: searchString.length > 0 ? '1.75rem' : '',
-                }}
-                className="block w-full rounded-full border border-gray-600 bg-gray-900 bg-opacity-80 py-2 pl-10 text-white placeholder-gray-300 hover:border-gray-500 focus:border-gray-500 focus:bg-opacity-100 focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-base"
-                autoComplete="off"
-                placeholder={intl.formatMessage(
-                  messages.searchUsersPlaceholder
-                )}
-                onChange={(e) => {
-                  debounceSetSearchString(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-      <UserList searchString={searchString} />
-    </>
-  );
-};
-
-interface UserListProps {
-  searchString?: string;
-}
-
-const UserList = ({ searchString }: UserListProps) => {
+const UserList = () => {
   const intl = useIntl();
   const router = useRouter();
   const settings = useSettings();
@@ -137,16 +92,17 @@ const UserList = ({ searchString }: UserListProps) => {
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
   const [currentSort, setCurrentSort] = useState<Sort>('displayname');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
+  const [searchString, setSearchString] = useState<string>('');
+
+  const debounceSetSearchString = debounce((str: string) => {
+    setSearchString(str);
+  }, 200);
 
   const page = router.query.page ? Number(router.query.page) : 1;
   const pageIndex = page - 1;
   const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
-  const {
-    data,
-    error,
-    mutate: revalidate,
-  } = useSWR<UserResultsResponse>(
+  const { data, mutate: revalidate } = useSWR<UserResultsResponse>(
     `/api/v1/user?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&searchQuery=${searchString ? searchString : '%00'}&sort=${currentSort}`
@@ -243,10 +199,6 @@ const UserList = ({ searchString }: UserListProps) => {
     }
   };
 
-  if (!data && !error) {
-    return <LoadingSpinner />;
-  }
-
   const CreateUserSchema = Yup.object().shape({
     email: Yup.string()
       .required(intl.formatMessage(messages.validationEmail))
@@ -261,11 +213,7 @@ const UserList = ({ searchString }: UserListProps) => {
     ),
   });
 
-  if (!data) {
-    return <LoadingSpinner />;
-  }
-
-  const hasNextPage = data.pageInfo.pages > pageIndex + 1;
+  const hasNextPage = (data?.pageInfo.pages ?? 0) > pageIndex + 1;
   const hasPrevPage = pageIndex > 0;
 
   const passwordGenerationEnabled =
@@ -504,7 +452,7 @@ const UserList = ({ searchString }: UserListProps) => {
             revalidate();
           }}
           selectedUserIds={selectedUsers}
-          users={data.results}
+          users={data?.results ?? []}
         />
       </Transition>
 
@@ -535,6 +483,7 @@ const UserList = ({ searchString }: UserListProps) => {
               className="mb-2 flex-grow sm:mb-0 sm:mr-2"
               buttonType="primary"
               onClick={() => setCreateModal({ isOpen: true })}
+              disabled={!data}
             >
               <UserPlusIcon />
               <span>{intl.formatMessage(messages.createlocaluser)}</span>
@@ -543,6 +492,7 @@ const UserList = ({ searchString }: UserListProps) => {
               className="flex-grow lg:mr-2"
               buttonType="primary"
               onClick={() => setShowImportModal(true)}
+              disabled={!data}
             >
               <InboxArrowDownIcon />
               <span>{intl.formatMessage(messages.importfromplex)}</span>
@@ -561,6 +511,7 @@ const UserList = ({ searchString }: UserListProps) => {
               }}
               value={currentSort}
               className="rounded-r-only"
+              disabled={!data}
             >
               <option value="created">
                 {intl.formatMessage(messages.sortCreated)}
@@ -575,229 +526,259 @@ const UserList = ({ searchString }: UserListProps) => {
           </div>
         </div>
       </div>
-
-      <Table>
-        <thead>
-          <tr>
-            <Table.TH>
-              {(data.results ?? []).length > 1 && (
-                <input
-                  type="checkbox"
-                  id="selectAll"
-                  name="selectAll"
-                  checked={isAllUsersSelected()}
-                  onChange={() => {
-                    toggleAllUsers();
-                  }}
-                />
-              )}
-            </Table.TH>
-            <Table.TH>{intl.formatMessage(messages.user)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.accounttype)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
-            <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
-            <Table.TH className="text-right">
-              {(data.results ?? []).length > 1 && (
-                <Button
-                  buttonType="warning"
-                  onClick={() => setShowBulkEditModal(true)}
-                  disabled={selectedUsers.length === 0}
-                >
-                  <PencilIcon />
-                  <span>{intl.formatMessage(messages.bulkedit)}</span>
-                </Button>
-              )}
-            </Table.TH>
-          </tr>
-        </thead>
-        <Table.TBody>
-          {data?.results.map((user) => (
-            <tr key={`user-list-${user.id}`} data-testid="user-list-row">
-              <Table.TD>
-                {isUserPermsEditable(user.id) && (
+      <div className="flex flex-col justify-between lg:flex-row lg:items-end">
+        <div className="mt-2 flex flex-grow flex-col lg:flex-grow-0 lg:flex-row">
+          <div className="mb-2 flex flex-grow flex-col justify-between sm:flex-row lg:mb-0 lg:flex-grow-0">
+            <div className="relative flex w-full items-center text-white focus-within:text-gray-200">
+              <div className="pointer-events-none absolute inset-y-0 left-4 flex items-center">
+                <MagnifyingGlassIcon className="h-5 w-5" />
+              </div>
+              <input
+                id="user_search"
+                type="search"
+                style={{
+                  paddingRight: searchString.length > 0 ? '1.75rem' : '',
+                }}
+                className="block w-full rounded-full border border-gray-600 bg-gray-900 bg-opacity-80 py-2 pl-10 text-white placeholder-gray-300 hover:border-gray-500 focus:border-gray-500 focus:bg-opacity-100 focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-base"
+                autoComplete="off"
+                placeholder={intl.formatMessage(
+                  messages.searchUsersPlaceholder
+                )}
+                onChange={(e) => {
+                  debounceSetSearchString(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      {data ? (
+        <Table>
+          <thead>
+            <tr>
+              <Table.TH>
+                {(data.results ?? []).length > 1 && (
                   <input
                     type="checkbox"
-                    id={`user-list-select-${user.id}`}
-                    name={`user-list-select-${user.id}`}
-                    checked={isUserSelected(user.id)}
+                    id="selectAll"
+                    name="selectAll"
+                    checked={isAllUsersSelected()}
                     onChange={() => {
-                      toggleUser(user.id);
+                      toggleAllUsers();
                     }}
                   />
                 )}
-              </Table.TD>
-              <Table.TD>
-                <div className="flex items-center">
-                  <Link href={`/users/${user.id}`}>
-                    <a className="h-10 w-10 flex-shrink-0">
-                      <img
-                        className="h-10 w-10 rounded-full object-cover"
-                        src={user.avatar}
-                        alt=""
-                      />
-                    </a>
-                  </Link>
-                  <div className="ml-4">
+              </Table.TH>
+              <Table.TH>{intl.formatMessage(messages.user)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.accounttype)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
+              <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
+              <Table.TH className="text-right">
+                {(data.results ?? []).length > 1 && (
+                  <Button
+                    buttonType="warning"
+                    onClick={() => setShowBulkEditModal(true)}
+                    disabled={selectedUsers.length === 0}
+                  >
+                    <PencilIcon />
+                    <span>{intl.formatMessage(messages.bulkedit)}</span>
+                  </Button>
+                )}
+              </Table.TH>
+            </tr>
+          </thead>
+          <Table.TBody>
+            {data?.results.map((user) => (
+              <tr key={`user-list-${user.id}`} data-testid="user-list-row">
+                <Table.TD>
+                  {isUserPermsEditable(user.id) && (
+                    <input
+                      type="checkbox"
+                      id={`user-list-select-${user.id}`}
+                      name={`user-list-select-${user.id}`}
+                      checked={isUserSelected(user.id)}
+                      onChange={() => {
+                        toggleUser(user.id);
+                      }}
+                    />
+                  )}
+                </Table.TD>
+                <Table.TD>
+                  <div className="flex items-center">
                     <Link href={`/users/${user.id}`}>
-                      <a
-                        className="text-base font-bold leading-5 transition duration-300 hover:underline"
-                        data-testid="user-list-username-link"
-                      >
-                        {user.displayName}
+                      <a className="h-10 w-10 flex-shrink-0">
+                        <img
+                          className="h-10 w-10 rounded-full object-cover"
+                          src={user.avatar}
+                          alt=""
+                        />
                       </a>
                     </Link>
-                    {user.displayName.toLowerCase() !== user.email && (
-                      <div className="text-sm leading-5 text-gray-300">
-                        {user.email}
-                      </div>
-                    )}
+                    <div className="ml-4">
+                      <Link href={`/users/${user.id}`}>
+                        <a
+                          className="text-base font-bold leading-5 transition duration-300 hover:underline"
+                          data-testid="user-list-username-link"
+                        >
+                          {user.displayName}
+                        </a>
+                      </Link>
+                      {user.displayName.toLowerCase() !== user.email && (
+                        <div className="text-sm leading-5 text-gray-300">
+                          {user.email}
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </Table.TD>
-              <Table.TD>
-                {user.id === currentUser?.id ||
-                currentHasPermission(
-                  [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
-                  { type: 'or' }
-                ) ? (
-                  <Link href={`/users/${user.id}/requests`}>
-                    <a className="text-sm leading-5 transition duration-300 hover:underline">
-                      {user.requestCount}
-                    </a>
-                  </Link>
-                ) : (
-                  user.requestCount
-                )}
-              </Table.TD>
-              <Table.TD>
-                {user.userType === UserType.PLEX ? (
-                  <Badge badgeType="warning">
-                    {intl.formatMessage(messages.plexuser)}
-                  </Badge>
-                ) : (
-                  <Badge badgeType="default">
-                    {intl.formatMessage(messages.localuser)}
-                  </Badge>
-                )}
-              </Table.TD>
-              <Table.TD>
-                {user.id === 1
-                  ? intl.formatMessage(messages.owner)
-                  : hasPermission(Permission.ADMIN, user.permissions)
-                  ? intl.formatMessage(messages.admin)
-                  : intl.formatMessage(messages.user)}
-              </Table.TD>
-              <Table.TD>
-                {intl.formatDate(user.createdAt, {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </Table.TD>
-              <Table.TD alignText="right">
-                <Button
-                  buttonType="warning"
-                  disabled={user.id === 1 && currentUser?.id !== 1}
-                  className="mr-2"
-                  onClick={() =>
-                    router.push(
-                      '/users/[userId]/settings',
-                      `/users/${user.id}/settings`
-                    )
-                  }
+                </Table.TD>
+                <Table.TD>
+                  {user.id === currentUser?.id ||
+                  currentHasPermission(
+                    [Permission.MANAGE_REQUESTS, Permission.REQUEST_VIEW],
+                    { type: 'or' }
+                  ) ? (
+                    <Link href={`/users/${user.id}/requests`}>
+                      <a className="text-sm leading-5 transition duration-300 hover:underline">
+                        {user.requestCount}
+                      </a>
+                    </Link>
+                  ) : (
+                    user.requestCount
+                  )}
+                </Table.TD>
+                <Table.TD>
+                  {user.userType === UserType.PLEX ? (
+                    <Badge badgeType="warning">
+                      {intl.formatMessage(messages.plexuser)}
+                    </Badge>
+                  ) : (
+                    <Badge badgeType="default">
+                      {intl.formatMessage(messages.localuser)}
+                    </Badge>
+                  )}
+                </Table.TD>
+                <Table.TD>
+                  {user.id === 1
+                    ? intl.formatMessage(messages.owner)
+                    : hasPermission(Permission.ADMIN, user.permissions)
+                    ? intl.formatMessage(messages.admin)
+                    : intl.formatMessage(messages.user)}
+                </Table.TD>
+                <Table.TD>
+                  {intl.formatDate(user.createdAt, {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                  })}
+                </Table.TD>
+                <Table.TD alignText="right">
+                  <Button
+                    buttonType="warning"
+                    disabled={user.id === 1 && currentUser?.id !== 1}
+                    className="mr-2"
+                    onClick={() =>
+                      router.push(
+                        '/users/[userId]/settings',
+                        `/users/${user.id}/settings`
+                      )
+                    }
+                  >
+                    {intl.formatMessage(globalMessages.edit)}
+                  </Button>
+                  <Button
+                    buttonType="danger"
+                    disabled={
+                      user.id === 1 ||
+                      (currentUser?.id !== 1 &&
+                        hasPermission(Permission.ADMIN, user.permissions))
+                    }
+                    onClick={() => setDeleteModal({ isOpen: true, user })}
+                  >
+                    {intl.formatMessage(globalMessages.delete)}
+                  </Button>
+                </Table.TD>
+              </tr>
+            ))}
+            <tr className="bg-gray-700">
+              <Table.TD colSpan={8} noPadding>
+                <nav
+                  className="flex w-screen flex-col items-center space-x-4 space-y-3 px-6 py-3 sm:flex-row sm:space-y-0 lg:w-full"
+                  aria-label="Pagination"
                 >
-                  {intl.formatMessage(globalMessages.edit)}
-                </Button>
-                <Button
-                  buttonType="danger"
-                  disabled={
-                    user.id === 1 ||
-                    (currentUser?.id !== 1 &&
-                      hasPermission(Permission.ADMIN, user.permissions))
-                  }
-                  onClick={() => setDeleteModal({ isOpen: true, user })}
-                >
-                  {intl.formatMessage(globalMessages.delete)}
-                </Button>
-              </Table.TD>
-            </tr>
-          ))}
-          <tr className="bg-gray-700">
-            <Table.TD colSpan={8} noPadding>
-              <nav
-                className="flex w-screen flex-col items-center space-x-4 space-y-3 px-6 py-3 sm:flex-row sm:space-y-0 lg:w-full"
-                aria-label="Pagination"
-              >
-                <div className="hidden lg:flex lg:flex-1">
-                  <p className="text-sm">
-                    {data.results.length > 0 &&
-                      intl.formatMessage(globalMessages.showingresults, {
-                        from: pageIndex * currentPageSize + 1,
-                        to:
-                          data.results.length < currentPageSize
-                            ? pageIndex * currentPageSize + data.results.length
-                            : (pageIndex + 1) * currentPageSize,
-                        total: data.pageInfo.results,
-                        strong: (msg: React.ReactNode) => (
-                          <span className="font-medium">{msg}</span>
+                  <div className="hidden lg:flex lg:flex-1">
+                    <p className="text-sm">
+                      {data.results.length > 0 &&
+                        intl.formatMessage(globalMessages.showingresults, {
+                          from: pageIndex * currentPageSize + 1,
+                          to:
+                            data.results.length < currentPageSize
+                              ? pageIndex * currentPageSize +
+                                data.results.length
+                              : (pageIndex + 1) * currentPageSize,
+                          total: data.pageInfo.results,
+                          strong: (msg: React.ReactNode) => (
+                            <span className="font-medium">{msg}</span>
+                          ),
+                        })}
+                    </p>
+                  </div>
+                  <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
+                    <span className="-mt-3 items-center text-sm sm:-ml-4 sm:mt-0 lg:ml-0">
+                      {intl.formatMessage(globalMessages.resultsperpage, {
+                        pageSize: (
+                          <select
+                            id="pageSize"
+                            name="pageSize"
+                            onChange={(e) => {
+                              setCurrentPageSize(Number(e.target.value));
+                              router
+                                .push(router.pathname)
+                                .then(() => window.scrollTo(0, 0));
+                            }}
+                            value={currentPageSize}
+                            className="short inline"
+                          >
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                          </select>
                         ),
                       })}
-                  </p>
-                </div>
-                <div className="flex justify-center sm:flex-1 sm:justify-start lg:justify-center">
-                  <span className="-mt-3 items-center text-sm sm:-ml-4 sm:mt-0 lg:ml-0">
-                    {intl.formatMessage(globalMessages.resultsperpage, {
-                      pageSize: (
-                        <select
-                          id="pageSize"
-                          name="pageSize"
-                          onChange={(e) => {
-                            setCurrentPageSize(Number(e.target.value));
-                            router
-                              .push(router.pathname)
-                              .then(() => window.scrollTo(0, 0));
-                          }}
-                          value={currentPageSize}
-                          className="short inline"
-                        >
-                          <option value="5">5</option>
-                          <option value="10">10</option>
-                          <option value="25">25</option>
-                          <option value="50">50</option>
-                          <option value="100">100</option>
-                        </select>
-                      ),
-                    })}
-                  </span>
-                </div>
-                <div className="flex flex-auto justify-center space-x-2 sm:flex-1 sm:justify-end">
-                  <Button
-                    disabled={!hasPrevPage}
-                    onClick={() =>
-                      updateQueryParams('page', (page - 1).toString())
-                    }
-                  >
-                    <ChevronLeftIcon />
-                    <span>{intl.formatMessage(globalMessages.previous)}</span>
-                  </Button>
-                  <Button
-                    disabled={!hasNextPage}
-                    onClick={() =>
-                      updateQueryParams('page', (page + 1).toString())
-                    }
-                  >
-                    <span>{intl.formatMessage(globalMessages.next)}</span>
-                    <ChevronRightIcon />
-                  </Button>
-                </div>
-              </nav>
-            </Table.TD>
-          </tr>
-        </Table.TBody>
-      </Table>
+                    </span>
+                  </div>
+                  <div className="flex flex-auto justify-center space-x-2 sm:flex-1 sm:justify-end">
+                    <Button
+                      disabled={!hasPrevPage}
+                      onClick={() =>
+                        updateQueryParams('page', (page - 1).toString())
+                      }
+                    >
+                      <ChevronLeftIcon />
+                      <span>{intl.formatMessage(globalMessages.previous)}</span>
+                    </Button>
+                    <Button
+                      disabled={!hasNextPage}
+                      onClick={() =>
+                        updateQueryParams('page', (page + 1).toString())
+                      }
+                    >
+                      <span>{intl.formatMessage(globalMessages.next)}</span>
+                      <ChevronRightIcon />
+                    </Button>
+                  </div>
+                </nav>
+              </Table.TD>
+            </tr>
+          </Table.TBody>
+        </Table>
+      ) : (
+        <LoadingSpinner />
+      )}
     </>
   );
 };
 
-export default UserListContainer;
+export default UserList;
