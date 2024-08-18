@@ -102,7 +102,11 @@ const UserList = () => {
   const pageIndex = page - 1;
   const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
-  const { data, mutate: revalidate } = useSWR<UserResultsResponse>(
+  const {
+    data,
+    mutate: revalidate,
+    isLoading,
+  } = useSWR<UserResultsResponse>(
     `/api/v1/user?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&searchQuery=${searchString ? searchString : '%00'}&sort=${currentSort}`
@@ -552,7 +556,7 @@ const UserList = () => {
           </div>
         </div>
       </div>
-      {data ? (
+      {data && !isLoading ? (
         <Table>
           <thead>
             <tr>
