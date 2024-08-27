@@ -768,6 +768,7 @@
   "components.Settings.SettingsJobsCache.nextexecution": "Next Execution",
   "components.Settings.SettingsJobsCache.plex-full-scan": "Plex Full Library Scan",
   "components.Settings.SettingsJobsCache.plex-recently-added-scan": "Plex Recently Added Scan",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Plex Refresh Token",
   "components.Settings.SettingsJobsCache.plex-watchlist-sync": "Plex Watchlist Sync",
   "components.Settings.SettingsJobsCache.process": "Process",
   "components.Settings.SettingsJobsCache.radarr-scan": "Radarr Scan",
