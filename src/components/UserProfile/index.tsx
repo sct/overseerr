@@ -33,6 +33,7 @@ const messages = defineMessages({
   pastdays: '{type} (past {days} days)',
   movierequests: 'Movie Requests',
   seriesrequest: 'Series Requests',
+  musicrequests: 'Music Requests',
   recentlywatched: 'Recently Watched',
   plexwatchlist: 'Plex Watchlist',
   emptywatchlist:
@@ -147,22 +148,6 @@ const UserProfile = () => {
           )) && (
           <div className="relative z-40">
             <dl className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
-              <div className="overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ring-gray-700 sm:p-6">
-                <dt className="truncate text-sm font-bold text-gray-300">
-                  {intl.formatMessage(messages.totalrequests)}
-                </dt>
-                <dd className="mt-1 text-3xl font-semibold text-white">
-                  <Link
-                    href={
-                      user.id === currentUser?.id
-                        ? '/profile/requests?filter=all'
-                        : `/users/${user?.id}/requests?filter=all`
-                    }
-                  >
-                    {intl.formatNumber(user.requestCount)}
-                  </Link>
-                </dd>
-              </div>
               <div
                 className={`overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ${
                   quota.movie.restricted
@@ -271,6 +256,77 @@ const UserProfile = () => {
                       {intl.formatMessage(messages.unlimited)}
                     </span>
                   )}
+                </dd>
+              </div>
+              <div
+                className={`overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ${
+                  quota.music.restricted
+                    ? 'bg-gradient-to-t from-red-900 to-transparent ring-red-500'
+                    : 'ring-gray-700'
+                } sm:p-6`}
+              >
+                <dt
+                  className={`truncate text-sm font-bold ${
+                    quota.music.restricted ? 'text-red-500' : 'text-gray-300'
+                  }`}
+                >
+                  {quota.music.limit
+                    ? intl.formatMessage(messages.pastdays, {
+                        type: intl.formatMessage(messages.musicrequests),
+                        days: quota?.music.days,
+                      })
+                    : intl.formatMessage(messages.musicrequests)}
+                </dt>
+                <dd
+                  className={`mt-1 flex items-center text-sm ${
+                    quota.music.restricted ? 'text-red-500' : 'text-white'
+                  }`}
+                >
+                  {quota.music.limit ? (
+                    <>
+                      <ProgressCircle
+                        progress={Math.round(
+                          ((quota?.music.remaining ?? 0) /
+                            (quota?.music.limit ?? 1)) *
+                            100
+                        )}
+                        useHeatLevel
+                        className="mr-2 h-8 w-8"
+                      />
+                      <div>
+                        {intl.formatMessage(messages.requestsperdays, {
+                          limit: (
+                            <span className="text-3xl font-semibold">
+                              {intl.formatMessage(messages.limit, {
+                                remaining: quota.music.remaining,
+                                limit: quota.music.limit,
+                              })}
+                            </span>
+                          ),
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <span className="text-3xl font-semibold">
+                      {intl.formatMessage(messages.unlimited)}
+                    </span>
+                  )}
+                </dd>
+              </div>
+              <div className="overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ring-gray-700 sm:p-6">
+                <dt className="truncate text-sm font-bold text-gray-300">
+                  {intl.formatMessage(messages.totalrequests)}
+                </dt>
+                <dd className="mt-1 text-3xl font-semibold text-white">
+                  <Link
+                    href={
+                      user.id === currentUser?.id
+                        ? '/profile/requests?filter=all'
+                        : `/users/${user?.id}/requests?filter=all`
+                    }
+                  >
+                    {intl.formatNumber(user.requestCount)}
+                  </Link>
                 </dd>
               </div>
             </dl>
