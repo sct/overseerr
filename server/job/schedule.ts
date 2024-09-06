@@ -1,6 +1,7 @@
 import availabilitySync from '@server/lib/availabilitySync';
 import downloadTracker from '@server/lib/downloadtracker';
 import ImageProxy from '@server/lib/imageproxy';
+import refreshToken from '@server/lib/refreshToken';
 import { plexFullScanner, plexRecentScanner } from '@server/lib/scanners/plex';
 import { radarrScanner } from '@server/lib/scanners/radarr';
 import { sonarrScanner } from '@server/lib/scanners/sonarr';
@@ -165,6 +166,20 @@ export const startJobs = (): void => {
       });
       // Clean TMDB image cache
       ImageProxy.clearCache('tmdb');
+    }),
+  });
+
+  scheduledJobs.push({
+    id: 'plex-refresh-token',
+    name: 'Plex Refresh Token',
+    type: 'process',
+    interval: 'fixed',
+    cronSchedule: jobs['plex-refresh-token'].schedule,
+    job: schedule.scheduleJob(jobs['plex-refresh-token'].schedule, () => {
+      logger.info('Starting scheduled job: Plex Refresh Token', {
+        label: 'Jobs',
+      });
+      refreshToken.run();
     }),
   });
 
