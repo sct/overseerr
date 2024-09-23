@@ -1,6 +1,10 @@
 import RadarrAPI from '@server/api/servarr/radarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
-import { MediaStatus, MediaType } from '@server/constants/media';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+  MediaType,
+} from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
 import downloadTracker from '@server/lib/downloadtracker';
@@ -8,6 +12,7 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import {
   AfterLoad,
+  AfterUpdate,
   Column,
   CreateDateColumn,
   Entity,
@@ -307,6 +312,37 @@ class Media {
           this.externalServiceId4k
         );
       }
+    }
+  }
+
+  @AfterUpdate()
+  public async updateRelatedMediaRequest(): Promise<void> {
+    const requestRepository = getRepository(MediaRequest);
+
+    const relatedRequests = await requestRepository.find({
+      relations: {
+        media: true,
+      },
+      where: {
+        media: { id: this.id },
+        status: MediaRequestStatus.APPROVED,
+      },
+    });
+
+    // Check the media entity status and if
+    // available or deleted, set the related request
+    // to completed
+    if (relatedRequests.length > 0) {
+      relatedRequests.forEach((request) => {
+        if (
+          this[request.is4k ? 'status4k' : 'status'] ===
+            MediaStatus.AVAILABLE ||
+          this[request.is4k ? 'status4k' : 'status'] === MediaStatus.DELETED
+        ) {
+          request.status = MediaRequestStatus.COMPLETED;
+        }
+      });
+      requestRepository.save(relatedRequests);
     }
   }
 }
