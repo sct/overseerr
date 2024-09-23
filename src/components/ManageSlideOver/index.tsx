@@ -9,10 +9,19 @@ import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { Bars4Icon, ServerIcon } from '@heroicons/react/24/outline';
-import { CheckCircleIcon, DocumentMinusIcon } from '@heroicons/react/24/solid';
+import {
+  CheckCircleIcon,
+  DocumentMinusIcon,
+  TrashIcon,
+} from '@heroicons/react/24/solid';
 import { IssueStatus } from '@server/constants/issue';
-import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+  MediaType,
+} from '@server/constants/media';
 import type { MediaWatchDataResponse } from '@server/interfaces/api/mediaInterfaces';
+import type { RadarrSettings, SonarrSettings } from '@server/lib/settings';
 import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
@@ -31,8 +40,12 @@ const messages = defineMessages({
   manageModalClearMedia: 'Clear Data',
   manageModalClearMediaWarning:
     '* This will irreversibly remove all data for this {mediaType}, including any requests. If this item exists in your Plex library, the media information will be recreated during the next scan.',
+  manageModalDeleteMediaWarning:
+    '* This will delete this {mediaType} from {arr}, including the media file.',
   openarr: 'Open in {arr}',
+  deletearr: 'Remove from {arr}',
   openarr4k: 'Open in 4K {arr}',
+  deletearr4k: 'Remove from 4K {arr}',
   downloadstatus: 'Downloads',
   markavailable: 'Mark as Available',
   mark4kavailable: 'Mark as Available in 4K',
@@ -85,11 +98,47 @@ const ManageSlideOver = ({
       : null
   );
 
+  const { data: radarrData } = useSWR<RadarrSettings[]>(
+    '/api/v1/settings/radarr'
+  );
+  const { data: sonarrData } = useSWR<SonarrSettings[]>(
+    '/api/v1/settings/sonarr'
+  );
+
   const deleteMedia = async () => {
     if (data.mediaInfo) {
       await axios.delete(`/api/v1/media/${data.mediaInfo.id}`);
       revalidate();
     }
+  };
+
+  const deleteMediaFile = async () => {
+    if (data.mediaInfo) {
+      await axios.delete(`/api/v1/media/${data.mediaInfo.id}/file`);
+      await axios.delete(`/api/v1/media/${data.mediaInfo.id}`);
+      revalidate();
+    }
+  };
+
+  const isDefaultService = () => {
+    if (data.mediaInfo) {
+      if (data.mediaInfo.mediaType === MediaType.MOVIE) {
+        return (
+          radarrData?.find(
+            (radarr) =>
+              radarr.isDefault && radarr.id === data.mediaInfo?.serviceId
+          ) !== undefined
+        );
+      } else {
+        return (
+          sonarrData?.find(
+            (sonarr) =>
+              sonarr.isDefault && sonarr.id === data.mediaInfo?.serviceId
+          ) !== undefined
+        );
+      }
+    }
+    return false;
   };
 
   const markAvailable = async (is4k = false) => {
@@ -123,7 +172,6 @@ const ManageSlideOver = ({
       </>
     );
   };
-
   return (
     <SlideOver
       show={show}
@@ -317,21 +365,54 @@ const ManageSlideOver = ({
                   </div>
                 )}
                 {data.mediaInfo?.serviceUrl && (
-                  <a
-                    href={data?.mediaInfo?.serviceUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block"
-                  >
-                    <Button buttonType="ghost" className="w-full">
-                      <ServerIcon />
-                      <span>
-                        {intl.formatMessage(messages.openarr, {
-                          arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
-                        })}
-                      </span>
-                    </Button>
-                  </a>
+                  <>
+                    <a
+                      href={data?.mediaInfo?.serviceUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block"
+                    >
+                      <Button buttonType="ghost" className="w-full">
+                        <ServerIcon />
+                        <span>
+                          {intl.formatMessage(messages.openarr, {
+                            arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                          })}
+                        </span>
+                      </Button>
+                    </a>
+                    {isDefaultService() && (
+                      <div>
+                        <ConfirmButton
+                          onClick={() => deleteMediaFile()}
+                          confirmText={intl.formatMessage(
+                            globalMessages.areyousure
+                          )}
+                          className="w-full"
+                        >
+                          <TrashIcon />
+                          <span>
+                            {intl.formatMessage(messages.deletearr, {
+                              arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                            })}
+                          </span>
+                        </ConfirmButton>
+                        <div className="mt-1 text-xs text-gray-400">
+                          {intl.formatMessage(
+                            messages.manageModalDeleteMediaWarning,
+                            {
+                              mediaType: intl.formatMessage(
+                                mediaType === 'movie'
+                                  ? messages.movie
+                                  : messages.tvshow
+                              ),
+                              arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                            }
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
@@ -443,21 +524,54 @@ const ManageSlideOver = ({
                   </div>
                 )}
                 {data?.mediaInfo?.serviceUrl4k && (
-                  <a
-                    href={data?.mediaInfo?.serviceUrl4k}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="block"
-                  >
-                    <Button buttonType="ghost" className="w-full">
-                      <ServerIcon />
-                      <span>
-                        {intl.formatMessage(messages.openarr4k, {
-                          arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
-                        })}
-                      </span>
-                    </Button>
-                  </a>
+                  <>
+                    <a
+                      href={data?.mediaInfo?.serviceUrl4k}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block"
+                    >
+                      <Button buttonType="ghost" className="w-full">
+                        <ServerIcon />
+                        <span>
+                          {intl.formatMessage(messages.openarr4k, {
+                            arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                          })}
+                        </span>
+                      </Button>
+                    </a>
+                    {isDefaultService() && (
+                      <div>
+                        <ConfirmButton
+                          onClick={() => deleteMediaFile()}
+                          confirmText={intl.formatMessage(
+                            globalMessages.areyousure
+                          )}
+                          className="w-full"
+                        >
+                          <TrashIcon />
+                          <span>
+                            {intl.formatMessage(messages.deletearr4k, {
+                              arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                            })}
+                          </span>
+                        </ConfirmButton>
+                        <div className="mt-1 text-xs text-gray-400">
+                          {intl.formatMessage(
+                            messages.manageModalDeleteMediaWarning,
+                            {
+                              mediaType: intl.formatMessage(
+                                mediaType === 'movie'
+                                  ? messages.movie
+                                  : messages.tvshow
+                              ),
+                              arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                            }
+                          )}
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
