@@ -1,6 +1,6 @@
 import Slider from '@app/components/Slider';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
-import { UserType, useUser } from '@app/hooks/useUser';
+import { useUser } from '@app/hooks/useUser';
 import { ArrowRightCircleIcon } from '@heroicons/react/24/outline';
 import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
 import Link from 'next/link';
@@ -22,12 +22,12 @@ const PlexWatchlistSlider = () => {
     totalPages: number;
     totalResults: number;
     results: WatchlistItem[];
-  }>(user?.userType === UserType.PLEX ? '/api/v1/discover/watchlist' : null, {
+  }>(user?.isPlexUser ? '/api/v1/discover/watchlist' : null, {
     revalidateOnMount: true,
   });
 
   if (
-    user?.userType !== UserType.PLEX ||
+    !user?.isPlexUser ||
     (watchlistItems &&
       watchlistItems.results.length === 0 &&
       !user?.settings?.watchlistSyncMovies &&

@@ -17,7 +17,7 @@ import cacheManager from '@server/lib/cache';
 import ImageProxy from '@server/lib/imageproxy';
 import { Permission } from '@server/lib/permissions';
 import { plexFullScanner } from '@server/lib/scanners/plex';
-import type { JobId, MainSettings } from '@server/lib/settings';
+import type { JobId, MainSettings, PlexSettings } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
@@ -85,10 +85,25 @@ settingsRoutes.post('/main/regenerate', (req, res, next) => {
   return res.status(200).json(filteredMainSettings(req.user, main));
 });
 
-settingsRoutes.get('/plex', (_req, res) => {
-  const settings = getSettings();
+type PlexSettingsResponse = PlexSettings & {
+  plexAvailable: boolean;
+};
 
-  res.status(200).json(settings.plex);
+settingsRoutes.get<never, PlexSettingsResponse>('/plex', async (_req, res) => {
+  const settings = getSettings();
+  const userRepository = getRepository(User);
+
+  const admin = await userRepository.findOneOrFail({
+    select: { id: true, plexToken: true },
+    where: { id: 1 },
+  });
+
+  const settingsResponse: PlexSettingsResponse = {
+    ...settings.plex,
+    plexAvailable: !!admin.plexToken,
+  };
+
+  res.status(200).json(settingsResponse);
 });
 
 settingsRoutes.post('/plex', async (req, res, next) => {
@@ -99,6 +114,12 @@ settingsRoutes.post('/plex', async (req, res, next) => {
       select: { id: true, plexToken: true },
       where: { id: 1 },
     });
+
+    if (!admin.plexToken) {
+      throw new Error(
+        'The administrator must have their account connected to Plex to be able to set up a Plex server.'
+      );
+    }
 
     Object.assign(settings.plex, req.body);
 
@@ -135,9 +156,12 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
       select: { id: true, plexToken: true },
       where: { id: 1 },
     });
-    const plexTvClient = admin.plexToken
-      ? new PlexTvAPI(admin.plexToken)
-      : null;
+
+    if (!admin.plexToken) {
+      throw new Error('Plex must be configured to retrieve servers.');
+    }
+
+    const plexTvClient = new PlexTvAPI(admin.plexToken);
     const devices = (await plexTvClient?.getDevices())?.filter((device) => {
       return device.provides.includes('server') && device.owned;
     });
@@ -174,7 +198,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
                 useSsl: connection.protocol === 'https',
               };
               const plexClient = new PlexAPI({
-                plexToken: admin.plexToken,
+                plexToken: admin.plexToken ?? '',
                 plexSettings: plexDeviceSettings,
                 timeout: 5000,
               });
@@ -205,7 +229,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
   }
 });
 
-settingsRoutes.get('/plex/library', async (req, res) => {
+settingsRoutes.get('/plex/library', async (req, res, next) => {
   const settings = getSettings();
 
   if (req.query.sync) {
@@ -214,6 +238,14 @@ settingsRoutes.get('/plex/library', async (req, res) => {
       select: { id: true, plexToken: true },
       where: { id: 1 },
     });
+
+    if (!admin.plexToken) {
+      return next({
+        status: '500',
+        message: 'Plex must be configured to retrieve libraries.',
+      });
+    }
+
     const plexapi = new PlexAPI({ plexToken: admin.plexToken });
 
     await plexapi.syncLibraries();
