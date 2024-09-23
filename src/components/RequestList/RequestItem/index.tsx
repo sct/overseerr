@@ -25,7 +25,7 @@ import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -62,6 +62,7 @@ const RequestItemError = ({
   const deleteRequest = async () => {
     await axios.delete(`/api/v1/media/${requestData?.media.id}`);
     revalidateList();
+    mutate('/api/v1/request/count');
   };
 
   const { plexUrl, plexUrl4k } = useDeepLinks({
@@ -311,6 +312,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
 
     if (response) {
       revalidate();
+      mutate('/api/v1/request/count');
     }
   };
 
@@ -318,6 +320,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
     await axios.delete(`/api/v1/request/${request.id}`);
 
     revalidateList();
+    mutate('/api/v1/request/count');
   };
 
   const retryRequest = async () => {
