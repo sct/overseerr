@@ -9,6 +9,7 @@ import {
 } from '@app/components/Discover/constants';
 import FilterSlideover from '@app/components/Discover/FilterSlideover';
 import useDiscover from '@app/hooks/useDiscover';
+import usePersistentFilters from '@app/hooks/usePersistentFilteres';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
 import Error from '@app/pages/_error';
 import { BarsArrowDownIcon, FunnelIcon } from '@heroicons/react/24/solid';
@@ -49,6 +50,7 @@ const DiscoverTv = () => {
   const [showFilters, setShowFilters] = useState(false);
   const preparedFilters = prepareFilterValues(router.query);
   const updateQueryParams = useUpdateQueryParams({});
+  usePersistentFilters('dtv-filter-settings');
 
   const {
     isLoadingInitialData,
