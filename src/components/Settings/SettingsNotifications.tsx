@@ -1,3 +1,4 @@
+import AppriseLogo from '@app/assets/extlogos/apprise.svg';
 import DiscordLogo from '@app/assets/extlogos/discord.svg';
 import GotifyLogo from '@app/assets/extlogos/gotify.svg';
 import LunaSeaLogo from '@app/assets/extlogos/lunasea.svg';
@@ -128,6 +129,17 @@ const SettingsNotifications = ({ children }: SettingsNotificationsProps) => {
       ),
       route: '/settings/notifications/telegram',
       regex: /^\/settings\/notifications\/telegram/,
+    },
+    {
+      text: 'Apprise',
+      content: (
+        <span className="flex items-center">
+          <AppriseLogo className="mr-2 h-4" />
+          Apprise
+        </span>
+      ),
+      route: '/settings/notifications/apprise',
+      regex: /^\/settings\/notifications\/apprise/,
     },
     {
       text: intl.formatMessage(messages.webhook),
