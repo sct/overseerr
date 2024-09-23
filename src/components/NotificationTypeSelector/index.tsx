@@ -159,17 +159,19 @@ const NotificationTypeSelector = ({
           { type: 'or' }
         ) ||
         // Cannot submit non-4K movie requests OR has Auto-Approve perms for non-4K movies
-        ((!hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
-          type: 'or',
-        }) ||
+        ((!settings.currentSettings.movieEnabled ||
+          !hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
+            type: 'or',
+          }) ||
           hasPermission(
             [Permission.AUTO_APPROVE, Permission.AUTO_APPROVE_MOVIE],
             { type: 'or' }
           )) &&
           // Cannot submit non-4K series requests OR has Auto-Approve perms for non-4K series
-          (!hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
-            type: 'or',
-          }) ||
+          (!settings.currentSettings.seriesEnabled ||
+            !hasPermission([Permission.REQUEST, Permission.REQUEST_TV], {
+              type: 'or',
+            }) ||
             hasPermission(
               [Permission.AUTO_APPROVE, Permission.AUTO_APPROVE_TV],
               { type: 'or' }

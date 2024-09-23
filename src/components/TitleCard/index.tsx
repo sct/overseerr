@@ -6,6 +6,7 @@ import RequestModal from '@app/components/RequestModal';
 import ErrorCard from '@app/components/TitleCard/ErrorCard';
 import Placeholder from '@app/components/TitleCard/Placeholder';
 import { useIsTouch } from '@app/hooks/useIsTouch';
+import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { withProperties } from '@app/utils/typeHelpers';
@@ -26,6 +27,7 @@ interface TitleCardProps {
   userScore?: number;
   mediaType: MediaType;
   status?: MediaStatus;
+  status4k?: MediaStatus;
   canExpand?: boolean;
   inProgress?: boolean;
 }
@@ -37,6 +39,7 @@ const TitleCard = ({
   year,
   title,
   status,
+  status4k,
   mediaType,
   inProgress = false,
   canExpand = false,
@@ -46,8 +49,11 @@ const TitleCard = ({
   const { hasPermission } = useUser();
   const [isUpdating, setIsUpdating] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(status);
+  const [currentStatus4k, setCurrentStatus4k] = useState(status4k);
   const [showDetail, setShowDetail] = useState(false);
   const [showRequestModal, setShowRequestModal] = useState(false);
+  const [showRequestModal4k, setShowRequestModal4k] = useState(false);
+  const settings = useSettings();
 
   // Just to get the year from the date
   if (year) {
@@ -56,7 +62,8 @@ const TitleCard = ({
 
   useEffect(() => {
     setCurrentStatus(status);
-  }, [status]);
+    setCurrentStatus4k(status4k);
+  }, [status, status4k]);
 
   const requestComplete = useCallback((newStatus: MediaStatus) => {
     setCurrentStatus(newStatus);
@@ -70,15 +77,44 @@ const TitleCard = ({
 
   const closeModal = useCallback(() => setShowRequestModal(false), []);
 
-  const showRequestButton = hasPermission(
-    [
-      Permission.REQUEST,
-      mediaType === 'movie' || mediaType === 'collection'
-        ? Permission.REQUEST_MOVIE
-        : Permission.REQUEST_TV,
-    ],
-    { type: 'or' }
-  );
+  const requestComplete4k = useCallback((newStatus: MediaStatus) => {
+    setCurrentStatus4k(newStatus);
+    setShowRequestModal4k(false);
+  }, []);
+
+  const closeModal4k = useCallback(() => setShowRequestModal4k(false), []);
+
+  const showRequestButton =
+    hasPermission(
+      [
+        Permission.REQUEST,
+        mediaType === 'movie' || mediaType === 'collection'
+          ? Permission.REQUEST_MOVIE
+          : Permission.REQUEST_TV,
+      ],
+      { type: 'or' }
+    ) &&
+    ((settings.currentSettings.movieEnabled && mediaType === 'movie') ||
+      (settings.currentSettings.seriesEnabled && mediaType === 'tv'));
+
+  const showRequestButton4k =
+    hasPermission(
+      [
+        Permission.REQUEST_4K,
+        mediaType === 'movie' || mediaType === 'collection'
+          ? Permission.REQUEST_4K_MOVIE
+          : Permission.REQUEST_4K_TV,
+      ],
+      { type: 'or' }
+    ) &&
+    ((settings.currentSettings.movie4kEnabled && mediaType === 'movie') ||
+      (settings.currentSettings.series4kEnabled && mediaType === 'tv'));
+
+  const isRequestable =
+    (showRequestButton &&
+      (!currentStatus || currentStatus === MediaStatus.UNKNOWN)) ||
+    (showRequestButton4k &&
+      (!currentStatus4k || currentStatus4k === MediaStatus.UNKNOWN));
 
   return (
     <div
@@ -98,6 +134,21 @@ const TitleCard = ({
         onComplete={requestComplete}
         onUpdating={requestUpdating}
         onCancel={closeModal}
+      />
+      <RequestModal
+        tmdbId={id}
+        show={showRequestModal4k}
+        type={
+          mediaType === 'movie'
+            ? 'movie'
+            : mediaType === 'collection'
+            ? 'collection'
+            : 'tv'
+        }
+        onComplete={requestComplete4k}
+        onUpdating={requestUpdating}
+        onCancel={closeModal4k}
+        is4k
       />
       <div
         className={`relative transform-gpu cursor-default overflow-hidden rounded-xl bg-gray-800 bg-cover outline-none ring-1 transition duration-300 ${
@@ -151,15 +202,24 @@ const TitleCard = ({
                   : intl.formatMessage(globalMessages.tvshow)}
               </div>
             </div>
-            {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (
-              <div className="pointer-events-none z-40 flex items-center">
+            <div className="pointer-events-none z-40 flex items-center">
+              {currentStatus && currentStatus !== MediaStatus.UNKNOWN ? (
                 <StatusBadgeMini
                   status={currentStatus}
                   inProgress={inProgress}
                   shrink
                 />
-              </div>
-            )}
+              ) : (
+                currentStatus4k &&
+                currentStatus4k !== MediaStatus.UNKNOWN && (
+                  <StatusBadgeMini
+                    status={currentStatus4k}
+                    inProgress={inProgress}
+                    shrink
+                  />
+                )
+              )}
+            </div>
           </div>
           <Transition
             as={Fragment}
@@ -178,7 +238,9 @@ const TitleCard = ({
 
           <Transition
             as={Fragment}
-            show={!image || showDetail || showRequestModal}
+            show={
+              !image || showDetail || showRequestModal || showRequestModal4k
+            }
             enter="transition-opacity"
             enterFrom="opacity-0"
             enterTo="opacity-100"
@@ -206,10 +268,7 @@ const TitleCard = ({
                   <div className="flex h-full w-full items-end">
                     <div
                       className={`px-2 text-white ${
-                        !showRequestButton ||
-                        (currentStatus && currentStatus !== MediaStatus.UNKNOWN)
-                          ? 'pb-2'
-                          : 'pb-11'
+                        !isRequestable ? 'pb-2' : 'pb-11'
                       }`}
                     >
                       {year && (
@@ -232,12 +291,7 @@ const TitleCard = ({
                       <div
                         className="whitespace-normal text-xs"
                         style={{
-                          WebkitLineClamp:
-                            !showRequestButton ||
-                            (currentStatus &&
-                              currentStatus !== MediaStatus.UNKNOWN)
-                              ? 5
-                              : 3,
+                          WebkitLineClamp: !isRequestable ? 5 : 3,
                           display: '-webkit-box',
                           overflow: 'hidden',
                           WebkitBoxOrient: 'vertical',
@@ -253,20 +307,39 @@ const TitleCard = ({
 
               <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-2">
                 {showRequestButton &&
-                  (!currentStatus || currentStatus === MediaStatus.UNKNOWN) && (
+                (!currentStatus || currentStatus === MediaStatus.UNKNOWN) ? (
+                  <Button
+                    buttonType="primary"
+                    buttonSize="sm"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowRequestModal(true);
+                    }}
+                    className="h-7 w-full"
+                  >
+                    <ArrowDownTrayIcon />
+                    <span>{intl.formatMessage(globalMessages.request)}</span>
+                  </Button>
+                ) : (
+                  showRequestButton4k &&
+                  (!currentStatus4k ||
+                    currentStatus4k === MediaStatus.UNKNOWN) && (
                     <Button
                       buttonType="primary"
                       buttonSize="sm"
                       onClick={(e) => {
                         e.preventDefault();
-                        setShowRequestModal(true);
+                        setShowRequestModal4k(true);
                       }}
                       className="h-7 w-full"
                     >
                       <ArrowDownTrayIcon />
-                      <span>{intl.formatMessage(globalMessages.request)}</span>
+                      <span>
+                        {intl.formatMessage(globalMessages.request4k)}
+                      </span>
                     </Button>
-                  )}
+                  )
+                )}
               </div>
             </div>
           </Transition>
