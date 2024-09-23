@@ -35,6 +35,7 @@ const messages = defineMessages({
   decline: 'Decline Request',
   edit: 'Edit Request',
   delete: 'Delete Request',
+  specials: 'Specials',
 });
 
 interface RequestBlockProps {
@@ -243,7 +244,11 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
                   key={`season-${season.id}`}
                   className="mb-1 mr-2 inline-block"
                 >
-                  <Badge>{season.seasonNumber}</Badge>
+                  <Badge>
+                    {season.seasonNumber == 0
+                      ? intl.formatMessage(messages.specials)
+                      : season.seasonNumber}
+                  </Badge>
                 </span>
               ))}
             </div>
