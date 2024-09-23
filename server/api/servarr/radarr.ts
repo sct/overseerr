@@ -14,6 +14,20 @@ export interface RadarrMovieOptions {
   searchNow?: boolean;
 }
 
+export interface RadarrExclusionList {
+  page: number;
+  pageSize: number;
+  sortKey: string;
+  sortDirection: string;
+  totalRecords: number;
+  records: {
+    tmdbId: number;
+    movieTitle: string;
+    movieYear: number;
+    id: number;
+  }[];
+}
+
 export interface RadarrMovie {
   id: number;
   title: string;
@@ -78,9 +92,39 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
     }
   }
 
+  private async checkMovieExclusionsByTmdbId(id: number): Promise<boolean> {
+    try {
+      const response = await this.axios.get<RadarrExclusionList>(
+        '/exclusions/paged',
+        {
+          params: {
+            page: 1,
+            pageSize: -1,
+          },
+        }
+      );
+      return response.data.records.some((record) => record.tmdbId === id);
+    } catch (e) {
+      logger.error('Error retrieving exclusions by TMDB ID', {
+        label: 'Radarr API',
+        errorMessage: e.message,
+        tmdbId: id,
+      });
+      throw new Error('Radarr exclusion list got error');
+    }
+  }
+
   public addMovie = async (
     options: RadarrMovieOptions
   ): Promise<RadarrMovie> => {
+    if (await this.checkMovieExclusionsByTmdbId(options.tmdbId)) {
+      logger.info('Movie is excluded from Radarr', {
+        label: 'Radarr',
+        tmdbId: options.tmdbId,
+      });
+      throw new Error('Movie is excluded from Radarr');
+    }
+
     try {
       const movie = await this.getMovieByTmdbId(options.tmdbId);
 

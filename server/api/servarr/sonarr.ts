@@ -87,6 +87,19 @@ export interface SonarrSeries {
   };
 }
 
+export interface SonarrExclusionList {
+  page: number;
+  pageSize: number;
+  sortKey: string;
+  sortDirection: string;
+  totalRecords: number;
+  records: {
+    tvdbId: number;
+    title: string;
+    id: number;
+  }[];
+}
+
 export interface AddSeriesOptions {
   tvdbid: number;
   title: string;
@@ -181,7 +194,37 @@ class SonarrAPI extends ServarrBase<{
     }
   }
 
+  private async checkSeriesExclusionsByTvdbId(id: number): Promise<boolean> {
+    try {
+      const response = await this.axios.get<SonarrExclusionList>(
+        '/importlistexclusion/paged',
+        {
+          params: {
+            page: 1,
+            pageSize: -1,
+          },
+        }
+      );
+
+      return response.data.records.some((record) => record.tvdbId === id);
+    } catch (e) {
+      logger.error('Error retrieving importlistexclusion by tvdb ID', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        tvdbId: id,
+      });
+      throw new Error('Sonarr exclusion list got error');
+    }
+  }
+
   public async addSeries(options: AddSeriesOptions): Promise<SonarrSeries> {
+    if (await this.checkSeriesExclusionsByTvdbId(options.tvdbid)) {
+      logger.info('Series is excluded from Sonarr', {
+        label: 'Sonarr',
+        tvdbId: options.tvdbid,
+      });
+      throw new Error('Series is excluded from Sonarr');
+    }
     try {
       const series = await this.getSeriesByTvdbId(options.tvdbid);
 
