@@ -2,6 +2,7 @@ import type { PlexDevice } from '@server/interfaces/api/plexInterfaces';
 import cacheManager from '@server/lib/cache';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import { randomUUID } from 'node:crypto';
 import xml2js from 'xml2js';
 import ExternalAPI from './externalapi';
 
@@ -376,6 +377,24 @@ class PlexTvAPI extends ExternalAPI {
         totalSize: 0,
         items: [],
       };
+    }
+  }
+
+  public async pingToken() {
+    try {
+      const response = await this.axios.get('/api/v2/ping', {
+        headers: {
+          'X-Plex-Client-Identifier': randomUUID(),
+        },
+      });
+      if (!response?.data?.pong) {
+        throw new Error('No pong response');
+      }
+    } catch (e) {
+      logger.error('Failed to ping token', {
+        label: 'Plex Refresh Token',
+        errorMessage: e.message,
+      });
     }
   }
 }
