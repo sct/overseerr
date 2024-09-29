@@ -62,6 +62,7 @@ const SearchInput = () => {
             onKeyUp={(e) => {
               if (e.key === 'Enter') {
                 e.preventDefault();
+                videoSearch();
               }
             }}
           />
