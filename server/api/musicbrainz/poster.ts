@@ -18,10 +18,8 @@ async function getPosterFromMB(
     try {
       const artist = await (lidarr as LidarrAPI).getArtist(element.id);
       if (artist.images.find((i) => i.coverType === 'poster')?.url) {
-        return LidarrAPI.buildUrl(
-          lidarrSettings,
-          artist.images.find((i) => i.coverType === 'poster')?.url
-        );
+        // Transform the URL to a proxy link to this server with the /lidarr-proxy/ prefix
+        return `/imageproxy/lidarr?artistId=${artist.id}`;
       } else {
         return undefined;
       }

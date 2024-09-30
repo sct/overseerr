@@ -222,6 +222,16 @@ class LidarrAPI extends ServarrBase<{ musicId: number }> {
     }
   }
 
+  public getArtistPoster = async (id: number) => {
+    const image = await this.axios.get(
+      `/mediacover/artist/${id}/poster-500.jpg`,
+      {
+        responseType: 'stream',
+      }
+    );
+
+    return image.data;
+  };
   public getAlbums = async (): Promise<LidarrAlbum[]> => {
     try {
       const response = await this.axios.get<LidarrAlbum[]>('/album');

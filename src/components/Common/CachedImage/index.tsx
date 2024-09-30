@@ -21,7 +21,9 @@ const CachedImage = ({ src, ...props }: ImageProps) => {
     const parsedUrl = new URL(imageUrl);
 
     if (parsedUrl.host === 'image.tmdb.org' && currentSettings.cacheImages) {
-      setImageUrl(imageUrl.replace('https://image.tmdb.org', '/imageproxy'));
+      setImageUrl(
+        imageUrl.replace('https://image.tmdb.org', '/imageproxy/tmdb')
+      );
     }
   }
 
