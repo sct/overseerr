@@ -406,7 +406,6 @@ export const WatchProviderSelector = ({
                         src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
                         alt=""
                         className="rounded-lg"
-                        fill
                       />
                     </div>
                     {isActive && (
@@ -454,7 +453,6 @@ export const WatchProviderSelector = ({
                           src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
                           alt=""
                           className="rounded-lg"
-                          fill
                         />
                       </div>
                       {isActive && (
