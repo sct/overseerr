@@ -5,6 +5,7 @@ import DownloadBlock from '@app/components/DownloadBlock';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
+import type { SecondaryType } from '@server/constants/media';
 import { MediaStatus } from '@server/constants/media';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
 import { defineMessages, useIntl } from 'react-intl';
@@ -26,7 +27,9 @@ interface StatusBadgeProps {
   plexUrl?: string;
   serviceUrl?: string;
   tmdbId?: number;
-  mediaType?: 'movie' | 'tv';
+  secondaryType?: SecondaryType;
+  mbId?: string;
+  mediaType?: 'movie' | 'tv' | 'music';
   title?: string | string[];
 }
 
@@ -38,6 +41,8 @@ const StatusBadge = ({
   plexUrl,
   serviceUrl,
   tmdbId,
+  mbId,
+  secondaryType,
   mediaType,
   title,
 }: StatusBadgeProps) => {
@@ -52,50 +57,63 @@ const StatusBadge = ({
     return Math.round(((media?.size - media?.sizeLeft) / media?.size) * 100);
   };
 
-  if (
-    mediaType &&
-    plexUrl &&
-    hasPermission(
-      is4k
-        ? [
-            Permission.REQUEST_4K,
+  if (mediaType && plexUrl) {
+    if (mediaType === 'music') {
+      mediaLink = plexUrl;
+      mediaLinkDescription = intl.formatMessage(messages.playonplex);
+    } else if (
+      hasPermission(
+        is4k
+          ? [
+              Permission.REQUEST_4K,
+              mediaType === 'movie'
+                ? Permission.REQUEST_4K_MOVIE
+                : Permission.REQUEST_4K_TV,
+            ]
+          : [
+              Permission.REQUEST,
+              mediaType === 'movie'
+                ? Permission.REQUEST_MOVIE
+                : Permission.REQUEST_TV,
+            ],
+        {
+          type: 'or',
+        }
+      ) &&
+      (!is4k ||
+        (mediaType === 'movie'
+          ? settings.currentSettings.movie4kEnabled
+          : settings.currentSettings.series4kEnabled))
+    ) {
+      mediaLink = plexUrl;
+      mediaLinkDescription = intl.formatMessage(messages.playonplex);
+    }
+    if (hasPermission(Permission.MANAGE_REQUESTS)) {
+      if ((mediaType === 'movie' || mediaType === 'tv') && tmdbId) {
+        mediaLink = `/${mediaType}/${tmdbId}?manage=1`;
+        mediaLinkDescription = intl.formatMessage(messages.managemedia, {
+          mediaType: intl.formatMessage(
+            mediaType === 'movie' ? globalMessages.movie : globalMessages.tvshow
+          ),
+        });
+      } else if (mediaType === 'music' && mbId && secondaryType) {
+        mediaLink = `/music/${secondaryType}/${mbId}?manage=1`;
+        mediaLinkDescription = intl.formatMessage(messages.managemedia, {
+          mediaType: intl.formatMessage(globalMessages.music),
+        });
+      } else if (hasPermission(Permission.ADMIN) && serviceUrl) {
+        mediaLink = serviceUrl;
+        mediaLinkDescription = intl.formatMessage(messages.openinarr, {
+          arr:
             mediaType === 'movie'
-              ? Permission.REQUEST_4K_MOVIE
-              : Permission.REQUEST_4K_TV,
-          ]
-        : [
-            Permission.REQUEST,
-            mediaType === 'movie'
-              ? Permission.REQUEST_MOVIE
-              : Permission.REQUEST_TV,
-          ],
-      {
-        type: 'or',
+              ? 'Radarr'
+              : mediaType === 'tv'
+              ? 'Sonarr'
+              : 'Lidarr',
+        });
       }
-    ) &&
-    (!is4k ||
-      (mediaType === 'movie'
-        ? settings.currentSettings.movie4kEnabled
-        : settings.currentSettings.series4kEnabled))
-  ) {
-    mediaLink = plexUrl;
-    mediaLinkDescription = intl.formatMessage(messages.playonplex);
-  } else if (hasPermission(Permission.MANAGE_REQUESTS)) {
-    if (mediaType && tmdbId) {
-      mediaLink = `/${mediaType}/${tmdbId}?manage=1`;
-      mediaLinkDescription = intl.formatMessage(messages.managemedia, {
-        mediaType: intl.formatMessage(
-          mediaType === 'movie' ? globalMessages.movie : globalMessages.tvshow
-        ),
-      });
-    } else if (hasPermission(Permission.ADMIN) && serviceUrl) {
-      mediaLink = serviceUrl;
-      mediaLinkDescription = intl.formatMessage(messages.openinarr, {
-        arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
-      });
     }
   }
-
   const tooltipContent = (
     <ul>
       {downloadItem.map((status, index) => (

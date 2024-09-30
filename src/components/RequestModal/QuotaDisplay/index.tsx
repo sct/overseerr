@@ -1,5 +1,6 @@
 import ProgressCircle from '@app/components/Common/ProgressCircle';
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
+import type { SecondaryType } from '@server/constants/media';
 import type { QuotaStatus } from '@server/interfaces/api/userInterfaces';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -29,7 +30,8 @@ const messages = defineMessages({
 
 interface QuotaDisplayProps {
   quota?: QuotaStatus;
-  mediaType: 'movie' | 'tv';
+  mediaType: 'movie' | 'tv' | 'music';
+  secondaryType?: SecondaryType;
   userOverride?: number | null;
   remaining?: number;
   overLimit?: number;
@@ -131,10 +133,9 @@ const QuotaDisplay = ({
                 ProfileLink: (msg: React.ReactNode) => (
                   <Link
                     href={userOverride ? `/users/${userOverride}` : '/profile'}
+                    className="text-white transition duration-300 hover:underline"
                   >
-                    <a className="text-white transition duration-300 hover:underline">
-                      {msg}
-                    </a>
+                    {msg}
                   </Link>
                 ),
               }

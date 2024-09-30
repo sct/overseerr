@@ -8,6 +8,7 @@ import {
   EllipsisHorizontalIcon,
   ExclamationTriangleIcon,
   FilmIcon,
+  MusicalNoteIcon,
   SparklesIcon,
   TvIcon,
   UsersIcon,
@@ -17,6 +18,7 @@ import {
   CogIcon as FilledCogIcon,
   ExclamationTriangleIcon as FilledExclamationTriangleIcon,
   FilmIcon as FilledFilmIcon,
+  MusicalNoteIcon as FilledMusicalNoteIcon,
   SparklesIcon as FilledSparklesIcon,
   TvIcon as FilledTvIcon,
   UsersIcon as FilledUsersIcon,
@@ -76,6 +78,13 @@ const MobileMenu = () => {
       svgIcon: <TvIcon className="h-6 w-6" />,
       svgIconSelected: <FilledTvIcon className="h-6 w-6" />,
       activeRegExp: /^\/discover\/tv$/,
+    },
+    {
+      href: '/discover/music',
+      content: intl.formatMessage(menuMessages.browsemusic),
+      svgIcon: <MusicalNoteIcon className="h-6 w-6" />,
+      svgIconSelected: <FilledMusicalNoteIcon className="h-6 w-6" />,
+      activeRegExp: /^\/discover\/music$/,
     },
     {
       href: '/requests',
@@ -142,25 +151,25 @@ const MobileMenu = () => {
         {filteredLinks.map((link) => {
           const isActive = router.pathname.match(link.activeRegExp);
           return (
-            <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
-              <a
-                className={`flex items-center space-x-2 ${
-                  isActive ? 'text-indigo-500' : ''
-                }`}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    setIsOpen(false);
-                  }
-                }}
-                onClick={() => setIsOpen(false)}
-                role="button"
-                tabIndex={0}
-              >
-                {cloneElement(isActive ? link.svgIconSelected : link.svgIcon, {
-                  className: 'h-5 w-5',
-                })}
-                <span>{link.content}</span>
-              </a>
+            <Link
+              key={`mobile-menu-link-${link.href}`}
+              href={link.href}
+              className={`flex items-center space-x-2 ${
+                isActive ? 'text-indigo-500' : ''
+              }`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setIsOpen(false);
+                }
+              }}
+              onClick={() => setIsOpen(false)}
+              role="button"
+              tabIndex={0}
+            >
+              {cloneElement(isActive ? link.svgIconSelected : link.svgIcon, {
+                className: 'h-5 w-5',
+              })}
+              <span>{link.content}</span>
             </Link>
           );
         })}
@@ -173,19 +182,19 @@ const MobileMenu = () => {
               const isActive =
                 router.pathname.match(link.activeRegExp) && !isOpen;
               return (
-                <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
-                  <a
-                    className={`flex flex-col items-center space-y-1 ${
-                      isActive ? 'text-indigo-500' : ''
-                    }`}
-                  >
-                    {cloneElement(
-                      isActive ? link.svgIconSelected : link.svgIcon,
-                      {
-                        className: 'h-6 w-6',
-                      }
-                    )}
-                  </a>
+                <Link
+                  key={`mobile-menu-link-${link.href}`}
+                  href={link.href}
+                  className={`flex flex-col items-center space-y-1 ${
+                    isActive ? 'text-indigo-500' : ''
+                  }`}
+                >
+                  {cloneElement(
+                    isActive ? link.svgIconSelected : link.svgIcon,
+                    {
+                      className: 'h-6 w-6',
+                    }
+                  )}
                 </Link>
               );
             })}

@@ -19,7 +19,7 @@ collectionRoutes.get<{ id: string }>('/:id', async (req, res, next) => {
       collection.parts.map((part) => part.id)
     );
 
-    return res.status(200).json(mapCollection(collection, media));
+    return res.status(200).json(await mapCollection(collection, media));
   } catch (e) {
     logger.debug('Something went wrong retrieving collection', {
       label: 'API',

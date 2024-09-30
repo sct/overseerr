@@ -111,10 +111,14 @@ interface MetadataResponse {
   MediaContainer: {
     Metadata: {
       ratingKey: string;
-      type: 'movie' | 'show';
+      type: 'movie' | 'show' | 'season' | 'episode' | 'artist' | 'album';
       title: string;
       Guid: {
-        id: `imdb://tt${number}` | `tmdb://${number}` | `tvdb://${number}`;
+        id:
+          | `imdb://tt${number}`
+          | `tmdb://${number}`
+          | `tvdb://${number}`
+          | `mbid://${string}`;
       }[];
     }[];
   };
@@ -122,9 +126,10 @@ interface MetadataResponse {
 
 export interface PlexWatchlistItem {
   ratingKey: string;
-  tmdbId: number;
+  tmdbId?: number;
   tvdbId?: number;
-  type: 'movie' | 'show';
+  musicBrainzId?: string;
+  type: 'movie' | 'show' | 'season' | 'episode' | 'artist' | 'album';
   title: string;
 }
 
@@ -327,6 +332,9 @@ class PlexTvAPI extends ExternalAPI {
             const tvdbString = metadata.Guid.find((guid) =>
               guid.id.startsWith('tvdb')
             );
+            const musicBrainzString = metadata.Guid.find((guid) =>
+              guid.id.startsWith('mbid')
+            );
 
             return {
               ratingKey: metadata.ratingKey,
@@ -336,6 +344,9 @@ class PlexTvAPI extends ExternalAPI {
               tvdbId: tvdbString
                 ? Number(tvdbString.id.split('//')[1])
                 : undefined,
+              musicBrainzId: musicBrainzString
+                ? musicBrainzString.id.split('//')[1]
+                : undefined,
               title: metadata.title,
               type: metadata.type,
             };
@@ -343,7 +354,11 @@ class PlexTvAPI extends ExternalAPI {
         )
       );
 
-      const filteredList = watchlistDetails.filter((detail) => detail.tmdbId);
+      const filteredList = watchlistDetails.filter((detail) =>
+        ['movie', 'show'].includes(detail.type)
+          ? detail.tmdbId
+          : detail.musicBrainzId
+      );
 
       return {
         offset,

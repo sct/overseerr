@@ -1,3 +1,4 @@
+import MusicBrainz from '@server/api/musicbrainz';
 import PlexTvAPI from '@server/api/plextv';
 import type { SortOptions } from '@server/api/themoviedb';
 import TheMovieDb from '@server/api/themoviedb';
@@ -14,9 +15,11 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { mapProductionCompany } from '@server/models/Movie';
 import {
+  mapArtistResult,
   mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
+  mapReleaseResult,
   mapTvResult,
 } from '@server/models/Search';
 import { mapNetwork } from '@server/models/Tv';
@@ -124,12 +127,14 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       totalPages: data.total_pages,
       totalResults: data.total_results,
       keywords: keywordData,
-      results: data.results.map((result) =>
-        mapMovieResult(
-          result,
-          media.find(
-            (req) =>
-              req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+      results: await Promise.all(
+        data.results.map((result) =>
+          mapMovieResult(
+            result,
+            media.find(
+              (req) =>
+                req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+            )
           )
         )
       ),
@@ -177,12 +182,14 @@ discoverRoutes.get<{ language: string }>(
         totalPages: data.total_pages,
         totalResults: data.total_results,
         language,
-        results: data.results.map((result) =>
-          mapMovieResult(
-            result,
-            media.find(
-              (req) =>
-                req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+        results: await Promise.all(
+          data.results.map((result) =>
+            mapMovieResult(
+              result,
+              media.find(
+                (req) =>
+                  req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+              )
             )
           )
         ),
@@ -234,12 +241,14 @@ discoverRoutes.get<{ genreId: string }>(
         totalPages: data.total_pages,
         totalResults: data.total_results,
         genre,
-        results: data.results.map((result) =>
-          mapMovieResult(
-            result,
-            media.find(
-              (req) =>
-                req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+        results: await Promise.all(
+          data.results.map((result) =>
+            mapMovieResult(
+              result,
+              media.find(
+                (req) =>
+                  req.tmdbId === result.id && req.mediaType === MediaType.MOVIE
+              )
             )
           )
         ),
@@ -281,12 +290,14 @@ discoverRoutes.get<{ studioId: string }>(
         totalPages: data.total_pages,
         totalResults: data.total_results,
         studio: mapProductionCompany(studio),
-        results: data.results.map((result) =>
-          mapMovieResult(
-            result,
-            media.find(
-              (med) =>
-                med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+        results: await Promise.all(
+          data.results.map((result) =>
+            mapMovieResult(
+              result,
+              media.find(
+                (med) =>
+                  med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+              )
             )
           )
         ),
@@ -329,12 +340,14 @@ discoverRoutes.get('/movies/upcoming', async (req, res, next) => {
       page: data.page,
       totalPages: data.total_pages,
       totalResults: data.total_results,
-      results: data.results.map((result) =>
-        mapMovieResult(
-          result,
-          media.find(
-            (med) =>
-              med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+      results: await Promise.all(
+        data.results.map((result) =>
+          mapMovieResult(
+            result,
+            media.find(
+              (med) =>
+                med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+            )
           )
         )
       ),
@@ -401,11 +414,14 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       totalPages: data.total_pages,
       totalResults: data.total_results,
       keywords: keywordData,
-      results: data.results.map((result) =>
-        mapTvResult(
-          result,
-          media.find(
-            (med) => med.tmdbId === result.id && med.mediaType === MediaType.TV
+      results: await Promise.all(
+        data.results.map((result) =>
+          mapTvResult(
+            result,
+            media.find(
+              (med) =>
+                med.tmdbId === result.id && med.mediaType === MediaType.TV
+            )
           )
         )
       ),
@@ -453,12 +469,14 @@ discoverRoutes.get<{ language: string }>(
         totalPages: data.total_pages,
         totalResults: data.total_results,
         language,
-        results: data.results.map((result) =>
-          mapTvResult(
-            result,
-            media.find(
-              (med) =>
-                med.tmdbId === result.id && med.mediaType === MediaType.TV
+        results: await Promise.all(
+          data.results.map((result) =>
+            mapTvResult(
+              result,
+              media.find(
+                (med) =>
+                  med.tmdbId === result.id && med.mediaType === MediaType.TV
+              )
             )
           )
         ),
@@ -510,12 +528,14 @@ discoverRoutes.get<{ genreId: string }>(
         totalPages: data.total_pages,
         totalResults: data.total_results,
         genre,
-        results: data.results.map((result) =>
-          mapTvResult(
-            result,
-            media.find(
-              (med) =>
-                med.tmdbId === result.id && med.mediaType === MediaType.TV
+        results: await Promise.all(
+          data.results.map((result) =>
+            mapTvResult(
+              result,
+              media.find(
+                (med) =>
+                  med.tmdbId === result.id && med.mediaType === MediaType.TV
+              )
             )
           )
         ),
@@ -557,12 +577,14 @@ discoverRoutes.get<{ networkId: string }>(
         totalPages: data.total_pages,
         totalResults: data.total_results,
         network: mapNetwork(network),
-        results: data.results.map((result) =>
-          mapTvResult(
-            result,
-            media.find(
-              (med) =>
-                med.tmdbId === result.id && med.mediaType === MediaType.TV
+        results: await Promise.all(
+          data.results.map((result) =>
+            mapTvResult(
+              result,
+              media.find(
+                (med) =>
+                  med.tmdbId === result.id && med.mediaType === MediaType.TV
+              )
             )
           )
         ),
@@ -605,11 +627,14 @@ discoverRoutes.get('/tv/upcoming', async (req, res, next) => {
       page: data.page,
       totalPages: data.total_pages,
       totalResults: data.total_results,
-      results: data.results.map((result) =>
-        mapTvResult(
-          result,
-          media.find(
-            (med) => med.tmdbId === result.id && med.mediaType === MediaType.TV
+      results: await Promise.all(
+        data.results.map((result) =>
+          mapTvResult(
+            result,
+            media.find(
+              (med) =>
+                med.tmdbId === result.id && med.mediaType === MediaType.TV
+            )
           )
         )
       ),
@@ -634,35 +659,36 @@ discoverRoutes.get('/trending', async (req, res, next) => {
       page: Number(req.query.page),
       language: (req.query.language as string) ?? req.locale,
     });
-
     const media = await Media.getRelatedMedia(
       data.results.map((result) => result.id)
     );
-
     return res.status(200).json({
       page: data.page,
       totalPages: data.total_pages,
       totalResults: data.total_results,
-      results: data.results.map((result) =>
-        isMovie(result)
-          ? mapMovieResult(
-              result,
-              media.find(
-                (med) =>
-                  med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+      results: await Promise.all(
+        data.results.map((result) => {
+          return isMovie(result)
+            ? mapMovieResult(
+                result,
+                media.find(
+                  (med) =>
+                    med.tmdbId === result.id &&
+                    med.mediaType === MediaType.MOVIE
+                )
               )
-            )
-          : isPerson(result)
-          ? mapPersonResult(result)
-          : isCollection(result)
-          ? mapCollectionResult(result)
-          : mapTvResult(
-              result,
-              media.find(
-                (med) =>
-                  med.tmdbId === result.id && med.mediaType === MediaType.TV
-              )
-            )
+            : isPerson(result)
+            ? mapPersonResult(result)
+            : isCollection(result)
+            ? mapCollectionResult(result)
+            : mapTvResult(
+                result,
+                media.find(
+                  (med) =>
+                    med.tmdbId === result.id && med.mediaType === MediaType.TV
+                )
+              );
+        })
       ),
     });
   } catch (e) {
@@ -697,12 +723,14 @@ discoverRoutes.get<{ keywordId: string }>(
         page: data.page,
         totalPages: data.total_pages,
         totalResults: data.total_results,
-        results: data.results.map((result) =>
-          mapMovieResult(
-            result,
-            media.find(
-              (med) =>
-                med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+        results: await Promise.all(
+          data.results.map((result) =>
+            mapMovieResult(
+              result,
+              media.find(
+                (med) =>
+                  med.tmdbId === result.id && med.mediaType === MediaType.MOVIE
+              )
             )
           )
         ),
@@ -845,9 +873,68 @@ discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
         title: item.title,
         mediaType: item.type === 'show' ? 'tv' : 'movie',
         tmdbId: item.tmdbId,
+        musicBrainzId: item.musicBrainzId,
       })),
     });
   }
 );
+
+discoverRoutes.get('/music', async (req, res, next) => {
+  const mb = new MusicBrainz();
+  try {
+    const query = QueryFilterOptions.parse(req.query);
+    const results = await mb.searchMulti({
+      query: '',
+      tags: query.keywords ? decodeURIComponent(query.keywords).split(',') : [],
+      limit: 20,
+      page: Number(query.page),
+    });
+    const mbIds = results.releaseResults
+      .map((result) => result.id)
+      .concat(results.artistResults.map((result) => result.id));
+    const media = await Media.getRelatedMedia([], mbIds);
+    const resultsWithMedia = [
+      ...(await Promise.all(
+        results.artistResults.map((result) => {
+          return mapArtistResult(
+            result,
+            media.find(
+              (med) =>
+                med.mbId === result.id &&
+                med.mediaType === MediaType.MUSIC &&
+                med.secondaryType === 'artist'
+            )
+          );
+        })
+      )),
+      ...(await Promise.all(
+        results.releaseResults.map((result) => {
+          return mapReleaseResult(
+            result,
+            media.find(
+              (med) =>
+                med.mbId === result.id &&
+                med.mediaType === MediaType.MUSIC &&
+                med.secondaryType === 'release'
+            )
+          );
+        })
+      )),
+    ];
+    return res.status(200).json({
+      page: query.page,
+      results: resultsWithMedia,
+    });
+  } catch (e) {
+    logger.debug('Something went wrong retrieving release groups', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve release groups.',
+    });
+  }
+});
 
 export default discoverRoutes;

@@ -13,6 +13,7 @@ interface SearchObject {
   searchOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
   setSearchValue: Dispatch<SetStateAction<string>>;
+  setLastRoute: Dispatch<SetStateAction<Nullable<Url>>>;
   clear: () => void;
 }
 
@@ -32,8 +33,11 @@ const useSearchInput = (): SearchObject => {
    * in a new route. If we are, then we only replace the history.
    */
   useEffect(() => {
-    if (debouncedValue !== '' && searchOpen) {
-      if (router.pathname.startsWith('/search')) {
+    if (
+      router.pathname.startsWith('/search') ||
+      router.pathname.startsWith('/music-search')
+    ) {
+      if (debouncedValue !== '' && searchOpen) {
         router.replace({
           pathname: router.pathname,
           query: {
@@ -41,14 +45,6 @@ const useSearchInput = (): SearchObject => {
             query: debouncedValue,
           },
         });
-      } else {
-        setLastRoute(router.asPath);
-        router
-          .push({
-            pathname: '/search',
-            query: { query: debouncedValue },
-          })
-          .then(() => window.scrollTo(0, 0));
       }
     }
   }, [debouncedValue]);
@@ -62,7 +58,8 @@ const useSearchInput = (): SearchObject => {
   useEffect(() => {
     if (
       searchValue === '' &&
-      router.pathname.startsWith('/search') &&
+      (router.pathname.startsWith('/search') ||
+        router.pathname.startsWith('/music-search')) &&
       !searchOpen
     ) {
       if (lastRoute) {
@@ -89,19 +86,22 @@ const useSearchInput = (): SearchObject => {
    * is on /search
    */
   useEffect(() => {
-    if (router.query.query !== debouncedValue) {
-      setSearchValue(
-        router.query.query
-          ? decodeURIComponent(router.query.query as string)
-          : ''
-      );
-
-      if (!router.pathname.startsWith('/search') && !router.query.query) {
-        setIsOpen(false);
+    if (
+      !(
+        router.pathname.startsWith('/search') ||
+        router.pathname.startsWith('/music-search')
+      ) &&
+      !router.query.query
+    ) {
+      setIsOpen(false);
+    } else {
+      if (router.query.query !== debouncedValue) {
+        setSearchValue(
+          router.query.query
+            ? decodeURIComponent(router.query.query as string)
+            : ''
+        );
       }
-    }
-
-    if (router.pathname.startsWith('/search')) {
       setIsOpen(true);
     }
   }, [router, setSearchValue]);
@@ -116,6 +116,7 @@ const useSearchInput = (): SearchObject => {
     searchOpen,
     setIsOpen,
     setSearchValue,
+    setLastRoute,
     clear,
   };
 };

@@ -43,12 +43,14 @@ type SingleVal = {
 type BaseSelectorMultiProps = {
   defaultValue?: string;
   isMulti: true;
+  type?: 'movie' | 'tv' | 'music';
   onChange: (value: MultiValue<SingleVal> | null) => void;
 };
 
 type BaseSelectorSingleProps = {
   defaultValue?: string;
   isMulti?: false;
+  type?: 'movie' | 'tv' | 'music';
   onChange: (value: SingleValue<SingleVal> | null) => void;
 };
 
@@ -131,7 +133,7 @@ export const CompanySelector = ({
 };
 
 type GenreSelectorProps = (BaseSelectorMultiProps | BaseSelectorSingleProps) & {
-  type: 'movie' | 'tv';
+  type: 'movie' | 'tv' | 'music';
 };
 
 export const GenreSelector = ({
@@ -206,6 +208,7 @@ export const GenreSelector = ({
 export const KeywordSelector = ({
   isMulti,
   defaultValue,
+  type,
   onChange,
 }: BaseSelectorMultiProps | BaseSelectorSingleProps) => {
   const intl = useIntl();
@@ -219,41 +222,60 @@ export const KeywordSelector = ({
         return;
       }
 
-      const keywords = await Promise.all(
-        defaultValue.split(',').map(async (keywordId) => {
-          const keyword = await axios.get<Keyword>(
-            `/api/v1/keyword/${keywordId}`
-          );
+      if (type !== 'music') {
+        const keywords = await Promise.all(
+          defaultValue.split(',').map(async (keywordId) => {
+            const keyword = await axios.get<Keyword>(
+              `/api/v1/keyword/${keywordId}`
+            );
 
-          return keyword.data;
-        })
-      );
+            return keyword.data;
+          })
+        );
 
-      setDefaultDataValue(
-        keywords.map((keyword) => ({
-          label: keyword.name,
-          value: keyword.id,
-        }))
-      );
+        setDefaultDataValue(
+          keywords.map((keyword) => ({
+            label: keyword.name,
+            value: keyword.id,
+          }))
+        );
+      } else {
+        setDefaultDataValue(
+          defaultValue.split(',').map((keyword, idx) => ({
+            label: keyword,
+            value: idx,
+          }))
+        );
+      }
     };
 
     loadDefaultKeywords();
-  }, [defaultValue]);
+  }, [defaultValue, type]);
 
   const loadKeywordOptions = async (inputValue: string) => {
-    const results = await axios.get<TmdbKeywordSearchResponse>(
+    const results = await axios.get<TmdbKeywordSearchResponse | string[]>(
       '/api/v1/search/keyword',
       {
         params: {
           query: encodeURIExtraParams(inputValue),
+          type,
         },
       }
     );
 
-    return results.data.results.map((result) => ({
-      label: result.name,
-      value: result.id,
-    }));
+    if (type === 'music') {
+      return (results.data as string[]).map((result, idx) => ({
+        label: result,
+        value: idx,
+      }));
+    } else {
+      return (results.data as TmdbKeywordSearchResponse).results.map(
+        (result) => ({
+          label: result.name,
+          value: result.id,
+        })
+      );
+    }
   };
 
   return (
@@ -373,14 +395,19 @@ export const WatchProviderSelector = ({
                     role="button"
                     tabIndex={0}
                   >
-                    <CachedImage
-                      src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
-                      alt=""
-                      layout="responsive"
-                      width="100%"
-                      height="100%"
-                      className="rounded-lg"
-                    />
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        position: 'relative',
+                      }}
+                    >
+                      <CachedImage
+                        src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
+                        alt=""
+                        className="rounded-lg"
+                      />
+                    </div>
                     {isActive && (
                       <div className="pointer-events-none absolute -top-1 -left-1 flex items-center justify-center text-indigo-100 opacity-90">
                         <CheckCircleIcon className="h-6 w-6" />
@@ -415,14 +442,19 @@ export const WatchProviderSelector = ({
                       role="button"
                       tabIndex={0}
                     >
-                      <CachedImage
-                        src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
-                        alt=""
-                        layout="responsive"
-                        width="100%"
-                        height="100%"
-                        className="rounded-lg"
-                      />
+                      <div
+                        style={{
+                          width: '100%',
+                          height: '100%',
+                          position: 'relative',
+                        }}
+                      >
+                        <CachedImage
+                          src={`https://image.tmdb.org/t/p/original${provider.logoPath}`}
+                          alt=""
+                          className="rounded-lg"
+                        />
+                      </div>
                       {isActive && (
                         <div className="pointer-events-none absolute -top-1 -left-1 flex items-center justify-center text-indigo-100 opacity-90">
                           <CheckCircleIcon className="h-6 w-6" />

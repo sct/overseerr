@@ -286,16 +286,20 @@ class AvailabilitySync {
           id: media.id,
         })
         .andWhere(
-          `(request.is4k = :is4k AND media.${
-            is4k ? 'status4k' : 'status'
-          } IN (:...mediaStatus))`,
-          {
-            mediaStatus: [
-              MediaStatus.AVAILABLE,
-              MediaStatus.PARTIALLY_AVAILABLE,
-            ],
-            is4k: is4k,
-          }
+          ['show', 'movie'].includes(media.mediaType)
+            ? `(request.is4k = :is4k AND media.${
+                is4k ? 'status4k' : 'status'
+              } IN (:...mediaStatus))`
+            : '',
+          ['show', 'movie'].includes(media.mediaType)
+            ? {
+                mediaStatus: [
+                  MediaStatus.AVAILABLE,
+                  MediaStatus.PARTIALLY_AVAILABLE,
+                ],
+                is4k: is4k,
+              }
+            : {}
         )
         .getMany();
 

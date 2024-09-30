@@ -1,6 +1,7 @@
 import useSettings from '@app/hooks/useSettings';
-import type { ImageLoader, ImageProps } from 'next/image';
-import Image from 'next/image';
+import type { ImageLoader, ImageProps } from 'next/legacy/image';
+import Image from 'next/legacy/image';
+import { useState } from 'react';
 
 const imageLoader: ImageLoader = ({ src }) => src;
 
@@ -10,18 +11,31 @@ const imageLoader: ImageLoader = ({ src }) => src;
  **/
 const CachedImage = ({ src, ...props }: ImageProps) => {
   const { currentSettings } = useSettings();
+  const [imageUrl, setImageUrl] = useState<string>(src as string);
 
-  let imageUrl = src;
+  const handleError = () => {
+    setImageUrl(currentSettings?.fallbackImage);
+  };
 
   if (typeof imageUrl === 'string' && imageUrl.startsWith('http')) {
     const parsedUrl = new URL(imageUrl);
 
     if (parsedUrl.host === 'image.tmdb.org' && currentSettings.cacheImages) {
-      imageUrl = imageUrl.replace('https://image.tmdb.org', '/imageproxy');
+      setImageUrl(
+        imageUrl.replace('https://image.tmdb.org', '/imageproxy/tmdb')
+      );
     }
   }
 
-  return <Image unoptimized loader={imageLoader} src={imageUrl} {...props} />;
+  return (
+    <Image
+      unoptimized
+      loader={imageLoader}
+      src={imageUrl}
+      onError={handleError}
+      {...props}
+    />
+  );
 };
 
 export default CachedImage;

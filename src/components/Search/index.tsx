@@ -54,6 +54,7 @@ const Search = () => {
         }
         isReachingEnd={isReachingEnd}
         onScrollBottom={fetchMore}
+        force_big={true}
       />
     </>
   );

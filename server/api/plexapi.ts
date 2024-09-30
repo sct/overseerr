@@ -3,6 +3,12 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import NodePlexAPI from 'plex-api';
 
+const SEARCHTYPES = {
+  movie: 1,
+  show: 2,
+  artist: '8,9',
+};
+
 export interface PlexLibraryItem {
   ratingKey: string;
   parentRatingKey?: string;
@@ -16,7 +22,7 @@ export interface PlexLibraryItem {
   Guid?: {
     id: string;
   }[];
-  type: 'movie' | 'show' | 'season' | 'episode';
+  type: 'movie' | 'show' | 'season' | 'episode' | 'artist' | 'album' | 'track';
   Media: Media[];
 }
 
@@ -28,7 +34,7 @@ interface PlexLibraryResponse {
 }
 
 export interface PlexLibrary {
-  type: 'show' | 'movie';
+  type: 'show' | 'movie' | 'artist';
   key: string;
   title: string;
   agent: string;
@@ -44,7 +50,7 @@ export interface PlexMetadata {
   ratingKey: string;
   parentRatingKey?: string;
   guid: string;
-  type: 'movie' | 'show' | 'season';
+  type: 'movie' | 'show' | 'season' | 'episode' | 'artist' | 'album' | 'track';
   title: string;
   Guid: {
     id: string;
@@ -152,7 +158,10 @@ class PlexAPI {
       const newLibraries: Library[] = libraries
         // Remove libraries that are not movie or show
         .filter(
-          (library) => library.type === 'movie' || library.type === 'show'
+          (library) =>
+            library.type === 'movie' ||
+            library.type === 'show' ||
+            library.type === 'artist'
         )
         // Remove libraries that do not have a metadata agent set (usually personal video libraries)
         .filter((library) => library.agent !== 'com.plexapp.agents.none')
@@ -201,6 +210,26 @@ class PlexAPI {
     };
   }
 
+  public async getMusicLibraryContents(
+    id: string,
+    { offset = 0, size = 50 }: { offset?: number; size?: number } = {}
+  ): Promise<{ totalSize: number; items: PlexLibraryItem[] }> {
+    const response = await this.getLibraryContents(id, { offset, size });
+
+    const response2 = await this.plexClient.query<PlexLibraryResponse>({
+      uri: `/library/sections/${id}/albums?includeGuids=1`,
+      extraHeaders: {
+        'X-Plex-Container-Start': `${offset}`,
+        'X-Plex-Container-Size': `${size}`,
+      },
+    });
+
+    return {
+      totalSize: response.totalSize + response2.MediaContainer.totalSize,
+      items: response.items.concat(response2.MediaContainer.Metadata) ?? [],
+    };
+  }
+
   public async getMetadata(
     key: string,
     options: { includeChildren?: boolean } = {}
@@ -227,18 +256,17 @@ class PlexAPI {
     options: { addedAt: number } = {
       addedAt: Date.now() - 1000 * 60 * 60,
     },
-    mediaType: 'movie' | 'show'
+    mediaType: 'movie' | 'show' | 'artist'
   ): Promise<PlexLibraryItem[]> {
     const response = await this.plexClient.query<PlexLibraryResponse>({
       uri: `/library/sections/${id}/all?type=${
-        mediaType === 'show' ? '4' : '1'
+        SEARCHTYPES[mediaType]
       }&sort=addedAt%3Adesc&addedAt>>=${Math.floor(options.addedAt / 1000)}`,
       extraHeaders: {
         'X-Plex-Container-Start': `0`,
         'X-Plex-Container-Size': `500`,
       },
     });
-
     return response.MediaContainer.Metadata;
   }
 }

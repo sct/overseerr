@@ -40,11 +40,9 @@ const PlexWatchlistSlider = () => {
   return (
     <>
       <div className="slider-header">
-        <Link href="/discover/watchlist">
-          <a className="slider-title">
-            <span>{intl.formatMessage(messages.plexwatchlist)}</span>
-            <ArrowRightCircleIcon />
-          </a>
+        <Link href="/discover/watchlist" className="slider-title">
+          <span>{intl.formatMessage(messages.plexwatchlist)}</span>
+          <ArrowRightCircleIcon />
         </Link>
       </div>
       <Slider
@@ -65,10 +63,10 @@ const PlexWatchlistSlider = () => {
         })}
         items={watchlistItems?.results.map((item) => (
           <TmdbTitleCard
-            id={item.tmdbId}
+            id={item.tmdbId as number}
             key={`watchlist-slider-item-${item.ratingKey}`}
-            tmdbId={item.tmdbId}
-            type={item.mediaType}
+            tmdbId={item.tmdbId as number}
+            type={item.mediaType as 'movie' | 'tv'}
           />
         ))}
       />
