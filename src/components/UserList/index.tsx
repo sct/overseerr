@@ -8,6 +8,7 @@ import PageTitle from '@app/components/Common/PageTitle';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import Table from '@app/components/Common/Table';
 import BulkEditModal from '@app/components/UserList/BulkEditModal';
+import { useUsers } from '@app/components/UserList/hooks';
 import PlexImportModal from '@app/components/UserList/PlexImportModal';
 import useSettings from '@app/hooks/useSettings';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
@@ -24,7 +25,6 @@ import {
   PencilIcon,
   UserPlusIcon,
 } from '@heroicons/react/24/solid';
-import type { UserResultsResponse } from '@server/interfaces/api/userInterfaces';
 import { hasPermission } from '@server/lib/permissions';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -35,7 +35,7 @@ import type React from 'react';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+
 import * as Yup from 'yup';
 
 const messages = defineMessages({
@@ -82,7 +82,7 @@ const messages = defineMessages({
   searchUsersPlaceholder: 'Search Users',
 });
 
-type Sort = 'created' | 'updated' | 'requests' | 'displayname';
+export type Sort = 'created' | 'updated' | 'requests' | 'displayname';
 
 const UserList = () => {
   const intl = useIntl();
@@ -103,16 +103,11 @@ const UserList = () => {
   const updateQueryParams = useUpdateQueryParams({ page: page.toString() });
 
   const {
-    data,
     mutate: revalidate,
     isLoading,
-  } = useSWR<UserResultsResponse>(
-    `/api/v1/user?take=${currentPageSize}&skip=${
-      pageIndex * currentPageSize
-    }&searchQuery=${
-      searchString ? encodeURIComponent(searchString) : '%00'
-    }&sort=${currentSort}`
-  );
+    users,
+    pageInfo,
+  } = useUsers({ currentPageSize, pageIndex, searchString, currentSort });
 
   const [isDeleting, setDeleting] = useState(false);
   const [showImportModal, setShowImportModal] = useState(false);
@@ -156,20 +151,14 @@ const UserList = () => {
   const isAllUsersSelected = () => {
     return (
       selectedUsers.length ===
-      data?.results.filter((user) => user.id !== currentUser?.id).length
+      users.filter((user) => user.id !== currentUser?.id).length
     );
   };
   const isUserSelected = (userId: number) => selectedUsers.includes(userId);
   const toggleAllUsers = () => {
-    if (
-      data &&
-      selectedUsers.length >= 0 &&
-      selectedUsers.length < data?.results.length - 1
-    ) {
+    if (selectedUsers.length >= 0 && selectedUsers.length < users.length - 1) {
       setSelectedUsers(
-        data.results
-          .filter((user) => isUserPermsEditable(user.id))
-          .map((u) => u.id)
+        users.filter((user) => isUserPermsEditable(user.id)).map((u) => u.id)
       );
     } else {
       setSelectedUsers([]);
@@ -219,7 +208,7 @@ const UserList = () => {
     ),
   });
 
-  const hasNextPage = (data?.pageInfo.pages ?? 0) > pageIndex + 1;
+  const hasNextPage = (pageInfo?.pages ?? 0) > pageIndex + 1;
   const hasPrevPage = pageIndex > 0;
 
   const passwordGenerationEnabled =
@@ -458,7 +447,7 @@ const UserList = () => {
             revalidate();
           }}
           selectedUserIds={selectedUsers}
-          users={data?.results ?? []}
+          users={users}
         />
       </Transition>
 
@@ -489,7 +478,7 @@ const UserList = () => {
               className="mb-2 flex-grow sm:mb-0 sm:mr-2"
               buttonType="primary"
               onClick={() => setCreateModal({ isOpen: true })}
-              disabled={!data}
+              disabled={!users.length}
             >
               <UserPlusIcon />
               <span>{intl.formatMessage(messages.createlocaluser)}</span>
@@ -498,7 +487,7 @@ const UserList = () => {
               className="flex-grow lg:mr-2"
               buttonType="primary"
               onClick={() => setShowImportModal(true)}
-              disabled={!data}
+              disabled={!users.length}
             >
               <InboxArrowDownIcon />
               <span>{intl.formatMessage(messages.importfromplex)}</span>
@@ -517,7 +506,7 @@ const UserList = () => {
               }}
               value={currentSort}
               className="rounded-r-only"
-              disabled={!data}
+              disabled={!users.length}
             >
               <option value="created">
                 {intl.formatMessage(messages.sortCreated)}
@@ -552,14 +541,14 @@ const UserList = () => {
           />
         </div>
       </div>
-      {!data && isLoading ? (
+      {!users.length && isLoading ? (
         <LoadingSpinner />
       ) : (
         <Table>
           <thead>
             <tr>
               <Table.TH>
-                {(data?.results ?? []).length > 1 && (
+                {users.length > 1 && (
                   <input
                     type="checkbox"
                     id="selectAll"
@@ -577,7 +566,7 @@ const UserList = () => {
               <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
               <Table.TH>{intl.formatMessage(messages.created)}</Table.TH>
               <Table.TH className="text-right">
-                {(data?.results ?? []).length > 1 && (
+                {users.length > 1 && (
                   <Button
                     buttonType="warning"
                     onClick={() => setShowBulkEditModal(true)}
@@ -591,7 +580,7 @@ const UserList = () => {
             </tr>
           </thead>
           <Table.TBody>
-            {data?.results.map((user) => (
+            {users.map((user) => (
               <tr key={`user-list-${user.id}`} data-testid="user-list-row">
                 <Table.TD>
                   {isUserPermsEditable(user.id) && (
@@ -710,15 +699,14 @@ const UserList = () => {
                 >
                   <div className="hidden lg:flex lg:flex-1">
                     <p className="text-sm">
-                      {(data?.results ?? []).length > 0 &&
+                      {users.length > 0 &&
                         intl.formatMessage(globalMessages.showingresults, {
                           from: pageIndex * currentPageSize + 1,
                           to:
-                            (data?.results ?? []).length < currentPageSize
-                              ? pageIndex * currentPageSize +
-                                (data?.results ?? []).length
+                            users.length < currentPageSize
+                              ? pageIndex * currentPageSize + users.length
                               : (pageIndex + 1) * currentPageSize,
-                          total: data?.pageInfo.results ?? 0,
+                          total: pageInfo?.results ?? 0,
                           strong: (msg: React.ReactNode) => (
                             <span className="font-medium">{msg}</span>
                           ),
