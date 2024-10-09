@@ -8,6 +8,7 @@ import Media from '@server/entity/Media';
 import { User } from '@server/entity/User';
 import type {
   GenreSliderItem,
+  StatusItem,
   WatchlistResponse,
 } from '@server/interfaces/api/discoverInterfaces';
 import { getSettings } from '@server/lib/settings';
@@ -61,6 +62,7 @@ const QueryFilterOptions = z.object({
   genre: z.coerce.string().optional(),
   keywords: z.coerce.string().optional(),
   language: z.coerce.string().optional(),
+  status: z.coerce.string().optional(),
   withRuntimeGte: z.coerce.string().optional(),
   withRuntimeLte: z.coerce.string().optional(),
   voteAverageGte: z.coerce.string().optional(),
@@ -361,6 +363,7 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       page: Number(query.page),
       sortBy: query.sortBy as SortOptions,
       language: req.locale ?? query.language,
+      status: query.status,
       genre: query.genre,
       network: query.network ? Number(query.network) : undefined,
       firstAirDateLte: query.firstAirDateLte
@@ -794,6 +797,78 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
       );
 
       const sortedData = sortBy(mappedGenres, 'name');
+
+      return res.status(200).json(sortedData);
+    } catch (e) {
+      logger.debug('Something went wrong retrieving the series genre slider', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      return next({
+        status: 500,
+        message: 'Unable to retrieve series genre slider.',
+      });
+    }
+  }
+);
+
+enum MovieStatus {
+  'Rumored',
+  'Planned',
+  'In Production',
+  'Post Production',
+  'Released',
+  'Canceled',
+}
+
+enum ShowStatus {
+  'Returning Series' = 0,
+  'Planned' = 1,
+  'In Production' = 2,
+  'Ended' = 3,
+  'Canceled' = 4,
+  'Pilot' = 5,
+}
+
+discoverRoutes.get<{ language: string }, StatusItem[]>(
+  '/status/movie',
+  async (req, res, next) => {
+    try {
+      const statuses = Object.entries(MovieStatus)
+        .filter(([, v]) => !isNaN(Number(v)))
+        .map(([k, v]) => ({
+          id: Number(v),
+          name: k,
+        }));
+
+      const sortedData = sortBy(statuses, 'id');
+
+      return res.status(200).json(sortedData);
+    } catch (e) {
+      logger.debug('Something went wrong retrieving the movie genre slider', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      return next({
+        status: 500,
+        message: 'Unable to retrieve movie genre slider.',
+      });
+    }
+  }
+);
+
+discoverRoutes.get<{ language: string }, StatusItem[]>(
+  '/status/tv',
+  async (req, res, next) => {
+    try {
+      const statuses = Object.entries(ShowStatus)
+        .filter(([, v]) => !isNaN(Number(v)))
+        .map(([k, v]) => ({
+          id: Number(v),
+          name: k,
+        }));
+
+      const sortedData = sortBy(statuses, 'id');
 
       return res.status(200).json(sortedData);
     } catch (e) {

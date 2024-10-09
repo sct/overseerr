@@ -11,7 +11,10 @@ import type {
   TmdbGenre,
   TmdbKeywordSearchResponse,
 } from '@server/api/themoviedb/interfaces';
-import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
+import type {
+  GenreSliderItem,
+  StatusItem,
+} from '@server/interfaces/api/discoverInterfaces';
 import type {
   Keyword,
   ProductionCompany,
@@ -19,7 +22,7 @@ import type {
 } from '@server/models/common';
 import axios from 'axios';
 import { orderBy } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import type { MultiValue, SingleValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -275,6 +278,73 @@ export const KeywordSelector = ({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onChange(value as any);
       }}
+    />
+  );
+};
+
+type StatusSelectorProps = BaseSelectorSingleProps & {
+  type: 'movie' | 'tv';
+  // defaultValue: MovieStatus | ShowStatus;
+};
+
+export const StatusSelector = ({
+  isMulti,
+  onChange,
+  defaultValue,
+  type,
+}: StatusSelectorProps) => {
+  const intl = useIntl();
+  const [defaultDataValue, setDefaultDataValue] = useState<
+    { label: string; value: number }[] | null
+  >(null);
+  const [options, setOptions] = useState<{ label: string; value: number }[]>(
+    []
+  );
+
+  const loadGenreOptions = useCallback(async () => {
+    const results = await axios.get<StatusItem[]>(
+      `/api/v1/discover/status/${type}`
+    );
+
+    const res = results.data.map((result) => ({
+      label: result.name,
+      value: result.id,
+    }));
+
+    return res;
+  }, [type]);
+
+  useEffect(() => {
+    loadGenreOptions().then((res) => {
+      setOptions(res);
+    });
+  }, [loadGenreOptions]);
+
+  useEffect(() => {
+    const foundDefaultValue = options.find(
+      ({ value }) => value.toString() === defaultValue
+    );
+    if (foundDefaultValue) {
+      setDefaultDataValue([foundDefaultValue]);
+    }
+  }, [defaultValue, options]);
+
+  return (
+    <AsyncSelect
+      key={`status-select-${defaultDataValue}`}
+      className="react-select-container"
+      classNamePrefix="react-select"
+      defaultValue={isMulti ? defaultValue : defaultDataValue?.[0]}
+      defaultOptions
+      cacheOptions
+      isMulti={isMulti}
+      loadOptions={loadGenreOptions}
+      placeholder={intl.formatMessage(messages.searchGenres)}
+      onChange={(value) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onChange(value as any);
+      }}
+      isClearable
     />
   );
 };

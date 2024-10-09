@@ -79,6 +79,7 @@ interface DiscoverMovieOptions {
 interface DiscoverTvOptions {
   page?: number;
   language?: string;
+  status?: string;
   firstAirDateGte?: string;
   firstAirDateLte?: string;
   withRuntimeGte?: string;
@@ -527,6 +528,7 @@ class TheMovieDb extends ExternalAPI {
     sortBy = 'popularity.desc',
     page = 1,
     language = 'en',
+    status,
     firstAirDateGte,
     firstAirDateLte,
     includeEmptyReleaseDate = false,
@@ -559,6 +561,7 @@ class TheMovieDb extends ExternalAPI {
           sort_by: sortBy,
           page,
           language,
+          with_status: status,
           region: this.region,
           // Set our release date values, but check if one is set and not the other,
           // so we can force a past date or a future date. TMDB Requires both values if one is set!

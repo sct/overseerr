@@ -4464,6 +4464,11 @@ paths:
             type: string
             example: en
         - in: query
+          name: status
+          schema:
+            type: string
+            example: 2
+        - in: query
           name: genre
           schema:
             type: string
@@ -4865,6 +4870,58 @@ paths:
           schema:
             type: string
             example: en
+      responses:
+        '200':
+          description: Genre slider data returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    backdrops:
+                      type: array
+                      items:
+                        type: string
+                    name:
+                      type: string
+                      example: Genre Name
+  /discover/status/movie:
+    get:
+      summary: Get statuses for movies
+      description: Returns a list of statuses
+      tags:
+        - search
+      responses:
+        '200':
+          description: Genre slider data returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    backdrops:
+                      type: array
+                      items:
+                        type: string
+                    name:
+                      type: string
+                      example: Genre Name
+  /discover/status/tv:
+    get:
+      summary: Get statuses for TV series
+      description: Returns a list of statuses
+      tags:
+        - search
       responses:
         '200':
           description: Genre slider data returned

@@ -8,6 +8,7 @@ import {
   CompanySelector,
   GenreSelector,
   KeywordSelector,
+  StatusSelector,
   WatchProviderSelector,
 } from '@app/components/Selector';
 import useSettings from '@app/hooks/useSettings';
@@ -37,6 +38,7 @@ const messages = defineMessages({
   tmdbuserscore: 'TMDB User Score',
   tmdbuservotecount: 'TMDB User Vote Count',
   runtime: 'Runtime',
+  status: 'Status',
   streamingservices: 'Streaming Services',
   voteCount: 'Number of votes between {minValue} and {maxValue}',
 });
@@ -148,6 +150,16 @@ const FilterSlideover = ({
           onChange={(value) => {
             updateQueryParams('genre', value?.map((v) => v.value).join(','));
           }}
+        />
+        <span className="text-lg font-semibold">
+          {intl.formatMessage(messages.status)}
+        </span>
+        <StatusSelector
+          onChange={(value) => {
+            updateQueryParams('status', value?.value.toString());
+          }}
+          type={type}
+          defaultValue={currentFilters.status}
         />
         <span className="text-lg font-semibold">
           {intl.formatMessage(messages.keywords)}
