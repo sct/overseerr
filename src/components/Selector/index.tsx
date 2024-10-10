@@ -11,7 +11,10 @@ import type {
   TmdbGenre,
   TmdbKeywordSearchResponse,
 } from '@server/api/themoviedb/interfaces';
-import type { GenreSliderItem } from '@server/interfaces/api/discoverInterfaces';
+import type {
+  GenreSliderItem,
+  StatusItem,
+} from '@server/interfaces/api/discoverInterfaces';
 import type {
   Keyword,
   ProductionCompany,
@@ -19,7 +22,7 @@ import type {
 } from '@server/models/common';
 import axios from 'axios';
 import { orderBy } from 'lodash';
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import type { MultiValue, SingleValue } from 'react-select';
 import AsyncSelect from 'react-select/async';
@@ -28,6 +31,7 @@ import useSWR from 'swr';
 const messages = defineMessages({
   searchKeywords: 'Search keywords…',
   searchGenres: 'Select genres…',
+  searchStatus: 'Select status...',
   searchStudios: 'Search studios…',
   starttyping: 'Starting typing to search.',
   nooptions: 'No results.',
@@ -275,6 +279,77 @@ export const KeywordSelector = ({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onChange(value as any);
       }}
+    />
+  );
+};
+
+type StatusSelectorProps = BaseSelectorSingleProps & {
+  type: 'movie' | 'tv';
+};
+
+export const StatusSelector = ({
+  isMulti,
+  onChange,
+  defaultValue,
+  type,
+}: StatusSelectorProps) => {
+  const intl = useIntl();
+  const [defaultDataValue, setDefaultDataValue] = useState<
+    { label: string; value: number }[] | null
+  >(null);
+
+  const loadStatusOptions = useCallback(
+    async (inputValue?: string) => {
+      const results = await axios.get<StatusItem[]>(
+        `/api/v1/discover/status/${type}`
+      );
+
+      const res = results.data
+        .map((result) => ({
+          label: result.name,
+          value: result.id,
+        }))
+        .filter(({ label }) =>
+          inputValue
+            ? label.toLowerCase().includes(inputValue.toLowerCase())
+            : true
+        );
+
+      return res;
+    },
+    [type]
+  );
+
+  useEffect(() => {
+    const setDefault = () => {
+      loadStatusOptions().then((res) => {
+        const foundDefaultValue = res.find(
+          ({ value }) => value.toString() === defaultValue
+        );
+        if (foundDefaultValue) {
+          setDefaultDataValue([foundDefaultValue]);
+        }
+      });
+    };
+    setDefault();
+  }, [defaultValue, loadStatusOptions]);
+
+  return (
+    <AsyncSelect
+      key={`status-select-${defaultDataValue}`}
+      className="react-select-container"
+      classNamePrefix="react-select"
+      defaultValue={isMulti ? defaultValue : defaultDataValue?.[0]}
+      defaultOptions
+      cacheOptions
+      isMulti={isMulti}
+      loadOptions={loadStatusOptions}
+      placeholder={intl.formatMessage(messages.searchStatus)}
+      onChange={(value) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onChange(value as any);
+      }}
+      isClearable
     />
   );
 };
