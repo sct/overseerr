@@ -812,15 +812,6 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   }
 );
 
-enum MovieStatus {
-  'Rumored',
-  'Planned',
-  'In Production',
-  'Post Production',
-  'Released',
-  'Canceled',
-}
-
 enum ShowStatus {
   'Returning Series' = 0,
   'Planned' = 1,
@@ -829,33 +820,6 @@ enum ShowStatus {
   'Canceled' = 4,
   'Pilot' = 5,
 }
-
-discoverRoutes.get<{ language: string }, StatusItem[]>(
-  '/status/movie',
-  async (req, res, next) => {
-    try {
-      const statuses = Object.entries(MovieStatus)
-        .filter(([, v]) => !isNaN(Number(v)))
-        .map(([k, v]) => ({
-          id: Number(v),
-          name: k,
-        }));
-
-      const sortedData = sortBy(statuses, 'id');
-
-      return res.status(200).json(sortedData);
-    } catch (e) {
-      logger.debug('Something went wrong retrieving the movie genre slider', {
-        label: 'API',
-        errorMessage: e.message,
-      });
-      return next({
-        status: 500,
-        message: 'Unable to retrieve movie genre slider.',
-      });
-    }
-  }
-);
 
 discoverRoutes.get<{ language: string }, StatusItem[]>(
   '/status/tv',
@@ -872,13 +836,13 @@ discoverRoutes.get<{ language: string }, StatusItem[]>(
 
       return res.status(200).json(sortedData);
     } catch (e) {
-      logger.debug('Something went wrong retrieving the series genre slider', {
+      logger.debug('Something went wrong retrieving the series status', {
         label: 'API',
         errorMessage: e.message,
       });
       return next({
         status: 500,
-        message: 'Unable to retrieve series genre slider.',
+        message: 'Unable to retrieve series status.',
       });
     }
   }

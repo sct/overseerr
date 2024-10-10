@@ -284,7 +284,6 @@ export const KeywordSelector = ({
 
 type StatusSelectorProps = BaseSelectorSingleProps & {
   type: 'movie' | 'tv';
-  // defaultValue: MovieStatus | ShowStatus;
 };
 
 export const StatusSelector = ({
@@ -301,7 +300,7 @@ export const StatusSelector = ({
     []
   );
 
-  const loadGenreOptions = useCallback(async () => {
+  const loadStatusOptions = useCallback(async () => {
     const results = await axios.get<StatusItem[]>(
       `/api/v1/discover/status/${type}`
     );
@@ -315,10 +314,10 @@ export const StatusSelector = ({
   }, [type]);
 
   useEffect(() => {
-    loadGenreOptions().then((res) => {
+    loadStatusOptions().then((res) => {
       setOptions(res);
     });
-  }, [loadGenreOptions]);
+  }, [loadStatusOptions]);
 
   useEffect(() => {
     const foundDefaultValue = options.find(
@@ -338,7 +337,7 @@ export const StatusSelector = ({
       defaultOptions
       cacheOptions
       isMulti={isMulti}
-      loadOptions={loadGenreOptions}
+      loadOptions={loadStatusOptions}
       placeholder={intl.formatMessage(messages.searchGenres)}
       onChange={(value) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -4890,32 +4890,6 @@ paths:
                     name:
                       type: string
                       example: Genre Name
-  /discover/status/movie:
-    get:
-      summary: Get statuses for movies
-      description: Returns a list of statuses
-      tags:
-        - search
-      responses:
-        '200':
-          description: Genre slider data returned
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: number
-                      example: 1
-                    backdrops:
-                      type: array
-                      items:
-                        type: string
-                    name:
-                      type: string
-                      example: Genre Name
   /discover/status/tv:
     get:
       summary: Get statuses for TV series
@@ -4924,7 +4898,7 @@ paths:
         - search
       responses:
         '200':
-          description: Genre slider data returned
+          description: Status data returned
           content:
             application/json:
               schema:
@@ -4935,13 +4909,9 @@ paths:
                     id:
                       type: number
                       example: 1
-                    backdrops:
-                      type: array
-                      items:
-                        type: string
                     name:
                       type: string
-                      example: Genre Name
+                      example: Status Name
   /discover/watchlist:
     get:
       summary: Get the Plex watchlist.
