@@ -31,6 +31,7 @@ import useSWR from 'swr';
 const messages = defineMessages({
   searchKeywords: 'Search keywords…',
   searchGenres: 'Select genres…',
+  searchStatus: 'Select status...',
   searchStudios: 'Search studios…',
   starttyping: 'Starting typing to search.',
   nooptions: 'No results.',
@@ -338,7 +339,7 @@ export const StatusSelector = ({
       cacheOptions
       isMulti={isMulti}
       loadOptions={loadStatusOptions}
-      placeholder={intl.formatMessage(messages.searchGenres)}
+      placeholder={intl.formatMessage(messages.searchStatus)}
       onChange={(value) => {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onChange(value as any);
