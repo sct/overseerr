@@ -297,37 +297,42 @@ export const StatusSelector = ({
   const [defaultDataValue, setDefaultDataValue] = useState<
     { label: string; value: number }[] | null
   >(null);
-  const [options, setOptions] = useState<{ label: string; value: number }[]>(
-    []
+
+  const loadStatusOptions = useCallback(
+    async (inputValue?: string) => {
+      const results = await axios.get<StatusItem[]>(
+        `/api/v1/discover/status/${type}`
+      );
+
+      const res = results.data
+        .map((result) => ({
+          label: result.name,
+          value: result.id,
+        }))
+        .filter(({ label }) =>
+          inputValue
+            ? label.toLowerCase().includes(inputValue.toLowerCase())
+            : true
+        );
+
+      return res;
+    },
+    [type]
   );
 
-  const loadStatusOptions = useCallback(async () => {
-    const results = await axios.get<StatusItem[]>(
-      `/api/v1/discover/status/${type}`
-    );
-
-    const res = results.data.map((result) => ({
-      label: result.name,
-      value: result.id,
-    }));
-
-    return res;
-  }, [type]);
-
   useEffect(() => {
-    loadStatusOptions().then((res) => {
-      setOptions(res);
-    });
-  }, [loadStatusOptions]);
-
-  useEffect(() => {
-    const foundDefaultValue = options.find(
-      ({ value }) => value.toString() === defaultValue
-    );
-    if (foundDefaultValue) {
-      setDefaultDataValue([foundDefaultValue]);
-    }
-  }, [defaultValue, options]);
+    const setDefault = () => {
+      loadStatusOptions().then((res) => {
+        const foundDefaultValue = res.find(
+          ({ value }) => value.toString() === defaultValue
+        );
+        if (foundDefaultValue) {
+          setDefaultDataValue([foundDefaultValue]);
+        }
+      });
+    };
+    setDefault();
+  }, [defaultValue, loadStatusOptions]);
 
   return (
     <AsyncSelect
