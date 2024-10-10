@@ -151,16 +151,20 @@ const FilterSlideover = ({
             updateQueryParams('genre', value?.map((v) => v.value).join(','));
           }}
         />
-        <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.status)}
-        </span>
-        <StatusSelector
-          onChange={(value) => {
-            updateQueryParams('status', value?.value.toString());
-          }}
-          type={type}
-          defaultValue={currentFilters.status}
-        />
+        {type === 'tv' && (
+          <>
+            <span className="text-lg font-semibold">
+              {intl.formatMessage(messages.status)}
+            </span>
+            <StatusSelector
+              onChange={(value) => {
+                updateQueryParams('status', value?.value.toString());
+              }}
+              type={type}
+              defaultValue={currentFilters.status}
+            />
+          </>
+        )}
         <span className="text-lg font-semibold">
           {intl.formatMessage(messages.keywords)}
         </span>
