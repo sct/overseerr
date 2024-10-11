@@ -40,7 +40,6 @@ describe('User List', () => {
 
     cy.get('[data-testid=modal-ok-button]').click();
 
-    cy.wait('@user');
     // Wait a little longer for the user list to fully re-render
     cy.wait(1000);
 
@@ -60,7 +59,6 @@ describe('User List', () => {
 
     cy.get('[data-testid=modal-ok-button]').should('contain', 'Delete').click();
 
-    cy.wait('@user');
     cy.wait(1000);
 
     cy.get('[data-testid=user-list-row]')
