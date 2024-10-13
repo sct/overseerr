@@ -1109,5 +1109,9 @@
   "components.RequestList.RequestItem.unknowntitle": "Ukjent Tittel",
   "components.Settings.SettingsJobsCache.image-cache-cleanup": "Slett mellomlager for bilder",
   "components.DownloadBlock.formattedTitle": "{title}: Sesong {seasonNumber} Episode {episodeNumber}",
-  "components.Discover.PlexWatchlistSlider.emptywatchlist": "Media som blir lagt til <PlexWatchlistSupportLink>Plexs Visningsliste</PlexWatchlistSupportLink> vil dukke opp her."
+  "components.Discover.PlexWatchlistSlider.emptywatchlist": "Media som blir lagt til <PlexWatchlistSupportLink>Plexs Visningsliste</PlexWatchlistSupportLink> vil dukke opp her.",
+  "components.Discover.CreateSlider.needresults": "Du må ha minst ett resultat.",
+  "components.Discover.CreateSlider.nooptions": "Ingen resultater.",
+  "components.Discover.CreateSlider.providetmdbgenreid": "Angi en TMDB Genre ID",
+  "components.Discover.CreateSlider.providetmdbkeywordid": "Angi en TMDB Keyword ID"
 }

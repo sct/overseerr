@@ -1088,9 +1088,9 @@
   "components.RequestModal.requestmovietitle": "Demander le film",
   "components.RequestModal.requestseries4ktitle": "Demander la série en 4K",
   "components.RequestModal.requestseriestitle": "Demander la série",
-  "components.Discover.CreateSlider.searchGenres": "Recherche par genres…",
-  "components.Discover.CreateSlider.searchStudios": "Recherche par studios…",
-  "components.Discover.CreateSlider.searchKeywords": "Recherche par mots-clés…",
+  "components.Discover.CreateSlider.searchGenres": "Recherche par genres …",
+  "components.Discover.CreateSlider.searchStudios": "Recherche par studios …",
+  "components.Discover.CreateSlider.searchKeywords": "Recherche par mots-clés …",
   "components.Settings.SettingsJobsCache.editJobScheduleCurrent": "Fréquence actuelle",
   "components.Discover.CreateSlider.providetmdbkeywordid": "Fournissez un ID de mot-clé TMBD",
   "components.RequestList.RequestItem.unknowntitle": "Titre inconnu",
@@ -1145,7 +1145,7 @@
   "components.Discover.resetfailed": "Une erreur s'est produite lors de la réinitialisation des paramètres de Découvrir.",
   "components.Discover.updatefailed": "Une erreur s'est produite lors de la mise à jour des paramètres de Découvrir.",
   "components.Discover.updatesuccess": "Mise à jour des paramètres de Découvrir.",
-  "components.Discover.DiscoverMovies.activefilters": "{count, plural, one {# filtre actif} other {# filtres actifs}}",
+  "components.Discover.DiscoverMovies.activefilters": "{count, plural, one {# Filtre actif} other {# Filtres actifs}}",
   "components.Discover.DiscoverMovies.discovermovies": "Films",
   "components.Discover.DiscoverMovies.sortPopularityAsc": "Popularité croissante",
   "components.Discover.DiscoverMovies.sortPopularityDesc": "Popularité décroissante",
@@ -1238,5 +1238,6 @@
   "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Appareil par défaut",
   "components.UserProfile.UserSettings.UserNotificationSettings.deviceDefault": "Appareil par défaut",
   "components.UserProfile.UserSettings.UserNotificationSettings.sound": "Son de notification",
-  "components.Settings.Notifications.NotificationsPushover.sound": "Son de notification"
+  "components.Settings.Notifications.NotificationsPushover.sound": "Son de notification",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Rafraîchir le token Plex"
 }

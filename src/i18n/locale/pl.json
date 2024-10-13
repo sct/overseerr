@@ -1223,5 +1223,7 @@
   "components.Settings.SettingsMain.toastSettingsFailure": "Coś poszło nie tak podczas zapisywania ustawień.",
   "i18n.collection": "Kolekcja",
   "components.MovieDetails.imdbuserscore": "Ocena użytkowników IMDB",
-  "components.Settings.SonarrModal.seriesType": "Typ serialu"
+  "components.Settings.SonarrModal.seriesType": "Typ serialu",
+  "components.Settings.Notifications.NotificationsPushover.sound": "Dzwięk powiadomienia",
+  "components.Discover.FilterSlideover.voteCount": "Liczba głosów pomiędzy {minValue} i {maxValue}"
 }

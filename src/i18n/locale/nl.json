@@ -1238,5 +1238,6 @@
   "components.Settings.SonarrModal.animeSeriesType": "Serietype anime",
   "components.Settings.SonarrModal.seriesType": "Serietype",
   "components.UserProfile.UserSettings.UserNotificationSettings.sound": "Meldingsgeluid",
-  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Apparaatstandaard"
+  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Apparaatstandaard",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Plex Vernieuwingstoken"
 }

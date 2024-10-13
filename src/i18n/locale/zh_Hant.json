@@ -1217,5 +1217,8 @@
   "components.Settings.SettingsJobsCache.imagecachesize": "總快取大小",
   "components.Settings.SettingsMain.applicationurl": "應用程式網址",
   "components.Settings.SettingsMain.cacheImages": "啟用影像快取",
-  "components.Settings.SettingsMain.cacheImagesTip": "快取外部來源影像（需要大量磁碟空間）"
+  "components.Settings.SettingsMain.cacheImagesTip": "快取外部來源影像（需要大量磁碟空間）",
+  "components.Discover.DiscoverMovies.activefilters": "",
+  "components.Discover.DiscoverTv.activefilters": "",
+  "components.Discover.FilterSlideover.activefilters": ""
 }

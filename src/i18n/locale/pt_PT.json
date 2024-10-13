@@ -72,7 +72,7 @@
   "components.RequestModal.seasonnumber": "Temporada {number}",
   "components.RequestModal.season": "Temporada",
   "components.RequestModal.requestseasons": "Pedir {seasonCount} {seasonCount, plural, one {Temporada} other {Temporadas}}",
-  "components.RequestModal.requestfrom": "O peido de {username} está com aprovação pendente.",
+  "components.RequestModal.requestfrom": "O pedido de {username} está com aprovação pendente.",
   "components.RequestModal.requestedited": "Pedido para <strong>{title}</strong> modificado com sucesso!",
   "components.RequestModal.requestcancelled": "Pedido para <strong>{title}</strong> cancelado.",
   "components.RequestModal.requestadmin": "Este pedido será aprovado automaticamente.",
