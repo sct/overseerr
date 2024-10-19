@@ -260,7 +260,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
   };
 
   const showHasSpecials = data.seasons.some(
-    (season) => season.seasonNumber == 0
+    (season) => season.seasonNumber === 0
   );
 
   const isComplete =
@@ -585,7 +585,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                         >
                           <div className="flex flex-1 items-center space-x-2 text-lg">
                             <span>
-                              {season.seasonNumber == 0
+                              {season.seasonNumber === 0
                                 ? intl.formatMessage(messages.specials)
                                 : intl.formatMessage(messages.seasonnumber, {
                                     seasonNumber: season.seasonNumber,

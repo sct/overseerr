@@ -245,7 +245,7 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
                   className="mb-1 mr-2 inline-block"
                 >
                   <Badge>
-                    {season.seasonNumber == 0
+                    {season.seasonNumber === 0
                       ? intl.formatMessage(messages.specials)
                       : season.seasonNumber}
                   </Badge>

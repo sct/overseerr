@@ -450,7 +450,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                     {request.seasons.map((season) => (
                       <span key={`season-${season.id}`} className="mr-2">
                         <Badge>
-                          {season.seasonNumber == 0
+                          {season.seasonNumber === 0
                             ? intl.formatMessage(messages.specials)
                             : season.seasonNumber}
                         </Badge>
