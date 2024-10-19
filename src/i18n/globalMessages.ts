@@ -55,6 +55,7 @@ const globalMessages = defineMessages({
   noresults: 'No results.',
   open: 'Open',
   resolved: 'Resolved',
+  specials: 'Specials',
 });
 
 export default globalMessages;

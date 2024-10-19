@@ -40,7 +40,6 @@ const messages = defineMessages({
   cancelrequest: 'Cancel Request',
   deleterequest: 'Delete Request',
   unknowntitle: 'Unknown Title',
-  specials: 'Specials',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -392,7 +391,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                   <span key={`season-${season.id}`} className="mr-2">
                     <Badge>
                       {season.seasonNumber === 0
-                        ? intl.formatMessage(messages.specials)
+                        ? intl.formatMessage(globalMessages.specials)
                         : season.seasonNumber}
                     </Badge>
                   </span>

@@ -82,7 +82,6 @@ const messages = defineMessages({
   seasonstitle: 'Seasons',
   episodeCount: '{episodeCount, plural, one {# Episode} other {# Episodes}}',
   seasonnumber: 'Season {seasonNumber}',
-  specials: 'Specials',
   status4k: '4K {status}',
   rtcriticsscore: 'Rotten Tomatoes Tomatometer',
   rtaudiencescore: 'Rotten Tomatoes Audience Score',
@@ -586,7 +585,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                           <div className="flex flex-1 items-center space-x-2 text-lg">
                             <span>
                               {season.seasonNumber === 0
-                                ? intl.formatMessage(messages.specials)
+                                ? intl.formatMessage(globalMessages.specials)
                                 : intl.formatMessage(messages.seasonnumber, {
                                     seasonNumber: season.seasonNumber,
                                   })}

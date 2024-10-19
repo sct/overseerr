@@ -41,7 +41,6 @@ const messages = defineMessages({
   tmdbid: 'TMDB ID',
   tvdbid: 'TheTVDB ID',
   unknowntitle: 'Unknown Title',
-  specials: 'Specials',
 });
 
 const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
@@ -451,7 +450,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                       <span key={`season-${season.id}`} className="mr-2">
                         <Badge>
                           {season.seasonNumber === 0
-                            ? intl.formatMessage(messages.specials)
+                            ? intl.formatMessage(globalMessages.specials)
                             : season.seasonNumber}
                         </Badge>
                       </span>
