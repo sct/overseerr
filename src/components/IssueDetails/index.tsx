@@ -31,7 +31,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
 
 const messages = defineMessages({
@@ -144,6 +144,7 @@ const IssueDetails = () => {
         autoDismiss: true,
       });
       revalidateIssue();
+      mutate('/api/v1/issue/count');
     } catch (e) {
       addToast(intl.formatMessage(messages.toaststatusupdatefailed), {
         appearance: 'error',
@@ -155,6 +156,7 @@ const IssueDetails = () => {
   const deleteIssue = async () => {
     try {
       await axios.delete(`/api/v1/issue/${issueData.id}`);
+      mutate('/api/v1/issue/count');
 
       addToast(intl.formatMessage(messages.toastissuedeleted), {
         appearance: 'success',
