@@ -15,15 +15,20 @@ const StatusBadgeMini = ({
   status,
   is4k = false,
   inProgress = false,
-  shrink = false,
+  shrink = true,
 }: StatusBadgeMiniProps) => {
   const badgeStyle = [
-    `rounded-full bg-opacity-80 shadow-md ${
-      shrink ? 'w-4 sm:w-5 border p-0' : 'w-5 ring-1 p-0.5'
+    `bg-opacity-80 shadow-md w-full h-full pl-3.5 md:pl-4 ${
+      shrink ? 'border' : 'ring-1'
     }`,
   ];
 
   let indicatorIcon: React.ReactNode;
+
+  // clip-path not directly supported in Tailwind.
+  const triangleStyle = {
+    clipPath: 'polygon(100% 0, 100% 100%, 0 0)',
+  };
 
   switch (status) {
     case MediaStatus.PROCESSING:
@@ -58,11 +63,13 @@ const StatusBadgeMini = ({
 
   return (
     <div
-      className={`relative inline-flex whitespace-nowrap rounded-full border-gray-700 text-xs font-semibold leading-5 ring-gray-700 ${
-        shrink ? '' : 'ring-1'
+      className={`absolute top-0 right-0 inline-flex whitespace-nowrap border-gray-700 text-xs font-semibold leading-5 ring-gray-700 ${
+        shrink ? 'h-9 w-9 md:h-10 md:w-10' : 'h-10 w-10 ring-1'
       }`}
     >
-      <div className={badgeStyle.join(' ')}>{indicatorIcon}</div>
+      <div className={badgeStyle.join(' ')} style={triangleStyle}>
+        {indicatorIcon}
+      </div>
       {is4k && <span className="pl-1 pr-2 text-gray-200">4K</span>}
     </div>
   );
