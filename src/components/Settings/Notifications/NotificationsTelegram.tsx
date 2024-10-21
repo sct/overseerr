@@ -181,7 +181,7 @@ const NotificationsTelegram = () => {
                   {intl.formatMessage(messages.botApiTip, {
                     CreateBotLink: (msg: React.ReactNode) => (
                       <a
-                        href="https://core.telegram.org/bots#6-botfather"
+                        href="https://core.telegram.org/bots#how-do-i-create-a-bot"
                         className="text-white transition duration-300 hover:underline"
                         target="_blank"
                         rel="noreferrer"
