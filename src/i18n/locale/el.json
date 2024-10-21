@@ -770,7 +770,6 @@
   "components.Settings.Notifications.NotificationsWebhook.templatevariablehelp": "Template Variable Help",
   "components.Settings.Notifications.NotificationsLunaSea.webhookUrlTip": "Ο χρήστης σου ή η συσκευή <LunaSeaLink>ειδοποίηση webhook URL</LunaSeaLink>",
   "components.RequestModal.numberofepisodes": "# Αριθμός Επεισοδίων",
-  "components.RequestModal.extras": "Έξτρας",
   "components.MovieDetails.studio": "{studioCount, plural, one {Στούντιο} other {Στούντιο}}",
   "components.Layout.VersionStatus.commitsbehind": "{commitsBehind} {commitsBehind, plural, one {commit} other {commits}} πίσω",
   "pages.serviceunavailable": "Η υπηρεσία δεν είναι διαθέσιμη",
