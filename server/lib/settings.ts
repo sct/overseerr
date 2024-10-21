@@ -97,6 +97,7 @@ export interface MainSettings {
     tv: Quota;
   };
   hideAvailable: boolean;
+  collapseTags: boolean;
   localLogin: boolean;
   newPlexLogin: boolean;
   region: string;
@@ -294,6 +295,7 @@ class Settings {
           tv: {},
         },
         hideAvailable: false,
+        collapseTags: false,
         localLogin: true,
         newPlexLogin: true,
         region: '',
