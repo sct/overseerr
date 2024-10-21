@@ -240,7 +240,6 @@
   "components.Settings.SettingsAbout.documentation": "使用說明",
   "components.RequestModal.pending4krequest": "待處理的 4K 請求",
   "components.RequestModal.pendingrequest": "待處理的請求",
-  "components.RequestModal.extras": "特輯",
   "components.Settings.SettingsAbout.Releases.versionChangelog": "{version} 變更日誌",
   "components.Settings.SettingsAbout.Releases.releases": "軟體版本",
   "components.Settings.plexsettings": "Plex 設定",
@@ -1217,5 +1216,8 @@
   "components.Settings.SettingsJobsCache.imagecachesize": "總快取大小",
   "components.Settings.SettingsMain.applicationurl": "應用程式網址",
   "components.Settings.SettingsMain.cacheImages": "啟用影像快取",
-  "components.Settings.SettingsMain.cacheImagesTip": "快取外部來源影像（需要大量磁碟空間）"
+  "components.Settings.SettingsMain.cacheImagesTip": "快取外部來源影像（需要大量磁碟空間）",
+  "components.Discover.DiscoverMovies.activefilters": "",
+  "components.Discover.DiscoverTv.activefilters": "",
+  "components.Discover.FilterSlideover.activefilters": ""
 }
