@@ -23,7 +23,6 @@
   "components.RequestModal.requestSuccess": "<strong>{title}</strong> richiesto con successo!",
   "components.RequestModal.requestCancel": "Richiesta per <strong>{title}</strong> eliminata.",
   "components.RequestModal.numberofepisodes": "Nº di episodi",
-  "components.RequestModal.extras": "Extra",
   "components.RequestModal.cancel": "Cancella la richiesta",
   "components.RequestList.requests": "Richieste",
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {Stagione} other {Stagioni}}",
