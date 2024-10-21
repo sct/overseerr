@@ -99,6 +99,11 @@ export interface MainSettings {
   hideAvailable: boolean;
   localLogin: boolean;
   newPlexLogin: boolean;
+  oidcLogin: boolean;
+  oidcName: string;
+  oidcClientId: string;
+  oidcClientSecret: string;
+  oidcDomain: string;
   region: string;
   originalLanguage: string;
   trustProxy: boolean;
@@ -126,6 +131,8 @@ interface FullPublicSettings extends PublicSettings {
   locale: string;
   emailEnabled: boolean;
   newPlexLogin: boolean;
+  oidcLogin: boolean;
+  oidcName: string;
 }
 
 export interface NotificationAgentConfig {
@@ -296,6 +303,11 @@ class Settings {
         hideAvailable: false,
         localLogin: true,
         newPlexLogin: true,
+        oidcLogin: false,
+        oidcName: '',
+        oidcClientId: '',
+        oidcClientSecret: '',
+        oidcDomain: '',
         region: '',
         originalLanguage: '',
         trustProxy: false,
@@ -512,6 +524,8 @@ class Settings {
       locale: this.data.main.locale,
       emailEnabled: this.data.notifications.agents.email.enabled,
       newPlexLogin: this.data.main.newPlexLogin,
+      oidcLogin: this.data.main.oidcLogin,
+      oidcName: this.data.main.oidcName,
     };
   }
 

@@ -6,7 +6,18 @@ import { Permission } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
+import type { OIDCJwtPayload } from '@server/utils/oidc';
+import {
+  createJwtSchema,
+  getOIDCRedirectUrl,
+  getOIDCWellknownConfiguration,
+} from '@server/utils/oidc';
+import { randomBytes } from 'crypto';
+import type { Request } from 'express';
 import { Router } from 'express';
+import gravatarUrl from 'gravatar-url';
+import decodeJwt from 'jwt-decode';
+import type { InferType } from 'yup';
 
 const authRoutes = Router();
 
@@ -417,6 +428,204 @@ authRoutes.post('/reset-password/:guid', async (req, res, next) => {
   });
 
   return res.status(200).json({ status: 'ok' });
+});
+
+authRoutes.get('/oidc-login', async (req, res, next) => {
+  try {
+    const state = randomBytes(32).toString('hex');
+    const redirectUrl = await getOIDCRedirectUrl(req, state);
+
+    res.cookie('oidc-state', state, {
+      maxAge: 60000,
+      httpOnly: true,
+      secure: req.protocol === 'https',
+    });
+
+    logger.debug('OIDC login initiated', {
+      path: '/oidc-login',
+      redirectUrl: redirectUrl,
+      state: state,
+    });
+
+    return res.redirect(redirectUrl);
+  } catch (error) {
+    logger.error('Failed to initiate OIDC login', {
+      path: '/oidc-login',
+      error: error.message,
+    });
+    next(error); // Or handle the error as appropriate for your application
+  }
+});
+
+authRoutes.get('/oidc-callback', async (req, res, next) => {
+  try {
+    const logRequestInfo = (req: Request) => {
+      const remoteIp =
+        req.headers['x-real-ip'] ||
+        req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress;
+      const requestInfo = {
+        method: req.method,
+        url: req.url,
+        headers: req.headers,
+        remoteIp: remoteIp,
+      };
+      return requestInfo;
+    };
+
+    logger.info('OIDC callback initiated', { req: logRequestInfo(req) });
+
+    const settings = getSettings();
+    const { oidcDomain, oidcClientId, oidcClientSecret } = settings.main;
+
+    if (!settings.main.oidcLogin) {
+      return res.status(500).json({ error: 'OIDC sign-in is disabled.' });
+    }
+
+    const cookieState = req.cookies['oidc-state'];
+    const url = new URL(req.url, `${req.protocol}://${req.hostname}`);
+    const state = url.searchParams.get('state');
+    const scope = url.searchParams.get('scope'); // Optional scope parameter
+
+    if (scope) {
+      logger.info('OIDC callback with scope', { scope });
+    } else {
+      logger.info('OIDC callback without scope');
+    }
+
+    // Check that the request belongs to the correct state
+    if (state && cookieState === state) {
+      res.clearCookie('oidc-state');
+    } else {
+      logger.info('Failed OIDC login attempt', {
+        cause: 'Invalid state',
+        ip: req.ip,
+        state: state,
+        cookieState: cookieState,
+      });
+      return res.redirect('/login');
+    }
+
+    const code = url.searchParams.get('code');
+    if (!code) {
+      logger.info('Failed OIDC login attempt', {
+        cause: 'Invalid code',
+        ip: req.ip,
+        code: code,
+      });
+      return res.redirect('/login');
+    }
+
+    const wellKnownInfo = await getOIDCWellknownConfiguration(oidcDomain);
+
+    const callbackUrl = new URL(
+      '/api/v1/auth/oidc-callback',
+      `${req.protocol}://${req.headers.host}`
+    );
+    const formData = new URLSearchParams();
+    formData.append('client_secret', oidcClientSecret);
+    formData.append('grant_type', 'authorization_code');
+    formData.append('redirect_uri', callbackUrl.toString());
+    formData.append('client_id', oidcClientId);
+    formData.append('code', code);
+    if (scope) {
+      formData.append('scope', scope);
+    }
+
+    const response = await fetch(wellKnownInfo.token_endpoint, {
+      method: 'POST',
+      headers: new Headers([
+        ['Content-Type', 'application/x-www-form-urlencoded'],
+      ]),
+      body: formData,
+    });
+
+    const body = (await response.json()) as
+      | { id_token: string; error: never }
+      | { error: string };
+
+    if (body.error) {
+      logger.info('Failed OIDC login attempt', {
+        cause: `Invalid token response: ${body.error}`,
+        ip: req.ip,
+        body: body,
+      });
+      return res.redirect('/login');
+    }
+
+    const { id_token: idToken } = body as Extract<
+      typeof body,
+      { id_token: string }
+    >;
+    try {
+      const decoded = decodeJwt<OIDCJwtPayload>(idToken);
+      const jwtSchema = createJwtSchema({
+        oidcClientId: oidcClientId,
+        oidcDomain: oidcDomain,
+      });
+
+      await jwtSchema.validate(decoded);
+    } catch (error) {
+      logger.info('Failed OIDC login attempt', {
+        cause: `Invalid JWT: ${error.message}`,
+        ip: req.ip,
+        idToken: idToken,
+      });
+      return res.redirect('/login');
+    }
+
+    // Check that email is verified and map email to user
+    const decoded: InferType<ReturnType<typeof createJwtSchema>> =
+      decodeJwt(idToken);
+
+    if (!decoded.email_verified) {
+      logger.info('Failed OIDC login attempt', {
+        cause: 'Email not verified',
+        ip: req.ip,
+        email: decoded.email,
+      });
+      return res.redirect('/login');
+    }
+
+    const userRepository = getRepository(User);
+    let user = await userRepository.findOne({
+      where: { email: decoded.email },
+    });
+
+    // Create user if it doesn't exist
+    if (!user) {
+      logger.info(`Creating user for ${decoded.email}`, {
+        ip: req.ip,
+        email: decoded.email,
+      });
+      const avatar = gravatarUrl(decoded.email, { default: 'mm', size: 200 });
+      user = new User({
+        avatar: avatar,
+        username: decoded.email,
+        email: decoded.email,
+        permissions: settings.main.defaultPermissions,
+        plexToken: '',
+        userType: UserType.LOCAL,
+      });
+      await userRepository.save(user);
+    }
+
+    // Set logged in session and return
+    if (req.session) {
+      req.session.userId = user.id;
+    }
+    return res.redirect('/');
+  } catch (error) {
+    // Log the error details
+    logger.error('Error in OIDC callback', {
+      path: '/oidc-callback',
+      error: error.message,
+      stack: error.stack, // Include the error stack trace for debugging
+    });
+
+    // Handle the error as appropriate for your application
+    next(error);
+  }
 });
 
 export default authRoutes;
