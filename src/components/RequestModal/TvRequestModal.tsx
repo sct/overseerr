@@ -240,7 +240,8 @@ const TvRequestModal = ({
       .filter(
         (request) =>
           request.is4k === is4k &&
-          request.status !== MediaRequestStatus.DECLINED
+          request.status !== MediaRequestStatus.DECLINED &&
+          request.status !== MediaRequestStatus.COMPLETED
       )
       .reduce((requestedSeasons, request) => {
         return [
@@ -338,7 +339,8 @@ const TvRequestModal = ({
       (data.mediaInfo.requests || []).filter(
         (request) =>
           request.is4k === is4k &&
-          request.status !== MediaRequestStatus.DECLINED
+          request.status !== MediaRequestStatus.DECLINED &&
+          request.status !== MediaRequestStatus.COMPLETED
       ).length > 0
     ) {
       data.mediaInfo.requests
@@ -346,7 +348,9 @@ const TvRequestModal = ({
         .forEach((request) => {
           if (!seasonRequest) {
             seasonRequest = request.seasons.find(
-              (season) => season.seasonNumber === seasonNumber
+              (season) =>
+                season.seasonNumber === seasonNumber &&
+                season.status !== MediaRequestStatus.COMPLETED
             );
           }
         });
@@ -563,7 +567,9 @@ const TvRequestModal = ({
                         (sn) =>
                           sn.seasonNumber === season.seasonNumber &&
                           sn[is4k ? 'status4k' : 'status'] !==
-                            MediaStatus.UNKNOWN
+                            MediaStatus.UNKNOWN &&
+                          sn[is4k ? 'status4k' : 'status'] !==
+                            MediaStatus.DELETED
                       );
                       return (
                         <tr key={`season-${season.id}`}>

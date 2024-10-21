@@ -299,6 +299,17 @@ const StatusBadge = ({
         </Tooltip>
       );
 
+    case MediaStatus.DELETED:
+      return (
+        <Tooltip content={mediaLinkDescription}>
+          <Badge badgeType="danger">
+            {intl.formatMessage(is4k ? messages.status4k : messages.status, {
+              status: intl.formatMessage(globalMessages.deleted),
+            })}
+          </Badge>
+        </Tooltip>
+      );
+
     default:
       return null;
   }
