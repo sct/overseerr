@@ -612,6 +612,8 @@
   "components.Settings.Notifications.botUsernameTip": "Allow users to also start a chat with your bot and configure their own notifications",
   "components.Settings.Notifications.chatId": "Chat ID",
   "components.Settings.Notifications.chatIdTip": "Start a chat with your bot, add <GetIdBotLink>@get_id_bot</GetIdBotLink>, and issue the <code>/my_id</code> command",
+  "components.Settings.Notifications.messageThreadId": "Thread/Topic ID",
+  "components.Settings.Notifications.messageThreadIdTip": "If your group chat has topics enabled, you can specify a thread/topic's ID here",
   "components.Settings.Notifications.discordsettingsfailed": "Discord notification settings failed to save.",
   "components.Settings.Notifications.discordsettingssaved": "Discord notification settings saved successfully!",
   "components.Settings.Notifications.emailsender": "Sender Address",
