@@ -17,7 +17,6 @@
   "components.RequestModal.pendingrequest": "Sol·licitud pendent",
   "components.RequestModal.pending4krequest": "Sol·licitud en 4K pendent",
   "components.RequestModal.numberofepisodes": "# d'episodis",
-  "components.RequestModal.extras": "Extres",
   "components.RequestModal.errorediting": "S'ha produït un error en editar la sol·licitud.",
   "components.RequestModal.cancel": "Cancel·la la sol·licitud",
   "components.RequestModal.autoapproval": "Aprovació automàtica",
@@ -1238,5 +1237,6 @@
   "components.MovieDetails.imdbuserscore": "Puntuació dels usuaris de IMDB",
   "components.Settings.RadarrModal.tagRequests": "Sol·licituds d'etiqueta",
   "components.Settings.RadarrModal.tagRequestsInfo": "Automàticament afegeix una etiqueta addicional amb el nom d'usuari i nom complet del sol·licitant",
-  "components.Settings.SonarrModal.tagRequestsInfo": "Automàticament afegeix una etiqueta addicional amb el nom d'usuari i nom complet del sol·licitant"
+  "components.Settings.SonarrModal.tagRequestsInfo": "Automàticament afegeix una etiqueta addicional amb el nom d'usuari i nom complet del sol·licitant",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Testimoni d'actualització de Plex"
 }
