@@ -73,7 +73,10 @@ const StatusBadge = ({
         type: 'or',
       }
     ) &&
-    (!is4k ||
+    ((!is4k &&
+      (mediaType === 'movie'
+        ? settings.currentSettings.movieEnabled
+        : settings.currentSettings.seriesEnabled)) ||
       (mediaType === 'movie'
         ? settings.currentSettings.movie4kEnabled
         : settings.currentSettings.series4kEnabled))

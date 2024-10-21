@@ -154,6 +154,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   const mediaLinks: PlayButtonLink[] = [];
 
   if (
+    settings.currentSettings.movieEnabled &&
     plexUrl &&
     hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
       type: 'or',
@@ -314,16 +315,28 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
         </div>
         <div className="media-title">
           <div className="media-status">
-            <StatusBadge
-              status={data.mediaInfo?.status}
-              downloadItem={data.mediaInfo?.downloadStatus}
-              title={data.title}
-              inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
-              tmdbId={data.mediaInfo?.tmdbId}
-              mediaType="movie"
-              plexUrl={plexUrl}
-              serviceUrl={data.mediaInfo?.serviceUrl}
-            />
+            {settings.currentSettings.movieEnabled &&
+              hasPermission(
+                [
+                  Permission.MANAGE_REQUESTS,
+                  Permission.REQUEST,
+                  Permission.REQUEST_MOVIE,
+                ],
+                {
+                  type: 'or',
+                }
+              ) && (
+                <StatusBadge
+                  status={data.mediaInfo?.status}
+                  downloadItem={data.mediaInfo?.downloadStatus}
+                  title={data.title}
+                  inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
+                  tmdbId={data.mediaInfo?.tmdbId}
+                  mediaType="movie"
+                  plexUrl={plexUrl}
+                  serviceUrl={data.mediaInfo?.serviceUrl}
+                />
+              )}
             {settings.currentSettings.movie4kEnabled &&
               hasPermission(
                 [
@@ -379,7 +392,8 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
             tmdbId={data.id}
             onUpdate={() => revalidate()}
           />
-          {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
+          {((settings.currentSettings.movieEnabled &&
+            data.mediaInfo?.status === MediaStatus.AVAILABLE) ||
             (settings.currentSettings.movie4kEnabled &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
