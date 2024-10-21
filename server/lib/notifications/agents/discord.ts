@@ -153,6 +153,14 @@ class DiscordAgent
           inline: true,
         });
       }
+
+      if (payload.request.adminMessage) {
+        fields.push({
+          name: 'Admin Message',
+          value: payload.request.adminMessage,
+          inline: true,
+        });
+      }
     } else if (payload.comment) {
       fields.push({
         name: `Comment from ${payload.comment.user.displayName}`,
