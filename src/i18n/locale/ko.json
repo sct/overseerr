@@ -754,7 +754,6 @@
   "components.RequestModal.cancel": "요청 취소",
   "components.RequestModal.numberofepisodes": "에피소드 수",
   "components.RequestModal.edit": "요청 수정",
-  "components.RequestModal.extras": "기타",
   "components.RequestModal.requestadmin": "이 요청은 자동으로 승인됩니다.",
   "components.RequestModal.requestCancel": "<strong>{title}</strong> 에 대한 요청이 취소되었습니다.",
   "components.RequestModal.requestseriestitle": "시리즈 요청",
@@ -1232,5 +1231,12 @@
   "components.QuotaSelector.seasons": "{count, plural, one {시즌} other {시즌}}",
   "components.RequestModal.QuotaDisplay.requestsremaining": "{remaining, plural, =0 {없음} other {<strong>#</strong>개의}} {type} {remaining, plural, one {요청} other {요청}} 남음",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "매 {jobScheduleHours, plural, one {시간} other {{jobScheduleHours} 시간}}",
-  "components.MovieDetails.imdbuserscore": "IMDB 사용자 점수"
+  "components.MovieDetails.imdbuserscore": "IMDB 사용자 점수",
+  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "장치 기본값",
+  "components.UserProfile.UserSettings.UserNotificationSettings.deviceDefault": "장치 기본값",
+  "components.UserProfile.UserSettings.UserNotificationSettings.sound": "알림 사운드",
+  "components.Settings.Notifications.NotificationsPushover.sound": "알림 사운드",
+  "components.Settings.SonarrModal.seriesType": "시리즈 종류",
+  "components.Settings.SonarrModal.animeSeriesType": "애니메이션 시리즈 종류",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Plex 새로 고침 토큰"
 }

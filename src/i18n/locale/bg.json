@@ -234,7 +234,6 @@
   "components.PermissionEdit.viewrequests": "Преглед на заявките",
   "components.RequestCard.failedretry": "Нещо се обърка при повторен опит за заявка.",
   "components.PermissionEdit.requestMovies": "Заявка за филми",
-  "components.RequestModal.extras": "Екстри",
   "components.RequestModal.QuotaDisplay.quotaLinkUser": "Можете да прегледате обобщение на ограниченията на заявки от потребителя на неговата <Profile Link>профилна страница</Profile Link>.",
   "components.Discover.StudioSlider.studios": "Студия",
   "components.ManageSlideOver.manageModalRequests": "Заявки",

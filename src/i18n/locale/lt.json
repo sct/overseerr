@@ -444,7 +444,6 @@
   "components.RequestButton.declinerequest": "Atmesti rezervacijas",
   "components.RequestButton.declinerequest4k": "Atmesti 4K rezervacijas",
   "components.RequestModal.QuotaDisplay.allowedRequests": "Jūs galite rezervuoti iki <strong>{limit}</strong> {type} kas <strong>{days}</strong> dienas.",
-  "components.RequestModal.extras": "Ekstros",
   "components.RequestModal.pendingapproval": "Rezervacija laukia patvirtinimo.",
   "components.RequestModal.requestseasons": "Rezervuoti {seasonCount} {seasonCount, plural, one {sezoną} other {sezonus}}",
   "components.PermissionEdit.autoapprove4kDescription": "Suteikti automatinius patvirtinimus visoms 4K medijos rezervacijoms.",

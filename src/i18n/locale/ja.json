@@ -29,7 +29,6 @@
   "components.RequestList.RequestItem.seasons": "シーズン",
   "components.RequestList.requests": "リクエスト",
   "components.RequestModal.cancel": "キャンセルリクエスト",
-  "components.RequestModal.extras": "おまけ",
   "components.RequestModal.numberofepisodes": "エピソード数",
   "components.RequestModal.pendingrequest": "",
   "components.RequestModal.requestCancel": "<strong>{title}</strong> のリクエストは取り消されました。",
