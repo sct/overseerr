@@ -110,7 +110,7 @@ interface PublicSettings {
   initialized: boolean;
 }
 
-interface FullPublicSettings extends PublicSettings {
+export interface FullPublicSettings extends PublicSettings {
   applicationTitle: string;
   applicationUrl: string;
   hideAvailable: boolean;
@@ -126,6 +126,7 @@ interface FullPublicSettings extends PublicSettings {
   locale: string;
   emailEnabled: boolean;
   newPlexLogin: boolean;
+  plexLoginEnabled: boolean;
 }
 
 export interface NotificationAgentConfig {
@@ -512,6 +513,7 @@ class Settings {
       locale: this.data.main.locale,
       emailEnabled: this.data.notifications.agents.email.enabled,
       newPlexLogin: this.data.main.newPlexLogin,
+      plexLoginEnabled: false,
     };
   }
 
