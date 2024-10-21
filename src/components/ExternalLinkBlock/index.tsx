@@ -4,6 +4,7 @@ import RTLogo from '@app/assets/services/rt.svg';
 import TmdbLogo from '@app/assets/services/tmdb.svg';
 import TraktLogo from '@app/assets/services/trakt.svg';
 import TvdbLogo from '@app/assets/services/tvdb.svg';
+import LetterboxdLogo from '@app/assets/services/letterboxd.svg';
 import useLocale from '@app/hooks/useLocale';
 import { MediaType } from '@server/constants/media';
 
@@ -88,6 +89,16 @@ const ExternalLinkBlock = ({
           rel="noreferrer"
         >
           <TraktLogo />
+        </a>
+      )}
+      {tmdbId && mediaType === MediaType.MOVIE && (
+        <a
+          href={`https://letterboxd.com/tmdb/${tmdbId}/`}
+          className="w-8 opacity-50 transition duration-300 hover:opacity-100"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <LetterboxdLogo />
         </a>
       )}
     </div>
