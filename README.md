@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-105-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-106-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -208,6 +208,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/demrich"><img src="https://avatars.githubusercontent.com/u/30092389?v=4?s=100" width="100px;" alt="David Emrich"/><br /><sub><b>David Emrich</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=demrich" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://maxtrier.dk"><img src="https://avatars.githubusercontent.com/u/5898152?v=4?s=100" width="100px;" alt="Max T. Kristiansen"/><br /><sub><b>Max T. Kristiansen</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=maxnatamo" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://damsdev.me"><img src="https://avatars.githubusercontent.com/u/60252259?v=4?s=100" width="100px;" alt="Damien Fajole"/><br /><sub><b>Damien Fajole</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=DamsDev1" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AhmedNSidd"><img src="https://avatars.githubusercontent.com/u/36286128?v=4?s=100" width="100px;" alt="Ahmed Siddiqui"/><br /><sub><b>Ahmed Siddiqui</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=AhmedNSidd" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
