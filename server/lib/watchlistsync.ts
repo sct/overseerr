@@ -60,7 +60,7 @@ class WatchlistSync {
       return;
     }
 
-    const plexTvApi = new PlexTvAPI(user.plexToken);
+    const plexTvApi = new PlexTvAPI(user.plexToken, user.displayName);
 
     const response = await plexTvApi.getWatchlist({ size: 20 });
 

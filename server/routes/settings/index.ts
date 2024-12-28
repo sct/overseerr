@@ -136,7 +136,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
       where: { id: 1 },
     });
     const plexTvClient = admin.plexToken
-      ? new PlexTvAPI(admin.plexToken)
+      ? new PlexTvAPI(admin.plexToken, admin.displayName)
       : null;
     const devices = (await plexTvClient?.getDevices())?.filter((device) => {
       return device.provides.includes('server') && device.owned;
@@ -292,7 +292,7 @@ settingsRoutes.get(
         select: { id: true, plexToken: true },
         where: { id: 1 },
       });
-      const plexApi = new PlexTvAPI(admin.plexToken ?? '');
+      const plexApi = new PlexTvAPI(admin.plexToken ?? '', admin.displayName);
       const plexUsers = (await plexApi.getUsers()).MediaContainer.User.map(
         (user) => user.$
       ).filter((user) => user.email);
