@@ -234,8 +234,7 @@
   "components.PermissionEdit.viewrequests": "Преглед на заявките",
   "components.RequestCard.failedretry": "Нещо се обърка при повторен опит за заявка.",
   "components.PermissionEdit.requestMovies": "Заявка за филми",
-  "components.RequestModal.extras": "Екстри",
-  "components.RequestModal.QuotaDisplay.quotaLinkUser": "Можете да прегледате обобщение на ограниченията на заявки от потребителя на неговата <Profile Link>профилна страница</Profile Link>.",
+  "components.RequestModal.QuotaDisplay.quotaLinkUser": "Можете да прегледате обобщение на ограниченията на заявки от потребителя в неговата <Profile Link>профилна страница</Profile Link>.",
   "components.Discover.StudioSlider.studios": "Студия",
   "components.ManageSlideOver.manageModalRequests": "Заявки",
   "components.NotificationTypeSelector.issuecreatedDescription": "Изпращайте известия при докладване на проблеми.",
@@ -437,7 +436,7 @@
   "components.RequestButton.viewrequest4k": "Преглед на 4К заявка",
   "components.Settings.RadarrModal.edit4kradarr": "Редактирай 4К Radarr сървър",
   "components.PermissionEdit.request4k": "Заявка 4K",
-  "components.RequestModal.QuotaDisplay.quotaLink": "Можете да прегледате обобщение на ограниченията на вашите заявки на вашата <Profile Link>профилна страница</Profile Link>.",
+  "components.RequestModal.QuotaDisplay.quotaLink": "Можете да прегледате обобщение на ограниченията на вашите заявки във вашата <Profile Link>профилна страница</Profile Link>.",
   "components.Discover.plexwatchlist": "Вашият Plex списък за гледане",
   "components.ResetPassword.confirmpassword": "Потвърди парола",
   "components.Discover.FilterSlideover.tmdbuserscore": "TMDB потребителска оценка",
@@ -510,7 +509,7 @@
   "components.RequestModal.QuotaDisplay.allowedRequests": "Имате право да заявявате <strong>{limit}</strong> {type} на всеки <strong>{days}</strong> дни.",
   "components.PermissionEdit.autorequestMoviesDescription": "Дайте разрешение за автоматично изпращане на заявки за не-4K филми чрез Plex Списък за гледане.",
   "components.NotificationTypeSelector.usermediadeclinedDescription": "Получавайте известие, когато заявките ви за медия бъдат отхвърлени.",
-  "components.Layout.VersionStatus.commitsbehind": "{commitsBehind} {commitsBehind, plural, one {commit} other {commits}} behind",
+  "components.Layout.VersionStatus.commitsbehind": "{commitsBehind} {commitsBehind, plural, one {commit} other {commits}} назад",
   "components.ResetPassword.resetpassword": "Нулиране на паролата ви",
   "components.Settings.Notifications.smtpHost": "SMTP Host",
   "components.PlexLoginButton.signingin": "Вписване…",
@@ -1238,5 +1237,6 @@
   "components.Settings.menuJobs": "Задания и кеш",
   "components.Settings.SettingsUsers.newPlexLogin": "Активиране на ново влизане в Plex",
   "components.UserProfile.UserSettings.UserNotificationSettings.discordsettingssaved": "Настройките за известяване към Discord са запазени успешно!",
-  "i18n.settings": "Настройки"
+  "i18n.settings": "Настройки",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Плекс токън за опресняване"
 }
