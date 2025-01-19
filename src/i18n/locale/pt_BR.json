@@ -141,7 +141,6 @@
   "components.RequestModal.requestCancel": "Solicitação para <strong>{title}</strong> cancelada.",
   "components.RequestModal.pendingrequest": "Solicitação Pendente",
   "components.RequestModal.numberofepisodes": "# de Episódeos",
-  "components.RequestModal.extras": "Extras",
   "components.RequestModal.cancel": "Cancelar Solicitação",
   "components.RequestList.requests": "Solicitações",
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {Temporada} other {Temporadas}}",

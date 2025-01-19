@@ -70,7 +70,6 @@
   "components.RequestModal.requestCancel": "Solicitud para <strong>{title}</strong> cancelada.",
   "components.RequestModal.pendingrequest": "Solicitud pendiente",
   "components.RequestModal.numberofepisodes": "# de Episodios",
-  "components.RequestModal.extras": "Extras",
   "components.RequestModal.cancel": "Cancelar Petición",
   "components.RequestList.requests": "Solicitudes",
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {Temporada} other {Temporadas}}",
@@ -859,7 +858,7 @@
   "components.IssueModal.issueOther": "Otro",
   "components.IssueList.showallissues": "Mostrar Todas las Incidencias",
   "components.PermissionEdit.manageissuesDescription": "Conceder permiso para gestionar incidencias en contenidos.",
-  "components.ManageSlideOver.manageModalRequests": "Solicitudes",
+  "components.ManageSlideOver.manageModalRequests": "Peticiones",
   "components.IssueList.sortModified": "Última Modificación",
   "components.IssueModal.CreateIssueModal.allseasons": "Todas las Temporadas",
   "components.IssueModal.CreateIssueModal.episode": "Episodio {episodeNumber}",
@@ -1238,5 +1237,6 @@
   "components.Settings.Notifications.NotificationsPushover.sound": "Sonido para las notificaciones",
   "components.UserProfile.UserSettings.UserNotificationSettings.deviceDefault": "Dispositivo predeterminado",
   "components.UserProfile.UserSettings.UserNotificationSettings.sound": "Sonido para las notificaciones",
-  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Dispositivo predeterminado"
+  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Dispositivo predeterminado",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Token de actualización de Plex"
 }

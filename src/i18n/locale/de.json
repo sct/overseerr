@@ -29,7 +29,6 @@
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {Staffel} other {Staffeln}}",
   "components.RequestList.requests": "Anfragen",
   "components.RequestModal.cancel": "Anfrage abbrechen",
-  "components.RequestModal.extras": "Extras",
   "components.RequestModal.numberofepisodes": "Anzahl der Folgen",
   "components.RequestModal.pendingrequest": "Ausstehende Anfrage",
   "components.RequestModal.requestCancel": "Anfrage für <strong>{title}</strong> abgebrochen.",

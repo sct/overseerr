@@ -681,7 +681,6 @@
   "components.RequestModal.pendingapproval": "你的请求正在等待管理员批准。",
   "components.RequestModal.pending4krequest": "待处理的 4K 请求",
   "components.RequestModal.numberofepisodes": "集数",
-  "components.RequestModal.extras": "特輯",
   "components.RequestModal.errorediting": "编辑请求中出了点问题。",
   "components.RequestModal.edit": "编辑请求",
   "components.RequestModal.cancel": "取消请求",
