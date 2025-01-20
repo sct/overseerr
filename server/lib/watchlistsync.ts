@@ -117,7 +117,39 @@ class WatchlistSync {
               mediaItem.type === 'show' ? MediaType.TV : MediaType.MOVIE,
             seasons: mediaItem.type === 'show' ? 'all' : undefined,
             tvdbId: mediaItem.tvdbId,
-            is4k: false,
+            is4k: 
+              (mediaItem.type === 'movie' &&
+                user.hasPermission(
+                  [
+                    Permission.REQUEST_4K,
+                    Permission.REQUEST_4K_MOVIE,
+                  ],
+                  { type: 'or' }
+                ) &&
+                user.hasPermission(
+                  [
+                    Permission.AUTO_APPROVE_4K,
+                    Permission.AUTO_APPROVE_4K_MOVIE,
+                  ],
+                  { type: 'or' }
+                )
+              ) ||
+              (mediaItem.type === 'show' &&
+                user.hasPermission(
+                  [
+                    Permission.REQUEST_4K,
+                    Permission.REQUEST_4K_TV,
+                  ],
+                  { type: 'or' }
+                ) &&
+                user.hasPermission(
+                  [
+                    Permission.AUTO_APPROVE_4K,
+                    Permission.AUTO_APPROVE_4K_TV,
+                  ],
+                  { type: 'or' }
+                )
+              ),
           },
           user,
           { isAutoRequest: true }
