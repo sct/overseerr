@@ -43,6 +43,8 @@ const messages = defineMessages({
   qualityprofile: 'Quality Profile',
   languageprofile: 'Language Profile',
   rootfolder: 'Root Folder',
+  seriesType: 'Series Type',
+  animeSeriesType: 'Anime Series Type',
   animequalityprofile: 'Anime Quality Profile',
   animelanguageprofile: 'Anime Language Profile',
   animerootfolder: 'Anime Root Folder',
@@ -62,6 +64,9 @@ const messages = defineMessages({
   syncEnabled: 'Enable Scan',
   externalUrl: 'External URL',
   enableSearch: 'Enable Automatic Search',
+  tagRequests: 'Tag Requests',
+  tagRequestsInfo:
+    "Automatically add an additional tag with the requester's user ID & display name",
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
@@ -223,10 +228,10 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
       as="div"
       appear
       show
-      enter="transition ease-in-out duration-300 transform opacity-0"
+      enter="transition-opacity ease-in-out duration-300"
       enterFrom="opacity-0"
-      enterTo="opacuty-100"
-      leave="transition ease-in-out duration-300 transform opacity-100"
+      enterTo="opacity-100"
+      leave="transition-opacity ease-in-out duration-300"
       leaveFrom="opacity-100"
       leaveTo="opacity-0"
     >
@@ -241,6 +246,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
           activeProfileId: sonarr?.activeProfileId,
           activeLanguageProfileId: sonarr?.activeLanguageProfileId,
           rootFolder: sonarr?.activeDirectory,
+          seriesType: sonarr?.seriesType,
+          animeSeriesType: sonarr?.animeSeriesType,
           activeAnimeProfileId: sonarr?.activeAnimeProfileId,
           activeAnimeLanguageProfileId: sonarr?.activeAnimeLanguageProfileId,
           activeAnimeRootFolder: sonarr?.activeAnimeDirectory,
@@ -252,6 +259,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
           externalUrl: sonarr?.externalUrl,
           syncEnabled: sonarr?.syncEnabled ?? false,
           enableSearch: !sonarr?.preventSearch,
+          tagRequests: sonarr?.tagRequests ?? false,
         }}
         validationSchema={SonarrSettingsSchema}
         onSubmit={async (values) => {
@@ -276,6 +284,8 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                 : undefined,
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
+              seriesType: values.seriesType,
+              animeSeriesType: values.animeSeriesType,
               activeAnimeProfileId: values.activeAnimeProfileId
                 ? Number(values.activeAnimeProfileId)
                 : undefined,
@@ -292,6 +302,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
               externalUrl: values.externalUrl,
               syncEnabled: values.syncEnabled,
               preventSearch: !values.enableSearch,
+              tagRequests: values.tagRequests,
             };
             if (!sonarr) {
               await axios.post('/api/v1/settings/sonarr', submission);
@@ -533,6 +544,27 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                   </div>
                 </div>
                 <div className="form-row">
+                  <label htmlFor="seriesType" className="text-label">
+                    {intl.formatMessage(messages.seriesType)}
+                  </label>
+                  <div className="form-input-area">
+                    <div className="form-input-field">
+                      <Field
+                        as="select"
+                        id="seriesType"
+                        name="seriesType"
+                        disabled={!isValidated || isTesting}
+                      >
+                        <option value="standard">Standard</option>
+                        <option value="daily">Daily</option>
+                      </Field>
+                    </div>
+                  </div>
+                  {errors.seriesType && touched.seriesType && (
+                    <div className="error">{errors.seriesType}</div>
+                  )}
+                </div>
+                <div className="form-row">
                   <label htmlFor="activeProfileId" className="text-label">
                     {intl.formatMessage(messages.qualityprofile)}
                     <span className="label-required">*</span>
@@ -717,6 +749,27 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                       }
                     />
                   </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="animeSeriesType" className="text-label">
+                    {intl.formatMessage(messages.animeSeriesType)}
+                  </label>
+                  <div className="form-input-area">
+                    <div className="form-input-field">
+                      <Field
+                        as="select"
+                        id="animeSeriesType"
+                        name="animeSeriesType"
+                        disabled={!isValidated || isTesting}
+                      >
+                        <option value="standard">Standard</option>
+                        <option value="anime">Anime</option>
+                      </Field>
+                    </div>
+                  </div>
+                  {errors.animeSeriesType && touched.animeSeriesType && (
+                    <div className="error">{errors.animeSeriesType}</div>
+                  )}
                 </div>
                 <div className="form-row">
                   <label htmlFor="activeAnimeProfileId" className="text-label">
@@ -957,6 +1010,21 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                       type="checkbox"
                       id="enableSearch"
                       name="enableSearch"
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="tagRequests" className="checkbox-label">
+                    {intl.formatMessage(messages.tagRequests)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.tagRequestsInfo)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="tagRequests"
+                      name="tagRequests"
                     />
                   </div>
                 </div>

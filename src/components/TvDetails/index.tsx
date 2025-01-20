@@ -30,6 +30,7 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
+import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { Disclosure, Transition } from '@headlessui/react';
 import {
   ArrowRightCircleIcon,
@@ -39,7 +40,7 @@ import {
   PlayIcon,
 } from '@heroicons/react/24/outline';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
-import type { RTRating } from '@server/api/rottentomatoes';
+import type { RTRating } from '@server/api/rating/rottentomatoes';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
@@ -109,6 +110,13 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     mutate: revalidate,
   } = useSWR<TvDetailsType>(`/api/v1/tv/${router.query.tvId}`, {
     fallbackData: tv,
+    refreshInterval: refreshIntervalHelper(
+      {
+        downloadStatus: tv?.mediaInfo?.downloadStatus,
+        downloadStatus4k: tv?.mediaInfo?.downloadStatus4k,
+      },
+      15000
+    ),
   });
 
   const { data: ratingData } = useSWR<RTRating>(
@@ -192,6 +200,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     );
   }
 
+  // Does NOT include "Specials"
   const seasonCount = data.seasons.filter(
     (season) => season.seasonNumber !== 0 && season.episodeCount !== 0
   ).length;
@@ -249,9 +258,17 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     return [...requestedSeasons, ...availableSeasons];
   };
 
-  const isComplete = seasonCount <= getAllRequestedSeasons(false).length;
+  const showHasSpecials = data.seasons.some(
+    (season) => season.seasonNumber === 0
+  );
 
-  const is4kComplete = seasonCount <= getAllRequestedSeasons(true).length;
+  const isComplete =
+    (showHasSpecials ? seasonCount + 1 : seasonCount) <=
+    getAllRequestedSeasons(false).length;
+
+  const is4kComplete =
+    (showHasSpecials ? seasonCount + 1 : seasonCount) <=
+    getAllRequestedSeasons(true).length;
 
   const streamingProviders =
     data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
@@ -514,7 +531,6 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
             {data.seasons
               .slice()
               .reverse()
-              .filter((season) => season.seasonNumber !== 0)
               .map((season) => {
                 const show4k =
                   settings.currentSettings.series4kEnabled &&
@@ -568,9 +584,11 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                         >
                           <div className="flex flex-1 items-center space-x-2 text-lg">
                             <span>
-                              {intl.formatMessage(messages.seasonnumber, {
-                                seasonNumber: season.seasonNumber,
-                              })}
+                              {season.seasonNumber === 0
+                                ? intl.formatMessage(globalMessages.specials)
+                                : intl.formatMessage(messages.seasonnumber, {
+                                    seasonNumber: season.seasonNumber,
+                                  })}
                             </span>
                             <Badge badgeType="dark">
                               {intl.formatMessage(messages.episodeCount, {
@@ -727,18 +745,18 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                             )}
                           <ChevronDownIcon
                             className={`${
-                              open ? 'rotate-180 transform' : ''
+                              open ? 'rotate-180' : ''
                             } h-6 w-6 text-gray-500`}
                           />
                         </Disclosure.Button>
                         <Transition
                           show={open}
-                          enter="transition duration-100 ease-out"
-                          enterFrom="transform opacity-0"
-                          enterTo="transform opacity-100"
-                          leave="transition duration-75 ease-out"
-                          leaveFrom="transform opacity-100"
-                          leaveTo="transform opacity-0"
+                          enter="transition-opacity duration-100 ease-out"
+                          enterFrom="opacity-0"
+                          enterTo="opacity-100"
+                          leave="transition-opacity duration-75 ease-out"
+                          leaveFrom="opacity-100"
+                          leaveTo="opacity-0"
                           // Not sure why this transition is adding a margin without this here
                           style={{ margin: '0px' }}
                         >

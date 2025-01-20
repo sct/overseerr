@@ -2,6 +2,7 @@ import type { PlexDevice } from '@server/interfaces/api/plexInterfaces';
 import cacheManager from '@server/lib/cache';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import { randomUUID } from 'node:crypto';
 import xml2js from 'xml2js';
 import ExternalAPI from './externalapi';
 
@@ -82,21 +83,6 @@ interface ServerResponse {
   };
 }
 
-interface FriendResponse {
-  MediaContainer: {
-    User: {
-      $: {
-        id: string;
-        title: string;
-        username: string;
-        email: string;
-        thumb: string;
-      };
-      Server?: ServerResponse[];
-    }[];
-  };
-}
-
 interface UsersResponse {
   MediaContainer: {
     User: {
@@ -140,6 +126,11 @@ export interface PlexWatchlistItem {
   tvdbId?: number;
   type: 'movie' | 'show';
   title: string;
+}
+
+export interface PlexWatchlistCache {
+  etag: string;
+  response: WatchlistResponse;
 }
 
 class PlexTvAPI extends ExternalAPI {
@@ -234,19 +225,6 @@ class PlexTvAPI extends ExternalAPI {
     }
   }
 
-  public async getFriends(): Promise<FriendResponse> {
-    const response = await this.axios.get('/pms/friends/all', {
-      transformResponse: [],
-      responseType: 'text',
-    });
-
-    const parsedXml = (await xml2js.parseStringPromise(
-      response.data
-    )) as FriendResponse;
-
-    return parsedXml;
-  }
-
   public async checkUserAccess(userId: number): Promise<boolean> {
     const settings = getSettings();
 
@@ -255,9 +233,9 @@ class PlexTvAPI extends ExternalAPI {
         throw new Error('Plex is not configured!');
       }
 
-      const friends = await this.getFriends();
+      const usersResponse = await this.getUsers();
 
-      const users = friends.MediaContainer.User;
+      const users = usersResponse.MediaContainer.User;
 
       const user = users.find((u) => parseInt(u.$.id) === userId);
 
@@ -298,6 +276,11 @@ class PlexTvAPI extends ExternalAPI {
     items: PlexWatchlistItem[];
   }> {
     try {
+      const watchlistCache = cacheManager.getCache('plexwatchlist');
+      let cachedWatchlist = watchlistCache.data.get<PlexWatchlistCache>(
+        this.authToken
+      );
+
       const response = await this.axios.get<WatchlistResponse>(
         '/library/sections/watchlist/all',
         {
@@ -305,12 +288,29 @@ class PlexTvAPI extends ExternalAPI {
             'X-Plex-Container-Start': offset,
             'X-Plex-Container-Size': size,
           },
+          headers: {
+            'If-None-Match': cachedWatchlist?.etag,
+          },
           baseURL: 'https://metadata.provider.plex.tv',
+          validateStatus: (status) => status < 400, // Allow HTTP 304 to return without error
         }
       );
 
+      // If we don't recieve HTTP 304, the watchlist has been updated and we need to update the cache.
+      if (response.status >= 200 && response.status <= 299) {
+        cachedWatchlist = {
+          etag: response.headers.etag,
+          response: response.data,
+        };
+
+        watchlistCache.data.set<PlexWatchlistCache>(
+          this.authToken,
+          cachedWatchlist
+        );
+      }
+
       const watchlistDetails = await Promise.all(
-        (response.data.MediaContainer.Metadata ?? []).map(
+        (cachedWatchlist?.response.MediaContainer.Metadata ?? []).map(
           async (watchlistItem) => {
             const detailedResponse = await this.getRolling<MetadataResponse>(
               `/library/metadata/${watchlistItem.ratingKey}`,
@@ -348,7 +348,7 @@ class PlexTvAPI extends ExternalAPI {
       return {
         offset,
         size,
-        totalSize: response.data.MediaContainer.totalSize,
+        totalSize: cachedWatchlist?.response.MediaContainer.totalSize ?? 0,
         items: filteredList,
       };
     } catch (e) {
@@ -362,6 +362,24 @@ class PlexTvAPI extends ExternalAPI {
         totalSize: 0,
         items: [],
       };
+    }
+  }
+
+  public async pingToken() {
+    try {
+      const response = await this.axios.get('/api/v2/ping', {
+        headers: {
+          'X-Plex-Client-Identifier': randomUUID(),
+        },
+      });
+      if (!response?.data?.pong) {
+        throw new Error('No pong response');
+      }
+    } catch (e) {
+      logger.error('Failed to ping token', {
+        label: 'Plex Refresh Token',
+        errorMessage: e.message,
+      });
     }
   }
 }

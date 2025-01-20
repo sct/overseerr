@@ -262,7 +262,7 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
       }
 
       return res.status(200).json({
-        emailEnabled: settings?.email.enabled,
+        emailEnabled: settings.email.enabled,
         pgpKey: user.settings?.pgpKey,
         discordEnabled:
           settings?.discord.enabled && settings.discord.options.enableMentions,
@@ -274,11 +274,12 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
         pushbulletAccessToken: user.settings?.pushbulletAccessToken,
         pushoverApplicationToken: user.settings?.pushoverApplicationToken,
         pushoverUserKey: user.settings?.pushoverUserKey,
-        telegramEnabled: settings?.telegram.enabled,
-        telegramBotUsername: settings?.telegram.options.botUsername,
+        pushoverSound: user.settings?.pushoverSound,
+        telegramEnabled: settings.telegram.enabled,
+        telegramBotUsername: settings.telegram.options.botUsername,
         telegramChatId: user.settings?.telegramChatId,
-        telegramSendSilently: user?.settings?.telegramSendSilently,
-        webPushEnabled: settings?.webpush.enabled,
+        telegramSendSilently: user.settings?.telegramSendSilently,
+        webPushEnabled: settings.webpush.enabled,
         notificationTypes: user.settings?.notificationTypes ?? {},
       });
     } catch (e) {
@@ -329,6 +330,7 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
         user.settings.pushoverApplicationToken =
           req.body.pushoverApplicationToken;
         user.settings.pushoverUserKey = req.body.pushoverUserKey;
+        user.settings.pushoverSound = req.body.pushoverSound;
         user.settings.telegramChatId = req.body.telegramChatId;
         user.settings.telegramSendSilently = req.body.telegramSendSilently;
         user.settings.notificationTypes = Object.assign(
@@ -341,13 +343,14 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
       userRepository.save(user);
 
       return res.status(200).json({
-        pgpKey: user.settings?.pgpKey,
-        discordId: user.settings?.discordId,
-        pushbulletAccessToken: user.settings?.pushbulletAccessToken,
-        pushoverApplicationToken: user.settings?.pushoverApplicationToken,
-        pushoverUserKey: user.settings?.pushoverUserKey,
-        telegramChatId: user.settings?.telegramChatId,
-        telegramSendSilently: user?.settings?.telegramSendSilently,
+        pgpKey: user.settings.pgpKey,
+        discordId: user.settings.discordId,
+        pushbulletAccessToken: user.settings.pushbulletAccessToken,
+        pushoverApplicationToken: user.settings.pushoverApplicationToken,
+        pushoverUserKey: user.settings.pushoverUserKey,
+        pushoverSound: user.settings.pushoverSound,
+        telegramChatId: user.settings.telegramChatId,
+        telegramSendSilently: user.settings.telegramSendSilently,
         notificationTypes: user.settings.notificationTypes,
       });
     } catch (e) {

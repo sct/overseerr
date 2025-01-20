@@ -1,6 +1,6 @@
+import ExternalAPI from '@server/api/externalapi';
 import cacheManager from '@server/lib/cache';
 import { getSettings } from '@server/lib/settings';
-import ExternalAPI from './externalapi';
 
 interface RTAlgoliaSearchResponse {
   results: {
@@ -17,7 +17,7 @@ interface RTAlgoliaHit {
   title: string;
   titles: string[];
   description: string;
-  releaseYear: string;
+  releaseYear: number;
   rating: string;
   genres: string[];
   updateDate: string;
@@ -111,22 +111,19 @@ class RottenTomatoes extends ExternalAPI {
 
       // First, attempt to match exact name and year
       let movie = contentResults.hits.find(
-        (movie) => movie.releaseYear === year.toString() && movie.title === name
+        (movie) => movie.releaseYear === year && movie.title === name
       );
 
       // If we don't find a movie, try to match partial name and year
       if (!movie) {
         movie = contentResults.hits.find(
-          (movie) =>
-            movie.releaseYear === year.toString() && movie.title.includes(name)
+          (movie) => movie.releaseYear === year && movie.title.includes(name)
         );
       }
 
       // If we still dont find a movie, try to match just on year
       if (!movie) {
-        movie = contentResults.hits.find(
-          (movie) => movie.releaseYear === year.toString()
-        );
+        movie = contentResults.hits.find((movie) => movie.releaseYear === year);
       }
 
       // One last try, try exact name match only
@@ -147,6 +144,9 @@ class RottenTomatoes extends ExternalAPI {
           ? 'Fresh'
           : 'Rotten',
         criticsScore: movie.rottenTomatoes.criticsScore,
+        audienceRating:
+          movie.rottenTomatoes.audienceScore >= 60 ? 'Upright' : 'Spilled',
+        audienceScore: movie.rottenTomatoes.audienceScore,
         year: Number(movie.releaseYear),
       };
     } catch (e) {
@@ -181,7 +181,7 @@ class RottenTomatoes extends ExternalAPI {
 
       if (year) {
         tvshow = contentResults.hits.find(
-          (series) => series.releaseYear === year.toString()
+          (series) => series.releaseYear === year
         );
       }
 
@@ -195,6 +195,9 @@ class RottenTomatoes extends ExternalAPI {
         criticsRating:
           tvshow.rottenTomatoes.criticsScore >= 60 ? 'Fresh' : 'Rotten',
         criticsScore: tvshow.rottenTomatoes.criticsScore,
+        audienceRating:
+          tvshow.rottenTomatoes.audienceScore >= 60 ? 'Upright' : 'Spilled',
+        audienceScore: tvshow.rottenTomatoes.audienceScore,
         year: Number(tvshow.releaseYear),
       };
     } catch (e) {

@@ -1,4 +1,4 @@
-import RottenTomatoes from '@server/api/rottentomatoes';
+import RottenTomatoes from '@server/api/rating/rottentomatoes';
 import TheMovieDb from '@server/api/themoviedb';
 import { MediaType } from '@server/constants/media';
 import Media from '@server/entity/Media';
@@ -14,7 +14,7 @@ tvRoutes.get('/:id', async (req, res, next) => {
   try {
     const tv = await tmdb.getTvShow({
       tvId: Number(req.params.id),
-      language: req.locale ?? (req.query.language as string),
+      language: (req.query.language as string) ?? req.locale,
     });
 
     const media = await Media.getMedia(tv.id, MediaType.TV);
@@ -40,7 +40,7 @@ tvRoutes.get('/:id/season/:seasonNumber', async (req, res, next) => {
     const season = await tmdb.getTvSeason({
       tvId: Number(req.params.id),
       seasonNumber: Number(req.params.seasonNumber),
-      language: req.locale ?? (req.query.language as string),
+      language: (req.query.language as string) ?? req.locale,
     });
 
     return res.status(200).json(mapSeasonWithEpisodes(season));
@@ -65,7 +65,7 @@ tvRoutes.get('/:id/recommendations', async (req, res, next) => {
     const results = await tmdb.getTvRecommendations({
       tvId: Number(req.params.id),
       page: Number(req.query.page),
-      language: req.locale ?? (req.query.language as string),
+      language: (req.query.language as string) ?? req.locale,
     });
 
     const media = await Media.getRelatedMedia(
@@ -105,7 +105,7 @@ tvRoutes.get('/:id/similar', async (req, res, next) => {
     const results = await tmdb.getTvSimilar({
       tvId: Number(req.params.id),
       page: Number(req.query.page),
-      language: req.locale ?? (req.query.language as string),
+      language: (req.query.language as string) ?? req.locale,
     });
 
     const media = await Media.getRelatedMedia(

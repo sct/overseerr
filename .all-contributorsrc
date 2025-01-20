@@ -782,6 +782,195 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "owenvoke",
+      "name": "Owen Voke",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1899334?v=4",
+      "profile": "https://voke.dev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Nimelrian",
+      "name": "Sebastian K",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8960836?v=4",
+      "profile": "https://github.com/Nimelrian",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jariz",
+      "name": "jariz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1415847?v=4",
+      "profile": "https://github.com/jariz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Alexays",
+      "name": "Alex",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13947260?v=4",
+      "profile": "https://arouillard.fr",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Zebebles",
+      "name": "Zeb Muller",
+      "avatar_url": "https://avatars.githubusercontent.com/u/11425451?v=4",
+      "profile": "https://github.com/Zebebles",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "SMores",
+      "name": "Shane Friedman",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5354254?v=4",
+      "profile": "http://smoores.dev",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "IzaacJ",
+      "name": "Izaac Brånn",
+      "avatar_url": "https://avatars.githubusercontent.com/u/711323?v=4",
+      "profile": "https://izaacj.me",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "SalmanTariq",
+      "name": "Salman Tariq",
+      "avatar_url": "https://avatars.githubusercontent.com/u/13284494?v=4",
+      "profile": "https://github.com/SalmanTariq",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "andrew-kennedy",
+      "name": "Andrew Kennedy",
+      "avatar_url": "https://avatars.githubusercontent.com/u/2387159?v=4",
+      "profile": "https://github.com/andrew-kennedy",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Fallenbagel",
+      "name": "Fallenbagel",
+      "avatar_url": "https://avatars.githubusercontent.com/u/98979876?v=4",
+      "profile": "https://github.com/Fallenbagel",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "scorp200",
+      "name": "Anton K. (ai Doge)",
+      "avatar_url": "https://avatars.githubusercontent.com/u/9427639?v=4",
+      "profile": "http://aidoge.xyz",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "marcofaggian",
+      "name": "Marco Faggian",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19221001?v=4",
+      "profile": "https://marcofaggian.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "nemchik",
+      "name": "Eric Nemchik",
+      "avatar_url": "https://avatars.githubusercontent.com/u/725456?v=4",
+      "profile": "http://nemchik.com/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "RemiRigal",
+      "name": "RemiRigal",
+      "avatar_url": "https://avatars.githubusercontent.com/u/19256051?v=4",
+      "profile": "https://github.com/RemiRigal",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "j0srisk",
+      "name": "Joseph Risk",
+      "avatar_url": "https://avatars.githubusercontent.com/u/18372584?v=4",
+      "profile": "http://josephrisk.com",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Loetwiek",
+      "name": "Loetwiek",
+      "avatar_url": "https://avatars.githubusercontent.com/u/79059734?v=4",
+      "profile": "https://github.com/Loetwiek",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Fuochi",
+      "name": "Fuochi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/4720478?v=4",
+      "profile": "https://github.com/Fuochi",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "demrich",
+      "name": "David Emrich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30092389?v=4",
+      "profile": "https://github.com/demrich",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "maxnatamo",
+      "name": "Max T. Kristiansen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5898152?v=4",
+      "profile": "https://maxtrier.dk",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "DamsDev1",
+      "name": "Damien Fajole",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60252259?v=4",
+      "profile": "https://damsdev.me",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "AhmedNSidd",
+      "name": "Ahmed Siddiqui",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36286128?v=4",
+      "profile": "https://github.com/AhmedNSidd",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
@@ -791,5 +980,6 @@
   "repoType": "github",
   "repoHost": "https://github.com",
   "skipCi": false,
-  "commitConvention": "angular"
+  "commitConvention": "angular",
+  "commitType": "docs"
 }

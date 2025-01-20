@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-85-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-106-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -184,6 +184,33 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     </tr>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="http://twitter.com/lunks/"><img src="https://avatars.githubusercontent.com/u/91118?v=4?s=100" width="100px;" alt="Pedro Nascimento"/><br /><sub><b>Pedro Nascimento</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=lunks" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://voke.dev"><img src="https://avatars.githubusercontent.com/u/1899334?v=4?s=100" width="100px;" alt="Owen Voke"/><br /><sub><b>Owen Voke</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=owenvoke" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Nimelrian"><img src="https://avatars.githubusercontent.com/u/8960836?v=4?s=100" width="100px;" alt="Sebastian K"/><br /><sub><b>Sebastian K</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Nimelrian" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/jariz"><img src="https://avatars.githubusercontent.com/u/1415847?v=4?s=100" width="100px;" alt="jariz"/><br /><sub><b>jariz</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=jariz" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://arouillard.fr"><img src="https://avatars.githubusercontent.com/u/13947260?v=4?s=100" width="100px;" alt="Alex"/><br /><sub><b>Alex</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Alexays" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Zebebles"><img src="https://avatars.githubusercontent.com/u/11425451?v=4?s=100" width="100px;" alt="Zeb Muller"/><br /><sub><b>Zeb Muller</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Zebebles" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://smoores.dev"><img src="https://avatars.githubusercontent.com/u/5354254?v=4?s=100" width="100px;" alt="Shane Friedman"/><br /><sub><b>Shane Friedman</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=SMores" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://izaacj.me"><img src="https://avatars.githubusercontent.com/u/711323?v=4?s=100" width="100px;" alt="Izaac Brånn"/><br /><sub><b>Izaac Brånn</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=IzaacJ" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/SalmanTariq"><img src="https://avatars.githubusercontent.com/u/13284494?v=4?s=100" width="100px;" alt="Salman Tariq"/><br /><sub><b>Salman Tariq</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=SalmanTariq" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/andrew-kennedy"><img src="https://avatars.githubusercontent.com/u/2387159?v=4?s=100" width="100px;" alt="Andrew Kennedy"/><br /><sub><b>Andrew Kennedy</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=andrew-kennedy" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Fallenbagel"><img src="https://avatars.githubusercontent.com/u/98979876?v=4?s=100" width="100px;" alt="Fallenbagel"/><br /><sub><b>Fallenbagel</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Fallenbagel" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://aidoge.xyz"><img src="https://avatars.githubusercontent.com/u/9427639?v=4?s=100" width="100px;" alt="Anton K. (ai Doge)"/><br /><sub><b>Anton K. (ai Doge)</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=scorp200" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://marcofaggian.com"><img src="https://avatars.githubusercontent.com/u/19221001?v=4?s=100" width="100px;" alt="Marco Faggian"/><br /><sub><b>Marco Faggian</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=marcofaggian" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://nemchik.com/"><img src="https://avatars.githubusercontent.com/u/725456?v=4?s=100" width="100px;" alt="Eric Nemchik"/><br /><sub><b>Eric Nemchik</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=nemchik" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/RemiRigal"><img src="https://avatars.githubusercontent.com/u/19256051?v=4?s=100" width="100px;" alt="RemiRigal"/><br /><sub><b>RemiRigal</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=RemiRigal" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://josephrisk.com"><img src="https://avatars.githubusercontent.com/u/18372584?v=4?s=100" width="100px;" alt="Joseph Risk"/><br /><sub><b>Joseph Risk</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=j0srisk" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Loetwiek"><img src="https://avatars.githubusercontent.com/u/79059734?v=4?s=100" width="100px;" alt="Loetwiek"/><br /><sub><b>Loetwiek</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Loetwiek" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Fuochi"><img src="https://avatars.githubusercontent.com/u/4720478?v=4?s=100" width="100px;" alt="Fuochi"/><br /><sub><b>Fuochi</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=Fuochi" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/demrich"><img src="https://avatars.githubusercontent.com/u/30092389?v=4?s=100" width="100px;" alt="David Emrich"/><br /><sub><b>David Emrich</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=demrich" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://maxtrier.dk"><img src="https://avatars.githubusercontent.com/u/5898152?v=4?s=100" width="100px;" alt="Max T. Kristiansen"/><br /><sub><b>Max T. Kristiansen</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=maxnatamo" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://damsdev.me"><img src="https://avatars.githubusercontent.com/u/60252259?v=4?s=100" width="100px;" alt="Damien Fajole"/><br /><sub><b>Damien Fajole</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=DamsDev1" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/AhmedNSidd"><img src="https://avatars.githubusercontent.com/u/36286128?v=4?s=100" width="100px;" alt="Ahmed Siddiqui"/><br /><sub><b>Ahmed Siddiqui</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=AhmedNSidd" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>

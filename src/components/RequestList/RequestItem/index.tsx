@@ -7,6 +7,7 @@ import StatusBadge from '@app/components/StatusBadge';
 import useDeepLinks from '@app/hooks/useDeepLinks';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
+import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import {
   ArrowPathIcon,
   CheckIcon,
@@ -293,6 +294,13 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
     `/api/v1/request/${request.id}`,
     {
       fallbackData: request,
+      refreshInterval: refreshIntervalHelper(
+        {
+          downloadStatus: request.media.downloadStatus,
+          downloadStatus4k: request.media.downloadStatus4k,
+        },
+        15000
+      ),
     }
   );
 
@@ -432,9 +440,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   <span className="card-field-name">
                     {intl.formatMessage(messages.seasons, {
                       seasonCount:
-                        title.seasons.filter(
-                          (season) => season.seasonNumber !== 0
-                        ).length === request.seasons.length
+                        title.seasons.length === request.seasons.length
                           ? 0
                           : request.seasons.length,
                     })}
@@ -442,7 +448,11 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   <div className="hide-scrollbar flex flex-nowrap overflow-x-scroll">
                     {request.seasons.map((season) => (
                       <span key={`season-${season.id}`} className="mr-2">
-                        <Badge>{season.seasonNumber}</Badge>
+                        <Badge>
+                          {season.seasonNumber === 0
+                            ? intl.formatMessage(globalMessages.specials)
+                            : season.seasonNumber}
+                        </Badge>
                       </span>
                     ))}
                   </div>

@@ -71,9 +71,7 @@ const SidebarLinks: SidebarLinkProps[] = [
   {
     href: '/issues',
     messagesKey: 'issues',
-    svgIcon: (
-      <ExclamationTriangleIcon className="mr-3 h-6 w-6 text-gray-300 transition duration-150 ease-in-out group-hover:text-gray-100 group-focus:text-gray-300" />
-    ),
+    svgIcon: <ExclamationTriangleIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/issues/,
     requiredPermission: [
       Permission.MANAGE_ISSUES,
@@ -127,10 +125,10 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
             </Transition.Child>
             <Transition.Child
               as="div"
-              enter="transition ease-in-out duration-300 transform"
+              enter="transition-transform ease-in-out duration-300"
               enterFrom="-translate-x-full"
               enterTo="translate-x-0"
-              leave="transition ease-in-out duration-300 transform"
+              leave="transition-transform ease-in-out duration-300"
               leaveFrom="translate-x-0"
               leaveTo="-translate-x-full"
             >

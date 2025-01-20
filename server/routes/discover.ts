@@ -14,12 +14,13 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { mapProductionCompany } from '@server/models/Movie';
 import {
+  mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
   mapTvResult,
 } from '@server/models/Search';
 import { mapNetwork } from '@server/models/Tv';
-import { isMovie, isPerson } from '@server/utils/typeHelpers';
+import { isCollection, isMovie, isPerson } from '@server/utils/typeHelpers';
 import { Router } from 'express';
 import { sortBy } from 'lodash';
 import { z } from 'zod';
@@ -64,6 +65,8 @@ const QueryFilterOptions = z.object({
   withRuntimeLte: z.coerce.string().optional(),
   voteAverageGte: z.coerce.string().optional(),
   voteAverageLte: z.coerce.string().optional(),
+  voteCountGte: z.coerce.string().optional(),
+  voteCountLte: z.coerce.string().optional(),
   network: z.coerce.string().optional(),
   watchProviders: z.coerce.string().optional(),
   watchRegion: z.coerce.string().optional(),
@@ -95,6 +98,8 @@ discoverRoutes.get('/movies', async (req, res, next) => {
       withRuntimeLte: query.withRuntimeLte,
       voteAverageGte: query.voteAverageGte,
       voteAverageLte: query.voteAverageLte,
+      voteCountGte: query.voteCountGte,
+      voteCountLte: query.voteCountLte,
       watchProviders: query.watchProviders,
       watchRegion: query.watchRegion,
     });
@@ -159,7 +164,7 @@ discoverRoutes.get<{ language: string }>(
 
       const data = await tmdb.getDiscoverMovies({
         page: Number(req.query.page),
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
         originalLanguage: req.params.language,
       });
 
@@ -203,7 +208,7 @@ discoverRoutes.get<{ genreId: string }>(
 
     try {
       const genres = await tmdb.getMovieGenres({
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
       });
 
       const genre = genres.find(
@@ -216,7 +221,7 @@ discoverRoutes.get<{ genreId: string }>(
 
       const data = await tmdb.getDiscoverMovies({
         page: Number(req.query.page),
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
         genre: req.params.genreId as string,
       });
 
@@ -263,7 +268,7 @@ discoverRoutes.get<{ studioId: string }>(
 
       const data = await tmdb.getDiscoverMovies({
         page: Number(req.query.page),
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
         studio: req.params.studioId as string,
       });
 
@@ -312,7 +317,7 @@ discoverRoutes.get('/movies/upcoming', async (req, res, next) => {
   try {
     const data = await tmdb.getDiscoverMovies({
       page: Number(req.query.page),
-      language: req.locale ?? (req.query.language as string),
+      language: (req.query.language as string) ?? req.locale,
       primaryReleaseDateGte: date,
     });
 
@@ -370,6 +375,8 @@ discoverRoutes.get('/tv', async (req, res, next) => {
       withRuntimeLte: query.withRuntimeLte,
       voteAverageGte: query.voteAverageGte,
       voteAverageLte: query.voteAverageLte,
+      voteCountGte: query.voteCountGte,
+      voteCountLte: query.voteCountLte,
       watchProviders: query.watchProviders,
       watchRegion: query.watchRegion,
     });
@@ -433,7 +440,7 @@ discoverRoutes.get<{ language: string }>(
 
       const data = await tmdb.getDiscoverTv({
         page: Number(req.query.page),
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
         originalLanguage: req.params.language,
       });
 
@@ -477,7 +484,7 @@ discoverRoutes.get<{ genreId: string }>(
 
     try {
       const genres = await tmdb.getTvGenres({
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
       });
 
       const genre = genres.find(
@@ -490,7 +497,7 @@ discoverRoutes.get<{ genreId: string }>(
 
       const data = await tmdb.getDiscoverTv({
         page: Number(req.query.page),
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
         genre: req.params.genreId,
       });
 
@@ -537,7 +544,7 @@ discoverRoutes.get<{ networkId: string }>(
 
       const data = await tmdb.getDiscoverTv({
         page: Number(req.query.page),
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
         network: Number(req.params.networkId),
       });
 
@@ -586,7 +593,7 @@ discoverRoutes.get('/tv/upcoming', async (req, res, next) => {
   try {
     const data = await tmdb.getDiscoverTv({
       page: Number(req.query.page),
-      language: req.locale ?? (req.query.language as string),
+      language: (req.query.language as string) ?? req.locale,
       firstAirDateGte: date,
     });
 
@@ -625,7 +632,7 @@ discoverRoutes.get('/trending', async (req, res, next) => {
   try {
     const data = await tmdb.getAllTrending({
       page: Number(req.query.page),
-      language: req.locale ?? (req.query.language as string),
+      language: (req.query.language as string) ?? req.locale,
     });
 
     const media = await Media.getRelatedMedia(
@@ -647,6 +654,8 @@ discoverRoutes.get('/trending', async (req, res, next) => {
             )
           : isPerson(result)
           ? mapPersonResult(result)
+          : isCollection(result)
+          ? mapCollectionResult(result)
           : mapTvResult(
               result,
               media.find(
@@ -677,7 +686,7 @@ discoverRoutes.get<{ keywordId: string }>(
       const data = await tmdb.getMoviesByKeyword({
         keywordId: Number(req.params.keywordId),
         page: Number(req.query.page),
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
       });
 
       const media = await Media.getRelatedMedia(
@@ -721,7 +730,7 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
       const mappedGenres: GenreSliderItem[] = [];
 
       const genres = await tmdb.getMovieGenres({
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
       });
 
       await Promise.all(
@@ -765,7 +774,7 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
       const mappedGenres: GenreSliderItem[] = [];
 
       const genres = await tmdb.getTvGenres({
-        language: req.locale ?? (req.query.language as string),
+        language: (req.query.language as string) ?? req.locale,
       });
 
       await Promise.all(
@@ -800,12 +809,12 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   }
 );
 
-discoverRoutes.get<{ page?: number }, WatchlistResponse>(
+discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
   '/watchlist',
   async (req, res) => {
     const userRepository = getRepository(User);
     const itemsPerPage = 20;
-    const page = req.params.page ?? 1;
+    const page = Number(req.query.page) ?? 1;
     const offset = (page - 1) * itemsPerPage;
 
     const activeUser = await userRepository.findOne({
@@ -829,8 +838,8 @@ discoverRoutes.get<{ page?: number }, WatchlistResponse>(
 
     return res.json({
       page,
-      totalPages: Math.ceil(watchlist.size / itemsPerPage),
-      totalResults: watchlist.size,
+      totalPages: Math.ceil(watchlist.totalSize / itemsPerPage),
+      totalResults: watchlist.totalSize,
       results: watchlist.items.map((item) => ({
         ratingKey: item.ratingKey,
         title: item.title,

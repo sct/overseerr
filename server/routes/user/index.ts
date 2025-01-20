@@ -381,7 +381,14 @@ router.delete<{ id: string }>(
        * we manually remove all requests from the user here so the parent media's
        * properly reflect the change.
        */
-      await requestRepository.remove(user.requests);
+      await requestRepository.remove(user.requests, {
+        /**
+         * Break-up into groups of 1000 requests to be removed at a time.
+         * Necessary for users with >1000 requests, else an SQLite 'Expression tree is too large' error occurs.
+         * https://typeorm.io/repository-api#additional-options
+         */
+        chunk: user.requests.length / 1000,
+      });
 
       await userRepository.delete(user.id);
       return res.status(200).json(user.filter());
@@ -607,7 +614,7 @@ router.get<{ id: string }, UserWatchDataResponse>(
   }
 );
 
-router.get<{ id: string; page?: number }, WatchlistResponse>(
+router.get<{ id: string }, WatchlistResponse>(
   '/:id/watchlist',
   async (req, res, next) => {
     if (
@@ -627,7 +634,7 @@ router.get<{ id: string; page?: number }, WatchlistResponse>(
     }
 
     const itemsPerPage = 20;
-    const page = req.params.page ?? 1;
+    const page = Number(req.query.page) ?? 1;
     const offset = (page - 1) * itemsPerPage;
 
     const user = await getRepository(User).findOneOrFail({
@@ -651,8 +658,8 @@ router.get<{ id: string; page?: number }, WatchlistResponse>(
 
     return res.json({
       page,
-      totalPages: Math.ceil(watchlist.size / itemsPerPage),
-      totalResults: watchlist.size,
+      totalPages: Math.ceil(watchlist.totalSize / itemsPerPage),
+      totalResults: watchlist.totalSize,
       results: watchlist.items.map((item) => ({
         ratingKey: item.ratingKey,
         title: item.title,
