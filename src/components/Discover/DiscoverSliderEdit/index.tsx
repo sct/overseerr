@@ -26,7 +26,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 
 const messages = defineMessages({
-  deletesuccess: 'Sucessfully deleted slider.',
+  deletesuccess: 'Successfully deleted slider.',
   deletefail: 'Failed to delete slider.',
   remove: 'Remove',
   enable: 'Toggle Visibility',
