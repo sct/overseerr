@@ -1918,7 +1918,7 @@ paths:
               $ref: '#/components/schemas/MainSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -2662,7 +2662,7 @@ paths:
               $ref: '#/components/schemas/NotificationEmailSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -2708,7 +2708,7 @@ paths:
               $ref: '#/components/schemas/DiscordSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -2754,7 +2754,7 @@ paths:
               $ref: '#/components/schemas/LunaSeaSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -2800,7 +2800,7 @@ paths:
               $ref: '#/components/schemas/PushbulletSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -2846,7 +2846,7 @@ paths:
               $ref: '#/components/schemas/PushoverSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -2919,7 +2919,7 @@ paths:
               $ref: '#/components/schemas/GotifySettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -2965,7 +2965,7 @@ paths:
               $ref: '#/components/schemas/SlackSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -3011,7 +3011,7 @@ paths:
               $ref: '#/components/schemas/TelegramSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -3057,7 +3057,7 @@ paths:
               $ref: '#/components/schemas/WebPushSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
@@ -3103,7 +3103,7 @@ paths:
               $ref: '#/components/schemas/WebhookSettings'
       responses:
         '200':
-          description: 'Values were sucessfully updated'
+          description: 'Values were successfully updated'
           content:
             application/json:
               schema:
