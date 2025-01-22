@@ -935,6 +935,42 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "demrich",
+      "name": "David Emrich",
+      "avatar_url": "https://avatars.githubusercontent.com/u/30092389?v=4",
+      "profile": "https://github.com/demrich",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "maxnatamo",
+      "name": "Max T. Kristiansen",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5898152?v=4",
+      "profile": "https://maxtrier.dk",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "DamsDev1",
+      "name": "Damien Fajole",
+      "avatar_url": "https://avatars.githubusercontent.com/u/60252259?v=4",
+      "profile": "https://damsdev.me",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "AhmedNSidd",
+      "name": "Ahmed Siddiqui",
+      "avatar_url": "https://avatars.githubusercontent.com/u/36286128?v=4",
+      "profile": "https://github.com/AhmedNSidd",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "badgeTemplate": "<a href=\"#contributors-\"><img alt=\"All Contributors\" src=\"https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg\"/></a>",
