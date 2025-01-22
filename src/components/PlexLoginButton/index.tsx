@@ -31,7 +31,7 @@ const PlexLoginButton = ({
     setLoading(true);
     try {
       const authToken = await plexOAuth.login(
-        settings.currentSettings.applicationTitle
+        settings.currentSettings.applicationTitle || 'Overseerr'
       );
       setLoading(false);
       onAuthToken(authToken);
