@@ -58,11 +58,6 @@ class PlexOAuth {
       clientId = uuid;
     }
 
-    const plexProductName =
-      applicationName === this.DEFAULT_APPLICATION_NAME
-        ? applicationName
-        : `${applicationName} - ${this.DEFAULT_APPLICATION_NAME}`;
-
     const browser = Bowser.getParser(window.navigator.userAgent);
     this.plexHeaders = {
       Accept: 'application/json',
