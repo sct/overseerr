@@ -42,9 +42,7 @@ class PlexOAuth {
   private authToken?: string;
   private DEFAULT_APPLICATION_NAME = 'Overseerr';
 
-  public initializeHeaders(
-    applicationName = this.DEFAULT_APPLICATION_NAME
-  ): void {
+  public initializeHeaders(applicationName): void {
     if (!window) {
       throw new Error(
         'Window is not defined. Are you calling this in the browser?'
