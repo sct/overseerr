@@ -40,7 +40,6 @@ class PlexOAuth {
   private popup?: Window;
 
   private authToken?: string;
-  private DEFAULT_APPLICATION_NAME = 'Overseerr';
 
   public initializeHeaders(applicationName): void {
     if (!window) {
