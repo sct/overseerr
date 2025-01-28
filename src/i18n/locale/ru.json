@@ -29,7 +29,6 @@
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {Сезон} other {Сезоны}}",
   "components.RequestList.requests": "Запросы",
   "components.RequestModal.cancel": "Отменить запрос",
-  "components.RequestModal.extras": "Дополнительно",
   "components.RequestModal.numberofepisodes": "# эпизодов",
   "components.RequestModal.pendingrequest": "Ожидающий запрос",
   "components.RequestModal.requestCancel": "Запрос на <strong>{title}</strong> отменён.",

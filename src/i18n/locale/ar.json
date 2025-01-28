@@ -329,7 +329,6 @@
   "components.RequestModal.cancel": "إلغاء الطلب",
   "components.RequestModal.edit": "تعديل الطلب",
   "components.RequestModal.errorediting": "حدث خطأ ما أثناء محاولة تعديل الطلب.",
-  "components.RequestModal.extras": "إضافات",
   "components.RequestModal.numberofepisodes": "# حلقات",
   "components.RequestModal.pending4krequest": "طلب فور كي مُعلّق",
   "components.RequestModal.pendingapproval": "طلبك معلق بانتظار الموافقة.",

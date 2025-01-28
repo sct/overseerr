@@ -31,5 +31,8 @@
   "components.Discover.CreateSlider.nooptions": "Ei tuloksia.",
   "components.Discover.CreateSlider.searchKeywords": "Etsi avainsanoja…",
   "components.Discover.DiscoverMovies.discovermovies": "Elokuvat",
-  "components.Discover.CreateSlider.providetmdbgenreid": "Anna TMDB Genre ID"
+  "components.Discover.CreateSlider.providetmdbgenreid": "Anna TMDB Genre ID",
+  "components.TitleCard.tmdbid": "TMDB-tunniste",
+  "components.RequestCard.tmdbid": "TMDB-tunniste",
+  "components.RequestList.RequestItem.tmdbid": "TMDB-tunniste"
 }

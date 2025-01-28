@@ -286,7 +286,6 @@
   "components.RequestModal.cancel": "Annullér Forespørgsel",
   "components.RequestModal.edit": "Redigér Forespørgsel",
   "components.RequestModal.errorediting": "Noget gik galt under redigeringen af forespørgslen.",
-  "components.RequestModal.extras": "Ekstra",
   "components.RequestModal.numberofepisodes": "Antal Episoder",
   "components.RequestModal.pending4krequest": "Afventende 4K forespørgsler",
   "components.RequestModal.pendingapproval": "Din forespørgsel afventer godkendelse.",

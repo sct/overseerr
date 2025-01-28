@@ -168,7 +168,6 @@
   "components.RequestModal.requestCancel": "Zahtev za <strong>{title}</strong> otkazan.",
   "components.RequestModal.pendingrequest": "Zahtev na čekanju",
   "components.RequestModal.numberofepisodes": "# broj epizoda",
-  "components.RequestModal.extras": "Dodaci",
   "components.RequestModal.cancel": "Otkaži zahtev",
   "components.RequestList.requests": "Zahtevi",
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {Sezona} other {Sezona}}",

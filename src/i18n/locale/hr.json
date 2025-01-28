@@ -576,7 +576,6 @@
   "components.RequestModal.AdvancedRequester.tags": "Oznake",
   "components.RequestModal.QuotaDisplay.movie": "film",
   "components.RequestModal.errorediting": "Dogodila se greška prilikom uređivanja zahtjeva.",
-  "components.RequestModal.extras": "Dodaci",
   "components.RequestModal.numberofepisodes": "Broj epizoda",
   "components.RequestModal.pending4krequest": "4K zahtjevi na čekanju",
   "components.RequestModal.pendingapproval": "Tvoj zahtjev čeka na odobrenje.",
