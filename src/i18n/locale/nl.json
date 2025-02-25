@@ -29,7 +29,6 @@
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {seizoen} other {seizoenen}}",
   "components.RequestList.requests": "Verzoeken",
   "components.RequestModal.cancel": "Verzoek annuleren",
-  "components.RequestModal.extras": "Extra's",
   "components.RequestModal.numberofepisodes": "Aantal afleveringen",
   "components.RequestModal.pendingrequest": "Verzoek in behandeling",
   "components.RequestModal.requestCancel": "Verzoek voor <strong>{title}</strong> is geannuleerd.",
@@ -1238,5 +1237,6 @@
   "components.Settings.SonarrModal.animeSeriesType": "Serietype anime",
   "components.Settings.SonarrModal.seriesType": "Serietype",
   "components.UserProfile.UserSettings.UserNotificationSettings.sound": "Meldingsgeluid",
-  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Apparaatstandaard"
+  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Apparaatstandaard",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Plex Vernieuwingstoken"
 }

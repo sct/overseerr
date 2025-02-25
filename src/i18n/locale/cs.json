@@ -211,7 +211,6 @@
   "components.Search.search": "Vyhledat",
   "components.ResetPassword.password": "Heslo",
   "components.RequestModal.season": "Série",
-  "components.RequestModal.extras": "Extra",
   "components.RequestModal.QuotaDisplay.season": "série",
   "components.RequestModal.QuotaDisplay.movie": "film",
   "components.RequestModal.AdvancedRequester.tags": "Značky",
