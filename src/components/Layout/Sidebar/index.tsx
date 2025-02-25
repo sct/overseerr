@@ -15,7 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 export const menuMessages = defineMessages({
@@ -33,6 +33,8 @@ interface SidebarProps {
   setClosed: () => void;
   pendingRequestsCount: number;
   openIssuesCount: number;
+  revalidateIssueCount: () => void;
+  revalidateRequestsCount: () => void;
 }
 
 interface SidebarLinkProps {
@@ -106,12 +108,29 @@ const Sidebar = ({
   setClosed,
   pendingRequestsCount,
   openIssuesCount,
+  revalidateIssueCount,
+  revalidateRequestsCount,
 }: SidebarProps) => {
   const navRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const intl = useIntl();
   const { hasPermission } = useUser();
   useClickOutside(navRef, () => setClosed());
+
+  useEffect(() => {
+    if (openIssuesCount) {
+      revalidateIssueCount();
+    }
+
+    if (pendingRequestsCount) {
+      revalidateRequestsCount();
+    }
+  }, [
+    revalidateIssueCount,
+    revalidateRequestsCount,
+    pendingRequestsCount,
+    openIssuesCount,
+  ]);
 
   return (
     <>
