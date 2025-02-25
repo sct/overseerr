@@ -1,3 +1,4 @@
+import Badge from '@app/components/Common/Badge';
 import { menuMessages } from '@app/components/Layout/Sidebar';
 import useClickOutside from '@app/hooks/useClickOutside';
 import { Permission, useUser } from '@app/hooks/useUser';
@@ -27,6 +28,11 @@ import { useRouter } from 'next/router';
 import { cloneElement, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
+interface MobileMenuProps {
+  pendingRequestsCount: number;
+  openIssuesCount: number;
+}
+
 interface MenuLink {
   href: string;
   svgIcon: JSX.Element;
@@ -39,7 +45,10 @@ interface MenuLink {
   dataTestId?: string;
 }
 
-const MobileMenu = () => {
+const MobileMenu = ({
+  pendingRequestsCount,
+  openIssuesCount,
+}: MobileMenuProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(false);
@@ -144,7 +153,7 @@ const MobileMenu = () => {
           return (
             <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
               <a
-                className={`flex items-center space-x-2 ${
+                className={`flex items-center ${
                   isActive ? 'text-indigo-500' : ''
                 }`}
                 onKeyDown={(e) => {
@@ -159,7 +168,25 @@ const MobileMenu = () => {
                 {cloneElement(isActive ? link.svgIconSelected : link.svgIcon, {
                   className: 'h-5 w-5',
                 })}
-                <span>{link.content}</span>
+                <span className="ml-2">{link.content}</span>
+                {link.href === '/requests' &&
+                  pendingRequestsCount > 0 &&
+                  hasPermission(Permission.MANAGE_REQUESTS) && (
+                    <div className="ml-auto">
+                      <Badge className="rounded-md border-indigo-500 bg-gradient-to-br from-indigo-600 to-purple-600">
+                        {pendingRequestsCount}
+                      </Badge>
+                    </div>
+                  )}
+                {link.href === '/issues' &&
+                  openIssuesCount > 0 &&
+                  hasPermission(Permission.MANAGE_ISSUES) && (
+                    <div className="ml-auto">
+                      <Badge className="rounded-md border-indigo-500 bg-gradient-to-br from-indigo-600 to-purple-600">
+                        {openIssuesCount}
+                      </Badge>
+                    </div>
+                  )}
               </a>
             </Link>
           );
@@ -175,7 +202,7 @@ const MobileMenu = () => {
               return (
                 <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
                   <a
-                    className={`flex flex-col items-center space-y-1 ${
+                    className={`relative flex flex-col items-center space-y-1 ${
                       isActive ? 'text-indigo-500' : ''
                     }`}
                   >
@@ -185,6 +212,21 @@ const MobileMenu = () => {
                         className: 'h-6 w-6',
                       }
                     )}
+                    {link.href === '/requests' &&
+                      pendingRequestsCount > 0 &&
+                      hasPermission(Permission.MANAGE_REQUESTS) && (
+                        <div className="absolute left-3 bottom-3">
+                          <Badge
+                            className={`bg-gradient-to-br ${
+                              router.pathname.match(link.activeRegExp)
+                                ? 'border-indigo-600 from-indigo-700 to-purple-700'
+                                : 'border-indigo-500 from-indigo-600 to-purple-600'
+                            } !px-1 leading-none`}
+                          >
+                            {pendingRequestsCount}
+                          </Badge>
+                        </div>
+                      )}
                   </a>
                 </Link>
               );
