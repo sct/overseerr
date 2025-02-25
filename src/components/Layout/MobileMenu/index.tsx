@@ -25,12 +25,14 @@ import {
 } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { cloneElement, useRef, useState } from 'react';
+import { cloneElement, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 interface MobileMenuProps {
   pendingRequestsCount: number;
   openIssuesCount: number;
+  revalidateIssueCount: () => void;
+  revalidateRequestsCount: () => void;
 }
 
 interface MenuLink {
@@ -48,6 +50,8 @@ interface MenuLink {
 const MobileMenu = ({
   pendingRequestsCount,
   openIssuesCount,
+  revalidateIssueCount,
+  revalidateRequestsCount,
 }: MobileMenuProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const intl = useIntl();
@@ -133,6 +137,21 @@ const MobileMenu = ({
         type: link.permissionType ?? 'and',
       })
   );
+
+  useEffect(() => {
+    if (openIssuesCount) {
+      revalidateIssueCount();
+    }
+
+    if (pendingRequestsCount) {
+      revalidateRequestsCount();
+    }
+  }, [
+    revalidateIssueCount,
+    revalidateRequestsCount,
+    pendingRequestsCount,
+    openIssuesCount,
+  ]);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
@@ -221,7 +240,7 @@ const MobileMenu = ({
                               router.pathname.match(link.activeRegExp)
                                 ? 'border-indigo-600 from-indigo-700 to-purple-700'
                                 : 'border-indigo-500 from-indigo-600 to-purple-600'
-                            } !px-1 leading-none`}
+                            } !px-1 !py-[1px] leading-none`}
                           >
                             {pendingRequestsCount}
                           </Badge>

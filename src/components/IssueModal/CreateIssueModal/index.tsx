@@ -15,7 +15,7 @@ import { Field, Formik } from 'formik';
 import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 import * as Yup from 'yup';
 
 const messages = defineMessages({
@@ -130,6 +130,8 @@ const CreateIssueModal = ({
                 autoDismiss: true,
               }
             );
+
+            mutate('/api/v1/issue/count');
           }
 
           if (onCancel) {
