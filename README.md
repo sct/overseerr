@@ -11,7 +11,7 @@
 <a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
 <a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-107-orange.svg"/></a>
+<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-108-orange.svg"/></a>
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
@@ -212,6 +212,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/AhmedNSidd"><img src="https://avatars.githubusercontent.com/u/36286128?v=4?s=100" width="100px;" alt="Ahmed Siddiqui"/><br /><sub><b>Ahmed Siddiqui</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=AhmedNSidd" title="Code">💻</a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/JackW6809"><img src="https://avatars.githubusercontent.com/u/53652452?v=4?s=100" width="100px;" alt="JackOXI"/><br /><sub><b>JackOXI</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=JackW6809" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://indicus.ro"><img src="https://avatars.githubusercontent.com/u/1199404?v=4?s=100" width="100px;" alt="Stancu Florin"/><br /><sub><b>Stancu Florin</b></sub></a><br /><a href="https://github.com/sct/overseerr/commits?author=StancuFlorin" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
