@@ -2,6 +2,7 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import ConfirmButton from '@app/components/Common/ConfirmButton';
+import DeclineRequestModal from '@app/components/DeclineRequestModal';
 import RequestModal from '@app/components/RequestModal';
 import StatusBadge from '@app/components/StatusBadge';
 import useDeepLinks from '@app/hooks/useDeepLinks';
@@ -284,6 +285,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
@@ -306,6 +308,16 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   );
 
   const [isRetrying, setRetrying] = useState(false);
+
+  const declineRequest = async (declineMessage: string) => {
+    const response = await axios.post(`/api/v1/request/${request.id}/decline`, {
+      adminMessage: declineMessage,
+    });
+
+    if (response) {
+      revalidate();
+    }
+  };
 
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
@@ -378,7 +390,16 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
+      <DeclineRequestModal
+        show={showDeclineModal}
+        tmdbId={request.media.tmdbId}
+        onDecline={(declineMessage) => {
+          declineRequest(declineMessage);
+          setShowDeclineModal(false);
+        }}
+        onCancel={() => setShowDeclineModal(false)}
+      />
+      <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:flex-row">
         {title.backdropPath && (
           <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
             <CachedImage
@@ -603,6 +624,17 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                 </span>
               </div>
             )}
+            {requestData.adminMessage && (
+              <div className="card-field">
+                <span className="card-field-name">
+                  {requestData.status === MediaRequestStatus.DECLINED && (
+                    <span className="flex truncate whitespace-normal text-sm font-light italic text-gray-300">
+                      &quot;{requestData.adminMessage}&quot;
+                    </span>
+                  )}
+                </span>
+              </div>
+            )}
           </div>
         </div>
         <div className="z-10 mt-4 flex w-full flex-col justify-center space-y-2 pl-4 pr-4 xl:mt-0 xl:w-96 xl:items-end xl:pl-0">
@@ -653,7 +685,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   <Button
                     className="w-full"
                     buttonType="danger"
-                    onClick={() => modifyRequest('decline')}
+                    onClick={() => setShowDeclineModal(true)}
                   >
                     <XMarkIcon />
                     <span>{intl.formatMessage(globalMessages.decline)}</span>
