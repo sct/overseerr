@@ -284,7 +284,7 @@ const Sidebar = ({
                         {sidebarLink.messagesKey === 'requests' &&
                           pendingRequestsCount > 0 &&
                           hasPermission(Permission.MANAGE_REQUESTS) && (
-                            <div className="ml-auto">
+                            <div className="ml-auto flex">
                               <Badge
                                 className={`rounded-md bg-gradient-to-br ${
                                   router.pathname.match(
@@ -301,7 +301,7 @@ const Sidebar = ({
                         {sidebarLink.messagesKey === 'issues' &&
                           openIssuesCount > 0 &&
                           hasPermission(Permission.MANAGE_ISSUES) && (
-                            <div className="ml-auto">
+                            <div className="ml-auto flex">
                               <Badge
                                 className={`rounded-md bg-gradient-to-br ${
                                   router.pathname.match(
