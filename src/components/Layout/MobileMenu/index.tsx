@@ -240,9 +240,11 @@ const MobileMenu = ({
                               router.pathname.match(link.activeRegExp)
                                 ? 'border-indigo-600 from-indigo-700 to-purple-700'
                                 : 'border-indigo-500 from-indigo-600 to-purple-600'
-                            } !px-1 !py-[1px] leading-none`}
+                            } flex h-4 w-4 items-center justify-center !px-[9px] !py-[9px] text-[9px]`}
                           >
-                            {pendingRequestsCount}
+                            {pendingRequestsCount > 99
+                              ? '99+'
+                              : pendingRequestsCount}
                           </Badge>
                         </div>
                       )}
