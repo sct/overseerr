@@ -191,7 +191,7 @@ const MobileMenu = ({
                 {link.href === '/requests' &&
                   pendingRequestsCount > 0 &&
                   hasPermission(Permission.MANAGE_REQUESTS) && (
-                    <div className="ml-auto">
+                    <div className="ml-auto flex">
                       <Badge className="rounded-md border-indigo-500 bg-gradient-to-br from-indigo-600 to-purple-600">
                         {pendingRequestsCount}
                       </Badge>
@@ -200,7 +200,7 @@ const MobileMenu = ({
                 {link.href === '/issues' &&
                   openIssuesCount > 0 &&
                   hasPermission(Permission.MANAGE_ISSUES) && (
-                    <div className="ml-auto">
+                    <div className="ml-auto flex">
                       <Badge className="rounded-md border-indigo-500 bg-gradient-to-br from-indigo-600 to-purple-600">
                         {openIssuesCount}
                       </Badge>
