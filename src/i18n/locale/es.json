@@ -717,8 +717,6 @@
   "components.Settings.RadarrModal.enableSearch": "Habilitar Búsqueda Automática",
   "components.RequestModal.edit": "Editar Solicitud",
   "components.RequestList.RequestItem.editrequest": "Editar Solicitud",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "¡Ajustes de notificacion de Web Push guardados con éxito!",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Fallo al guardar los ajustes de notificaciones de Web Push.",
   "components.UserProfile.UserSettings.UserNotificationSettings.webpush": "Web Push",
   "components.UserProfile.UserSettings.UserGeneralSettings.applanguage": "Mostrar Idioma",
   "components.Settings.webpush": "Web Push",
