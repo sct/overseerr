@@ -729,8 +729,6 @@
   "components.Settings.Notifications.NotificationsLunaSea.validationWebhookUrl": "請輸入有效的網址",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "啟用通知",
   "components.Settings.is4k": "4K",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "網路推送通知設定儲存失敗。",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "網路推送通知設定儲存成功！",
   "components.Settings.Notifications.toastEmailTestSuccess": "電子郵件測試通知已發送！",
   "components.Settings.Notifications.NotificationsWebPush.toastWebPushTestSuccess": "網路推送測試通知已發送！",
   "components.Settings.Notifications.toastTelegramTestSuccess": "Telegram 測試通知已發送！",
