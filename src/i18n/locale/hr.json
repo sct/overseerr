@@ -1002,8 +1002,6 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.validationPushbulletAccessToken": "Moraš navesti valjani token za pristup",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationPushoverApplicationToken": "Moraš navesti valjani token programa",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationPushoverUserKey": "Moraš navesti valjani ključ korisnika ili grupe",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Neuspjelo spremanje Web push postavki obavijesti.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Web push postavke obavijesti su uspješno spremljene!",
   "components.UserProfile.UserSettings.UserPasswordChange.confirmpassword": "Potvrdi lozinku",
   "components.UserProfile.UserSettings.UserPasswordChange.newpassword": "Nova lozinka",
   "components.UserProfile.UserSettings.UserPasswordChange.validationConfirmPassword": "Moraš potvrditi novu lozinku",

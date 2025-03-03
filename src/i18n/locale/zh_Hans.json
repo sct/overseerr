@@ -369,8 +369,6 @@
   "components.UserProfile.UserSettings.UserPasswordChange.newpassword": "新密码",
   "components.UserProfile.UserSettings.UserPasswordChange.currentpassword": "当前密码",
   "components.UserProfile.UserSettings.UserPasswordChange.confirmpassword": "确认密码",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "网络推送知设置保存成功！",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "网络推送知设置保存失败。",
   "components.UserProfile.UserSettings.UserNotificationSettings.webpush": "网络推送",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationTelegramChatId": "请输入聊天室 ID",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationPgpPublicKey": "请输入有效的 PGP 公钥",
