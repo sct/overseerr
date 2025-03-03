@@ -312,15 +312,21 @@ const UserWebPushSettings = () => {
         </h3>
         <div className="section">
           {dataDevices?.length ? (
-            dataDevices?.map((device, index) => (
-              <div className="py-2" key={`device-list-${index}`}>
-                <DeviceItem
-                  key={index}
-                  disablePushNotifications={disablePushNotifications}
-                  device={device}
-                />
-              </div>
-            ))
+            dataDevices
+              ?.sort((a, b) => {
+                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                return dateB - dateA;
+              })
+              .map((device, index) => (
+                <div className="py-2" key={`device-list-${index}`}>
+                  <DeviceItem
+                    key={index}
+                    disablePushNotifications={disablePushNotifications}
+                    device={device}
+                  />
+                </div>
+              ))
           ) : (
             <>
               <Alert

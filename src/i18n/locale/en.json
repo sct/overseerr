@@ -1121,6 +1121,7 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.subscriptiondeleted": "Subscription deleted.",
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.subscriptiondeleteerror": "Something went wrong while deleting the user subscription.",
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.type": "type",
+  "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.unknown": "Unknown",
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.webpushhasbeendisabled": "Web push has been disabled.",
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.webpushhasbeenenabled": "Web push has been enabled.",
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.webpushsettingsfailed": "Web push notification settings failed to save.",
