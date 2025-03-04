@@ -735,8 +735,6 @@
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestSuccess": "LunaSea testmeddelande skickat!",
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestSending": "Skickar LunaSea testmeddelande…",
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestFailed": "LunaSea-testmeddelandet kunde inte skickas.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Notifikationsinställningar för webb-push har sparats!",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Notifikationsinställningar för webb-push kunde inte sparas.",
   "components.Settings.noDefault4kServer": "En 4K {serverType}-server måste markeras som standard för att användare ska kunna skicka 4K-{mediaType}förfrågningar.",
   "components.Settings.is4k": "4K",
   "components.Settings.Notifications.toastTelegramTestSuccess": "Telegram testmeddelande skickat!",

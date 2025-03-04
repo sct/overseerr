@@ -732,8 +732,6 @@
   "components.UserProfile.UserSettings.UserPasswordChange.toastSettingsFailure": "Что-то пошло не так при сохранении пароля.",
   "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSet": "В настоящее время для этой учётной записи не установлен пароль. Настройте его ниже, чтобы с этой учётной записью можно было войти в систему как \"локальный пользователь\".",
   "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSetOwnAccount": "В настоящее время для вашей учётной записи не установлен пароль. Установите пароль ниже, чтобы иметь возможность войти в систему как \"локальный пользователь\", используя свой адрес электронной почты.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Настройки веб-push-уведомлений успешно сохранены!",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Не удалось сохранить настройки веб-push-уведомлений.",
   "components.UserProfile.UserSettings.UserNotificationSettings.webpush": "Веб-push",
   "components.UserProfile.UserSettings.UserNotificationSettings.telegramsettingssaved": "Настройки уведомлений Telegram успешно сохранены!",
   "components.UserProfile.UserSettings.UserNotificationSettings.telegramsettingsfailed": "Не удалось сохранить настройки уведомлений Telegram.",

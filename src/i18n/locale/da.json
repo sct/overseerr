@@ -853,8 +853,6 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.validationTelegramChatId": "Du skal angive et gyldigt chat-ID",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationDiscordId": "Du skal angive et bruger-ID",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationPgpPublicKey": "Du skal angive en gyldig offentlig PGP-nøgle",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Notifikationsindstillingerne for web push kunne ikke gemmes.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Notifikationsindstillingerne for web push er blevet gemt!",
   "components.UserProfile.UserSettings.UserPasswordChange.confirmpassword": "Bekræft Kodeord",
   "components.UserProfile.UserSettings.UserPasswordChange.newpassword": "Nyt Kodeord",
   "components.UserProfile.UserSettings.UserPasswordChange.noPasswordSet": "Denne brugerkonto har i øjeblikket ikke et kodeord. Konfigurér et kodeord nedenfor så denne konto kan logge ind som en \"lokal bruger.\"",
