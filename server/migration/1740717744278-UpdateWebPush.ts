@@ -1,7 +1,7 @@
 import type { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class UpdateWebPush1740788263354 implements MigrationInterface {
-  name = 'UpdateWebPush1740788263354';
+export class UpdateWebPush1740717744278 implements MigrationInterface {
+  name = 'UpdateWebPush1740717744278';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(
