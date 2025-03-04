@@ -30,7 +30,7 @@ export class UserPushSubscription {
   @Column({ nullable: true })
   public userAgent: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ nullable: true })
   public createdAt: Date;
 
   constructor(init?: Partial<UserPushSubscription>) {
