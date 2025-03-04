@@ -753,7 +753,8 @@
       "avatar_url": "https://avatars.githubusercontent.com/u/18177310?v=4",
       "profile": "https://github.com/s0up4200",
       "contributions": [
-        "doc"
+        "doc",
+        "code"
       ]
     },
     {
@@ -968,6 +969,42 @@
       "name": "Ahmed Siddiqui",
       "avatar_url": "https://avatars.githubusercontent.com/u/36286128?v=4",
       "profile": "https://github.com/AhmedNSidd",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "JackW6809",
+      "name": "JackOXI",
+      "avatar_url": "https://avatars.githubusercontent.com/u/53652452?v=4",
+      "profile": "https://github.com/JackW6809",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "StancuFlorin",
+      "name": "Stancu Florin",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1199404?v=4",
+      "profile": "http://indicus.ro",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "lmiklosko",
+      "name": "Lukas Miklosko",
+      "avatar_url": "https://avatars.githubusercontent.com/u/44380311?v=4",
+      "profile": "https://github.com/lmiklosko",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "gauthier-th",
+      "name": "Gauthier",
+      "avatar_url": "https://avatars.githubusercontent.com/u/37781713?v=4",
+      "profile": "https://gauthierth.fr/",
       "contributions": [
         "code"
       ]
