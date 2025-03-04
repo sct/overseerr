@@ -24,6 +24,7 @@ const messages = defineMessages({
   browser: 'Browser',
   engine: 'Engine',
   deletesubscription: 'Delete Subscription',
+  unknown: 'Unknown',
 });
 
 const DeviceItem = ({ disablePushNotifications, device }: DeviceItemProps) => {
@@ -48,12 +49,12 @@ const DeviceItem = ({ disablePushNotifications, device }: DeviceItemProps) => {
                     month: 'long',
                     day: 'numeric',
                   })
-                : 'Unknown'}
+                : 'N/A'}
             </div>
             <div className="mr-2 min-w-0 truncate text-lg font-bold text-white hover:underline xl:text-xl">
               {device.userAgent
                 ? UAParser(device.userAgent).device.model
-                : 'Unknown'}
+                : intl.formatMessage(messages.unknown)}
             </div>
           </div>
         </div>
@@ -63,9 +64,7 @@ const DeviceItem = ({ disablePushNotifications, device }: DeviceItemProps) => {
               {intl.formatMessage(messages.operatingsystem)}
             </span>
             <span className="flex truncate text-sm text-gray-300">
-              {device.userAgent
-                ? UAParser(device.userAgent).os.name
-                : 'Unknown'}
+              {device.userAgent ? UAParser(device.userAgent).os.name : 'N/A'}
             </span>
           </div>
           <div className="card-field">
@@ -75,7 +74,7 @@ const DeviceItem = ({ disablePushNotifications, device }: DeviceItemProps) => {
             <span className="flex truncate text-sm text-gray-300">
               {device.userAgent
                 ? UAParser(device.userAgent).browser.name
-                : 'Unknown'}
+                : 'N/A'}
             </span>
           </div>
           <div className="card-field">
@@ -85,7 +84,7 @@ const DeviceItem = ({ disablePushNotifications, device }: DeviceItemProps) => {
             <span className="flex truncate text-sm text-gray-300">
               {device.userAgent
                 ? UAParser(device.userAgent).engine.name
-                : 'Unknown'}
+                : 'N/A'}
             </span>
           </div>
         </div>
