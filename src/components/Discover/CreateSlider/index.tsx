@@ -1,6 +1,7 @@
 import Button from '@app/components/Common/Button';
 import Tooltip from '@app/components/Common/Tooltip';
 import { sliderTitles } from '@app/components/Discover/constants';
+import ExternalWatchlistSlider from '@app/components/Discover/ExternalWatchlistSlider';
 import MediaSlider from '@app/components/MediaSlider';
 import { WatchProviderSelector } from '@app/components/Selector';
 import { encodeURIExtraParams } from '@app/hooks/useDiscover';
@@ -538,38 +539,42 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
             </div>
             {activeOption && values.title && values.data && (
               <div className="relative py-4">
-                <MediaSlider
-                  sliderKey={`preview-${values.title}`}
-                  title={values.title}
-                  url={
-                    activeOption.type === DiscoverSliderType.EXTERNAL_WATCHLIST
-                      ? values.data
-                      : activeOption?.dataUrl.replace(
-                          '$value',
-                          encodeURIExtraParams(values.data)
-                        )
-                  }
-                  extraParams={
-                    activeOption.type ===
-                      DiscoverSliderType.TMDB_MOVIE_STREAMING_SERVICES ||
-                    activeOption.type ===
-                      DiscoverSliderType.TMDB_TV_STREAMING_SERVICES
-                      ? activeOption.params
-                          ?.replace(
-                            '$regionValue',
-                            encodeURIExtraParams(values?.data.split(',')[0])
+                {activeOption.type === DiscoverSliderType.EXTERNAL_WATCHLIST ? (
+                  <ExternalWatchlistSlider
+                    sliderKey={`custom-slider-${values.title}`}
+                    title={values.title}
+                    url={values.data}
+                  />
+                ) : (
+                  <MediaSlider
+                    sliderKey={`preview-${values.title}`}
+                    title={values.title}
+                    url={activeOption?.dataUrl.replace(
+                      '$value',
+                      encodeURIExtraParams(values.data)
+                    )}
+                    extraParams={
+                      activeOption.type ===
+                        DiscoverSliderType.TMDB_MOVIE_STREAMING_SERVICES ||
+                      activeOption.type ===
+                        DiscoverSliderType.TMDB_TV_STREAMING_SERVICES
+                        ? activeOption.params
+                            ?.replace(
+                              '$regionValue',
+                              encodeURIExtraParams(values?.data.split(',')[0])
+                            )
+                            .replace(
+                              '$providersValue',
+                              encodeURIExtraParams(values?.data.split(',')[1])
+                            )
+                        : activeOption.params?.replace(
+                            '$value',
+                            encodeURIExtraParams(values.data)
                           )
-                          .replace(
-                            '$providersValue',
-                            encodeURIExtraParams(values?.data.split(',')[1])
-                          )
-                      : activeOption.params?.replace(
-                          '$value',
-                          encodeURIExtraParams(values.data)
-                        )
-                  }
-                  onNewTitles={updateResultCount}
-                />
+                    }
+                    onNewTitles={updateResultCount}
+                  />
+                )}
               </div>
             )}
           </Form>
