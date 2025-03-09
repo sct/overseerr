@@ -22,6 +22,7 @@ export enum DiscoverSliderType {
   TMDB_NETWORK,
   TMDB_MOVIE_STREAMING_SERVICES,
   TMDB_TV_STREAMING_SERVICES,
+  EXTERNAL_WATCHLIST,
 }
 
 export const defaultSliders: Partial<DiscoverSlider>[] = [
