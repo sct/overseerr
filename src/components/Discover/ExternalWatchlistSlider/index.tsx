@@ -64,7 +64,7 @@ const ExternalWatchlistSlider = ({
         items={watchlistItems?.results.map((item) => (
           <TmdbTitleCard
             id={item.tmdbId}
-            key={`watchlist-slider-item-${item.key}`}
+            key={`watchlist-slider-item-${item.tmdbId}`}
             tmdbId={item.tmdbId}
             type={item.mediaType}
           />
