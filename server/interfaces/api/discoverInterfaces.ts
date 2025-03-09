@@ -5,7 +5,6 @@ export interface GenreSliderItem {
 }
 
 export interface WatchlistItem {
-  key?: string;
   ratingKey: string;
   tmdbId: number;
   mediaType: 'movie' | 'tv';
