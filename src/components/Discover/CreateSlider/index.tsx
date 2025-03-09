@@ -30,6 +30,8 @@ const messages = defineMessages({
   providetmdbsearch: 'Provide a search query',
   providetmdbstudio: 'Provide TMDB Studio ID',
   providetmdbnetwork: 'Provide TMDB Network ID',
+  provideapiendpoint:
+    'Provide API endpoint with pagination, eg. http://example-api.com/?p=$value',
   addsuccess: 'Created new slider and saved discover customization settings.',
   addfail: 'Failed to create new slider.',
   editsuccess: 'Edited slider and saved discover customization settings.',
@@ -291,6 +293,13 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
       params: 'watchRegion=$regionValue&watchProviders=$providersValue',
       titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
     },
+    {
+      type: DiscoverSliderType.EXTERNAL_WATCHLIST,
+      title: intl.formatMessage(sliderTitles.externalwatchlist),
+      dataUrl: '',
+      titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
+      dataPlaceholderText: intl.formatMessage(messages.provideapiendpoint),
+    },
   ];
 
   return (
@@ -527,16 +536,19 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
                 </div>
               )}
             </div>
-
             {activeOption && values.title && values.data && (
               <div className="relative py-4">
                 <MediaSlider
                   sliderKey={`preview-${values.title}`}
                   title={values.title}
-                  url={activeOption?.dataUrl.replace(
-                    '$value',
-                    encodeURIExtraParams(values.data)
-                  )}
+                  url={
+                    activeOption.type === DiscoverSliderType.EXTERNAL_WATCHLIST
+                      ? values.data
+                      : activeOption?.dataUrl.replace(
+                          '$value',
+                          encodeURIExtraParams(values.data)
+                        )
+                  }
                   extraParams={
                     activeOption.type ===
                       DiscoverSliderType.TMDB_MOVIE_STREAMING_SERVICES ||
