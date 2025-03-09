@@ -31,7 +31,7 @@ const messages = defineMessages({
   providetmdbstudio: 'Provide TMDB Studio ID',
   providetmdbnetwork: 'Provide TMDB Network ID',
   provideapiendpoint:
-    'Provide API endpoint with pagination, eg. http://example-api.com/?p=$value',
+    'Provide API endpoint with pagination, eg. http://example.com/api',
   addsuccess: 'Created new slider and saved discover customization settings.',
   addfail: 'Failed to create new slider.',
   editsuccess: 'Edited slider and saved discover customization settings.',
