@@ -1,6 +1,7 @@
 import Modal from '@app/components/Common/Modal';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import globalMessages from '@app/i18n/globalMessages';
+import { hostnameValidationRegex } from '@app/utils/validationHelpers';
 import { Transition } from '@headlessui/react';
 import type { SonarrSettings } from '@server/lib/settings';
 import axios from 'axios';
@@ -122,7 +123,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
     hostname: Yup.string()
       .required(intl.formatMessage(messages.validationHostnameRequired))
       .matches(
-        /^(?:(?:(?:25[0-5]|2[0-4]\d|[01]?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|[01]?\d?\d)|(?:(?:[0-9A-Fa-f]{1,4}:){7}[0-9A-Fa-f]{1,4}|(?:[0-9A-Fa-f]{1,4}:){1,7}:|(?:[0-9A-Fa-f]{1,4}:){1,6}:[0-9A-Fa-f]{1,4}|(?:[0-9A-Fa-f]{1,4}:){1,5}(?::[0-9A-Fa-f]{1,4}){1,2}|(?:[0-9A-Fa-f]{1,4}:){1,4}(?::[0-9A-Fa-f]{1,4}){1,3}|(?:[0-9A-Fa-f]{1,4}:){1,3}(?::[0-9A-Fa-f]{1,4}){1,4}|(?:[0-9A-Fa-f]{1,4}:){1,2}(?::[0-9A-Fa-f]{1,4}){1,5}|[0-9A-Fa-f]{1,4}:(?:(?::[0-9A-Fa-f]{1,4}){1,6})|:(?:(?::[0-9A-Fa-f]{1,4}){1,7}|:)))$/,
+        hostnameValidationRegex,
         intl.formatMessage(messages.validationHostnameRequired)
       ),
     port: Yup.number()
