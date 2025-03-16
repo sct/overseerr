@@ -1178,5 +1178,13 @@
   "components.RequestCard.unknowntitle": "Titolo Sconosciuto",
   "components.RequestModal.SearchByNameModal.nomatches": "Non siamo in grado ti trovare una corrispondenza per questa serie.",
   "components.RequestModal.requestcollection4ktitle": "Richiedi Raccolta in 4K",
-  "components.RequestModal.requestcollectiontitle": "Richiedi Raccolta"
+  "components.RequestModal.requestcollectiontitle": "Richiedi Raccolta",
+  "components.MovieDetails.tmdbuserscore": "Punteggio user TMDB",
+  "components.Discover.CreateSlider.addsuccess": "un nuovo slider è stato creato e le impostazioni di scoperta personalizzate sono state salvate.",
+  "components.MovieDetails.rtaudiencescore": "Punteggio del pubblico su Rotten Tomatoes",
+  "components.Discover.networks": "Reti",
+  "components.Discover.resetfailed": "Qualcosa è andato storto ripristinando le impostazioni dei scoperta customizzata.",
+  "components.Discover.resetsuccess": "Impostazioni di scoperta personalizzate ripristinate con successo.",
+  "components.Discover.resetwarning": "Ripristina tutti gli slider alle impostazioni di default. Questo cancellerà tutti gli slider personalizzati!",
+  "components.Discover.updatesuccess": "impostazioni di customizzazione di scoperta aggiornate"
 }
