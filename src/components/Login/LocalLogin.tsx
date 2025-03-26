@@ -2,7 +2,6 @@ import Button from '@app/components/Common/Button';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import useSettings from '@app/hooks/useSettings';
 import { useUser } from '@app/hooks/useUser';
-import { LoginIcon, SupportIcon } from '@heroicons/react/outline';
 import {
   ArrowLeftOnRectangleIcon,
   LifebuoyIcon,
@@ -113,7 +112,6 @@ const LocalLogin = ({ onError }: LocalLoginProps) => {
                     data-lpignore="false"
                     data-bwignore="false"
                   />
-                      
                 </div>
                 {errors.password &&
                   touched.password &&
@@ -131,7 +129,7 @@ const LocalLogin = ({ onError }: LocalLoginProps) => {
                     disabled={isSubmitting || !isValid}
                     data-testid="local-signin-button"
                   >
-                    <LoginIcon />
+                    <ArrowLeftOnRectangleIcon />
                     <span>
                       {isSubmitting
                         ? intl.formatMessage(messages.signingin)
@@ -143,7 +141,7 @@ const LocalLogin = ({ onError }: LocalLoginProps) => {
                   <span className="inline-flex rounded-md shadow-sm">
                     <Link href="/resetpassword" passHref>
                       <Button as="a" buttonType="ghost">
-                        <SupportIcon />
+                        <LifebuoyIcon />
                         <span>
                           {intl.formatMessage(messages.forgotpassword)}
                         </span>

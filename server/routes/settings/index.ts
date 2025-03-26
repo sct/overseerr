@@ -17,7 +17,7 @@ import cacheManager from '@server/lib/cache';
 import ImageProxy from '@server/lib/imageproxy';
 import { Permission } from '@server/lib/permissions';
 import { plexFullScanner } from '@server/lib/scanners/plex';
-import type { MainSettings, PlexSetings, JobId } from '@server/lib/settings';
+import type { JobId, MainSettings, PlexSettings } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';

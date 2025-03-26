@@ -14,15 +14,6 @@ import RecentRequestsSlider from '@app/components/Discover/RecentRequestsSlider'
 import StudioSlider from '@app/components/Discover/StudioSlider';
 import TvGenreSlider from '@app/components/Discover/TvGenreSlider';
 import MediaSlider from '@app/components/MediaSlider';
-import RequestCard from '@app/components/RequestCard';
-import Slider from '@app/components/Slider';
-import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
-import { Permission, useUser } from '@app/hooks/useUser';
-import { ArrowCircleRightIcon } from '@heroicons/react/outline';
-import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
-import type { MediaResultsResponse } from '@server/interfaces/api/mediaInterfaces';
-import type { RequestResultsResponse } from '@server/interfaces/api/requestInterfaces';
-import Link from 'next/link';
 import { encodeURIExtraParams } from '@app/hooks/useDiscover';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
@@ -82,14 +73,6 @@ const Discover = () => {
 
   const hasChanged = () => !Object.is(discoverData, sliders);
 
-  const { data: watchlistItems, error: watchlistError } = useSWR<{
-    page: number;
-    totalPages: number;
-    totalResults: number;
-    results: WatchlistItem[];
-  }>(user?.isPlexUser ? '/api/v1/discover/watchlist' : null, {
-    revalidateOnMount: true,
-  });
   const updateSliders = async () => {
     try {
       await axios.post('/api/v1/settings/discover', sliders);

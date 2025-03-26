@@ -62,7 +62,7 @@ const PlexLoginButton = ({
         buttonType={buttonType}
         buttonSize={buttonSize}
       >
-        {svgIcon ?? <LoginIcon />}
+        {svgIcon ?? <ArrowLeftOnRectangleIcon />}
         <span>
           {loading
             ? intl.formatMessage(globalMessages.loading)

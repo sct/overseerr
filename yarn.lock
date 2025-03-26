@@ -5254,6 +5254,11 @@ cidr-regex@^3.1.1:
   dependencies:
     ip-regex "^4.1.0"
 
+classnames@^2.2.5:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.5.1.tgz#ba774c614be0f016da105c858e7159eae8e7687b"
+  integrity sha512-saHYOzhIQs6wy2sVxTM6bUDsQO4F50V9RQ22qBpEdCW+I+/Wmke2HOl6lS6dTpdxVhb88/I6+Hs+438c3lfUow==
+
 clean-stack@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/clean-stack/-/clean-stack-2.2.0.tgz#ee8472dbb129e727b31e8a10a427dee9dfe4008b"
@@ -11279,7 +11284,7 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
-prop-types@^15.0.0, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
+prop-types@^15.0.0, prop-types@^15.6.0, prop-types@^15.6.1, prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -11537,6 +11542,54 @@ react-ace@10.1.0:
     lodash.get "^4.4.2"
     lodash.isequal "^4.5.0"
     prop-types "^15.7.2"
+
+react-animate-height@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/react-animate-height/-/react-animate-height-2.1.2.tgz#9b450fc64d46f10f5e07da8d0d5e2c47b9f15030"
+  integrity sha512-A9jfz/4CTdsIsE7WCQtO9UkOpMBcBRh8LxyHl2eoZz1ki02jpyUL5xt58gabd0CyeLQ8fRyQ+s2lyV2Ufu8Owg==
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.1"
+
+react-aria@3.23.0:
+  version "3.23.0"
+  resolved "https://registry.yarnpkg.com/react-aria/-/react-aria-3.23.0.tgz#8829ae47373793a7b48e19aa8af1b581021b2a9a"
+  integrity sha512-CMem/+XnL3yuNHU94usRHS2+rdKLuyUzxRmQ/ndVXresflzKdaLYCH7Dtb2Um4rUEjD0BCz33hiNZPsJ7jBVQQ==
+  dependencies:
+    "@react-aria/breadcrumbs" "^3.5.0"
+    "@react-aria/button" "^3.7.0"
+    "@react-aria/calendar" "^3.1.0"
+    "@react-aria/checkbox" "^3.8.0"
+    "@react-aria/combobox" "^3.5.0"
+    "@react-aria/datepicker" "^3.3.0"
+    "@react-aria/dialog" "^3.5.0"
+    "@react-aria/dnd" "^3.1.0"
+    "@react-aria/focus" "^3.11.0"
+    "@react-aria/gridlist" "^3.2.0"
+    "@react-aria/i18n" "^3.7.0"
+    "@react-aria/interactions" "^3.14.0"
+    "@react-aria/label" "^3.5.0"
+    "@react-aria/link" "^3.4.0"
+    "@react-aria/listbox" "^3.8.0"
+    "@react-aria/menu" "^3.8.0"
+    "@react-aria/meter" "^3.4.0"
+    "@react-aria/numberfield" "^3.4.0"
+    "@react-aria/overlays" "^3.13.0"
+    "@react-aria/progress" "^3.4.0"
+    "@react-aria/radio" "^3.5.0"
+    "@react-aria/searchfield" "^3.5.0"
+    "@react-aria/select" "^3.9.0"
+    "@react-aria/selection" "^3.13.0"
+    "@react-aria/separator" "^3.3.0"
+    "@react-aria/slider" "^3.3.0"
+    "@react-aria/ssr" "^3.5.0"
+    "@react-aria/switch" "^3.4.0"
+    "@react-aria/table" "^3.8.0"
+    "@react-aria/tabs" "^3.4.0"
+    "@react-aria/textfield" "^3.9.0"
+    "@react-aria/tooltip" "^3.4.0"
+    "@react-aria/utils" "^3.15.0"
+    "@react-aria/visually-hidden" "^3.7.0"
 
 react-dom@18.2.0:
   version "18.2.0"

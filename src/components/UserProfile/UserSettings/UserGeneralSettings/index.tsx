@@ -14,12 +14,12 @@ import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
-import { SaveIcon } from '@heroicons/react/outline';
+import { ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
 import {
+  ArrowPathIcon,
   CheckCircleIcon,
-  RefreshIcon,
   XCircleIcon,
-} from '@heroicons/react/solid';
+} from '@heroicons/react/24/solid';
 import type { UserSettingsGeneralResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -272,7 +272,7 @@ const UserGeneralSettings = () => {
                                   );
                                   revalidateUser();
                                 }}
-                                svgIcon={<RefreshIcon />}
+                                svgIcon={<ArrowPathIcon />}
                                 textOverride={intl.formatMessage(
                                   messages.refreshtoken
                                 )}
