@@ -452,7 +452,6 @@
   "components.RequestModal.autoapproval": "Automatyczne zatwierdzenie",
   "components.RequestModal.edit": "Edytuj prośbę",
   "components.RequestModal.errorediting": "Coś poszło nie tak podczas edytowania prośby.",
-  "components.RequestModal.extras": "Dodatki",
   "components.RequestModal.numberofepisodes": "Liczba odcinków",
   "components.RequestModal.pending4krequest": "Oczekująca prośba o 4K",
   "components.RequestModal.pendingapproval": "Twoja prośba oczekuje na zatwierdzenie.",
@@ -685,7 +684,6 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.sendSilentlyDescription": "Wysyłaj powiadomienia bez dźwięku",
   "components.UserProfile.UserSettings.UserNotificationSettings.telegramChatId": "Identyfikator czatu",
   "components.UserProfile.UserSettings.UserPasswordChange.confirmpassword": "Potwierdź hasło",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Ustawienia powiadomień web push zostały pomyślnie zapisane!",
   "i18n.noresults": "Brak wyników.",
   "i18n.notrequested": "Brak próśb",
   "i18n.partiallyavailable": "Częściowo dostępne",
@@ -812,7 +810,6 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.validationPushoverUserKey": "Musisz podać prawidłowy klucz użytkownika lub grupy",
   "components.UserProfile.UserSettings.UserNotificationSettings.validationTelegramChatId": "Musisz podać prawidłowy identyfikator czatu",
   "components.UserProfile.UserSettings.UserNotificationSettings.webpush": "Web Push",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Nie udało się zapisać ustawień powiadomień Web Push.",
   "components.UserProfile.UserSettings.UserPasswordChange.currentpassword": "Aktualne hasło",
   "components.UserProfile.UserSettings.UserPasswordChange.newpassword": "Nowe hasło",
   "components.UserProfile.UserSettings.UserPasswordChange.toastSettingsSuccess": "Hasło zostało zapisane pomyślnie!",
@@ -1220,5 +1217,10 @@
   "components.Discover.updatefailed": "Wystąpił problem podczas aktualizowania ustawień odnajdywania.",
   "components.Settings.SettingsMain.apikey": "Klucz API",
   "components.Settings.SettingsMain.cacheImagesTip": "Pamięć podręczna dla obrazów pochodzących z zewnętrznych źródeł (wymaga znacznej ilości miejsca na dysku)",
-  "components.Settings.SettingsMain.toastSettingsFailure": "Coś poszło nie tak podczas zapisywania ustawień."
+  "components.Settings.SettingsMain.toastSettingsFailure": "Coś poszło nie tak podczas zapisywania ustawień.",
+  "i18n.collection": "Kolekcja",
+  "components.MovieDetails.imdbuserscore": "Ocena użytkowników IMDB",
+  "components.Settings.SonarrModal.seriesType": "Typ serialu",
+  "components.Settings.Notifications.NotificationsPushover.sound": "Dzwięk powiadomienia",
+  "components.Discover.FilterSlideover.voteCount": "Liczba głosów pomiędzy {minValue} i {maxValue}"
 }

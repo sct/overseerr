@@ -95,6 +95,7 @@ const MovieRequestModal = ({
         ...overrideParams,
       });
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+      mutate('/api/v1/request/count');
 
       if (response.data) {
         if (onComplete) {
@@ -129,7 +130,16 @@ const MovieRequestModal = ({
     } finally {
       setIsUpdating(false);
     }
-  }, [data, onComplete, addToast, requestOverrides, hasPermission, intl, is4k]);
+  }, [
+    requestOverrides,
+    data?.id,
+    data?.title,
+    is4k,
+    onComplete,
+    addToast,
+    intl,
+    hasPermission,
+  ]);
 
   const cancelRequest = async () => {
     setIsUpdating(true);
@@ -139,6 +149,7 @@ const MovieRequestModal = ({
         `/api/v1/request/${editRequest?.id}`
       );
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+      mutate('/api/v1/request/count');
 
       if (response.status === 204) {
         if (onComplete) {
@@ -176,6 +187,7 @@ const MovieRequestModal = ({
         await axios.post(`/api/v1/request/${editRequest?.id}/approve`);
       }
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+      mutate('/api/v1/request/count');
 
       addToast(
         <span>

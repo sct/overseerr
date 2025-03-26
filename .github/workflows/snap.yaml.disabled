@@ -8,7 +8,7 @@ on:
 jobs:
   jobs:
     name: Job Check
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: "!contains(github.event.head_commit.message, '[skip ci]')"
     steps:
       - name: Cancel Previous Runs
@@ -19,7 +19,7 @@ jobs:
   build-snap:
     name: Build Snap Package (${{ matrix.architecture }})
     needs: jobs
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -40,14 +40,14 @@ jobs:
             echo "RELEASE=edge" >> $GITHUB_OUTPUT
           fi
       - name: Set Up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Build Snap Package
         uses: diddlesnaps/snapcraft-multiarch-action@v1
         id: build
         with:
           architecture: ${{ matrix.architecture }}
       - name: Upload Snap Package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: overseerr-snap-package-${{ matrix.architecture }}
           path: ${{ steps.build.outputs.snap }}
@@ -67,7 +67,7 @@ jobs:
     name: Send Discord Notification
     needs: build-snap
     if: always() && !contains(github.event.head_commit.message, '[skip ci]')
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Get Build Job Status
         uses: technote-space/workflow-conclusion-action@v3

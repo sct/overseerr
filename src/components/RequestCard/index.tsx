@@ -75,6 +75,7 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
     await axios.delete(`/api/v1/media/${requestData?.media.id}`);
     mutate('/api/v1/media?filter=allavailable&take=20&sort=mediaAdded');
     mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+    mutate('/api/v1/request/count');
   };
 
   return (
@@ -252,12 +253,14 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
 
     if (response) {
       revalidate();
+      mutate('/api/v1/request/count');
     }
   };
 
   const deleteRequest = async () => {
     await axios.delete(`/api/v1/request/${request.id}`);
     mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+    mutate('/api/v1/request/count');
   };
 
   const retryRequest = async () => {
@@ -381,8 +384,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               <span className="mr-2 font-bold ">
                 {intl.formatMessage(messages.seasons, {
                   seasonCount:
-                    title.seasons.filter((season) => season.seasonNumber !== 0)
-                      .length === request.seasons.length
+                    title.seasons.length === request.seasons.length
                       ? 0
                       : request.seasons.length,
                 })}
@@ -390,7 +392,11 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               <div className="hide-scrollbar overflow-x-scroll">
                 {request.seasons.map((season) => (
                   <span key={`season-${season.id}`} className="mr-2">
-                    <Badge>{season.seasonNumber}</Badge>
+                    <Badge>
+                      {season.seasonNumber === 0
+                        ? intl.formatMessage(globalMessages.specials)
+                        : season.seasonNumber}
+                    </Badge>
                   </span>
                 ))}
               </div>

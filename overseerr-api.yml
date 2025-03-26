@@ -1273,6 +1273,8 @@ components:
               type: string
             userToken:
               type: string
+            sound:
+              type: string
     GotifySettings:
       type: object
       properties:
@@ -1706,6 +1708,9 @@ components:
           type: string
           nullable: true
         pushoverUserKey:
+          type: string
+          nullable: true
+        pushoverSound:
           type: string
           nullable: true
         telegramEnabled:
@@ -2861,6 +2866,33 @@ paths:
       responses:
         '204':
           description: Test notification attempted
+  /settings/notifications/pushover/sounds:
+    get:
+      summary: Get Pushover sounds
+      description: Returns valid Pushover sound options in a JSON array.
+      tags:
+        - settings
+      parameters:
+        - in: query
+          name: token
+          required: true
+          schema:
+            type: string
+            nullable: false
+      responses:
+        '200':
+          description: Returned Pushover settings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    description:
+                      type: string
   /settings/notifications/gotify:
     get:
       summary: Get Gotify notification settings
@@ -3138,6 +3170,12 @@ paths:
         Updates a single slider and return the newly updated slider. Requires the `ADMIN` permission.
       tags:
         - settings
+      parameters:
+        - in: path
+          name: sliderId
+          required: true
+          schema:
+            type: number
       requestBody:
         required: true
         content:
@@ -3435,7 +3473,7 @@ paths:
                   results:
                     type: array
                     items:
-                    $ref: '#/components/schemas/User'
+                      $ref: '#/components/schemas/User'
     post:
       summary: Create new user
       description: |
@@ -3541,6 +3579,8 @@ paths:
                   type: string
                 p256dh:
                   type: string
+                userAgent:
+                  type: string
               required:
                 - endpoint
                 - auth
@@ -3548,6 +3588,88 @@ paths:
       responses:
         '204':
           description: Successfully registered push subscription
+  /user/{userId}/pushSubscriptions:
+    get:
+      summary: Get all web push notification settings for a user
+      description: |
+        Returns all web push notification settings for a user in a JSON object.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User web push notification settings in JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoint:
+                    type: string
+                  p256dh:
+                    type: string
+                  auth:
+                    type: string
+                  userAgent:
+                    type: string
+  /user/{userId}/pushSubscription/{key}:
+    get:
+      summary: Get web push notification settings for a user
+      description: |
+        Returns web push notification settings for a user in a JSON object.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User web push notification settings in JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoint:
+                    type: string
+                  p256dh:
+                    type: string
+                  auth:
+                    type: string
+                  userAgent:
+                    type: string
+    delete:
+      summary: Delete user push subscription by key
+      description: Deletes the user push subscription with the provided key.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successfully removed user push subscription
   /user/{userId}:
     get:
       summary: Get user by ID
@@ -4980,7 +5102,7 @@ paths:
                     - type: array
                       items:
                         type: number
-                        minimum: 1
+                        minimum: 0
                     - type: string
                       enum: [all]
                 is4k:
@@ -5086,7 +5208,7 @@ paths:
                   type: array
                   items:
                     type: number
-                    minimum: 1
+                    minimum: 0
                 is4k:
                   type: boolean
                   example: false
@@ -5338,6 +5460,63 @@ paths:
                   audienceRating:
                     type: string
                     enum: ['Spilled', 'Upright']
+  /movie/{movieId}/ratingscombined:
+    get:
+      summary: Get RT and IMDB movie ratings combined
+      description: Returns ratings from RottenTomatoes and IMDB based on the provided movieId in a JSON object.
+      tags:
+        - movies
+      parameters:
+        - in: path
+          name: movieId
+          required: true
+          schema:
+            type: number
+            example: 337401
+      responses:
+        '200':
+          description: Ratings returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rt:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        example: Mulan
+                      year:
+                        type: number
+                        example: 2020
+                      url:
+                        type: string
+                        example: 'http://www.rottentomatoes.com/m/mulan_2020/'
+                      criticsScore:
+                        type: number
+                        example: 85
+                      criticsRating:
+                        type: string
+                        enum: ['Rotten', 'Fresh', 'Certified Fresh']
+                      audienceScore:
+                        type: number
+                        example: 65
+                      audienceRating:
+                        type: string
+                        enum: ['Spilled', 'Upright']
+                  imdb:
+                    type: object
+                    properties:
+                      title:
+                        type: string
+                        example: I am Legend
+                      url:
+                        type: string
+                        example: 'https://www.imdb.com/title/tt0480249'
+                      criticsScore:
+                        type: number
+                        example: 6.5
   /tv/{tvId}:
     get:
       summary: Get TV details

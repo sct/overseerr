@@ -1,3 +1,4 @@
+import Badge from '@app/components/Common/Badge';
 import VersionStatus from '@app/components/Layout/VersionStatus';
 import useClickOutside from '@app/hooks/useClickOutside';
 import { Permission, useUser } from '@app/hooks/useUser';
@@ -14,7 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { Fragment, useRef } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 export const menuMessages = defineMessages({
@@ -30,6 +31,10 @@ export const menuMessages = defineMessages({
 interface SidebarProps {
   open?: boolean;
   setClosed: () => void;
+  pendingRequestsCount: number;
+  openIssuesCount: number;
+  revalidateIssueCount: () => void;
+  revalidateRequestsCount: () => void;
 }
 
 interface SidebarLinkProps {
@@ -98,12 +103,34 @@ const SidebarLinks: SidebarLinkProps[] = [
   },
 ];
 
-const Sidebar = ({ open, setClosed }: SidebarProps) => {
+const Sidebar = ({
+  open,
+  setClosed,
+  pendingRequestsCount,
+  openIssuesCount,
+  revalidateIssueCount,
+  revalidateRequestsCount,
+}: SidebarProps) => {
   const navRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const intl = useIntl();
   const { hasPermission } = useUser();
   useClickOutside(navRef, () => setClosed());
+
+  useEffect(() => {
+    if (openIssuesCount) {
+      revalidateIssueCount();
+    }
+
+    if (pendingRequestsCount) {
+      revalidateRequestsCount();
+    }
+  }, [
+    revalidateIssueCount,
+    revalidateRequestsCount,
+    pendingRequestsCount,
+    openIssuesCount,
+  ]);
 
   return (
     <>
@@ -254,6 +281,40 @@ const Sidebar = ({ open, setClosed }: SidebarProps) => {
                         {intl.formatMessage(
                           menuMessages[sidebarLink.messagesKey]
                         )}
+                        {sidebarLink.messagesKey === 'requests' &&
+                          pendingRequestsCount > 0 &&
+                          hasPermission(Permission.MANAGE_REQUESTS) && (
+                            <div className="ml-auto flex">
+                              <Badge
+                                className={`rounded-md bg-gradient-to-br ${
+                                  router.pathname.match(
+                                    sidebarLink.activeRegExp
+                                  )
+                                    ? 'border-indigo-600 from-indigo-700 to-purple-700'
+                                    : 'border-indigo-500 from-indigo-600 to-purple-600'
+                                }`}
+                              >
+                                {pendingRequestsCount}
+                              </Badge>
+                            </div>
+                          )}
+                        {sidebarLink.messagesKey === 'issues' &&
+                          openIssuesCount > 0 &&
+                          hasPermission(Permission.MANAGE_ISSUES) && (
+                            <div className="ml-auto flex">
+                              <Badge
+                                className={`rounded-md bg-gradient-to-br ${
+                                  router.pathname.match(
+                                    sidebarLink.activeRegExp
+                                  )
+                                    ? 'border-indigo-600 from-indigo-700 to-purple-700'
+                                    : 'border-indigo-500 from-indigo-600 to-purple-600'
+                                }`}
+                              >
+                                {openIssuesCount}
+                              </Badge>
+                            </div>
+                          )}
                       </a>
                     </Link>
                   );

@@ -246,9 +246,7 @@ export class MediaRequest {
       >;
       const requestedSeasons =
         requestBody.seasons === 'all'
-          ? tmdbMediaShow.seasons
-              .map((season) => season.season_number)
-              .filter((sn) => sn > 0)
+          ? tmdbMediaShow.seasons.map((season) => season.season_number)
           : (requestBody.seasons as number[]);
       let existingSeasons: number[] = [];
 
@@ -984,7 +982,7 @@ export class MediaRequest {
             (keyword) => keyword.id === ANIME_KEYWORD_ID
           )
         ) {
-          seriesType = 'anime';
+          seriesType = sonarrSettings.animeSeriesType ?? 'anime';
         }
 
         let rootFolder =

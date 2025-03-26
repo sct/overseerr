@@ -11,6 +11,7 @@ import { LanguageContext } from '@app/context/LanguageContext';
 import { SettingsProvider } from '@app/context/SettingsContext';
 import { UserContext } from '@app/context/UserContext';
 import type { User } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
 import '@app/styles/globals.css';
 import { polyfillIntl } from '@app/utils/polyfillIntl';
 import type { PublicSettingsResponse } from '@server/interfaces/api/settingsInterfaces';
@@ -28,6 +29,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
   switch (locale) {
     case 'ar':
       return import('../i18n/locale/ar.json');
+    case 'bg':
+      return import('../i18n/locale/bg.json');
     case 'ca':
       return import('../i18n/locale/ca.json');
     case 'cs':
@@ -40,8 +43,14 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/el.json');
     case 'es':
       return import('../i18n/locale/es.json');
+    case 'fi':
+      return import('../i18n/locale/fi.json');
     case 'fr':
       return import('../i18n/locale/fr.json');
+    case 'he':
+      return import('../i18n/locale/he.json');
+    case 'hi':
+      return import('../i18n/locale/hi.json');
     case 'hr':
       return import('../i18n/locale/hr.json');
     case 'hu':
@@ -50,6 +59,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/it.json');
     case 'ja':
       return import('../i18n/locale/ja.json');
+    case 'ko':
+      return import('../i18n/locale/ko.json');
     case 'lt':
       return import('../i18n/locale/lt.json');
     case 'nb-NO':
@@ -62,6 +73,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/pt_BR.json');
     case 'pt-PT':
       return import('../i18n/locale/pt_PT.json');
+    case 'ro':
+      return import('../i18n/locale/ro.json');
     case 'ru':
       return import('../i18n/locale/ru.json');
     case 'sq':
@@ -70,6 +83,8 @@ const loadLocaleData = (locale: AvailableLocale): Promise<any> => {
       return import('../i18n/locale/sr.json');
     case 'sv':
       return import('../i18n/locale/sv.json');
+    case 'uk':
+      return import('../i18n/locale/uk.json');
     case 'zh-CN':
       return import('../i18n/locale/zh_Hans.json');
     case 'zh-TW':
@@ -112,6 +127,35 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
   useEffect(() => {
     loadLocaleData(currentLocale).then(setMessages);
   }, [currentLocale]);
+
+  const { hasPermission } = useUser();
+
+  useEffect(() => {
+    const requestsCount = async () => {
+      const response = await axios.get('/api/v1/request/count');
+      return response.data;
+    };
+
+    // Cast navigator to a type that includes setAppBadge and clearAppBadge
+    // to avoid TypeScript errors while ensuring these methods exist before calling them.
+    const newNavigator = navigator as unknown as {
+      setAppBadge?: (count: number) => Promise<void>;
+      clearAppBadge?: () => Promise<void>;
+    };
+
+    if ('setAppBadge' in navigator) {
+      if (
+        !router.pathname.match(/(login|setup|resetpassword)/) &&
+        hasPermission(Permission.ADMIN)
+      ) {
+        requestsCount().then((data) =>
+          newNavigator?.setAppBadge?.(data.pending)
+        );
+      } else {
+        newNavigator?.clearAppBadge?.();
+      }
+    }
+  }, [hasPermission, router.pathname]);
 
   if (router.pathname.match(/(login|setup|resetpassword)/)) {
     component = <Component {...pageProps} />;
@@ -189,7 +233,9 @@ CoreApp.getInitialProps = async (initialProps) => {
   if (ctx.res) {
     // Check if app is initialized and redirect if necessary
     const response = await axios.get<PublicSettingsResponse>(
-      `http://localhost:${process.env.PORT || 5055}/api/v1/settings/public`
+      `http://${process.env.HOST || 'localhost'}:${
+        process.env.PORT || 5055
+      }/api/v1/settings/public`
     );
 
     currentSettings = response.data;
@@ -207,7 +253,9 @@ CoreApp.getInitialProps = async (initialProps) => {
       try {
         // Attempt to get the user by running a request to the local api
         const response = await axios.get<User>(
-          `http://localhost:${process.env.PORT || 5055}/api/v1/auth/me`,
+          `http://${process.env.HOST || 'localhost'}:${
+            process.env.PORT || 5055
+          }/api/v1/auth/me`,
           {
             headers:
               ctx.req && ctx.req.headers.cookie
