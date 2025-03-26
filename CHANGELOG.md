@@ -1,3 +1,55 @@
+# [1.34.0](https://github.com/sct/overseerr/compare/v1.33.2...v1.34.0) (2025-03-26)
+
+
+### Bug Fixes
+
+* api language query parameter ([#3720](https://github.com/sct/overseerr/issues/3720)) ([5c60ffc](https://github.com/sct/overseerr/commit/5c60ffc567df3500f9435603a15fd10fa3e038f8))
+* center count badge on sidebar and mobile menu ([#4052](https://github.com/sct/overseerr/issues/4052)) ([65ad4a7](https://github.com/sct/overseerr/commit/65ad4a76f6e02285a78cbdfbb9d7644bfc38e0a4))
+* change localhost to process.env.HOST for client requests ([#3839](https://github.com/sct/overseerr/issues/3839)) ([a9101f6](https://github.com/sct/overseerr/commit/a9101f60a4f87b0836dd5657ed8b1707fa1b242e))
+* correct deeplinks on iPad ([#3883](https://github.com/sct/overseerr/issues/3883)) ([14cf43d](https://github.com/sct/overseerr/commit/14cf43de26e44d5ef082806c2b97a88ce4bd6c84))
+* correct icon showing on certain phones when not pulled ([#3939](https://github.com/sct/overseerr/issues/3939)) ([a2c25d5](https://github.com/sct/overseerr/commit/a2c25d5e4b1ae7ccbe3e64910de5472b629f49d3))
+* **docs:** correct openapi docs minor issues ([#3648](https://github.com/sct/overseerr/issues/3648)) ([af0bd4c](https://github.com/sct/overseerr/commit/af0bd4ca8b36b9f8947a91d340b64d6db366e512))
+* improve count badge styling ([#4056](https://github.com/sct/overseerr/issues/4056)) ([45c0682](https://github.com/sct/overseerr/commit/45c0682013510d748202d8d31a7a8986b2dc0775))
+* improved web push management ([#3421](https://github.com/sct/overseerr/issues/3421)) ([b3a9752](https://github.com/sct/overseerr/commit/b3a97528582aa880411a9f1cdcc48d0e20ac59ee))
+* Include all defaults in payload ([#3538](https://github.com/sct/overseerr/issues/3538)) ([cb63bf2](https://github.com/sct/overseerr/commit/cb63bf217b9e8810a5210b4bf475b2a96583cc84))
+* manage webpush notifications ([#4059](https://github.com/sct/overseerr/issues/4059)) ([efc3821](https://github.com/sct/overseerr/commit/efc3821d263434cbd295a64435f81e7f0bce42da))
+* properly update issue and request counts in certain scenarios ([#4051](https://github.com/sct/overseerr/issues/4051)) ([df2515b](https://github.com/sct/overseerr/commit/df2515bff60dc28b740bdf6e5cc5387242258c2e))
+* request english trailers as a fallback when using other languages ([#4009](https://github.com/sct/overseerr/issues/4009)) ([47dc350](https://github.com/sct/overseerr/commit/47dc3504ade3759693677f3aa6aec24e0c58ef61))
+* request watchlist items sequentially to prevent bypassing quota ([#3667](https://github.com/sct/overseerr/issues/3667)) ([b40ba07](https://github.com/sct/overseerr/commit/b40ba07a4de5857b8392f667038eeb0b22aa5d9a))
+* resolved issue with region selector and all regions value ([#3652](https://github.com/sct/overseerr/issues/3652)) ([28a2c50](https://github.com/sct/overseerr/commit/28a2c50495d0ce531da7f8c442bd488a54b1e84c))
+* **servarr:** merge series tags instead of overwriting them ([#4019](https://github.com/sct/overseerr/issues/4019)) ([3094935](https://github.com/sct/overseerr/commit/30949358f42ccf10fffc0f509163586aeea9f2f5))
+* set the correct TTL for the cookie store ([#3946](https://github.com/sct/overseerr/issues/3946)) ([73f700e](https://github.com/sct/overseerr/commit/73f700e2e5ff0ee65f816bc8ea7132b5c1c6c8ed))
+* **tautulli:** only test connection if hostname is defined ([#3573](https://github.com/sct/overseerr/issues/3573)) ([f7b4dfc](https://github.com/sct/overseerr/commit/f7b4dfcac472d08c54779a14fc1ad3c90927df26))
+* **ui:** ensure title fits into the `view collection` box ([#3696](https://github.com/sct/overseerr/issues/3696)) ([107bce2](https://github.com/sct/overseerr/commit/107bce2e86c4c4cef26d22b6d72b6ea56e2df9c3))
+* **ui:** update Plex Logo ([#3955](https://github.com/sct/overseerr/issues/3955)) ([30c6d03](https://github.com/sct/overseerr/commit/30c6d03baa7aa4560d77e2db74894f6e393f1607))
+* update migration script ([#4065](https://github.com/sct/overseerr/issues/4065)) ([db06f8c](https://github.com/sct/overseerr/commit/db06f8cf07e5b2ae3de3af8ab6334601fdf37cde))
+
+
+### Features
+
+* add ko language ([#3619](https://github.com/sct/overseerr/issues/3619)) ([9250735](https://github.com/sct/overseerr/commit/92507359b48db08b0066047d6505660b8c8b0b12))
+* add Peacock to Network Slider ([#3545](https://github.com/sct/overseerr/issues/3545)) ([0c39057](https://github.com/sct/overseerr/commit/0c39057ca58743697e9dcc3b678440ac3688c65a))
+* add support for requesting "Specials" for TV Shows ([#3724](https://github.com/sct/overseerr/issues/3724)) ([c2d4c61](https://github.com/sct/overseerr/commit/c2d4c61fae2053157052f96e5de1cdb490ea704e)), closes [#779](https://github.com/sct/overseerr/issues/779)
+* add tooltips to tautulli avatars ([#3601](https://github.com/sct/overseerr/issues/3601)) ([c484810](https://github.com/sct/overseerr/commit/c484810f965f8d04643c25c6d283dd83f4bd4a23))
+* added the PWA badge indicator for requests pending ([#3411](https://github.com/sct/overseerr/issues/3411)) ([389a87b](https://github.com/sct/overseerr/commit/389a87b0f4685a70b5291a595e56320d8c9f5fb2))
+* **lang:** add lang config for Bulgarian, Finnish, Ukrainian, Indonesian, Slovak, Turkish and Maori ([#3834](https://github.com/sct/overseerr/issues/3834)) ([b6fe5ac](https://github.com/sct/overseerr/commit/b6fe5ac637afaa539270ab54160976910e794919))
+* **lang:** Translations update from Hosted Weblate ([#3835](https://github.com/sct/overseerr/issues/3835)) ([3242251](https://github.com/sct/overseerr/commit/3242251927be251fa528bf9811f9aeabc7249605))
+* **lang:** Translations update from Hosted Weblate ([#4025](https://github.com/sct/overseerr/issues/4025)) ([8b8fc7f](https://github.com/sct/overseerr/commit/8b8fc7f36bc6d48a4f250e87893afac3aff72cc4))
+* **notif:** add Pushover sound options ([#2403](https://github.com/sct/overseerr/issues/2403)) ([3ea5076](https://github.com/sct/overseerr/commit/3ea5076053359b518b1b4d537e7b61580d9275a3))
+* **plex:** refresh token schedule ([#3875](https://github.com/sct/overseerr/issues/3875)) ([6d82eee](https://github.com/sct/overseerr/commit/6d82eee6566492474510480dba7f86f4480d5b88)), closes [#3861](https://github.com/sct/overseerr/issues/3861)
+* **pushover:** attach image to pushover notification payload ([#3701](https://github.com/sct/overseerr/issues/3701)) ([8251c73](https://github.com/sct/overseerr/commit/8251c73ffae678c89eae2de13ee2e9a0afb8d755))
+* **rating:** added IMDB Radarr proxy ([#3496](https://github.com/sct/overseerr/issues/3496)) ([b4191f9](https://github.com/sct/overseerr/commit/b4191f9c65b7ff08764e61d18e7a75bc8d4b3325))
+* requests/issues menu count ([#3470](https://github.com/sct/overseerr/issues/3470)) ([f3bd31d](https://github.com/sct/overseerr/commit/f3bd31d13b632503d372878e3c45057b13bfc271))
+* select default seriesType for anime ([#3627](https://github.com/sct/overseerr/issues/3627)) ([f628635](https://github.com/sct/overseerr/commit/f6286359cfd2ed93fc692aa2efda37310e02c11c)), closes [#3626](https://github.com/sct/overseerr/issues/3626)
+* standard series type selector ([#3628](https://github.com/sct/overseerr/issues/3628)) ([7bdd25e](https://github.com/sct/overseerr/commit/7bdd25e5a45843a3e530d3fa2b0887664b53eec8))
+* **studios:** add a24 to studios list ([#3902](https://github.com/sct/overseerr/issues/3902)) ([1a6125c](https://github.com/sct/overseerr/commit/1a6125c47d99d55ceaf2af6dcfbbf2e7c3418fd7))
+* **tooltip:** add tooltip to display exact time on date hover ([#3773](https://github.com/sct/overseerr/issues/3773)) ([d28e131](https://github.com/sct/overseerr/commit/d28e13187bc31cc1981731707b6d6f97af79a8b1))
+* translations update from Hosted Weblate ([#3258](https://github.com/sct/overseerr/issues/3258)) ([e62a078](https://github.com/sct/overseerr/commit/e62a078298ced7dec627fb3ff9fc8f99a39d5e1b))
+* translations update from Hosted Weblate ([#3597](https://github.com/sct/overseerr/issues/3597)) ([36283f2](https://github.com/sct/overseerr/commit/36283f214a68192a8d32f25e4148beac04ddda14))
+* **ui:** prevent password manager interference & improve service links ([#3989](https://github.com/sct/overseerr/issues/3989)) ([ef18b5d](https://github.com/sct/overseerr/commit/ef18b5d1de0bf2fe13975c3f488d90299fc717fe))
+* update SameSite policy of session cookie to Lax ([#3650](https://github.com/sct/overseerr/issues/3650)) ([c84ca43](https://github.com/sct/overseerr/commit/c84ca4307465af4278f3dad5cf9c2b8cbae3fada))
+* **watchlist:** Cache watchlist requests with matching E-Tags ([#3901](https://github.com/sct/overseerr/issues/3901)) ([e75351a](https://github.com/sct/overseerr/commit/e75351aa0526e8deaa737f0dd0932dd0aaccb402))
+
 ## [1.33.2](https://github.com/sct/overseerr/compare/v1.33.1...v1.33.2) (2023-07-28)
 
 
