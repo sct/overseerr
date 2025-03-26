@@ -1,132 +1,131 @@
-# Webhook
+# Webhooks
 
-The webhook notification agent enables you to send a custom JSON payload to any endpoint for specific notification events.
+The webhook notification agent in Overseerr allows you to send custom JSON payloads to any specified endpoint when certain notification events occur. This is useful for integrating with third-party services, automating workflows, or triggering external processes based on activity within Overseerr.
 
 ## Configuration
 
 ### Webhook URL
 
-The URL you would like to post notifications to. Your JSON will be sent as the body of the request.
+Specify the URL where notifications should be sent. The JSON payload will be included in the body of the HTTP request.
 
-### Authorization Header (optional)
+### Authorization Header (Optional)
 
 {% hint style="info" %}
-This is typically not needed. Please refer to your webhook provider's documentation for details.
+This is typically not required. Please refer to your webhook provider's documentation for details on whether authentication is needed.
 {% endhint %}
 
-This value will be sent as an `Authorization` HTTP header.
+If required, an authorization value can be included in the request's `Authorization` header.
 
 ### JSON Payload
 
-Customize the JSON payload to suit your needs. Overseerr provides several [template variables](#template-variables) for use in the payload, which will be replaced with the relevant data when the notifications are triggered.
+You can customize the JSON payload to match your needs. Overseerr supports several [template variables](#template-variables), which will be dynamically replaced with relevant data when a notification is triggered.
 
 ## Template Variables
 
-### General
+### General Variables
 
-| Variable                | Value                                                                                                                               |
-| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `{{notification_type}}` | The type of notification (e.g. `MEDIA_PENDING` or `ISSUE_COMMENT`)                                                                  |
-| `{{event}}`             | A friendly description of the notification event                                                                                    |
-| `{{subject}}`           | The notification subject (typically the media title)                                                                                |
-| `{{message}}`           | The notification message body (the media overview/synopsis for request notifications; the issue description for issue notificatons) |
-| `{{image}}`             | The notification image (typically the media poster)                                                                                 |
+| Variable                | Description                                                                                                     |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `{{notification_type}}` | The type of notification (e.g., `MEDIA_PENDING`, `ISSUE_COMMENT`)                                               |
+| `{{event}}`             | A descriptive label for the notification event                                                                  |
+| `{{subject}}`           | The subject of the notification (typically the media title)                                                     |
+| `{{message}}`           | The body of the notification message (e.g., media overview for requests, issue description for issues)         |
+| `{{image}}`             | The associated image (typically the media poster)                                                              |
 
-### Notify User
+### Notify User Variables
 
-These variables are for the target recipient of the notification.
+These variables contain information about the recipient of the notification.
 
-| Variable                                 | Value                                                         |
-| ---------------------------------------- | ------------------------------------------------------------- |
-| `{{notifyuser_username}}`                | The target notification recipient's username                  |
-| `{{notifyuser_email}}`                   | The target notification recipient's email address             |
-| `{{notifyuser_avatar}}`                  | The target notification recipient's avatar URL                |
-| `{{notifyuser_settings_discordId}}`      | The target notification recipient's Discord ID (if set)       |
-| `{{notifyuser_settings_telegramChatId}}` | The target notification recipient's Telegram Chat ID (if set) |
+| Variable                                 | Description                                               |
+| ---------------------------------------- | --------------------------------------------------------- |
+| `{{notifyuser_username}}`                | The recipient's username                                  |
+| `{{notifyuser_email}}`                   | The recipient's email address                            |
+| `{{notifyuser_avatar}}`                  | The recipient's avatar URL                               |
+| `{{notifyuser_settings_discordId}}`      | The recipient's Discord ID (if set)                      |
+| `{{notifyuser_settings_telegramChatId}}` | The recipient's Telegram Chat ID (if set)                |
 
 {% hint style="info" %}
-The `notifyuser` variables are not defined for the following request notification types, as they are intended for application administrators rather than end users:
-
+The `notifyuser` variables are not defined for certain request notification types intended for administrators:
 - Request Pending Approval
 - Request Automatically Approved
 - Request Processing Failed
 
-On the other hand, the `notifyuser` variables _will_ be replaced with the requesting user's information for the below notification types:
-
+However, for these notifications, the `notifyuser` variables will be replaced with the requesting user's information:
 - Request Approved
 - Request Declined
 - Request Available
 
-If you would like to use the requesting user's information in your webhook, please instead include the relevant variables from the [Request](#request) section below.
+If you need to reference the requesting user's details, use the variables from the [Request](#request) section below.
 {% endhint %}
 
-### Special
+### Special Variables
 
-The following variables must be used as a key in the JSON payload (e.g., `"{{extra}}": []`).
+Some variables represent entire objects and must be included as JSON keys (e.g., `"{{extra}}": []`).
 
-| Variable      | Value                                                                                                                          |
-| ------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `{{media}}`   | The relevant media object                                                                                                      |
-| `{{request}}` | The relevant request object                                                                                                    |
-| `{{issue}}`   | The relevant issue object                                                                                                      |
-| `{{comment}}` | The relevant issue comment object                                                                                              |
-| `{{extra}}`   | The "extra" array of additional data for certain notifications (e.g., season/episode numbers for series-related notifications) |
+| Variable      | Description                                                                                         |
+| ------------- | --------------------------------------------------------------------------------------------------- |
+| `{{media}}`   | The media object related to the notification                                                        |
+| `{{request}}` | The request object associated with the notification                                                 |
+| `{{issue}}`   | The issue object related to the notification                                                        |
+| `{{comment}}` | The comment object associated with the issue notification                                          |
+| `{{extra}}`   | Additional data for certain notifications (e.g., season/episode numbers for TV show notifications) |
 
-#### Media
+#### Media Variables
 
-The `{{media}}` will be `null` if there is no relevant media object for the notification.
+The `{{media}}` variable will be `null` if no media object is associated with the notification.
 
-These following special variables are only included in media-related notifications, such as requests.
-
-| Variable             | Value                                                                                                          |
-| -------------------- | -------------------------------------------------------------------------------------------------------------- |
-| `{{media_type}}`     | The media type (`movie` or `tv`)                                                                               |
-| `{{media_tmdbid}}`   | The media's TMDB ID                                                                                            |
-| `{{media_tvdbid}}`   | The media's TheTVDB ID                                                                                         |
+| Variable             | Description                                                                                 |
+| -------------------- | ------------------------------------------------------------------------------------------- |
+| `{{media_type}}`     | The media type (`movie` or `tv`)                                                             |
+| `{{media_tmdbid}}`   | The media's TMDB ID                                                                          |
+| `{{media_tvdbid}}`   | The media's TheTVDB ID                                                                       |
 | `{{media_status}}`   | The media's availability status (`UNKNOWN`, `PENDING`, `PROCESSING`, `PARTIALLY_AVAILABLE`, or `AVAILABLE`)    |
-| `{{media_status4k}}` | The media's 4K availability status (`UNKNOWN`, `PENDING`, `PROCESSING`, `PARTIALLY_AVAILABLE`, or `AVAILABLE`) |
+| `{{media_status4k}}` | The 4K availability status (`UNKNOWN`, `PENDING`, `PROCESSING`, `PARTIALLY_AVAILABLE`, or `AVAILABLE`) |
 
-#### Request
+#### Request Variables
 
-The `{{request}}` will be `null` if there is no relevant media object for the notification.
+The `{{request}}` variable will be `null` if there is no request-related notification.
 
-The following special variables are only included in request-related notifications.
+| Variable                                  | Description                                |
+| ----------------------------------------- | ------------------------------------------ |
+| `{{request_id}}`                          | The ID of the request                     |
+| `{{requestedBy_username}}`                | The username of the requesting user       |
+| `{{requestedBy_email}}`                   | The email address of the requesting user  |
+| `{{requestedBy_avatar}}`                  | The avatar URL of the requesting user     |
+| `{{requestedBy_settings_discordId}}`      | The Discord ID of the requesting user (if set)  |
+| `{{requestedBy_settings_telegramChatId}}` | The Telegram Chat ID of the requesting user (if set) |
 
-| Variable                                  | Value                                           |
-| ----------------------------------------- | ----------------------------------------------- |
-| `{{request_id}}`                          | The request ID                                  |
-| `{{requestedBy_username}}`                | The requesting user's username                  |
-| `{{requestedBy_email}}`                   | The requesting user's email address             |
-| `{{requestedBy_avatar}}`                  | The requesting user's avatar URL                |
-| `{{requestedBy_settings_discordId}}`      | The requesting user's Discord ID (if set)       |
-| `{{requestedBy_settings_telegramChatId}}` | The requesting user's Telegram Chat ID (if set) |
+#### Issue Variables
 
-#### Issue
+The `{{issue}}` variable will be `null` if no issue is associated with the notification.
 
-The `{{issue}}` will be `null` if there is no relevant media object for the notification.
+| Variable                                 | Description                               |
+| ---------------------------------------- | ----------------------------------------- |
+| `{{issue_id}}`                           | The ID of the issue                      |
+| `{{reportedBy_username}}`                | The username of the reporting user       |
+| `{{reportedBy_email}}`                   | The email of the reporting user          |
+| `{{reportedBy_avatar}}`                  | The avatar URL of the reporting user     |
+| `{{reportedBy_settings_discordId}}`      | The Discord ID of the reporting user (if set)  |
+| `{{reportedBy_settings_telegramChatId}}` | The Telegram Chat ID of the reporting user (if set) |
 
-The following special variables are only included in issue-related notifications.
+#### Comment Variables
 
-| Variable                                 | Value                                           |
-| ---------------------------------------- | ----------------------------------------------- |
-| `{{issue_id}}`                           | The issue ID                                    |
-| `{{reportedBy_username}}`                | The requesting user's username                  |
-| `{{reportedBy_email}}`                   | The requesting user's email address             |
-| `{{reportedBy_avatar}}`                  | The requesting user's avatar URL                |
-| `{{reportedBy_settings_discordId}}`      | The requesting user's Discord ID (if set)       |
-| `{{reportedBy_settings_telegramChatId}}` | The requesting user's Telegram Chat ID (if set) |
+The `{{comment}}` variable will be `null` if there is no comment-related notification.
 
-#### Comment
+| Variable                                  | Description                               |
+| ----------------------------------------- | ----------------------------------------- |
+| `{{comment_message}}`                     | The content of the comment               |
+| `{{commentedBy_username}}`                | The username of the commenter            |
+| `{{commentedBy_email}}`                   | The email address of the commenter       |
+| `{{commentedBy_avatar}}`                  | The avatar URL of the commenter          |
+| `{{commentedBy_settings_discordId}}`      | The Discord ID of the commenter (if set) |
+| `{{commentedBy_settings_telegramChatId}}` | The Telegram Chat ID of the commenter (if set) |
 
-The `{{comment}}` will be `null` if there is no relevant media object for the notification.
+## Testing Webhooks
 
-The following special variables are only included in issue comment-related notifications.
+To ensure your webhook configuration is working correctly, you can use tools like:
 
-| Variable                                  | Value                                           |
-| ----------------------------------------- | ----------------------------------------------- |
-| `{{comment_message}}`                     | The comment message                             |
-| `{{commentedBy_username}}`                | The commenting user's username                  |
-| `{{commentedBy_email}}`                   | The commenting user's email address             |
-| `{{commentedBy_avatar}}`                  | The commenting user's avatar URL                |
-| `{{commentedBy_settings_discordId}}`      | The commenting user's Discord ID (if set)       |
-| `{{commentedBy_settings_telegramChatId}}` | The commenting user's Telegram Chat ID (if set) |
+- **[Beeceptor](https://beeceptor.com/)** – Quickly test and debug webhook requests by setting up a mock endpoint.
+- **[Webhook.site](https://webhook.site/)** – Capture and inspect HTTP requests for debugging purposes.
+
+These tools help verify that Overseerr is sending the correct data and allow you to adjust your payloads accordingly.
