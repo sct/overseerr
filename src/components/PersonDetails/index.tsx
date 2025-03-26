@@ -145,6 +145,7 @@ const PersonDetails = () => {
                 summary={media.overview}
                 mediaType={media.mediaType as 'movie' | 'tv'}
                 status={media.mediaInfo?.status}
+                status4k={media.mediaInfo?.status4k}
                 canExpand
               />
               {media.character && (
@@ -185,6 +186,7 @@ const PersonDetails = () => {
                 summary={media.overview}
                 mediaType={media.mediaType as 'movie' | 'tv'}
                 status={media.mediaInfo?.status}
+                status4k={media.mediaInfo?.status}
                 canExpand
               />
               {media.job && (

@@ -468,22 +468,23 @@ const ManageSlideOver = ({
               {intl.formatMessage(messages.manageModalAdvanced)}
             </h3>
             <div className="space-y-2">
-              {data?.mediaInfo.status !== MediaStatus.AVAILABLE && (
-                <Button
-                  onClick={() => markAvailable()}
-                  className="w-full"
-                  buttonType="success"
-                >
-                  <CheckCircleIcon />
-                  <span>
-                    {intl.formatMessage(
-                      mediaType === 'movie'
-                        ? messages.markavailable
-                        : messages.markallseasonsavailable
-                    )}
-                  </span>
-                </Button>
-              )}
+              {data?.mediaInfo.status !== MediaStatus.AVAILABLE &&
+                settings.currentSettings.seriesEnabled && (
+                  <Button
+                    onClick={() => markAvailable()}
+                    className="w-full"
+                    buttonType="success"
+                  >
+                    <CheckCircleIcon />
+                    <span>
+                      {intl.formatMessage(
+                        mediaType === 'movie'
+                          ? messages.markavailable
+                          : messages.markallseasonsavailable
+                      )}
+                    </span>
+                  </Button>
+                )}
               {data?.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
                 settings.currentSettings.series4kEnabled && (
                   <Button
