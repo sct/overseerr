@@ -294,7 +294,6 @@ const RequestButton = ({
       type: 'or',
     }) &&
     media &&
-    media.status !== MediaStatus.AVAILABLE &&
     !isShowComplete
   ) {
     buttons.push({
@@ -339,7 +338,6 @@ const RequestButton = ({
       type: 'or',
     }) &&
     media &&
-    media.status4k !== MediaStatus.AVAILABLE &&
     !is4kShowComplete &&
     settings.currentSettings.series4kEnabled
   ) {
