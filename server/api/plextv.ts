@@ -135,8 +135,10 @@ export interface PlexWatchlistCache {
 
 class PlexTvAPI extends ExternalAPI {
   private authToken: string;
+  // Additional info for enchanced error messages
+  private userDisplayName?: string;
 
-  constructor(authToken: string) {
+  constructor(authToken: string, userDisplayName?: string) {
     super(
       'https://plex.tv',
       {},
@@ -151,6 +153,7 @@ class PlexTvAPI extends ExternalAPI {
     );
 
     this.authToken = authToken;
+    this.userDisplayName = userDisplayName;
   }
 
   public async getDevices(): Promise<PlexDevice[]> {
@@ -352,10 +355,13 @@ class PlexTvAPI extends ExternalAPI {
         items: filteredList,
       };
     } catch (e) {
-      logger.error('Failed to retrieve watchlist items', {
-        label: 'Plex.TV Metadata API',
-        errorMessage: e.message,
-      });
+      logger.error(
+        `Failed to retrieve watchlist items for user "${this.userDisplayName}"`,
+        {
+          label: 'Plex.TV Metadata API',
+          errorMessage: e.message,
+        }
+      );
       return {
         offset,
         size,

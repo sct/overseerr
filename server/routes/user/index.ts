@@ -496,7 +496,10 @@ router.post(
         select: { id: true, plexToken: true },
         where: { id: 1 },
       });
-      const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
+      const mainPlexTv = new PlexTvAPI(
+        mainUser.plexToken ?? '',
+        mainUser.displayName
+      );
 
       const plexUsersResponse = await mainPlexTv.getUsers();
       const createdUsers: User[] = [];
@@ -728,7 +731,7 @@ router.get<{ id: string }, WatchlistResponse>(
       });
     }
 
-    const plexTV = new PlexTvAPI(user.plexToken);
+    const plexTV = new PlexTvAPI(user.plexToken, user.displayName);
 
     const watchlist = await plexTV.getWatchlist({ offset });
 
