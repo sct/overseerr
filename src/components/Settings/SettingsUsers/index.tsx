@@ -1,6 +1,7 @@
 import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
+import SensitiveInput from '@app/components/Common/SensitiveInput';
 import PermissionEdit from '@app/components/PermissionEdit';
 import QuotaSelector from '@app/components/QuotaSelector';
 import globalMessages from '@app/i18n/globalMessages';
@@ -11,6 +12,7 @@ import { Field, Form, Formik } from 'formik';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
+import * as yup from 'yup';
 
 const messages = defineMessages({
   users: 'Users',
@@ -27,9 +29,44 @@ const messages = defineMessages({
   tvRequestLimitLabel: 'Global Series Request Limit',
   defaultPermissions: 'Default Permissions',
   defaultPermissionsTip: 'Initial permissions assigned to new users',
+  oidcLogin: 'Enable OIDC Sign-In',
+  oidcLoginTip: 'Allow users to sign in using an OIDC provider',
+  oidcName: 'OIDC Provider Name',
+  oidcNameTip: 'The string used as name on the login page',
+  oidcClientId: 'OIDC Client ID',
+  oidcClientSecret: 'OIDC Client Secret',
+  oidcDomain: 'OIDC Domain',
 });
 
-const SettingsUsers = () => {
+const validationSchema = yup.object().shape({
+  oidcLogin: yup.boolean(),
+  oidcClientId: yup.string().when('oidcLogin', {
+    is: true,
+    then: yup.string().required(),
+  }),
+  oidcClientSecret: yup.string().when('oidcLogin', {
+    is: true,
+    then: yup.string().required(),
+  }),
+  oidcDomain: yup.string().when('oidcLogin', {
+    is: true,
+    then: yup
+      .string()
+      .required()
+      .test({
+        message: 'Must be a valid domain',
+        test: (val) => {
+          return (
+            !!val &&
+            // Any HTTPS domain without query string
+            /^([a-zA-Z0-9-_]+\.)[^?]+$/i.test(val)
+          );
+        },
+      }),
+  }),
+});
+
+const SettingsUsers: React.FC = () => {
   const { addToast } = useToasts();
   const intl = useIntl();
   const {
@@ -61,18 +98,29 @@ const SettingsUsers = () => {
           initialValues={{
             localLogin: data?.localLogin,
             newPlexLogin: data?.newPlexLogin,
+            oidcName: data?.oidcName,
+            oidcLogin: data?.oidcLogin,
+            oidcClientId: data?.oidcClientId,
+            oidcClientSecret: data?.oidcClientSecret,
+            oidcDomain: data?.oidcDomain,
             movieQuotaLimit: data?.defaultQuotas.movie.quotaLimit ?? 0,
             movieQuotaDays: data?.defaultQuotas.movie.quotaDays ?? 7,
             tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
             tvQuotaDays: data?.defaultQuotas.tv.quotaDays ?? 7,
             defaultPermissions: data?.defaultPermissions ?? 0,
           }}
+          validationSchema={validationSchema}
           enableReinitialize
           onSubmit={async (values) => {
             try {
               await axios.post('/api/v1/settings/main', {
                 localLogin: values.localLogin,
                 newPlexLogin: values.newPlexLogin,
+                oidcLogin: values.oidcLogin,
+                oidcClientId: values.oidcClientId,
+                oidcClientSecret: values.oidcClientSecret,
+                oidcDomain: values.oidcDomain,
+                oidcName: values.oidcName,
                 defaultQuotas: {
                   movie: {
                     quotaLimit: values.movieQuotaLimit,
@@ -101,7 +149,7 @@ const SettingsUsers = () => {
             }
           }}
         >
-          {({ isSubmitting, values, setFieldValue }) => {
+          {({ isSubmitting, values, setFieldValue, errors, touched }) => {
             return (
               <Form className="section">
                 <div className="form-row">
@@ -140,6 +188,100 @@ const SettingsUsers = () => {
                     />
                   </div>
                 </div>
+                <div className="form-row">
+                  <label htmlFor="oidcLogin" className="checkbox-label">
+                    {intl.formatMessage(messages.oidcLogin)}
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.oidcLoginTip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="oidcLogin"
+                      name="oidcLogin"
+                      onChange={() => {
+                        setFieldValue('oidcLogin', !values.oidcLogin);
+                      }}
+                    />
+                  </div>
+                </div>
+                {values.oidcLogin ? (
+                  <>
+                    <div className="form-row">
+                      <label htmlFor="oidcName" className="group-label">
+                        {intl.formatMessage(messages.oidcName)}
+                        <span className="label-tip">
+                          {intl.formatMessage(messages.oidcNameTip)}
+                        </span>
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field id="oidcName" name="oidcName" type="text" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="oidcDomain" className="text-label">
+                        {intl.formatMessage(messages.oidcDomain)}
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            id="oidcDomain"
+                            name="oidcDomain"
+                            type="text"
+                          />
+                        </div>
+                        {errors.oidcDomain && touched.oidcDomain && (
+                          <div className="error">{errors.oidcDomain}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="oidcClientId" className="text-label">
+                        {intl.formatMessage(messages.oidcClientId)}
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            id="oidcClientId"
+                            name="oidcClientId"
+                            type="text"
+                          />
+                        </div>
+                        {errors.oidcClientId && touched.oidcDomain && (
+                          <div className="error">{errors.oidcClientId}</div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="oidcClientSecret" className="text-label">
+                        {intl.formatMessage(messages.oidcClientSecret)}
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <SensitiveInput
+                            type="password"
+                            id="oidcClientSecret"
+                            className="rounded-l-only"
+                            defaultValue={data?.oidcClientSecret}
+                            onChange={(e) => {
+                              setFieldValue('oidcClientSecret', e.target.value);
+                            }}
+                            autoComplete="off"
+                          />
+                        </div>
+                        {errors.oidcClientSecret &&
+                          touched.oidcClientSecret && (
+                            <div className="error">
+                              {errors.oidcClientSecret}
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                  </>
+                ) : null}
                 <div className="form-row">
                   <label htmlFor="applicationTitle" className="text-label">
                     {intl.formatMessage(messages.movieRequestLimitLabel)}
