@@ -27,6 +27,7 @@ export type AvailableLocale =
   | 'pt-PT'
   | 'ro'
   | 'ru'
+  | 'sl'
   | 'sq'
   | 'sr'
   | 'sv'
@@ -119,6 +120,10 @@ export const availableLanguages: AvailableLanguageObject = {
   'pt-PT': {
     code: 'pt-PT',
     display: 'Português (Portugal)',
+  },
+  sl: {
+    code: 'sl',
+    display: 'Slovenščina',
   },
   sq: {
     code: 'sq',
