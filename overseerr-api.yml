@@ -3946,6 +3946,35 @@ paths:
                   username:
                     type: string
                     example: 'Mr User'
+  /user/{userId}/settings/email:
+    post:
+      summary: Update email for a user
+      description: Updates a user's email. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  nullable: true
+                newEmail:
+                  type: string
+              required:
+                - newEmail
+      responses:
+        '204':
+          description: User email updated
   /user/{userId}/settings/password:
     get:
       summary: Get password page informatiom
