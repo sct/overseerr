@@ -7,6 +7,10 @@ import SensitiveInput from '@app/components/Common/SensitiveInput';
 import LibraryItem from '@app/components/Settings/LibraryItem';
 import SettingsBadge from '@app/components/Settings/SettingsBadge';
 import globalMessages from '@app/i18n/globalMessages';
+import {
+  dnsValidationRegex,
+  hostnameValidationRegex,
+} from '@app/utils/validationHelpers';
 import { ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
 import {
   ArrowPathIcon,
@@ -136,7 +140,7 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
       .nullable()
       .required(intl.formatMessage(messages.validationHostnameRequired))
       .matches(
-        /^(((([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])):((([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))@)?(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+        hostnameValidationRegex,
         intl.formatMessage(messages.validationHostnameRequired)
       ),
     port: Yup.number()
@@ -158,7 +162,7 @@ const SettingsPlex = ({ onComplete }: SettingsPlexProps) => {
           otherwise: Yup.string().nullable(),
         })
         .matches(
-          /^(([a-z]|\d|_|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*)?([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])$/i,
+          dnsValidationRegex,
           intl.formatMessage(messages.validationHostnameRequired)
         ),
       tautulliPort: Yup.number().when(['tautulliHostname', 'tautulliApiKey'], {
