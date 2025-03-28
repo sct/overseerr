@@ -157,7 +157,7 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
     }
   }, [hasPermission, router.pathname]);
 
-  if (router.pathname.match(/(login|setup|resetpassword)/)) {
+  if (router.pathname.match(/(login|setup|resetpassword|loading)/)) {
     component = <Component {...pageProps} />;
   } else {
     component = (
@@ -228,6 +228,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     locale: 'en',
     emailEnabled: false,
     newPlexLogin: true,
+    plexLoginEnabled: false,
   };
 
   if (ctx.res) {
@@ -243,7 +244,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     const initialized = response.data.initialized;
 
     if (!initialized) {
-      if (!router.pathname.match(/(setup|login\/plex)/)) {
+      if (!router.pathname.match(/(setup|login\/plex|loading)/)) {
         ctx.res.writeHead(307, {
           Location: '/setup',
         });
@@ -275,7 +276,7 @@ CoreApp.getInitialProps = async (initialProps) => {
         // If there is no user, and ctx.res is set (to check if we are on the server side)
         // _AND_ we are not already on the login or setup route, redirect to /login with a 307
         // before anything actually renders
-        if (!router.pathname.match(/(login|setup|resetpassword)/)) {
+        if (!router.pathname.match(/(login|setup|resetpassword|loading)/)) {
           ctx.res.writeHead(307, {
             Location: '/login',
           });

@@ -16,6 +16,7 @@ import useSWR from 'swr';
 
 const messages = defineMessages({
   menuGeneralSettings: 'General',
+  menuChangeEmail: 'Email',
   menuChangePass: 'Password',
   menuNotifications: 'Notifications',
   menuPermissions: 'Permissions',
@@ -50,6 +51,11 @@ const UserSettings = ({ children }: UserSettingsProps) => {
       text: intl.formatMessage(messages.menuGeneralSettings),
       route: '/settings/main',
       regex: /\/settings(\/main)?$/,
+    },
+    {
+      text: intl.formatMessage(messages.menuChangeEmail),
+      route: '/settings/email',
+      regex: /\/settings\/email/,
     },
     {
       text: intl.formatMessage(messages.menuChangePass),

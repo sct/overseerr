@@ -1,22 +1,22 @@
-import { UserType } from '@server/constants/user';
 import type { PermissionCheckOptions } from '@server/lib/permissions';
 import { hasPermission, Permission } from '@server/lib/permissions';
 import type { NotificationAgentKey } from '@server/lib/settings';
 import type { MutatorCallback } from 'swr';
 import useSWR from 'swr';
 
-export { Permission, UserType };
+export { Permission };
 export type { PermissionCheckOptions };
 
 export interface User {
   id: number;
-  plexUsername?: string;
+  plexUsername?: string | null;
   username?: string;
   displayName: string;
   email: string;
   avatar: string;
   permissions: number;
-  userType: number;
+  isPlexUser: boolean;
+  isLocalUser: boolean;
   createdAt: Date;
   updatedAt: Date;
   requestCount: number;

@@ -1,18 +1,25 @@
-import Badge from '@app/components/Common/Badge';
+import PlexLogo from '@app/assets/services/plex.svg';
 import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
+import Tooltip from '@app/components/Common/Tooltip';
 import LanguageSelector from '@app/components/LanguageSelector';
 import QuotaSelector from '@app/components/QuotaSelector';
 import RegionSelector from '@app/components/RegionSelector';
+import LoginWithPlex from '@app/components/Setup/LoginWithPlex';
 import type { AvailableLocale } from '@app/context/LanguageContext';
 import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
-import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowPathIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+} from '@heroicons/react/24/solid';
 import type { UserSettingsGeneralResponse } from '@server/interfaces/api/userSettingsInterfaces';
 import axios from 'axios';
 import { Field, Form, Formik } from 'formik';
@@ -27,7 +34,7 @@ const messages = defineMessages({
   general: 'General',
   generalsettings: 'General Settings',
   displayName: 'Display Name',
-  accounttype: 'Account Type',
+  connectedaccounts: 'Connected Accounts',
   plexuser: 'Plex User',
   localuser: 'Local User',
   role: 'Role',
@@ -55,6 +62,16 @@ const messages = defineMessages({
   plexwatchlistsyncseries: 'Auto-Request Series',
   plexwatchlistsyncseriestip:
     'Automatically request series on your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink>',
+  noconnectedavailable: 'No connected services available.',
+  onlyloggedinuseredit:
+    'Only the logged in user can edit their own connected accounts.',
+  connectplexaccount: 'Connect Plex Account',
+  refreshedtoken: 'Refreshed Plex Token.',
+  refreshtoken: 'Refresh Token',
+  mustsetpasswordplex: 'You must set a password before disconnecting Plex.',
+  disconnectPlex: 'Disconnect Plex',
+  plexdisconnectedsuccess: 'Plex account disconnected.',
+  plexdisconnectedfailure: 'Failed to disconnect Plex account.',
 });
 
 const UserGeneralSettings = () => {
@@ -95,6 +112,23 @@ const UserGeneralSettings = () => {
       data?.tvQuotaLimit != undefined && data?.tvQuotaDays != undefined
     );
   }, [data]);
+
+  const unlinkPlex = async () => {
+    try {
+      await axios.get('/api/v1/auth/plex/unlink');
+
+      addToast(intl.formatMessage(messages.plexdisconnectedsuccess), {
+        appearance: 'success',
+        autoDismiss: true,
+      });
+      revalidateUser();
+    } catch (e) {
+      addToast(intl.formatMessage(messages.plexdisconnectedfailure), {
+        appearance: 'error',
+        autoDismiss: true,
+      });
+    }
+  };
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -186,21 +220,96 @@ const UserGeneralSettings = () => {
             <Form className="section">
               <div className="form-row">
                 <label className="text-label">
-                  {intl.formatMessage(messages.accounttype)}
+                  {intl.formatMessage(messages.connectedaccounts)}
                 </label>
-                <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
-                  <div className="flex max-w-lg items-center">
-                    {user?.userType === UserType.PLEX ? (
-                      <Badge badgeType="warning">
-                        {intl.formatMessage(messages.plexuser)}
-                      </Badge>
+                {!currentSettings.plexLoginEnabled && user?.id !== 1 && (
+                  <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                    <div className="flex max-w-lg items-center">
+                      {intl.formatMessage(messages.noconnectedavailable)}
+                    </div>
+                  </div>
+                )}
+                {(currentSettings.plexLoginEnabled || user?.id === 1) && (
+                  <div className="flex items-center rounded sm:col-span-2">
+                    <div className="mr-4 flex h-7 w-7 items-center justify-center rounded-full border border-gray-700 bg-gray-800">
+                      <CheckCircleIcon
+                        className={`h-full w-full ${
+                          user?.isPlexUser ? 'text-green-500' : 'text-gray-700'
+                        }`}
+                      />
+                    </div>
+                    <PlexLogo className="h-8 border-r border-gray-700 pr-4" />
+                    {user?.id !== currentUser?.id ? (
+                      <div className="ml-4 text-sm text-gray-400">
+                        {intl.formatMessage(messages.onlyloggedinuseredit)}
+                      </div>
                     ) : (
-                      <Badge badgeType="default">
-                        {intl.formatMessage(messages.localuser)}
-                      </Badge>
+                      <>
+                        {!user?.isPlexUser ? (
+                          <>
+                            <div className="ml-4">
+                              <LoginWithPlex
+                                onComplete={() => {
+                                  revalidateUser();
+                                }}
+                                textOverride={intl.formatMessage(
+                                  messages.connectplexaccount
+                                )}
+                              />
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="ml-4">
+                              <LoginWithPlex
+                                onComplete={() => {
+                                  addToast(
+                                    intl.formatMessage(messages.refreshedtoken),
+                                    {
+                                      appearance: 'success',
+                                      autoDismiss: true,
+                                    }
+                                  );
+                                  revalidateUser();
+                                }}
+                                svgIcon={<ArrowPathIcon />}
+                                textOverride={intl.formatMessage(
+                                  messages.refreshtoken
+                                )}
+                                buttonSize="sm"
+                                buttonType="primary"
+                              />
+                            </div>
+                            <Tooltip
+                              content={intl.formatMessage(
+                                messages.mustsetpasswordplex
+                              )}
+                              // We only want to show the tooltip if the user is not a local user
+                              disabled={user?.isLocalUser}
+                            >
+                              <span>
+                                <Button
+                                  type="button"
+                                  className="ml-4"
+                                  buttonSize="sm"
+                                  onClick={() => unlinkPlex()}
+                                  disabled={!user?.isLocalUser}
+                                >
+                                  <XCircleIcon />
+                                  <span>
+                                    {intl.formatMessage(
+                                      messages.disconnectPlex
+                                    )}
+                                  </span>
+                                </Button>
+                              </span>
+                            </Tooltip>
+                          </>
+                        )}
+                      </>
                     )}
                   </div>
-                </div>
+                )}
               </div>
               <div className="form-row">
                 <label className="text-label">
@@ -423,7 +532,7 @@ const UserGeneralSettings = () => {
                 [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_MOVIE],
                 { type: 'or' }
               ) &&
-                user?.userType === UserType.PLEX && (
+                user?.isPlexUser && (
                   <div className="form-row">
                     <label
                       htmlFor="watchlistSyncMovies"
@@ -471,7 +580,7 @@ const UserGeneralSettings = () => {
                 [Permission.AUTO_REQUEST, Permission.AUTO_REQUEST_TV],
                 { type: 'or' }
               ) &&
-                user?.userType === UserType.PLEX && (
+                user?.isPlexUser && (
                   <div className="form-row">
                     <label htmlFor="watchlistSyncTv" className="checkbox-label">
                       <span>

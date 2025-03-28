@@ -63,10 +63,6 @@ components:
         plexUsername:
           type: string
           readOnly: true
-        userType:
-          type: integer
-          example: 1
-          readOnly: true
         permissions:
           type: number
           example: 0
@@ -84,6 +80,14 @@ components:
         requestCount:
           type: number
           example: 5
+          readOnly: true
+        isPlexUser:
+          type: boolean
+          example: false
+          readOnly: true
+        isLocalUser:
+          type: boolean
+          example: true
           readOnly: true
       required:
         - id
@@ -3325,6 +3329,15 @@ paths:
                   type: string
               required:
                 - authToken
+  /auth/plex/unlink:
+    get:
+      summary: Unlink Plex from currently logged in account
+      description: Will remove connected Plex account information from the currently logged-in user.
+      tags:
+        - auth
+      responses:
+        '204':
+          description: OK
   /auth/local:
     post:
       summary: Sign in using a local account
@@ -3933,6 +3946,35 @@ paths:
                   username:
                     type: string
                     example: 'Mr User'
+  /user/{userId}/settings/email:
+    post:
+      summary: Update email for a user
+      description: Updates a user's email. Requires `MANAGE_USERS` permission if editing other users.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                currentPassword:
+                  type: string
+                  nullable: true
+                newEmail:
+                  type: string
+              required:
+                - newEmail
+      responses:
+        '204':
+          description: User email updated
   /user/{userId}/settings/password:
     get:
       summary: Get password page informatiom

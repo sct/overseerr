@@ -149,7 +149,6 @@ describe('Discover', () => {
             plexUsername: null,
             username: '',
             recoveryLinkExpirationDate: null,
-            userType: 2,
             avatar:
               'https://gravatar.com/avatar/c77fdc27cab83732b8623d2ea873d330?default=mm&size=200',
             movieQuotaLimit: null,
