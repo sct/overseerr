@@ -16,6 +16,12 @@ const messages = defineMessages({
   validationEmail: 'You must provide a valid email address',
   validationpasswordminchars:
     'Password is too short; should be a minimum of 8 characters',
+  createlocalaccount: 'Create Local Account',
+  createaccount: 'Create Account',
+  creatingaccount: 'Creating Account...',
+  goback: 'Go Back',
+  email: 'Email',
+  password: 'Password',
 });
 
 type StepOneProps = {
@@ -63,7 +69,7 @@ const StepOne = ({ onComplete }: StepOneProps) => {
                 revalidate();
                 onComplete();
               } catch (e) {
-                console.log(e.message);
+                console.error(e.message);
               }
             }}
             validationSchema={CreateUserSchema}
@@ -72,7 +78,7 @@ const StepOne = ({ onComplete }: StepOneProps) => {
               <Form>
                 <div>
                   <label htmlFor="email" className="text-label">
-                    Email
+                    {intl.formatMessage(messages.email)}
                   </label>
                   <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
                     <div className="form-input-field">
@@ -91,7 +97,7 @@ const StepOne = ({ onComplete }: StepOneProps) => {
                       )}
                   </div>
                   <label htmlFor="password" className="text-label">
-                    Password
+                    {intl.formatMessage(messages.password)}
                   </label>
                   <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
                     <div className="form-input-field">
@@ -122,13 +128,13 @@ const StepOne = ({ onComplete }: StepOneProps) => {
                       <UserIcon />
                       <span>
                         {isSubmitting
-                          ? 'Creating Account...'
-                          : 'Create Account'}
+                          ? intl.formatMessage(messages.creatingaccount)
+                          : intl.formatMessage(messages.createaccount)}
                       </span>
                     </Button>
                     <Button onClick={() => setShowLocalCreateForm(false)}>
                       <ArrowLeftIcon />
-                      <span>Go Back</span>
+                      <span>{intl.formatMessage(messages.goback)}</span>
                     </Button>
                   </div>
                 </div>
@@ -143,7 +149,7 @@ const StepOne = ({ onComplete }: StepOneProps) => {
               onClick={() => setShowLocalCreateForm(true)}
             >
               <UserIcon />
-              <span>Create Local Account</span>
+              <span>{intl.formatMessage(messages.createlocalaccount)}</span>
             </Button>
           </div>
         )}

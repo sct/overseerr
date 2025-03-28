@@ -12,6 +12,12 @@ const messages = defineMessages({
   tip: 'Tip',
   scanbackground:
     'Scanning will run in the background. You can continue the setup process in the meantime.',
+  configuremediaservers: 'Configure Media Servers',
+  configuremediaserversdescription:
+    'Select the media servers you would like to configure below.',
+  configured: 'Configured',
+  configureplex: 'Configure Plex',
+  continuewithoutmediaserver: 'Continue without a Media Server',
 });
 
 type ConfigureMediaServersProps = {
@@ -60,9 +66,11 @@ const ConfigureMediaServers = ({ onComplete }: ConfigureMediaServersProps) => {
       )}
       {!configureStatus?.configuring && (
         <>
-          <h3 className="heading">Configure Media Servers</h3>
+          <h3 className="heading">
+            {intl.formatMessage(messages.configuremediaservers)}
+          </h3>
           <p className="description">
-            Select the media servers you would like to configure below.
+            {intl.formatMessage(messages.configuremediaserversdescription)}
           </p>
           <div className="mt-8 flex justify-center">
             <div className="w-52 divide-y divide-gray-700 rounded border border-gray-700 bg-gray-800 bg-opacity-20">
@@ -73,14 +81,14 @@ const ConfigureMediaServers = ({ onComplete }: ConfigureMediaServersProps) => {
                 {plexConfigured ? (
                   <>
                     <CheckCircleIcon className="w-6 text-green-500" />
-                    <span>Configured</span>
+                    <span>{intl.formatMessage(messages.configured)}</span>
                   </>
                 ) : (
                   <Button
                     className="w-full"
                     onClick={() => setConfigureStatus({ configuring: 'plex' })}
                   >
-                    Configure Plex
+                    {intl.formatMessage(messages.configureplex)}
                   </Button>
                 )}
               </div>
@@ -90,8 +98,8 @@ const ConfigureMediaServers = ({ onComplete }: ConfigureMediaServersProps) => {
             <div className="flex justify-end">
               <Button buttonType="primary" onClick={() => onComplete()}>
                 {plexConfigured
-                  ? 'Continue'
-                  : 'Continue without a Media Server'}
+                  ? intl.formatMessage(messages.continue)
+                  : intl.formatMessage(messages.continuewithoutmediaserver)}
               </Button>
             </div>
           </div>

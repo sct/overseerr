@@ -227,8 +227,9 @@ authRoutes.post('/local', async (req, res, next) => {
   const settings = getSettings();
   const userRepository = getRepository(User);
   const body = req.body as { email?: string; password?: string };
+  const admin = await userRepository.findOneBy({ id: 1 });
 
-  if (!settings.main.localLogin) {
+  if (!settings.main.localLogin && admin?.plexId) {
     return res.status(500).json({ error: 'Password sign-in is disabled.' });
   } else if (!body.email || !body.password) {
     return res.status(500).json({

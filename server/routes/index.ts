@@ -96,6 +96,7 @@ router.get('/status/appdata', (_req, res) => {
 });
 
 router.use('/user', isAuthenticated(), user);
+
 router.get<never, FullPublicSettings>('/settings/public', async (req, res) => {
   const settings = getSettings();
   const userRepository = getRepository(User);
@@ -110,10 +111,13 @@ router.get<never, FullPublicSettings>('/settings/public', async (req, res) => {
 
   if (admin && admin.plexId) {
     fullPublicSettings.plexLoginEnabled = true;
+  } else if (admin && !admin.plexId) {
+    fullPublicSettings.localLogin = true;
   }
 
   return res.status(200).json(fullPublicSettings);
 });
+
 router.get('/settings/discover', isAuthenticated(), async (_req, res) => {
   const sliderRepository = getRepository(DiscoverSlider);
 
@@ -121,6 +125,7 @@ router.get('/settings/discover', isAuthenticated(), async (_req, res) => {
 
   return res.json(sliders);
 });
+
 router.get(
   '/settings/notifications/pushover/sounds',
   isAuthenticated(),
@@ -146,6 +151,7 @@ router.get(
     }
   }
 );
+
 router.use('/settings', isAuthenticated(Permission.ADMIN), settingsRoutes);
 router.use('/search', isAuthenticated(), searchRoutes);
 router.use('/discover', isAuthenticated(), discoverRoutes);
