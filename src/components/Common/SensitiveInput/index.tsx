@@ -4,15 +4,21 @@ import { useState } from 'react';
 
 interface CustomInputProps extends React.ComponentProps<'input'> {
   as?: 'input';
+  allowAutoComplete?: boolean;
 }
 
 interface CustomFieldProps extends React.ComponentProps<typeof Field> {
   as?: 'field';
+  allowAutoComplete?: boolean;
 }
 
 type SensitiveInputProps = CustomInputProps | CustomFieldProps;
 
-const SensitiveInput = ({ as = 'input', ...props }: SensitiveInputProps) => {
+const SensitiveInput = ({
+  as = 'input',
+  allowAutoComplete = false,
+  ...props
+}: SensitiveInputProps) => {
   const [isHidden, setHidden] = useState(true);
   const Component = as === 'input' ? 'input' : Field;
   const componentProps =
@@ -22,13 +28,18 @@ const SensitiveInput = ({ as = 'input', ...props }: SensitiveInputProps) => {
           ...props,
           as: props.type === 'textarea' && !isHidden ? 'textarea' : undefined,
         };
+
   return (
     <>
       <Component
-        autoComplete="off"
-        data-1pignore="true"
-        data-lpignore="true"
-        data-bwignore="true"
+        {...(allowAutoComplete
+          ? {}
+          : {
+              autoComplete: 'off',
+              'data-1pignore': 'true',
+              'data-lpignore': 'true',
+              'data-bwignore': 'true',
+            })}
         {...componentProps}
         className={`rounded-l-only ${componentProps.className ?? ''}`}
         type={

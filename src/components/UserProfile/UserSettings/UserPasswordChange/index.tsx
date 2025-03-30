@@ -173,6 +173,7 @@ const UserPasswordChange = () => {
                         name="currentPassword"
                         type="password"
                         autoComplete="current-password"
+                        allowAutoComplete
                       />
                     </div>
                     {errors.currentPassword &&
@@ -195,6 +196,7 @@ const UserPasswordChange = () => {
                       name="newPassword"
                       type="password"
                       autoComplete="new-password"
+                      allowAutoComplete
                     />
                   </div>
                   {errors.newPassword &&
@@ -216,6 +218,7 @@ const UserPasswordChange = () => {
                       name="confirmPassword"
                       type="password"
                       autoComplete="new-password"
+                      allowAutoComplete
                     />
                   </div>
                   {errors.confirmPassword &&

@@ -425,6 +425,7 @@ const UserList = () => {
                           name="password"
                           type="password"
                           autoComplete="new-password"
+                          allowAutoComplete
                           disabled={values.genpassword}
                         />
                       </div>
