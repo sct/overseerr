@@ -324,6 +324,7 @@ class BaseScanner<T> {
         }
       }
 
+      // We want to skip specials when checking if a show is available
       const isAllStandardSeasons =
         seasons.length &&
         seasons
@@ -403,7 +404,7 @@ class BaseScanner<T> {
         }
 
         // If the show is already available, and there are no new seasons, dont adjust
-        // the status
+        // the status. Skip specials when performing availability check
         const shouldStayAvailable =
           media.status === MediaStatus.AVAILABLE &&
           newSeasons.filter(
