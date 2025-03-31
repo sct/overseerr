@@ -326,17 +326,22 @@ class BaseScanner<T> {
 
       const isAllStandardSeasons =
         seasons.length &&
-        seasons.every(
-          (season) =>
-            season.episodes === season.totalEpisodes && season.episodes > 0
-        );
+        seasons
+          .filter((season) => season.seasonNumber !== 0)
+          .every(
+            (season) =>
+              season.episodes === season.totalEpisodes && season.episodes > 0
+          );
 
       const isAll4kSeasons =
         seasons.length &&
-        seasons.every(
-          (season) =>
-            season.episodes4k === season.totalEpisodes && season.episodes4k > 0
-        );
+        seasons
+          .filter((season) => season.seasonNumber !== 0)
+          .every(
+            (season) =>
+              season.episodes4k === season.totalEpisodes &&
+              season.episodes4k > 0
+          );
 
       if (media) {
         media.seasons = [...media.seasons, ...newSeasons];
@@ -401,12 +406,17 @@ class BaseScanner<T> {
         // the status
         const shouldStayAvailable =
           media.status === MediaStatus.AVAILABLE &&
-          newSeasons.filter((season) => season.status !== MediaStatus.UNKNOWN)
-            .length === 0;
+          newSeasons.filter(
+            (season) =>
+              season.status !== MediaStatus.UNKNOWN && season.seasonNumber !== 0
+          ).length === 0;
         const shouldStayAvailable4k =
           media.status4k === MediaStatus.AVAILABLE &&
-          newSeasons.filter((season) => season.status4k !== MediaStatus.UNKNOWN)
-            .length === 0;
+          newSeasons.filter(
+            (season) =>
+              season.status4k !== MediaStatus.UNKNOWN &&
+              season.seasonNumber !== 0
+          ).length === 0;
 
         media.status =
           isAllStandardSeasons || shouldStayAvailable
