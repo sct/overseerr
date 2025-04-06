@@ -197,7 +197,7 @@ requestRoutes.get('/count', async (_req, res, next) => {
   try {
     const query = requestRepository
       .createQueryBuilder('request')
-      .leftJoinAndSelect('request.media', 'media');
+      .innerJoinAndSelect('request.media', 'media');
 
     const totalCount = await query.getCount();
 
