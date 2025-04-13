@@ -85,6 +85,9 @@ export class User {
   @Column()
   public avatar: string;
 
+  @Column({ type: 'text', nullable: true })
+  public lastActive: string | null;
+
   @RelationCount((user: User) => user.requests)
   public requestCount: number;
 

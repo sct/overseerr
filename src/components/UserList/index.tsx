@@ -76,9 +76,74 @@ const messages = defineMessages({
   sortRequests: 'Request Count',
   localLoginDisabled:
     'The <strong>Enable Local Sign-In</strong> setting is currently disabled.',
+  neverSignedIn: 'Never Signed In',
+  activeNow: 'Active Now',
+  lastActive: 'Last Active',
 });
 
-type Sort = 'created' | 'updated' | 'requests' | 'displayname';
+
+// Helper function to format the last active time
+const formatLastActive = (lastActive: string | null, intl: IntlShape): string => {
+  if (!lastActive) {
+    return intl.formatMessage(messages.neverSignedIn);
+  }
+
+  const lastActiveDate = new Date(lastActive);
+  const now = new Date();
+  const diff = now.getTime() - lastActiveDate.getTime();
+  const fiveYearsInMs = 5 * 365 * 24 * 60 * 60 * 1000;
+
+  // If last active is older than 5 years, treat it as never signed in
+  if (diff > fiveYearsInMs) {
+    return intl.formatMessage(messages.neverSignedIn);
+  }
+
+  // If last active was less than a minute ago, consider it "Active Now"
+  if (diff < 60 * 1000) {
+    return intl.formatMessage(messages.activeNow);
+  }
+
+  // If less than an hour, display minutes ago
+  const minutes = Math.floor(diff / (1000 * 60));
+  if (minutes < 60) {
+    return `${minutes} minute${minutes !== 1 ? 's' : ''} ago`;
+  }
+
+  // If less than a day, display hours ago
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  if (hours < 24) {
+    return `${hours} hour${hours !== 1 ? 's' : ''} ago`;
+  }
+
+  // If less than a month, display days ago
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  if (days < 30) {
+    return `${days} day${days !== 1 ? 's' : ''} ago`;
+  }
+
+  // If less than a year, display months ago
+  const months = Math.floor(days / 30);
+  if (months < 12) {
+    return `${months} month${months !== 1 ? 's' : ''} ago`;
+  }
+
+  // For one year or more, display years ago
+  const years = Math.floor(days / 365);
+  return `${years} year${years !== 1 ? 's' : ''} ago`;
+
+
+
+  // Otherwise, return a formatted date/time string
+  return intl.formatDate(lastActiveDate, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
+};
+
+type Sort = 'created' | 'updated' | 'requests'  | 'lastActive' | 'displayname';
 
 const UserList = () => {
   const intl = useIntl();
@@ -526,6 +591,9 @@ const UserList = () => {
               <option value="displayname">
                 {intl.formatMessage(messages.sortDisplayName)}
               </option>
+              <option value="lastActive">
+                {intl.formatMessage(messages.lastActive)}
+              </option>
             </select>
           </div>
         </div>
@@ -547,6 +615,7 @@ const UserList = () => {
               )}
             </Table.TH>
             <Table.TH>{intl.formatMessage(messages.user)}</Table.TH>
+            <Table.TH>{intl.formatMessage(messages.lastActive)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.totalrequests)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.accounttype)}</Table.TH>
             <Table.TH>{intl.formatMessage(messages.role)}</Table.TH>
@@ -607,6 +676,27 @@ const UserList = () => {
                       </div>
                     )}
                   </div>
+                </div>
+              </Table.TD>
+              <Table.TD>
+                <div className="flex items-center">
+                  {(() => {
+                    const formatted = formatLastActive(user.lastActive, intl);
+                    if (formatted === intl.formatMessage(messages.activeNow)) {
+                      // If the formatted string says "Active Now", render it in large, bold green.
+                      return (
+                        <span className="text-sm text-green-500">
+                          {formatted}
+                        </span>
+                      );
+                    }
+                    const isNeverSignedIn = formatted === intl.formatMessage(messages.neverSignedIn);
+                    return (
+                      <span className={`text-sm ${isNeverSignedIn ? 'text-gray-400' : 'text-white'}`}>
+                        {formatted}
+                      </span>
+                    );
+                  })()}
                 </div>
               </Table.TD>
               <Table.TD>

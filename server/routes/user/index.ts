@@ -23,7 +23,23 @@ import gravatarUrl from 'gravatar-url';
 import { findIndex, sortBy } from 'lodash';
 import { In } from 'typeorm';
 import userSettingsRoutes from './usersettings';
+import { MoreThan } from 'typeorm';
 
+const userRoutes = Router();
+
+userRoutes.get('/active', async (req, res) => {
+  const userRepository = getRepository(User);
+
+  // Fetch users active in the last 5 minutes
+  const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000);
+
+  const activeUsers = await userRepository.find({
+    where: { lastActive: MoreThan(fiveMinutesAgo.toISOString()) },
+    select: ['id', 'displayName'], // Select only necessary fields
+  });
+
+  return res.json(activeUsers);
+});
 const router = Router();
 
 router.get('/', async (req, res, next) => {
@@ -41,6 +57,12 @@ router.get('/', async (req, res, next) => {
           "(CASE WHEN (user.username IS NULL OR user.username = '') THEN (CASE WHEN (user.plexUsername IS NULL OR user.plexUsername = '') THEN user.email ELSE LOWER(user.plexUsername) END) ELSE LOWER(user.username) END)",
           'ASC'
         );
+        break;
+      case 'lastActive':
+        // First, sort by whether lastActive is present (non-null gets 1, null gets 0)
+        query = query.orderBy("CASE WHEN user.lastActive IS NOT NULL THEN 1 ELSE 0 END", "DESC")
+                      // Then, among users with a non-null value, sort by lastActive descending
+                      .addOrderBy("user.lastActive", "DESC");
         break;
       case 'requests':
         query = query

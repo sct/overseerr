@@ -5,6 +5,41 @@ import type {
   PermissionCheckOptions,
 } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
+import type { Session, SessionData } from 'express-session';
+
+interface TrackUserActivityRequest extends Request {
+  session: Session & Partial<SessionData> & {
+    userId?: number;
+  };
+}
+
+export const trackUserActivity = async (
+  req: TrackUserActivityRequest,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  if (req.session && req.session.userId) {
+    const userRepository = getRepository(User);
+    await userRepository.update(
+      { id: req.session.userId },
+      { lastActive: new Date().toISOString() }
+    );
+  }
+  next();
+};
+
+export const validateUserId = (req: Request, res: Response, next: NextFunction) => {
+  const userId = Number(req.params.userId);
+
+  if (isNaN(userId)) {
+    return res.status(400).json({
+      message: 'Invalid userId. It must be a number.',
+    });
+  }
+
+  req.params.userId = userId.toString(); // Ensure it is passed as a string for consistency
+  next();
+};
 
 export const checkUser: Middleware = async (req, _res, next) => {
   const settings = getSettings();

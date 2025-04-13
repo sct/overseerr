@@ -3458,7 +3458,7 @@ paths:
           name: sort
           schema:
             type: string
-            enum: [created, updated, requests, displayname]
+            enum: [created, updated, requests, displayname, lastActive]
             default: created
       responses:
         '200':
