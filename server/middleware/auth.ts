@@ -6,6 +6,7 @@ import type {
 } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
 import type { Session, SessionData } from 'express-session';
+import type { Request, Response, NextFunction } from 'express';
 
 interface TrackUserActivityRequest extends Request {
   session: Session & Partial<SessionData> & {
