@@ -339,7 +339,7 @@ class AvailabilitySync {
         }
       }
 
-      if (media.status === MediaStatus.AVAILABLE) {
+      if (media.status === MediaStatus.AVAILABLE && !is4k) {
         media.status = MediaStatus.PARTIALLY_AVAILABLE;
         logger.info(
           `Marking the non-4K show [TMDB ID ${media.tmdbId}] as PARTIALLY_AVAILABLE because season removal has occurred.`,
@@ -347,7 +347,7 @@ class AvailabilitySync {
         );
       }
 
-      if (media.status4k === MediaStatus.AVAILABLE) {
+      if (media.status4k === MediaStatus.AVAILABLE && is4k) {
         media.status4k = MediaStatus.PARTIALLY_AVAILABLE;
         logger.info(
           `Marking the 4K show [TMDB ID ${media.tmdbId}] as PARTIALLY_AVAILABLE because season removal has occurred.`,
