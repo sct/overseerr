@@ -281,7 +281,9 @@ class BaseScanner<T> {
               ? MediaStatus.AVAILABLE
               : season.episodes > 0
               ? MediaStatus.PARTIALLY_AVAILABLE
-              : !season.is4kOverride && season.processing
+              : !season.is4kOverride &&
+                season.processing &&
+                existingSeason.status !== MediaStatus.DELETED
               ? MediaStatus.PROCESSING
               : existingSeason.status;
 
@@ -294,7 +296,9 @@ class BaseScanner<T> {
               ? MediaStatus.AVAILABLE
               : this.enable4kShow && season.episodes4k > 0
               ? MediaStatus.PARTIALLY_AVAILABLE
-              : season.is4kOverride && season.processing
+              : season.is4kOverride &&
+                season.processing &&
+                existingSeason.status4k !== MediaStatus.DELETED
               ? MediaStatus.PROCESSING
               : existingSeason.status4k;
         } else {
@@ -409,16 +413,18 @@ class BaseScanner<T> {
           media.status === MediaStatus.AVAILABLE &&
           newSeasons.filter(
             (season) =>
-              season.status !== MediaStatus.UNKNOWN && season.seasonNumber !== 0
+              season.status !== MediaStatus.UNKNOWN &&
+              season.status !== MediaStatus.DELETED &&
+              season.seasonNumber !== 0
           ).length === 0;
         const shouldStayAvailable4k =
           media.status4k === MediaStatus.AVAILABLE &&
           newSeasons.filter(
             (season) =>
               season.status4k !== MediaStatus.UNKNOWN &&
+              season.status4k !== MediaStatus.DELETED &&
               season.seasonNumber !== 0
           ).length === 0;
-
         media.status =
           isAllStandardSeasons || shouldStayAvailable
             ? MediaStatus.AVAILABLE
@@ -428,11 +434,13 @@ class BaseScanner<T> {
                   season.status === MediaStatus.AVAILABLE
               )
             ? MediaStatus.PARTIALLY_AVAILABLE
-            : !seasons.length ||
+            : (!seasons.length && media.status !== MediaStatus.DELETED) ||
               media.seasons.some(
                 (season) => season.status === MediaStatus.PROCESSING
               )
             ? MediaStatus.PROCESSING
+            : media.status === MediaStatus.DELETED
+            ? MediaStatus.DELETED
             : MediaStatus.UNKNOWN;
         media.status4k =
           (isAll4kSeasons || shouldStayAvailable4k) && this.enable4kShow
@@ -444,11 +452,13 @@ class BaseScanner<T> {
                   season.status4k === MediaStatus.AVAILABLE
               )
             ? MediaStatus.PARTIALLY_AVAILABLE
-            : !seasons.length ||
+            : (!seasons.length && media.status4k !== MediaStatus.DELETED) ||
               media.seasons.some(
                 (season) => season.status4k === MediaStatus.PROCESSING
               )
             ? MediaStatus.PROCESSING
+            : media.status4k === MediaStatus.DELETED
+            ? MediaStatus.DELETED
             : MediaStatus.UNKNOWN;
         await mediaRepository.save(media);
         this.log(`Updating existing title: ${title}`);
