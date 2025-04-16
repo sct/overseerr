@@ -29,7 +29,6 @@
   "components.RequestList.RequestItem.seasons": "{seasonCount, plural, one {Sesong} other {Sesonger}}",
   "components.RequestList.requests": "Forespørsler",
   "components.RequestModal.cancel": "Avbryt Forespørsel",
-  "components.RequestModal.extras": "Ekstra",
   "components.RequestModal.numberofepisodes": "Antall episoder",
   "components.RequestModal.pendingrequest": "Ventende forespørsel",
   "components.RequestModal.requestCancel": "Forespørsel for <strong>{title}</strong> kansellert.",
@@ -867,8 +866,6 @@
   "components.UserProfile.UserSettings.UserPasswordChange.password": "Passord",
   "components.UserProfile.UserSettings.UserPasswordChange.confirmpassword": "Gjenta Passord",
   "components.UserProfile.UserSettings.UserPasswordChange.nopermissionDescription": "Du har ikke tillatelse til å endre denne brukerens passord.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Kunne ikke lagre instillingene for Web Push.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Innstillingene for Web Push ble lagret!",
   "components.UserProfile.UserSettings.UserPasswordChange.newpassword": "Nytt Passord",
   "components.UserProfile.UserSettings.UserPasswordChange.currentpassword": "Nåværende Passord",
   "components.UserProfile.UserSettings.UserPasswordChange.toastSettingsFailure": "Noe gikk galt under lagring av passordet.",
@@ -1109,5 +1106,9 @@
   "components.RequestList.RequestItem.unknowntitle": "Ukjent Tittel",
   "components.Settings.SettingsJobsCache.image-cache-cleanup": "Slett mellomlager for bilder",
   "components.DownloadBlock.formattedTitle": "{title}: Sesong {seasonNumber} Episode {episodeNumber}",
-  "components.Discover.PlexWatchlistSlider.emptywatchlist": "Media som blir lagt til <PlexWatchlistSupportLink>Plexs Visningsliste</PlexWatchlistSupportLink> vil dukke opp her."
+  "components.Discover.PlexWatchlistSlider.emptywatchlist": "Media som blir lagt til <PlexWatchlistSupportLink>Plexs Visningsliste</PlexWatchlistSupportLink> vil dukke opp her.",
+  "components.Discover.CreateSlider.needresults": "Du må ha minst ett resultat.",
+  "components.Discover.CreateSlider.nooptions": "Ingen resultater.",
+  "components.Discover.CreateSlider.providetmdbgenreid": "Angi en TMDB Genre ID",
+  "components.Discover.CreateSlider.providetmdbkeywordid": "Angi en TMDB Keyword ID"
 }

@@ -15,6 +15,7 @@ import type { MediaRequest } from '@server/entity/MediaRequest';
 import axios from 'axios';
 import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { mutate } from 'swr';
 
 const messages = defineMessages({
   viewrequest: 'View Request',
@@ -97,6 +98,7 @@ const RequestButton = ({
 
     if (response) {
       onUpdate();
+      mutate('/api/v1/request/count');
     }
   };
 
@@ -115,6 +117,7 @@ const RequestButton = ({
     );
 
     onUpdate();
+    mutate('/api/v1/request/count');
   };
 
   const buttons: ButtonOption[] = [];
@@ -264,7 +267,9 @@ const RequestButton = ({
 
   // Standard request button
   if (
-    (!media || media.status === MediaStatus.UNKNOWN) &&
+    (!media ||
+      media.status === MediaStatus.UNKNOWN ||
+      (media.status === MediaStatus.DELETED && !activeRequest)) &&
     hasPermission(
       [
         Permission.REQUEST,
@@ -291,7 +296,6 @@ const RequestButton = ({
       type: 'or',
     }) &&
     media &&
-    media.status !== MediaStatus.AVAILABLE &&
     !isShowComplete
   ) {
     buttons.push({
@@ -307,7 +311,9 @@ const RequestButton = ({
 
   // 4K request button
   if (
-    (!media || media.status4k === MediaStatus.UNKNOWN) &&
+    (!media ||
+      media.status4k === MediaStatus.UNKNOWN ||
+      (media.status4k === MediaStatus.DELETED && !active4kRequest)) &&
     hasPermission(
       [
         Permission.REQUEST_4K,
@@ -336,7 +342,6 @@ const RequestButton = ({
       type: 'or',
     }) &&
     media &&
-    media.status4k !== MediaStatus.AVAILABLE &&
     !is4kShowComplete &&
     settings.currentSettings.series4kEnabled
   ) {

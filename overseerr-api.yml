@@ -1064,7 +1064,7 @@ components:
         status:
           type: number
           example: 0
-          description: Availability of the media. 1 = `UNKNOWN`, 2 = `PENDING`, 3 = `PROCESSING`, 4 = `PARTIALLY_AVAILABLE`, 5 = `AVAILABLE`
+          description: Availability of the media. 1 = `UNKNOWN`, 2 = `PENDING`, 3 = `PROCESSING`, 4 = `PARTIALLY_AVAILABLE`, 5 = `AVAILABLE`, 6 = `DELETED`
         requests:
           type: array
           readOnly: true
@@ -3590,6 +3590,8 @@ paths:
                   type: string
                 p256dh:
                   type: string
+                userAgent:
+                  type: string
               required:
                 - endpoint
                 - auth
@@ -3597,6 +3599,88 @@ paths:
       responses:
         '204':
           description: Successfully registered push subscription
+  /user/{userId}/pushSubscriptions:
+    get:
+      summary: Get all web push notification settings for a user
+      description: |
+        Returns all web push notification settings for a user in a JSON object.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: User web push notification settings in JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoint:
+                    type: string
+                  p256dh:
+                    type: string
+                  auth:
+                    type: string
+                  userAgent:
+                    type: string
+  /user/{userId}/pushSubscription/{key}:
+    get:
+      summary: Get web push notification settings for a user
+      description: |
+        Returns web push notification settings for a user in a JSON object.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User web push notification settings in JSON
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  endpoint:
+                    type: string
+                  p256dh:
+                    type: string
+                  auth:
+                    type: string
+                  userAgent:
+                    type: string
+    delete:
+      summary: Delete user push subscription by key
+      description: Deletes the user push subscription with the provided key.
+      tags:
+        - users
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: key
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Successfully removed user push subscription
   /user/{userId}:
     get:
       summary: Get user by ID
@@ -4972,6 +5056,8 @@ paths:
                 processing,
                 unavailable,
                 failed,
+                deleted,
+                completed,
               ]
         - in: query
           name: sort
@@ -5717,7 +5803,16 @@ paths:
           schema:
             type: string
             nullable: true
-            enum: [all, available, partial, allavailable, processing, pending]
+            enum:
+              [
+                all,
+                available,
+                partial,
+                allavailable,
+                processing,
+                pending,
+                deleted,
+              ]
         - in: query
           name: sort
           schema:
@@ -5776,7 +5871,7 @@ paths:
           example: available
           schema:
             type: string
-            enum: [available, partial, processing, pending, unknown]
+            enum: [available, partial, processing, pending, unknown, deleted]
       requestBody:
         content:
           application/json:
