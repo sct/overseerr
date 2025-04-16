@@ -3,6 +3,7 @@ import { defineMessages } from 'react-intl';
 const globalMessages = defineMessages({
   available: 'Available',
   partiallyavailable: 'Partially Available',
+  deleted: 'Deleted',
   processing: 'Processing',
   unavailable: 'Unavailable',
   notrequested: 'Not Requested',
@@ -14,6 +15,7 @@ const globalMessages = defineMessages({
   pending: 'Pending',
   declined: 'Declined',
   approved: 'Approved',
+  completed: 'Completed',
   movie: 'Movie',
   movies: 'Movies',
   collection: 'Collection',

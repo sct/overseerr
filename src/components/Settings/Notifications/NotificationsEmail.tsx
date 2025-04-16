@@ -103,7 +103,7 @@ const NotificationsEmail = () => {
           otherwise: Yup.string().nullable(),
         })
         .matches(
-          /-----BEGIN PGP PRIVATE KEY BLOCK-----.+-----END PGP PRIVATE KEY BLOCK-----/s,
+          /-----BEGIN PGP PRIVATE KEY BLOCK-----.+-----END PGP PRIVATE KEY BLOCK-----/,
           intl.formatMessage(messages.validationPgpPrivateKey)
         ),
       pgpPassword: Yup.string().when('pgpPrivateKey', {
@@ -263,6 +263,10 @@ const NotificationsEmail = () => {
                     name="emailFrom"
                     type="text"
                     inputMode="email"
+                    autoComplete="off"
+                    data-1pignore="true"
+                    data-lpignore="true"
+                    data-bwignore="true"
                   />
                 </div>
                 {errors.emailFrom &&
@@ -284,6 +288,10 @@ const NotificationsEmail = () => {
                     name="smtpHost"
                     type="text"
                     inputMode="url"
+                    autoComplete="off"
+                    data-1pignore="true"
+                    data-lpignore="true"
+                    data-bwignore="true"
                   />
                 </div>
                 {errors.smtpHost &&
@@ -305,6 +313,10 @@ const NotificationsEmail = () => {
                   type="text"
                   inputMode="numeric"
                   className="short"
+                  autoComplete="off"
+                  data-1pignore="true"
+                  data-lpignore="true"
+                  data-bwignore="true"
                 />
                 {errors.smtpPort &&
                   touched.smtpPort &&
@@ -358,7 +370,15 @@ const NotificationsEmail = () => {
               </label>
               <div className="form-input-area">
                 <div className="form-input-field">
-                  <Field id="authUser" name="authUser" type="text" />
+                  <Field
+                    id="authUser"
+                    name="authUser"
+                    type="text"
+                    autoComplete="off"
+                    data-1pignore="true"
+                    data-lpignore="true"
+                    data-bwignore="true"
+                  />
                 </div>
               </div>
             </div>
@@ -368,12 +388,7 @@ const NotificationsEmail = () => {
               </label>
               <div className="form-input-area">
                 <div className="form-input-field">
-                  <SensitiveInput
-                    as="field"
-                    id="authPass"
-                    name="authPass"
-                    autoComplete="one-time-code"
-                  />
+                  <SensitiveInput as="field" id="authPass" name="authPass" />
                 </div>
               </div>
             </div>
@@ -398,6 +413,10 @@ const NotificationsEmail = () => {
                     type="textarea"
                     rows="10"
                     className="font-mono text-xs"
+                    autoComplete="off"
+                    data-1pignore="true"
+                    data-lpignore="true"
+                    data-bwignore="true"
                   />
                 </div>
                 {errors.pgpPrivateKey &&
@@ -425,7 +444,10 @@ const NotificationsEmail = () => {
                     as="field"
                     id="pgpPassword"
                     name="pgpPassword"
-                    autoComplete="one-time-code"
+                    autoComplete="off"
+                    data-1pignore="true"
+                    data-lpignore="true"
+                    data-bwignore="true"
                   />
                 </div>
                 {errors.pgpPassword &&

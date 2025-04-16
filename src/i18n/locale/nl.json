@@ -725,8 +725,6 @@
   "components.Settings.Notifications.NotificationsWebPush.webpushsettingsfailed": "Instellingen voor web-pushmeldingen zijn niet opgeslagen.",
   "components.Settings.Notifications.NotificationsLunaSea.profileName": "Profielnaam",
   "components.Settings.Notifications.NotificationsLunaSea.agentenabled": "Agent inschakelen",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Instellingen voor web-pushmeldingen succesvol opgeslagen!",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Instellingen voor web-pushmeldingen konden niet worden opgeslagen.",
   "components.Settings.noDefault4kServer": "Een 4K-{serverType}server moet als standaard worden gemarkeerd om gebruikers toe te laten om 4K-{mediaType} aan te vragen.",
   "components.Settings.is4k": "4K",
   "components.Settings.Notifications.NotificationsLunaSea.profileNameTip": "Alleen vereist als je niet het <code>default</code> profiel gebruikt",
