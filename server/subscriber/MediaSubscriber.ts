@@ -1,7 +1,12 @@
-import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import {
+  MediaRequestStatus,
+  MediaStatus,
+  MediaType,
+} from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
+import Season from '@server/entity/Season';
 import SeasonRequest from '@server/entity/SeasonRequest';
 import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
 import { EventSubscriber } from 'typeorm';
@@ -120,7 +125,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
     }
   }
 
-  public beforeUpdate(event: UpdateEvent<Media>): void {
+  public async beforeUpdate(event: UpdateEvent<Media>): Promise<void> {
     if (!event.entity) {
       return;
     }
@@ -138,9 +143,20 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
     ) {
       this.updateChildRequestStatus(event.entity as Media, true);
     }
+
+    // Manually load related seasons into databaseEntity
+    // for seasonStatusCheck in afterUpdate
+    const seasons = await event.manager
+      .getRepository(Season)
+      .createQueryBuilder('season')
+      .leftJoin('season.media', 'media')
+      .where('media.id = :id', { id: event.databaseEntity.id })
+      .getMany();
+
+    event.databaseEntity.seasons = seasons;
   }
 
-  public afterUpdate(event: UpdateEvent<Media>): void {
+  public async afterUpdate(event: UpdateEvent<Media>): Promise<void> {
     if (!event.entity) {
       return;
     }
@@ -151,15 +167,29 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       MediaStatus.DELETED,
     ];
 
+    const seasonStatusCheck = (is4k: boolean) => {
+      return event.entity?.seasons?.some((season: Season, index: number) => {
+        const previousSeason = event.databaseEntity.seasons[index];
+
+        return (
+          season[is4k ? 'status4k' : 'status'] !==
+          previousSeason[is4k ? 'status4k' : 'status']
+        );
+      });
+    };
+
     if (
-      event.entity.status !== event.databaseEntity?.status &&
+      (event.entity.status !== event.databaseEntity?.status ||
+        (event.entity.mediaType === MediaType.TV &&
+          seasonStatusCheck(false))) &&
       validStatuses.includes(event.entity.status)
     ) {
       this.updateRelatedMediaRequest(event.entity as Media, false);
     }
 
     if (
-      event.entity.status4k !== event.databaseEntity?.status4k &&
+      (event.entity.status4k !== event.databaseEntity?.status4k ||
+        (event.entity.mediaType === MediaType.TV && seasonStatusCheck(true))) &&
       validStatuses.includes(event.entity.status4k)
     ) {
       this.updateRelatedMediaRequest(event.entity as Media, true);
