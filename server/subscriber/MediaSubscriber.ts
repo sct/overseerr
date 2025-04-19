@@ -55,57 +55,59 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
     if (relatedRequests.length > 0) {
       const completedRequests: MediaRequest[] = [];
 
-      relatedRequests.forEach((request) => {
+      for (const request of relatedRequests) {
         let shouldComplete = false;
 
         if (
-          event[request.is4k ? 'status4k' : 'status'] ===
+          (event[request.is4k ? 'status4k' : 'status'] ===
             MediaStatus.AVAILABLE ||
-          event[request.is4k ? 'status4k' : 'status'] === MediaStatus.DELETED
+            event[request.is4k ? 'status4k' : 'status'] ===
+              MediaStatus.DELETED) &&
+          event.mediaType === MediaType.MOVIE
         ) {
           shouldComplete = true;
         } else if (event.mediaType === 'tv') {
-          // For TV, check if all requested seasons are available or deleted
-          const allSeasonsReady = request.seasons.every((requestSeason) => {
-            const matchingSeason = event.seasons.find(
-              (mediaSeason) =>
-                mediaSeason.seasonNumber === requestSeason.seasonNumber
-            );
-            const matchingOldSeason = databaseEvent.seasons.find(
-              (oldSeason) =>
-                oldSeason.seasonNumber === requestSeason.seasonNumber
-            );
+          const allSeasonResults = await Promise.all(
+            request.seasons.map(async (requestSeason) => {
+              const matchingSeason = event.seasons.find(
+                (mediaSeason) =>
+                  mediaSeason.seasonNumber === requestSeason.seasonNumber
+              );
+              const matchingOldSeason = databaseEvent.seasons.find(
+                (oldSeason) =>
+                  oldSeason.seasonNumber === requestSeason.seasonNumber
+              );
 
-            if (!matchingSeason) {
+              if (!matchingSeason) {
+                return false;
+              }
+
+              const currentSeasonStatus =
+                matchingSeason[request.is4k ? 'status4k' : 'status'];
+              const previousSeasonStatus =
+                matchingOldSeason?.[request.is4k ? 'status4k' : 'status'];
+
+              const hasStatusChanged =
+                currentSeasonStatus !== previousSeasonStatus;
+
+              const shouldUpdate =
+                (hasStatusChanged ||
+                  requestSeason.status === MediaRequestStatus.COMPLETED) &&
+                (currentSeasonStatus === MediaStatus.AVAILABLE ||
+                  currentSeasonStatus === MediaStatus.DELETED);
+
+              if (shouldUpdate) {
+                requestSeason.status = MediaRequestStatus.COMPLETED;
+                await seasonRequestRepository.save(requestSeason);
+
+                return true;
+              }
+
               return false;
-            }
+            })
+          );
 
-            const currentSeasonStatus =
-              matchingSeason[request.is4k ? 'status4k' : 'status'];
-            const previousSeasonStatus =
-              matchingOldSeason?.[request.is4k ? 'status4k' : 'status'];
-
-            const hasStatusChanged =
-              currentSeasonStatus !== previousSeasonStatus;
-
-            const shouldUpdate =
-              (hasStatusChanged ||
-                requestSeason.status === MediaRequestStatus.COMPLETED) &&
-              (currentSeasonStatus === MediaStatus.AVAILABLE ||
-                currentSeasonStatus === MediaStatus.DELETED);
-
-            if (shouldUpdate) {
-              // Handle season requests and mark them completed when
-              // that specific season becomes available
-              seasonRequestRepository.update(requestSeason.id, {
-                status: MediaRequestStatus.COMPLETED,
-              });
-              return true;
-            }
-
-            return false;
-          });
-
+          const allSeasonsReady = allSeasonResults.every((result) => result);
           shouldComplete = allSeasonsReady;
         }
 
@@ -113,7 +115,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
           request.status = MediaRequestStatus.COMPLETED;
           completedRequests.push(request);
         }
-      });
+      }
 
       await requestRepository.save(completedRequests);
     }

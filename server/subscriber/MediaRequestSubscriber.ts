@@ -69,11 +69,7 @@ export class MediaRequestSubscriber
       availableSeasons.length > 0 &&
       availableSeasons.length === requestedSeasons.length;
 
-    if (
-      entity.media[entity.is4k ? 'status4k' : 'status'] ===
-        MediaStatus.AVAILABLE ||
-      isMediaAvailable
-    ) {
+    if (isMediaAvailable) {
       const tmdb = new TheMovieDb();
 
       try {
