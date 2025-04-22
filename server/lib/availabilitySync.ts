@@ -301,7 +301,7 @@ class AvailabilitySync {
         { label: 'Availability Sync' }
       );
 
-      await mediaRepository.save({ media, ...media });
+      await mediaRepository.save(media);
     } catch (ex) {
       logger.debug(
         `Failure updating the ${is4k ? '4K' : 'non-4K'} ${
@@ -339,7 +339,7 @@ class AvailabilitySync {
         }
       }
 
-      if (media.status === MediaStatus.AVAILABLE) {
+      if (media.status === MediaStatus.AVAILABLE && !is4k) {
         media.status = MediaStatus.PARTIALLY_AVAILABLE;
         logger.info(
           `Marking the non-4K show [TMDB ID ${media.tmdbId}] as PARTIALLY_AVAILABLE because season removal has occurred.`,
@@ -347,7 +347,7 @@ class AvailabilitySync {
         );
       }
 
-      if (media.status4k === MediaStatus.AVAILABLE) {
+      if (media.status4k === MediaStatus.AVAILABLE && is4k) {
         media.status4k = MediaStatus.PARTIALLY_AVAILABLE;
         logger.info(
           `Marking the 4K show [TMDB ID ${media.tmdbId}] as PARTIALLY_AVAILABLE because season removal has occurred.`,
@@ -355,7 +355,8 @@ class AvailabilitySync {
         );
       }
 
-      await mediaRepository.save({ media, ...media });
+      media.lastSeasonChange = new Date();
+      await mediaRepository.save(media);
 
       logger.info(
         `The ${is4k ? '4K' : 'non-4K'} season(s) [${seasonKeys}] [TMDB ID ${

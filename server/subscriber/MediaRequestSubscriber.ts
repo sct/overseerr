@@ -58,22 +58,18 @@ export class MediaRequestSubscriber
     // Find all seasons in the related media entity
     // and see if they are available, then we can check
     // if the request contains the same seasons
-    const isMediaAvailable = entity.media.seasons
-      .filter(
-        (season) =>
-          season[entity.is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE
-      )
-      .every((seasonRequest) =>
-        entity.seasons.find(
-          (season) => season.seasonNumber === seasonRequest.seasonNumber
-        )
-      );
+    const requestedSeasons =
+      entity.seasons?.map((entitySeason) => entitySeason.seasonNumber) ?? [];
+    const availableSeasons = entity.media.seasons.filter(
+      (season) =>
+        season[entity.is4k ? 'status4k' : 'status'] === MediaStatus.AVAILABLE &&
+        requestedSeasons.includes(season.seasonNumber)
+    );
+    const isMediaAvailable =
+      availableSeasons.length > 0 &&
+      availableSeasons.length === requestedSeasons.length;
 
-    if (
-      entity.media[entity.is4k ? 'status4k' : 'status'] ===
-        MediaStatus.AVAILABLE ||
-      isMediaAvailable
-    ) {
+    if (isMediaAvailable) {
       const tmdb = new TheMovieDb();
 
       try {

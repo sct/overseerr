@@ -309,12 +309,16 @@ const TvRequestModal = ({
       return;
     }
 
+    const standardUnrequestedSeasons = unrequestedSeasons.filter(
+      (seasonNumber) => seasonNumber !== 0
+    );
+
     if (
       data &&
       selectedSeasons.length >= 0 &&
-      selectedSeasons.length < unrequestedSeasons.length
+      selectedSeasons.length < standardUnrequestedSeasons.length
     ) {
-      setSelectedSeasons(unrequestedSeasons);
+      setSelectedSeasons(standardUnrequestedSeasons);
     } else {
       setSelectedSeasons([]);
     }
@@ -325,9 +329,9 @@ const TvRequestModal = ({
       return false;
     }
     return (
-      selectedSeasons.length ===
+      selectedSeasons.filter((season) => season !== 0).length ===
       getAllSeasons().filter(
-        (season) => !getAllRequestedSeasons().includes(season)
+        (season) => !getAllRequestedSeasons().includes(season) && season !== 0
       ).length
     );
   };
