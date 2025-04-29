@@ -101,6 +101,9 @@ const LocalLogin = ({ revalidate }: LocalLoginProps) => {
                       type="password"
                       autoComplete="current-password"
                       data-testid="password"
+                      data-1pignore="false"
+                      data-lpignore="false"
+                      data-bwignore="false"
                     />
                   </div>
                   {errors.password &&

@@ -41,7 +41,6 @@ const messages = defineMessages({
   season: 'Season',
   numberofepisodes: '# of Episodes',
   seasonnumber: 'Season {number}',
-  extras: 'Extras',
   errorediting: 'Something went wrong while editing the request.',
   requestedited: 'Request for <strong>{title}</strong> edited successfully!',
   requestApproved: 'Request for <strong>{title}</strong> approved!',
@@ -106,6 +105,7 @@ const TvRequestModal = ({
 
     if (onUpdating) {
       onUpdating(true);
+      mutate('/api/v1/request/count');
     }
 
     try {
@@ -128,6 +128,7 @@ const TvRequestModal = ({
         await axios.delete(`/api/v1/request/${editRequest.id}`);
       }
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
+      mutate('/api/v1/request/count');
 
       addToast(
         <span>
@@ -176,6 +177,7 @@ const TvRequestModal = ({
 
     if (onUpdating) {
       onUpdating(true);
+      mutate('/api/v1/request/count');
     }
 
     try {
@@ -232,9 +234,7 @@ const TvRequestModal = ({
 
   const getAllSeasons = (): number[] => {
     return (data?.seasons ?? [])
-      .filter(
-        (season) => season.seasonNumber !== 0 && season.episodeCount !== 0
-      )
+      .filter((season) => season.episodeCount !== 0)
       .map((season) => season.seasonNumber);
   };
 
@@ -243,7 +243,8 @@ const TvRequestModal = ({
       .filter(
         (request) =>
           request.is4k === is4k &&
-          request.status !== MediaRequestStatus.DECLINED
+          request.status !== MediaRequestStatus.DECLINED &&
+          request.status !== MediaRequestStatus.COMPLETED
       )
       .reduce((requestedSeasons, request) => {
         return [
@@ -308,12 +309,16 @@ const TvRequestModal = ({
       return;
     }
 
+    const standardUnrequestedSeasons = unrequestedSeasons.filter(
+      (seasonNumber) => seasonNumber !== 0
+    );
+
     if (
       data &&
       selectedSeasons.length >= 0 &&
-      selectedSeasons.length < unrequestedSeasons.length
+      selectedSeasons.length < standardUnrequestedSeasons.length
     ) {
-      setSelectedSeasons(unrequestedSeasons);
+      setSelectedSeasons(standardUnrequestedSeasons);
     } else {
       setSelectedSeasons([]);
     }
@@ -324,9 +329,9 @@ const TvRequestModal = ({
       return false;
     }
     return (
-      selectedSeasons.length ===
+      selectedSeasons.filter((season) => season !== 0).length ===
       getAllSeasons().filter(
-        (season) => !getAllRequestedSeasons().includes(season)
+        (season) => !getAllRequestedSeasons().includes(season) && season !== 0
       ).length
     );
   };
@@ -341,7 +346,8 @@ const TvRequestModal = ({
       (data.mediaInfo.requests || []).filter(
         (request) =>
           request.is4k === is4k &&
-          request.status !== MediaRequestStatus.DECLINED
+          request.status !== MediaRequestStatus.DECLINED &&
+          request.status !== MediaRequestStatus.COMPLETED
       ).length > 0
     ) {
       data.mediaInfo.requests
@@ -349,7 +355,9 @@ const TvRequestModal = ({
         .forEach((request) => {
           if (!seasonRequest) {
             seasonRequest = request.seasons.find(
-              (season) => season.seasonNumber === seasonNumber
+              (season) =>
+                season.seasonNumber === seasonNumber &&
+                season.status !== MediaRequestStatus.COMPLETED
             );
           }
         });
@@ -557,10 +565,7 @@ const TvRequestModal = ({
                 </thead>
                 <tbody className="divide-y divide-gray-700">
                   {data?.seasons
-                    .filter(
-                      (season) =>
-                        season.seasonNumber !== 0 && season.episodeCount !== 0
-                    )
+                    .filter((season) => season.episodeCount !== 0)
                     .map((season) => {
                       const seasonRequest = getSeasonRequest(
                         season.seasonNumber
@@ -569,7 +574,9 @@ const TvRequestModal = ({
                         (sn) =>
                           sn.seasonNumber === season.seasonNumber &&
                           sn[is4k ? 'status4k' : 'status'] !==
-                            MediaStatus.UNKNOWN
+                            MediaStatus.UNKNOWN &&
+                          sn[is4k ? 'status4k' : 'status'] !==
+                            MediaStatus.DELETED
                       );
                       return (
                         <tr key={`season-${season.id}`}>
@@ -637,7 +644,7 @@ const TvRequestModal = ({
                           </td>
                           <td className="whitespace-nowrap px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6">
                             {season.seasonNumber === 0
-                              ? intl.formatMessage(messages.extras)
+                              ? intl.formatMessage(globalMessages.specials)
                               : intl.formatMessage(messages.seasonnumber, {
                                   number: season.seasonNumber,
                                 })}

@@ -15,7 +15,7 @@ import {
   TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
-import { MediaRequestStatus } from '@server/constants/media';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails } from '@server/models/Tv';
@@ -25,7 +25,7 @@ import { useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -62,6 +62,7 @@ const RequestItemError = ({
   const deleteRequest = async () => {
     await axios.delete(`/api/v1/media/${requestData?.media.id}`);
     revalidateList();
+    mutate('/api/v1/request/count');
   };
 
   const { plexUrl, plexUrl4k } = useDeepLinks({
@@ -311,6 +312,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
 
     if (response) {
       revalidate();
+      mutate('/api/v1/request/count');
     }
   };
 
@@ -318,6 +320,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
     await axios.delete(`/api/v1/request/${request.id}`);
 
     revalidateList();
+    mutate('/api/v1/request/count');
   };
 
   const retryRequest = async () => {
@@ -440,9 +443,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   <span className="card-field-name">
                     {intl.formatMessage(messages.seasons, {
                       seasonCount:
-                        title.seasons.filter(
-                          (season) => season.seasonNumber !== 0
-                        ).length === request.seasons.length
+                        title.seasons.length === request.seasons.length
                           ? 0
                           : request.seasons.length,
                     })}
@@ -450,7 +451,11 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   <div className="hide-scrollbar flex flex-nowrap overflow-x-scroll">
                     {request.seasons.map((season) => (
                       <span key={`season-${season.id}`} className="mr-2">
-                        <Badge>{season.seasonNumber}</Badge>
+                        <Badge>
+                          {season.seasonNumber === 0
+                            ? intl.formatMessage(globalMessages.specials)
+                            : season.seasonNumber}
+                        </Badge>
                       </span>
                     ))}
                   </div>
@@ -473,6 +478,15 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                   href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
                 >
                   {intl.formatMessage(globalMessages.failed)}
+                </Badge>
+              ) : requestData.status === MediaRequestStatus.PENDING &&
+                requestData.media[requestData.is4k ? 'status4k' : 'status'] ===
+                  MediaStatus.DELETED ? (
+                <Badge
+                  badgeType="warning"
+                  href={`/${requestData.type}/${requestData.media.tmdbId}?manage=1`}
+                >
+                  {intl.formatMessage(globalMessages.pending)}
                 </Badge>
               ) : (
                 <StatusBadge

@@ -20,6 +20,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { mutate } from 'swr';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -56,6 +57,7 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
 
     if (onUpdate) {
       onUpdate();
+      mutate('/api/v1/request/count');
     }
     setIsUpdating(false);
   };
@@ -66,6 +68,7 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
 
     if (onUpdate) {
       onUpdate();
+      mutate('/api/v1/request/count');
     }
 
     setIsUpdating(false);
@@ -204,6 +207,11 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
                   {intl.formatMessage(globalMessages.failed)}
                 </Badge>
               )}
+              {request.status === MediaRequestStatus.COMPLETED && (
+                <Badge badgeType="success">
+                  {intl.formatMessage(globalMessages.completed)}
+                </Badge>
+              )}
             </div>
           </div>
           <div className="mt-2 flex items-center text-sm leading-5 sm:mt-0">
@@ -243,7 +251,11 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
                   key={`season-${season.id}`}
                   className="mb-1 mr-2 inline-block"
                 >
-                  <Badge>{season.seasonNumber}</Badge>
+                  <Badge>
+                    {season.seasonNumber === 0
+                      ? intl.formatMessage(globalMessages.specials)
+                      : season.seasonNumber}
+                  </Badge>
                 </span>
               ))}
             </div>
