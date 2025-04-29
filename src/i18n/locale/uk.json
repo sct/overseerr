@@ -1053,7 +1053,6 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.pushoverApplicationToken": "Токен API програми",
   "components.UserProfile.UserSettings.UserGeneralSettings.validationDiscordId": "Ви повинні надати дійсний ідентифікатор користувача Discord",
   "i18n.importing": "Імпортування…",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Не вдалося зберегти налаштування веб-повідомлень.",
   "components.UserProfile.UserSettings.UserGeneralSettings.plexwatchlistsyncseries": "Автоматичний запит Серіалів",
   "i18n.restartRequired": "Потрібне перезавантаження",
   "i18n.request": "Запросити",
@@ -1184,7 +1183,6 @@
   "components.UserList.plexuser": "Користувач Plex",
   "components.UserProfile.plexwatchlist": "Список перегляду Plex",
   "components.UserProfile.UserSettings.UserGeneralSettings.languageDefault": "За замовчуванням ({language})",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Налаштування веб-повідомлень успішно збережено!",
   "components.UserProfile.UserSettings.UserNotificationSettings.pgpPublicKey": "Відкритий ключ PGP",
   "components.UserProfile.UserSettings.UserPasswordChange.nopermissionDescription": "У вас немає дозволу на зміну пароля цього користувача.",
   "pages.internalservererror": "Внутрішня помилка сервера",
@@ -1237,5 +1235,6 @@
   "components.Discover.DiscoverSliderEdit.deletefail": "Не вдалося видалити повзунок.",
   "components.Discover.DiscoverSliderEdit.enable": "Перемкнути видимість",
   "components.Discover.DiscoverSliderEdit.deletesuccess": "Повзунок успішно видалено.",
-  "components.Discover.DiscoverTv.sortTitleDesc": "Назва (Я-А) за спаданням"
+  "components.Discover.DiscoverTv.sortTitleDesc": "Назва (Я-А) за спаданням",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "токен оновлення Plex"
 }

@@ -806,8 +806,6 @@
   "components.QuotaSelector.seasons": "{count, plural, one {Staffel} other {Staffeln}}",
   "components.QuotaSelector.movies": "{count, plural, one {Film} other {Filme}}",
   "components.QuotaSelector.days": "{count, plural, one {tag} other {tage}}",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Web push Benachrichtigungseinstellungen erfolgreich gespeichert!",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Web push Benachrichtigungseinstellungen konnten nicht gespeichert werden.",
   "components.UserList.localLoginDisabled": "Die Einstellung <strong>Lokale Anmeldung aktivieren</strong> ist derzeit deaktiviert.",
   "components.Layout.LanguagePicker.displaylanguage": "Sprache darstellen",
   "components.Settings.SettingsAbout.betawarning": "Dies ist eine BETA Software. Einige Funktionen könnten nicht funktionieren oder nicht stabil funktionieren. Bitte auf GitHub alle Fehler melden!",
@@ -875,7 +873,7 @@
   "components.IssueModal.CreateIssueModal.toastFailedCreate": "Beim Senden des Problems ist ein Fehler aufgetreten.",
   "components.Settings.SettingsJobsCache.editJobSchedulePrompt": "Neue Häufigkeit",
   "components.Settings.SettingsJobsCache.editJobSchedule": "Job ändern",
-  "components.NotificationTypeSelector.userissuecommentDescription": "Sende eine Benachrichtigung, wenn andere Benutzer Kommentare zu Problemen abgeben.",
+  "components.NotificationTypeSelector.userissuecommentDescription": "Werde benachrichtigt, wenn von dir gemeldete Probleme Kommentare erhalten.",
   "components.NotificationTypeSelector.issuecomment": "Problem Kommentar",
   "i18n.open": "Offen",
   "components.UserProfile.UserSettings.UserNotificationSettings.pushbulletsettingsfailed": "Die Einstellungen für Pushbullet-Benachrichtigungen konnten nicht gespeichert werden.",
@@ -908,7 +906,7 @@
   "components.NotificationTypeSelector.issueresolved": "Problem gelöst",
   "components.NotificationTypeSelector.issueresolvedDescription": "Senden Sie Benachrichtigungen, wenn Probleme gelöst sind.",
   "components.NotificationTypeSelector.userissuecreatedDescription": "Lassen Sie sich benachrichtigen, wenn andere Benutzer Probleme melden.",
-  "components.NotificationTypeSelector.userissueresolvedDescription": "Sende eine Benachrichtigung, wenn andere Benutzer Kommentare zu Problemen abgeben.",
+  "components.NotificationTypeSelector.userissueresolvedDescription": "Werde benachrichtigt, wenn von dir gemeldete Probleme behoben werden.",
   "components.PermissionEdit.createissues": "Probleme melden",
   "components.Settings.SettingsAbout.runningDevelop": "Sie benutzen den <code>develop</code> von Overseerr, der nur für diejenigen empfohlen wird, die an der Entwicklung mitwirken oder bei den neuesten Tests helfen.",
   "components.Settings.SettingsJobsCache.editJobScheduleSelectorHours": "Alle {jobScheduleHours, plural, one {Stunde} other {{jobScheduleHours} Stunden}}",
@@ -1237,5 +1235,6 @@
   "components.Settings.SonarrModal.animeSeriesType": "Art der Anime-Serie",
   "components.Settings.SonarrModal.seriesType": "Serientyp",
   "components.UserProfile.UserSettings.UserNotificationSettings.sound": "Benachrichtigungston",
-  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Gerätestandard"
+  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Gerätestandard",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Plex Refresh Token"
 }

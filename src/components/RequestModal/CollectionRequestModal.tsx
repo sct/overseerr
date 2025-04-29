@@ -16,7 +16,7 @@ import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
@@ -78,7 +78,8 @@ const CollectionRequestModal = ({
             .filter(
               (request) =>
                 request.is4k === is4k &&
-                request.status !== MediaRequestStatus.DECLINED
+                request.status !== MediaRequestStatus.DECLINED &&
+                request.status !== MediaRequestStatus.COMPLETED
             )
             .map((part) => part.id),
         ];
@@ -167,7 +168,9 @@ const CollectionRequestModal = ({
 
     return (part?.mediaInfo?.requests ?? []).find(
       (request) =>
-        request.is4k === is4k && request.status !== MediaRequestStatus.DECLINED
+        request.is4k === is4k &&
+        request.status !== MediaRequestStatus.DECLINED &&
+        request.status !== MediaRequestStatus.COMPLETED
     );
   };
 
@@ -211,6 +214,7 @@ const CollectionRequestModal = ({
             ? MediaStatus.UNKNOWN
             : MediaStatus.PARTIALLY_AVAILABLE
         );
+        mutate('/api/v1/request/count');
       }
 
       addToast(
@@ -230,7 +234,16 @@ const CollectionRequestModal = ({
     } finally {
       setIsUpdating(false);
     }
-  }, [requestOverrides, data, onComplete, addToast, intl, selectedParts, is4k]);
+  }, [
+    requestOverrides,
+    data?.parts,
+    data?.name,
+    onComplete,
+    addToast,
+    intl,
+    selectedParts,
+    is4k,
+  ]);
 
   const hasAutoApprove = hasPermission(
     [
@@ -342,7 +355,9 @@ const CollectionRequestModal = ({
                     const partMedia =
                       part.mediaInfo &&
                       part.mediaInfo[is4k ? 'status4k' : 'status'] !==
-                        MediaStatus.UNKNOWN
+                        MediaStatus.UNKNOWN &&
+                      part.mediaInfo[is4k ? 'status4k' : 'status'] !==
+                        MediaStatus.DELETED
                         ? part.mediaInfo
                         : undefined;
 

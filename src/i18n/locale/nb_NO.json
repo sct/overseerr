@@ -866,8 +866,6 @@
   "components.UserProfile.UserSettings.UserPasswordChange.password": "Passord",
   "components.UserProfile.UserSettings.UserPasswordChange.confirmpassword": "Gjenta Passord",
   "components.UserProfile.UserSettings.UserPasswordChange.nopermissionDescription": "Du har ikke tillatelse til å endre denne brukerens passord.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Kunne ikke lagre instillingene for Web Push.",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Innstillingene for Web Push ble lagret!",
   "components.UserProfile.UserSettings.UserPasswordChange.newpassword": "Nytt Passord",
   "components.UserProfile.UserSettings.UserPasswordChange.currentpassword": "Nåværende Passord",
   "components.UserProfile.UserSettings.UserPasswordChange.toastSettingsFailure": "Noe gikk galt under lagring av passordet.",

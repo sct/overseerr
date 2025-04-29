@@ -722,8 +722,6 @@
   "components.Settings.Notifications.NotificationsLunaSea.toastLunaSeaTestFailed": "No s'ha pogut enviar la notificació de prova de LunaSea.",
   "components.Settings.Notifications.NotificationsLunaSea.settingsFailed": "No s'ha pogut desar la configuració de notificacions de LunaSea.",
   "components.DownloadBlock.estimatedtime": "{time} de temps estimat",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "La configuració de notificacions de Push Web s'ha desat correctament!",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "No s'ha pogut desar la configuració de notificacions de Push Web.",
   "components.UserProfile.UserSettings.UserNotificationSettings.webpush": "Web Push",
   "components.UserProfile.UserSettings.UserGeneralSettings.applanguage": "Idioma de visualització",
   "components.Settings.webpush": "Web Push",

@@ -719,7 +719,6 @@
   "components.Settings.RadarrModal.enableSearch": "Habilitar Busca Automática",
   "components.PermissionEdit.requestMovies": "Solicitar Filmes",
   "components.DownloadBlock.estimatedtime": "Estimativa {time}",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingssaved": "Configurações de notificação via web push salvas com sucesso!",
   "components.UserProfile.UserSettings.UserNotificationSettings.webpush": "Web Push",
   "components.UserProfile.UserSettings.UserGeneralSettings.languageDefault": "Padrão ({language})",
   "components.UserProfile.UserSettings.UserGeneralSettings.applanguage": "Idioma da Interface",
@@ -736,7 +735,6 @@
   "components.Settings.Notifications.encryption": "Método de Encriptação",
   "components.Settings.Notifications.botApiTip": "<CreateBotLink>Criar um bot</CreateBotLink> para usar com Overseerr",
   "components.Settings.Notifications.NotificationsWebPush.webpushsettingssaved": "Configurações de notificação via web push salvas com sucesso!",
-  "components.UserProfile.UserSettings.UserNotificationSettings.webpushsettingsfailed": "Falha ao salvar configurações de notificação via web push.",
   "components.Settings.Notifications.NotificationsWebPush.webpushsettingsfailed": "Falha ao salvar configurações de notificação via web push.",
   "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Para receber notificações via web push, o Overseerr deve ser acessível via HTTPS.",
   "components.Settings.Notifications.NotificationsSlack.webhookUrlTip": "Criar integração para um <WebhookLink>webhook de entrada</WebhookLink>",
@@ -1231,5 +1229,12 @@
   "components.MovieDetails.imdbuserscore": "Pontuação de usuário IMDB",
   "components.Settings.SonarrModal.tagRequestsInfo": "Adiciona automaticamente uma tag adicional com o ID de usuário e nome de exibição de quem pediu",
   "components.Settings.SonarrModal.tagRequests": "Marcar Pedidos",
-  "components.Settings.RadarrModal.tagRequests": "Marcar Pedidos"
+  "components.Settings.RadarrModal.tagRequests": "Marcar Pedidos",
+  "components.UserProfile.UserSettings.UserNotificationSettings.sound": "Som de Notificação",
+  "components.Settings.Notifications.NotificationsPushover.deviceDefault": "Dispositivo Padrão",
+  "components.Settings.Notifications.NotificationsPushover.sound": "Som de Notificação",
+  "components.Settings.SettingsJobsCache.plex-refresh-token": "Token de Atualização do Plex",
+  "components.Settings.SonarrModal.animeSeriesType": "Tipo de Série de Anime",
+  "components.UserProfile.UserSettings.UserNotificationSettings.deviceDefault": "Dispositivo Padrão",
+  "components.Settings.SonarrModal.seriesType": "Tipo de Série"
 }
