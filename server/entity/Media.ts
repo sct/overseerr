@@ -6,6 +6,7 @@ import type { DownloadingItem } from '@server/lib/downloadtracker';
 import downloadTracker from '@server/lib/downloadtracker';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import { DbAwareColumn } from '@server/utils/DbColumnHelper';
 import {
   AfterLoad,
   Column,
@@ -108,10 +109,10 @@ class Media {
   @UpdateDateColumn()
   public updatedAt: Date;
 
-  @Column({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
+  @DbAwareColumn({ type: 'datetime', default: () => 'CURRENT_TIMESTAMP' })
   public lastSeasonChange: Date;
 
-  @Column({ type: 'datetime', nullable: true })
+  @DbAwareColumn({ type: 'datetime', nullable: true })
   public mediaAddedAt: Date;
 
   @Column({ nullable: true, type: 'int' })
