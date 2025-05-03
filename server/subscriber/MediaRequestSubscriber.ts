@@ -753,35 +753,35 @@ export class MediaRequestSubscriber
     await manager.save(fullMedia);
   }
 
-  public afterUpdate(event: UpdateEvent<MediaRequest>): void {
+  public async afterUpdate(event: UpdateEvent<MediaRequest>): Promise<void> {
     if (!event.entity) {
       return;
     }
 
-    this.sendToRadarr(event.entity as MediaRequest);
-    this.sendToSonarr(event.entity as MediaRequest);
+    await this.sendToRadarr(event.entity as MediaRequest);
+    await this.sendToSonarr(event.entity as MediaRequest);
 
-    this.updateParentStatus(event.entity as MediaRequest);
+    await this.updateParentStatus(event.entity as MediaRequest);
 
     if (event.entity.status === MediaRequestStatus.COMPLETED) {
       if (event.entity.media.mediaType === MediaType.MOVIE) {
-        this.notifyAvailableMovie(event.entity as MediaRequest);
+        await this.notifyAvailableMovie(event.entity as MediaRequest);
       }
       if (event.entity.media.mediaType === MediaType.TV) {
-        this.notifyAvailableSeries(event.entity as MediaRequest);
+        await this.notifyAvailableSeries(event.entity as MediaRequest);
       }
     }
   }
 
-  public afterInsert(event: InsertEvent<MediaRequest>): void {
+  public async afterInsert(event: InsertEvent<MediaRequest>): Promise<void> {
     if (!event.entity) {
       return;
     }
 
-    this.sendToRadarr(event.entity as MediaRequest);
-    this.sendToSonarr(event.entity as MediaRequest);
+    await this.sendToRadarr(event.entity as MediaRequest);
+    await this.sendToSonarr(event.entity as MediaRequest);
 
-    this.updateParentStatus(event.entity as MediaRequest);
+    await this.updateParentStatus(event.entity as MediaRequest);
   }
 
   public async afterRemove(event: RemoveEvent<MediaRequest>): Promise<void> {
