@@ -22,20 +22,8 @@ parts:
     build-packages:
       - git
       - yarn
-    build-attributes:
-      - build-on: arm64
-        build-packages:
-          - build-essential
-          - automake
-          - python-gi
-          - python-gi-dev
-      - build-on: armhf
-        build-packages:
-          - libatomic1
-          - build-essential
-          - automake
-          - python-gi
-          - python-gi-dev
+      - build-essential
+      - automake
     override-pull: |
       craftctl pull
       # Get information to determine snap grade and version
@@ -91,10 +79,7 @@ parts:
     stage-packages:
       - musl
       - musl-dev
-    stage-attributes:
-      - build-on: armhf
-        stage-packages:
-          - libatomic1
+      - libatomic1
     stage: [.next, ./*]
     prime: [.next, ./*]
 
