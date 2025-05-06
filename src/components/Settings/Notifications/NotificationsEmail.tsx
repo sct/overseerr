@@ -16,6 +16,9 @@ const messages = defineMessages({
   validationSmtpHostRequired: 'You must provide a valid hostname or IP address',
   validationSmtpPortRequired: 'You must provide a valid port number',
   agentenabled: 'Enable Agent',
+  requireUserOptIn: 'Require User Opt-In',
+  requireUserOptInTip:
+    'If enabled, users must opt-in to receive email notifications',
   emailsender: 'Sender Address',
   smtpHost: 'SMTP Host',
   smtpPort: 'SMTP Port',
@@ -125,6 +128,7 @@ const NotificationsEmail = () => {
     <Formik
       initialValues={{
         enabled: data.enabled,
+        requireUserOptIn: data.options.requireUserOptIn,
         emailFrom: data.options.emailFrom,
         smtpHost: data.options.smtpHost,
         smtpPort: data.options.smtpPort ?? 587,
@@ -148,6 +152,7 @@ const NotificationsEmail = () => {
           await axios.post('/api/v1/settings/notifications/email', {
             enabled: values.enabled,
             options: {
+              requireUserOptIn: values.requireUserOptIn,
               emailFrom: values.emailFrom,
               smtpHost: values.smtpHost,
               smtpPort: Number(values.smtpPort),
@@ -196,6 +201,7 @@ const NotificationsEmail = () => {
             await axios.post('/api/v1/settings/notifications/email/test', {
               enabled: true,
               options: {
+                requireUserOptIn: values.requireUserOptIn,
                 emailFrom: values.emailFrom,
                 smtpHost: values.smtpHost,
                 smtpPort: Number(values.smtpPort),
@@ -240,6 +246,22 @@ const NotificationsEmail = () => {
               </label>
               <div className="form-input-area">
                 <Field type="checkbox" id="enabled" name="enabled" />
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="requireUserOptIn" className="checkbox-label">
+                {intl.formatMessage(messages.requireUserOptIn)}
+                <span className="label-required">*</span>
+                <span className="label-tip">
+                  {intl.formatMessage(messages.requireUserOptInTip)}
+                </span>
+              </label>
+              <div className="form-input-area">
+                <Field
+                  type="checkbox"
+                  id="requireUserOptIn"
+                  name="requireUserOptIn"
+                />
               </div>
             </div>
             <div className="form-row">

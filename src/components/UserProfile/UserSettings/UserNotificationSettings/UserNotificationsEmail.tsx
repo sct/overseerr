@@ -3,6 +3,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import NotificationTypeSelector, {
   ALL_NOTIFICATIONS,
+  Notification,
 } from '@app/components/NotificationTypeSelector';
 import { OpenPgpLink } from '@app/components/Settings/Notifications/NotificationsEmail';
 import SettingsBadge from '@app/components/Settings/SettingsBadge';
@@ -53,11 +54,14 @@ const UserEmailSettings = () => {
     return <LoadingSpinner />;
   }
 
+  const fallback = data?.emailOptInRequired
+    ? Notification.NONE
+    : ALL_NOTIFICATIONS;
   return (
     <Formik
       initialValues={{
         pgpKey: data?.pgpKey,
-        types: data?.notificationTypes.email ?? ALL_NOTIFICATIONS,
+        types: data?.notificationTypes.email ?? fallback,
       }}
       validationSchema={UserNotificationsEmailSchema}
       enableReinitialize

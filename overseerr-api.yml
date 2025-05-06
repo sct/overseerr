@@ -1319,6 +1319,9 @@ components:
         options:
           type: object
           properties:
+            requireUserOptIn:
+              type: boolean
+              example: false
             emailFrom:
               type: string
               example: no-reply@example.com

@@ -196,15 +196,17 @@ class EmailAgent
     payload: NotificationPayload
   ): Promise<boolean> {
     if (payload.notifyUser) {
+      // If users are required to opt-in to email notifications, we should default
+      // to not sending them emails if they haven't defined their agent settings
+      const fallback = !this.getSettings().options.requireUserOptIn;
       if (
-        !payload.notifyUser.settings ||
         // Check if user has email notifications enabled and fallback to true if undefined
         // since email should default to true
-        (payload.notifyUser.settings.hasNotificationType(
+        payload.notifyUser.settings?.hasNotificationType(
           NotificationAgentKey.EMAIL,
           type
         ) ??
-          true)
+        fallback
       ) {
         logger.debug('Sending email notification', {
           label: 'Notifications',

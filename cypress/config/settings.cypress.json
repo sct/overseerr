@@ -48,6 +48,7 @@
       "email": {
         "enabled": false,
         "options": {
+          "requireUserOptIn": false,
           "emailFrom": "",
           "smtpHost": "",
           "smtpPort": 587,

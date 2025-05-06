@@ -628,6 +628,8 @@
   "components.Settings.Notifications.pgpPasswordTip": "Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>",
   "components.Settings.Notifications.pgpPrivateKey": "PGP Private Key",
   "components.Settings.Notifications.pgpPrivateKeyTip": "Sign encrypted email messages using <OpenPgpLink>OpenPGP</OpenPgpLink>",
+  "components.Settings.Notifications.requireUserOptIn": "Require User Opt-In",
+  "components.Settings.Notifications.requireUserOptInTip": "If enabled, users must opt-in to receive email notifications",
   "components.Settings.Notifications.sendSilently": "Send Silently",
   "components.Settings.Notifications.sendSilentlyTip": "Send notifications with no sound",
   "components.Settings.Notifications.senderName": "Sender Name",

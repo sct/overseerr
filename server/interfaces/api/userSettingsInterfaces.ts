@@ -21,6 +21,7 @@ export interface UserSettingsGeneralResponse {
 export type NotificationAgentTypes = Record<NotificationAgentKey, number>;
 export interface UserSettingsNotificationsResponse {
   emailEnabled?: boolean;
+  emailOptInRequired?: boolean;
   pgpKey?: string;
   discordEnabled?: boolean;
   discordEnabledTypes?: number;

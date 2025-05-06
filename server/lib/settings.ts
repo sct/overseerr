@@ -150,6 +150,7 @@ export interface NotificationAgentSlack extends NotificationAgentConfig {
 
 export interface NotificationAgentEmail extends NotificationAgentConfig {
   options: {
+    requireUserOptIn: boolean;
     emailFrom: string;
     smtpHost: string;
     smtpPort: number;
@@ -320,6 +321,7 @@ class Settings {
           email: {
             enabled: false,
             options: {
+              requireUserOptIn: false,
               emailFrom: '',
               smtpHost: '',
               smtpPort: 587,
