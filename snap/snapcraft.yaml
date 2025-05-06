@@ -19,6 +19,20 @@ parts:
     npm-node-version: 18.18.2
     npm-include-node: true
     source: .
+    build-packages:
+      - git
+      - yarn
+      - on arm64:
+          - build-essential
+          - automake
+          - python-gi
+          - python-gi-dev
+      - on armhf:
+          - libatomic1
+          - build-essential
+          - automake
+          - python-gi
+          - python-gi-dev
     override-pull: |
       snapcraftctl pull
       # Get information to determine snap grade and version
@@ -54,6 +68,9 @@ parts:
       - CYPRESS_INSTALL_BINARY: '0'
     override-build: |
       set -e
+      # Install dependencies and build using yarn
+      npm install -g yarn
+      yarn install
       # Set COMMIT_TAG before the build begins
       export COMMIT_TAG=$(cat $SNAPCRAFT_PART_BUILD/commit.txt)
       snapcraftctl build
@@ -65,19 +82,6 @@ parts:
       cp -R $SNAPCRAFT_PART_BUILD/node_modules $SNAPCRAFT_PART_INSTALL/
       # Remove .github and gitbook as it will fail snap lint
       rm -rf $SNAPCRAFT_PART_INSTALL/.github && rm $SNAPCRAFT_PART_INSTALL/.gitbook.yaml
-    build-packages:
-      - git
-      - on arm64:
-          - build-essential
-          - automake
-          - python-gi
-          - python-gi-dev
-      - on armhf:
-          - libatomic1
-          - build-essential
-          - automake
-          - python-gi
-          - python-gi-dev
     stage-packages:
       - on armhf:
           - libatomic1
