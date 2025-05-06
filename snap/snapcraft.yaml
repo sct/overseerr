@@ -8,7 +8,7 @@ description: >
 base: core24
 confinement: strict
 
-architectures:
+platforms:
   - build-on: amd64
   - build-on: arm64
   - build-on: armhf
@@ -86,6 +86,8 @@ parts:
       rm -rf $SNAPCRAFT_PART_INSTALL/.github || true
       rm -f $SNAPCRAFT_PART_INSTALL/.gitbook.yaml || true
     stage-packages:
+      - musl
+      - musl-dev
       - on armhf:
           - libatomic1
     stage: [.next, ./*]
