@@ -70,6 +70,7 @@ parts:
       set -e
       # Install dependencies and build using yarn
       npm install -g yarn
+      npm install -g copyfiles
       yarn install
       # Set COMMIT_TAG before the build begins
       export COMMIT_TAG=$(cat $SNAPCRAFT_PART_BUILD/commit.txt)
