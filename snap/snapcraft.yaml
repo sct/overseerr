@@ -60,10 +60,7 @@ parts:
     override-build: |
       set -e
       # Install dependencies and build using yarn
-      npm install -g yarn
-      npm install -g copyfiles
-      npm install -g tsc-alias
-      yarn install
+      npm install -g yarn copyfiles tsc-alias
       # Set COMMIT_TAG before the build begins
       export COMMIT_TAG=$(cat commit.txt)
       craftctl default
