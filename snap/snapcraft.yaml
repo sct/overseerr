@@ -9,9 +9,9 @@ base: core24
 confinement: strict
 
 platforms:
-  - build-on: amd64
-  - build-on: arm64
-  - build-on: armhf
+  amd64:
+  arm64:
+  armhf:
 
 parts:
   overseerr:
@@ -22,19 +22,22 @@ parts:
     build-packages:
       - git
       - yarn
-      - on arm64:
+    build-attributes:
+      - build-on: arm64
+        build-packages:
           - build-essential
           - automake
           - python-gi
           - python-gi-dev
-      - on armhf:
+      - build-on: armhf
+        build-packages:
           - libatomic1
           - build-essential
           - automake
           - python-gi
           - python-gi-dev
     override-pull: |
-      snapcraftctl pull
+      craftctl pull
       # Get information to determine snap grade and version
       git config --global --add safe.directory /data/parts/overseerr/src
       #setup yarn.rc
@@ -61,8 +64,8 @@ parts:
       \"commit\": \"$COMMIT\"}"
       echo "{\"commitTag\": \"$COMMIT\"}" > committag.json
       # Set snap version and grade
-      snapcraftctl set-version "$SNAP_VERSION"
-      snapcraftctl set-grade "$GRADE"
+      craftctl set version="$SNAP_VERSION"
+      craftctl set grade="$GRADE"
     build-environment:
       - PATH: '$SNAPCRAFT_PART_BUILD/node_modules/.bin:$SNAPCRAFT_PART_BUILD/../npm/bin:$PATH'
       - CYPRESS_INSTALL_BINARY: '0'
@@ -75,7 +78,7 @@ parts:
       yarn install
       # Set COMMIT_TAG before the build begins
       export COMMIT_TAG=$(cat $SNAPCRAFT_PART_BUILD/commit.txt)
-      snapcraftctl build
+      craftctl build
       yarn build
       # Copy files needed for staging
       cp $SNAPCRAFT_PART_BUILD/committag.json $SNAPCRAFT_PART_INSTALL/
@@ -88,7 +91,9 @@ parts:
     stage-packages:
       - musl
       - musl-dev
-      - on armhf:
+    stage-attributes:
+      - build-on: armhf
+        stage-packages:
           - libatomic1
     stage: [.next, ./*]
     prime: [.next, ./*]
