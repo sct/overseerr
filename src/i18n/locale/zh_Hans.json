@@ -783,6 +783,8 @@
   "components.Settings.Notifications.discordsettingssaved": "Discord 通知设置保存成功！",
   "components.Settings.Notifications.discordsettingsfailed": "Discord 通知设置保存失败。",
   "components.Settings.Notifications.chatIdTip": "先与你的机器人建立一个聊天室，并将 <GetIdBotLink>@get_id_bot</GetIdBotLink> 也加到聊天室，然后在聊天室里发出 <code>/my_id</code> 命令",
+  "components.Settings.Notifications.messageThreadId": "线程/主题 ID",
+  "components.Settings.Notifications.messageThreadIdTip": "如果您的群聊已启用主题功能，您可以在此指定线程/主题的 ID",
   "components.Settings.Notifications.chatId": "聊天室 ID",
   "components.Settings.Notifications.botUsernameTip": "允许用户也把机器人加到自己的聊天室以及设定自己的通知",
   "components.Settings.Notifications.botUsername": "Bot 机器人名",

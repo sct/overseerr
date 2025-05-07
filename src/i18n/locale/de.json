@@ -802,6 +802,8 @@
   "components.Settings.webAppUrlTip": "Leiten Sie Benutzer optional zur Web-App auf Ihrem Server anstelle der \"gehosteten\" Web-App",
   "components.Settings.noDefault4kServer": "Ein 4K {serverType} Server muss als Standart markiert werden um Nutzern zu ermöglichen 4K {mediaType} anfragen zu senden.",
   "components.Settings.Notifications.chatIdTip": "Starte einen Chat mit dem Bot, füge <GetIdBotLink>@get_id_bot</GetIdBotLink> hinzu, und erteile den <code>/my_id</code> Befehl",
+  "components.Settings.Notifications.messageThreadId": "ID des Threads/Themas",
+  "components.Settings.Notifications.messageThreadIdTip": "Wenn Ihr Gruppenchat Themen aktiviert hat, können Sie hier die ID eines Threads/Themas angeben",
   "components.Settings.Notifications.NotificationsLunaSea.webhookUrlTip": "Ihre Benutzer oder Geräte basierende <LunaSeaLink>Benachrichtigungs-Webhook URL</LunaSeaLink>",
   "components.QuotaSelector.seasons": "{count, plural, one {Staffel} other {Staffeln}}",
   "components.QuotaSelector.movies": "{count, plural, one {Film} other {Filme}}",

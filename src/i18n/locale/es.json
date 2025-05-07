@@ -801,6 +801,8 @@
   "components.QuotaSelector.movies": "{count, plural, one {película} other {películas}}",
   "components.Settings.Notifications.NotificationsSlack.validationTypes": "Debes seleccionar, al menos, un tipo de notificación",
   "components.Settings.Notifications.chatIdTip": "Empieza un chat con tu bot, añade el <GetIdBotLink>@get_id_bot</GetIdBotLink> e indica el comando <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID de hilo/tema",
+  "components.Settings.Notifications.messageThreadIdTip": "Si tu chat de grupo tiene temas habilitados, puedes especificar aquí el ID de un hilo/tema",
   "components.Settings.Notifications.encryptionImplicitTls": "Usa TLS Implícito",
   "components.Settings.Notifications.webhookUrlTip": "Crea una <DiscordWebhookLink>integración webhook</DiscordWebhookLink> en tu servidor",
   "components.MovieDetails.streamingproviders": "Emisión Actual en",

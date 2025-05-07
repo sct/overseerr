@@ -908,6 +908,8 @@
   "components.UserList.createlocaluser": "Vytvořit místního uživatele",
   "components.Settings.Notifications.NotificationsWebPush.toastWebPushTestSending": "Odesílání webového testovacího oznámení push…",
   "components.Settings.Notifications.chatIdTip": "Spusťte chat s botem, přidejte <GetIdBotLink>@get_id_bot</GetIdBotLink> a zadejte příkaz <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID vlákna/tématu",
+  "components.Settings.Notifications.messageThreadIdTip": "Pokud má váš skupinový chat povolená témata, můžete zde zadat ID vlákna/tématu",
   "components.Settings.Notifications.emailsettingsfailed": "Nastavení e-mailových oznámení se nepodařilo uložit.",
   "components.Settings.Notifications.NotificationsWebhook.validationTypes": "Musíte vybrat alespoň jeden typ oznámení",
   "components.Settings.SettingsAbout.betawarning": "Jedná se o software BETA. Funkce mohou být nefunkční a/nebo nestabilní. Jakékoli problémy prosím nahlaste na GitHubu!",

@@ -459,6 +459,8 @@
   "components.Settings.RadarrModal.tags": "Tags",
   "components.Settings.Notifications.chatId": "Chat-ID",
   "components.Settings.Notifications.chatIdTip": "Start en chat med din bot, tilføj <GetIdBotLink>@get_id_bot</GetIdBotLink> og send kommandoen <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID for tråd/emne",
+  "components.Settings.Notifications.messageThreadIdTip": "Hvis din gruppechat har emner slået til, kan du angive ID for en tråd/emne her",
   "components.Settings.Notifications.pgpPrivateKeyTip": "Signér krypterede emailbeskeder med <OpenPgpLink>OpenPGP</OpenPgpLink>",
   "components.Settings.RadarrModal.loadingTags": "Indlæser tags…",
   "components.Settings.RadarrModal.syncEnabled": "Aktivér Skanning",

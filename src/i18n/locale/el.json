@@ -266,6 +266,8 @@
   "components.Settings.Notifications.discordsettingssaved": "Οι ρυθμίσεις των ειδοποιήσεων Discord αποθηκεύτηκαν επιτυχώς!",
   "components.Settings.Notifications.discordsettingsfailed": "Οι ρυθμίσεις των ειδοποιήσεων Discord δεν κατάφεραν να αποθηκευτούν.",
   "components.Settings.Notifications.chatIdTip": "Ξεκίνα μια συνομιλία με το bot σου, πρόσθεσε <GetIdBotLink>@get_id_bot</GetIdBotLink>, και έκδωσε την εντολή <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID νήματος/θέματος",
+  "components.Settings.Notifications.messageThreadIdTip": "Εάν η ομαδική σας συνομιλία έχει ενεργοποιημένα θέματα, μπορείτε να καθορίσετε εδώ το ID ενός νήματος/θέματος",
   "components.Settings.Notifications.chatId": "Αναγνωριστικό συνομιλίας",
   "components.Settings.Notifications.botUsernameTip": "Επίτρεψε στους χρήστες να ξεκινήσουν επίσης μια συνομιλία με το bot σου και να ρυθμίσουν τις δικές τους ειδοποιήσεις",
   "components.Settings.Notifications.botUsername": "Όνομα χρήστη Bot",

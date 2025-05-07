@@ -778,6 +778,8 @@
   "components.Settings.Notifications.encryptionDefault": "Usar STARTTLS se disponível",
   "components.Settings.Notifications.encryption": "Método de Encriptação",
   "components.Settings.Notifications.chatIdTip": "Iniciar uma conversa com o seu bot, adicione <GetIdBotLink>@get_id_bot</GetIdBotLink> e execute o comando <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID de tópico/assunto",
+  "components.Settings.Notifications.messageThreadIdTip": "Se o seu chat em grupo tiver tópicos ativados, você pode especificar aqui o ID de um tópico/assunto",
   "components.Settings.Notifications.NotificationsPushover.accessTokenTip": "<ApplicationRegistrationLink>Registe uma aplicação</ApplicationRegistrationLink> para usar com Overseerr",
   "components.Settings.Notifications.botApiTip": "<CreateBotLink>Criar um bot</CreateBotLink> para usar com Overseerr",
   "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Para receber notificações via web push, o Overseerr deve ser servido via HTTPS.",

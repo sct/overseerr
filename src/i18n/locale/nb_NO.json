@@ -962,6 +962,8 @@
   "components.Settings.Notifications.botUsername": "\"Bot\" Brukernavn",
   "components.Settings.Notifications.botAvatarUrl": "Nettdresse for \"Bot\" avatar",
   "components.Settings.Notifications.chatIdTip": "Start en prat med din \"Bot\", legg til <GetIdBotLink>@get_id_bot</GetIdBotLink> og send kommandoen <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "Tråd-/emne-ID",
+  "components.Settings.Notifications.messageThreadIdTip": "Hvis gruppechatten har emner aktivert, kan du angi en tråd-/emne-ID her",
   "components.Settings.Notifications.validationBotAPIRequired": "Du må oppgi en gyldig autorisasjonsnøkkel for \"Boten\"",
   "components.Settings.Notifications.botUsernameTip": "Tillat brukere å kunne starte en prat med din \"Bot\" for å konfigurere deres egne varsler",
   "components.UserList.newplexsigninenabled": "Innstillingen <strong>Aktiver ny Plex-pålogging</strong> er nå aktivert. Plex-brukere med tilgang til biblioteket trenger ikke å importeres for å kunne logge på første gang.",

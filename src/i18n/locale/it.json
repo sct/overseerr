@@ -761,6 +761,8 @@
   "components.Settings.Notifications.encryptionDefault": "Usa STARTTLS se disponibile",
   "components.Settings.Notifications.encryption": "Metodo di crittografia",
   "components.Settings.Notifications.chatIdTip": "Inizia una chat con il tuo bot, aggiungi <GetIdBotLink>@get_id_bot</GetIdBotLink>, ed emetti il comando <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID del thread/argomento",
+  "components.Settings.Notifications.messageThreadIdTip": "Se la tua chat di gruppo ha i topic abilitati, puoi specificare qui l’ID di un thread/argomento",
   "components.Settings.Notifications.botApiTip": "<CreateBotLink>Crea un bot</CreateBotLink> da usare con Overseerr",
   "components.Settings.Notifications.NotificationsWebhook.toastWebhookTestSuccess": "Notifica Webhook di prova inviata!",
   "components.Settings.Notifications.NotificationsSlack.webhookUrlTip": "Crea un'integrazione <WebhookLink>Incoming Webhook</WebhookLink>",

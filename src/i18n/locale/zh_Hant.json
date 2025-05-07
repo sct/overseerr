@@ -781,6 +781,8 @@
   "components.Settings.Notifications.webhookUrlTip": "在您的伺服器裡建立一個 <DiscordWebhookLink>webhook</DiscordWebhookLink>",
   "components.Settings.Notifications.botApiTip": "建立一個 Overseerr 專用的<CreateBotLink>機器人</CreateBotLink>",
   "components.Settings.Notifications.chatIdTip": "先與您的機器人建立一個聊天室以及把 <GetIdBotLink>@get_id_bot</GetIdBotLink> 也加到聊天室，然後在聊天室裡發出 <code>/my_id</code> 命令",
+  "components.Settings.Notifications.messageThreadId": "討論串/主題 ID",
+  "components.Settings.Notifications.messageThreadIdTip": "如果您的群組聊天已啟用主題功能，您可以在此指定討論串/主題的 ID",
   "components.Settings.webAppUrlTip": "使用伺服器的網路應用代替「託管」的網路應用",
   "components.Settings.webAppUrl": "<WebAppLink>網路應用</WebAppLink>網址",
   "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Overseerr 必須通過 HTTPS 投放才能使用網路推送通知。",

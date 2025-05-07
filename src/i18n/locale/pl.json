@@ -481,6 +481,8 @@
   "components.Settings.Notifications.validationEmail": "Musisz podać poprawny adres e-mail",
   "components.Settings.Notifications.chatId": "Identyfikator czatu (Chat ID)",
   "components.Settings.Notifications.chatIdTip": "Rozpocznij czat ze swoim botem, dodaj <GetIdBotLink>@get_id_bot</GetIdBotLink> i wydaj polecenie <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID wątku/tematu",
+  "components.Settings.Notifications.messageThreadIdTip": "Jeśli na czacie grupowym włączono tematy, możesz tutaj podać ID wątku/tematu",
   "components.Settings.Notifications.discordsettingsfailed": "Nie udało się zapisać ustawień powiadomień Discord.",
   "components.Settings.Notifications.discordsettingssaved": "Ustawienia powiadomień Discorda zapisane pomyślnie!",
   "components.Settings.Notifications.emailsender": "Adres nadawcy",

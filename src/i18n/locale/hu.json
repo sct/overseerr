@@ -547,6 +547,8 @@
   "components.Settings.Notifications.discordsettingssaved": "Discord értesítés beállítások sikeresen mentve!",
   "components.Settings.Notifications.discordsettingsfailed": "A Discord értesítés beállításait nem sikerült elmenteni.",
   "components.Settings.Notifications.chatIdTip": "Indítson egy csevegést a botjával, adja hozzá a <GetIdBotLink>@get_id_bot</GetIdBotLink>, és adja ki a <code>/my_id</code> parancsot",
+  "components.Settings.Notifications.messageThreadId": "Szál/téma azonosító",
+  "components.Settings.Notifications.messageThreadIdTip": "Ha a csoportos csevegésében engedélyezve vannak a témák, itt megadhatja egy szál/téma azonosítóját.",
   "components.Settings.Notifications.chatId": "Chat ID",
   "components.Settings.Notifications.botUsernameTip": "Lehetővé teszi a felhasználók számára, hogy csevegést indítsanak a botjával, és beállíthatják saját értesítéseiket",
   "components.Settings.Notifications.botUsername": "Bot felhasználónév",

@@ -687,6 +687,8 @@
   "components.Settings.Notifications.NotificationsWebhook.toastWebhookTestSending": "Изпраща се известие за тест чрез Webhook…",
   "components.NotificationTypeSelector.issuereopenedDescription": "Изпращайте известия, когато проблемите се отварят отново.",
   "components.Settings.Notifications.chatIdTip": "Започнете чат с вашия бот, добавете <GetIdBotLink>@get_id_bot</GetIdBotLink> и изпълнете командата <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID на нишка/тема",
+  "components.Settings.Notifications.messageThreadIdTip": "Ако вашият групов чат има активирани теми, можете да посочите тук ID на нишка/тема",
   "components.Settings.Notifications.NotificationsSlack.agentenabled": "Активиране на агент",
   "components.QuotaSelector.seasons": "{count, plural, one {сезон} other {сезони}}",
   "components.RequestModal.requestseriestitle": "Заявка на сериали",

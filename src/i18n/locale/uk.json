@@ -606,6 +606,8 @@
   "components.Settings.Notifications.NotificationsSlack.webhookUrl": "URL-адреса вебхука",
   "components.Settings.Notifications.NotificationsWebhook.toastWebhookTestSending": "Надсилання тестового повідомлення Webhook…",
   "components.Settings.Notifications.chatIdTip": "Почніть чат зі своїм ботом, додайте <GetIdBotLink>@get_id_bot</GetIdBotLink> і виконайте команду <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID гілки/теми",
+  "components.Settings.Notifications.messageThreadIdTip": "Якщо у вашому груповому чаті увімкнено теми, ви можете вказати тут ID гілки/теми",
   "components.Settings.Notifications.NotificationsSlack.agentenabled": "Активувати службу",
   "components.RequestModal.requestseriestitle": "Запит на серіал",
   "components.Settings.Notifications.encryptionImplicitTls": "Використовувати неявний TLS",

@@ -771,6 +771,8 @@
   "components.Settings.Notifications.botApiTip": "<CreateBotLink>Maak een bot</CreateBotLink> om te gebruiken met Overseerr",
   "components.Settings.Notifications.webhookUrlTip": "Maak een <DiscordWebhookLink>webhook-integratie</DiscordWebhookLink> op je server",
   "components.Settings.Notifications.chatIdTip": "Start een chat met je bot, voeg <GetIdBotLink>@get_id_bot</GetIdBotLink> toe, en geef het <code>/my_id</code> commando",
+  "components.Settings.Notifications.messageThreadId": "Draad-/onderwerp-ID",
+  "components.Settings.Notifications.messageThreadIdTip": "Als je groepschat onderwerpen heeft ingeschakeld, kun je hier de ID van een draad/onderwerp opgeven",
   "components.Settings.Notifications.NotificationsPushover.userTokenTip": "Je <UsersGroupsLink>gebruikers- of groepsidentifier</UsersGroupsLink> van 30 tekens",
   "components.Settings.Notifications.NotificationsPushover.accessTokenTip": "<ApplicationRegistrationLink>Een toepassing registreren</ApplicationRegistrationLink> om te gebruiken met Overseerr",
   "components.Settings.Notifications.NotificationsPushbullet.accessTokenTip": "Maak een token aan vanuit je <PushbulletSettingsLink>accountinstellingen</PushbulletSettingsLink>",
