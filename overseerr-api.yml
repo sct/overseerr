@@ -1291,6 +1291,22 @@ components:
               type: string
             token:
               type: string
+    NtfySettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        types:
+          type: number
+          example: 2
+        options:
+          type: object
+          properties:
+            url:
+              type: string
+            topic:
+              type: string
     LunaSeaSettings:
       type: object
       properties:
@@ -2936,6 +2952,52 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/GotifySettings'
+      responses:
+        '204':
+          description: Test notification attempted
+  /settings/notifications/ntfy:
+    get:
+      summary: Get ntfy notification settings
+      description: Returns current ntfy notification settings in a JSON object.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Returned ntfy settings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NtfySettings'
+    post:
+      summary: Update ntfy notification settings
+      description: Update ntfy notification settings with the provided values.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NtfySettings'
+      responses:
+        '200':
+          description: 'Values were sucessfully updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NtfySettings'
+  /settings/notifications/ntfy/test:
+    post:
+      summary: Test ntfy settings
+      description: Sends a test notification to the ntfy agent.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NtfySettings'
       responses:
         '204':
           description: Test notification attempted

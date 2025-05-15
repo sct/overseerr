@@ -8,6 +8,7 @@ Overseerr currently supports the following notification agents:
 - [Web Push](./webpush.md)
 - [Discord](./discord.md)
 - [Gotify](./gotify.md)
+- [ntfy](./ntfy.md)
 - [LunaSea](./lunasea.md)
 - [Pushbullet](./pushbullet.md)
 - [Pushover](./pushover.md)
