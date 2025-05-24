@@ -9,6 +9,7 @@ import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces'
 import notificationManager, { Notification } from '@server/lib/notifications';
 import { Permission } from '@server/lib/permissions';
 import logger from '@server/logger';
+import { checkAutoApprovalByRating } from '@server/utils/autoApprovalRatings';
 import { truncate } from 'lodash';
 import {
   AfterInsert,
@@ -37,6 +38,102 @@ type MediaRequestOptions = {
 
 @Entity()
 export class MediaRequest {
+  /**
+   * Helper function to determine request status based on permissions and rating-based auto-approval
+   */
+  private static async determineRequestStatus(
+    user: User,
+    mediaType: MediaType,
+    tmdbId: number,
+    is4k: boolean
+  ): Promise<{
+    status: MediaRequestStatus;
+    modifiedBy?: User;
+    autoApprovalReason?: string;
+  }> {
+    // Check permission-based auto-approval first
+    const hasPermissionAutoApprove = user.hasPermission(
+      [
+        is4k ? Permission.AUTO_APPROVE_4K : Permission.AUTO_APPROVE,
+        mediaType === MediaType.MOVIE
+          ? is4k
+            ? Permission.AUTO_APPROVE_4K_MOVIE
+            : Permission.AUTO_APPROVE_MOVIE
+          : is4k
+          ? Permission.AUTO_APPROVE_4K_TV
+          : Permission.AUTO_APPROVE_TV,
+        Permission.MANAGE_REQUESTS,
+      ],
+      { type: 'or' }
+    );
+
+    if (hasPermissionAutoApprove) {
+      return {
+        status: MediaRequestStatus.APPROVED,
+        modifiedBy: user,
+        autoApprovalReason: 'Permission-based auto-approval',
+      };
+    }
+
+    // Check rating-based auto-approval
+    try {
+      const ratingDecision = await checkAutoApprovalByRating(
+        tmdbId,
+        mediaType,
+        is4k,
+        user.settings
+      );
+
+      if (ratingDecision.shouldAutoDecline) {
+        logger.info('Request auto-declined based on rating', {
+          label: 'Media Request',
+          tmdbId,
+          mediaType,
+          is4k,
+          rating: ratingDecision.rating,
+          reason: ratingDecision.reason,
+        });
+        return {
+          status: MediaRequestStatus.DECLINED,
+          modifiedBy: user,
+          autoApprovalReason: ratingDecision.reason,
+        };
+      }
+
+      if (ratingDecision.shouldAutoApprove) {
+        logger.info('Request auto-approved based on rating', {
+          label: 'Media Request',
+          tmdbId,
+          mediaType,
+          is4k,
+          rating: ratingDecision.rating,
+          reason: ratingDecision.reason,
+        });
+        return {
+          status: MediaRequestStatus.APPROVED,
+          modifiedBy: user,
+          autoApprovalReason: ratingDecision.reason,
+        };
+      }
+    } catch (error) {
+      logger.warn(
+        'Error in rating-based auto-approval check, defaulting to pending',
+        {
+          label: 'Media Request',
+          tmdbId,
+          mediaType,
+          is4k,
+          error: error.message,
+        }
+      );
+    }
+
+    // Default to pending if no auto-approval criteria are met
+    return {
+      status: MediaRequestStatus.PENDING,
+    };
+  }
+
   public static async request(
     requestBody: MediaRequestBody,
     user: User,
@@ -188,39 +285,20 @@ export class MediaRequest {
     if (requestBody.mediaType === MediaType.MOVIE) {
       await mediaRepository.save(media);
 
+      // Determine request status based on permissions and ratings
+      const statusDecision = await MediaRequest.determineRequestStatus(
+        user,
+        MediaType.MOVIE,
+        requestBody.mediaId,
+        requestBody.is4k ?? false
+      );
+
       const request = new MediaRequest({
         type: MediaType.MOVIE,
         media,
         requestedBy: requestUser,
-        // If the user is an admin or has the "auto approve" permission, automatically approve the request
-        status: user.hasPermission(
-          [
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K
-              : Permission.AUTO_APPROVE,
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K_MOVIE
-              : Permission.AUTO_APPROVE_MOVIE,
-            Permission.MANAGE_REQUESTS,
-          ],
-          { type: 'or' }
-        )
-          ? MediaRequestStatus.APPROVED
-          : MediaRequestStatus.PENDING,
-        modifiedBy: user.hasPermission(
-          [
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K
-              : Permission.AUTO_APPROVE,
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K_MOVIE
-              : Permission.AUTO_APPROVE_MOVIE,
-            Permission.MANAGE_REQUESTS,
-          ],
-          { type: 'or' }
-        )
-          ? user
-          : undefined,
+        status: statusDecision.status,
+        modifiedBy: statusDecision.modifiedBy,
         is4k: requestBody.is4k,
         serverId: requestBody.serverId,
         profileId: requestBody.profileId,
@@ -294,39 +372,20 @@ export class MediaRequest {
 
       await mediaRepository.save(media);
 
+      // Determine request status based on permissions and ratings
+      const statusDecision = await MediaRequest.determineRequestStatus(
+        user,
+        MediaType.TV,
+        requestBody.mediaId,
+        requestBody.is4k ?? false
+      );
+
       const request = new MediaRequest({
         type: MediaType.TV,
         media,
         requestedBy: requestUser,
-        // If the user is an admin or has the "auto approve" permission, automatically approve the request
-        status: user.hasPermission(
-          [
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K
-              : Permission.AUTO_APPROVE,
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K_TV
-              : Permission.AUTO_APPROVE_TV,
-            Permission.MANAGE_REQUESTS,
-          ],
-          { type: 'or' }
-        )
-          ? MediaRequestStatus.APPROVED
-          : MediaRequestStatus.PENDING,
-        modifiedBy: user.hasPermission(
-          [
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K
-              : Permission.AUTO_APPROVE,
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K_TV
-              : Permission.AUTO_APPROVE_TV,
-            Permission.MANAGE_REQUESTS,
-          ],
-          { type: 'or' }
-        )
-          ? user
-          : undefined,
+        status: statusDecision.status,
+        modifiedBy: statusDecision.modifiedBy,
         is4k: requestBody.is4k,
         serverId: requestBody.serverId,
         profileId: requestBody.profileId,
@@ -337,20 +396,7 @@ export class MediaRequest {
           (sn) =>
             new SeasonRequest({
               seasonNumber: sn,
-              status: user.hasPermission(
-                [
-                  requestBody.is4k
-                    ? Permission.AUTO_APPROVE_4K
-                    : Permission.AUTO_APPROVE,
-                  requestBody.is4k
-                    ? Permission.AUTO_APPROVE_4K_TV
-                    : Permission.AUTO_APPROVE_TV,
-                  Permission.MANAGE_REQUESTS,
-                ],
-                { type: 'or' }
-              )
-                ? MediaRequestStatus.APPROVED
-                : MediaRequestStatus.PENDING,
+              status: statusDecision.status,
             })
         ),
         isAutoRequest: options.isAutoRequest ?? false,
