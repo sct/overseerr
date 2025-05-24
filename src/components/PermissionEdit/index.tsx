@@ -82,6 +82,10 @@ interface PermissionEditProps {
   currentUser?: User;
   currentPermission: number;
   onUpdate: (newPermissions: number) => void;
+  values?: Record<string, unknown>;
+  errors?: Record<string, string>;
+  touched?: Record<string, boolean>;
+  setFieldValue?: (field: string, value: unknown) => void;
 }
 
 export const PermissionEdit = ({
@@ -89,6 +93,10 @@ export const PermissionEdit = ({
   currentUser,
   currentPermission,
   onUpdate,
+  values,
+  errors,
+  touched,
+  setFieldValue,
 }: PermissionEditProps) => {
   const intl = useIntl();
 
@@ -324,6 +332,10 @@ export const PermissionEdit = ({
           currentUser={currentUser}
           currentPermission={currentPermission}
           onUpdate={(newPermission) => onUpdate(newPermission)}
+          values={values}
+          errors={errors}
+          touched={touched}
+          setFieldValue={setFieldValue}
         />
       ))}
     </>

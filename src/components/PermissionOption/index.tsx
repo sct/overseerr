@@ -1,3 +1,4 @@
+import RatingSettingsTable from '@app/components/RatingSettingsTable';
 import useSettings from '@app/hooks/useSettings';
 import type { User } from '@app/hooks/useUser';
 import { Permission } from '@app/hooks/useUser';
@@ -24,6 +25,10 @@ interface PermissionOptionProps {
   currentPermission: number;
   parent?: PermissionItem;
   onUpdate: (newPermissions: number) => void;
+  values?: Record<string, unknown>;
+  errors?: Record<string, string>;
+  touched?: Record<string, boolean>;
+  setFieldValue?: (field: string, value: unknown) => void;
 }
 
 const PermissionOption = ({
@@ -33,6 +38,10 @@ const PermissionOption = ({
   currentPermission,
   onUpdate,
   parent,
+  values,
+  errors,
+  touched,
+  setFieldValue,
 }: PermissionOptionProps) => {
   const settings = useSettings();
 
@@ -133,6 +142,57 @@ const PermissionOption = ({
           </label>
         </div>
       </div>
+
+      {/* Show rating tables for auto-approve permissions */}
+      {values && setFieldValue && (
+        <>
+          {option.permission === Permission.AUTO_APPROVE_MOVIE && checked && (
+            <div className="mt-4 ml-10">
+              <RatingSettingsTable
+                mediaType="movie"
+                quality="hd"
+                errors={errors || {}}
+                touched={touched || {}}
+              />
+            </div>
+          )}
+
+          {option.permission === Permission.AUTO_APPROVE_TV && checked && (
+            <div className="mt-4 ml-10">
+              <RatingSettingsTable
+                mediaType="tv"
+                quality="hd"
+                errors={errors || {}}
+                touched={touched || {}}
+              />
+            </div>
+          )}
+
+          {option.permission === Permission.AUTO_APPROVE_4K_MOVIE &&
+            checked && (
+              <div className="mt-4 ml-10">
+                <RatingSettingsTable
+                  mediaType="movie"
+                  quality="4k"
+                  errors={errors || {}}
+                  touched={touched || {}}
+                />
+              </div>
+            )}
+
+          {option.permission === Permission.AUTO_APPROVE_4K_TV && checked && (
+            <div className="mt-4 ml-10">
+              <RatingSettingsTable
+                mediaType="tv"
+                quality="4k"
+                errors={errors || {}}
+                touched={touched || {}}
+              />
+            </div>
+          )}
+        </>
+      )}
+
       {(option.children ?? []).map((child) => (
         <div key={`permission-child-${child.id}`} className="mt-4 pl-10">
           <PermissionOption
@@ -140,6 +200,10 @@ const PermissionOption = ({
             currentPermission={currentPermission}
             onUpdate={(newPermission) => onUpdate(newPermission)}
             parent={option}
+            values={values}
+            errors={errors}
+            touched={touched}
+            setFieldValue={setFieldValue}
           />
         </div>
       ))}
