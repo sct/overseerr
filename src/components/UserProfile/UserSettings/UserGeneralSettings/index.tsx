@@ -5,7 +5,6 @@ import PageTitle from '@app/components/Common/PageTitle';
 import LanguageSelector from '@app/components/LanguageSelector';
 import QuotaSelector from '@app/components/QuotaSelector';
 import RegionSelector from '@app/components/RegionSelector';
-import type { AvailableLocale } from '@app/context/LanguageContext';
 import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
 import useSettings from '@app/hooks/useSettings';
@@ -26,41 +25,44 @@ import * as Yup from 'yup';
 const messages = defineMessages({
   general: 'General',
   generalsettings: 'General Settings',
-  displayName: 'Display Name',
   accounttype: 'Account Type',
-  plexuser: 'Plex User',
-  localuser: 'Local User',
   role: 'Role',
   owner: 'Owner',
   admin: 'Admin',
   user: 'User',
-  toastSettingsSuccess: 'Settings saved successfully!',
+  plexuser: 'Plex User',
+  localuser: 'Local User',
+  toastSettingsSuccess: 'User settings saved successfully!',
   toastSettingsFailure: 'Something went wrong while saving settings.',
+  displayName: 'Display Name',
+  discordId: 'Discord User ID',
+  discordIdTip:
+    'To find your Discord user ID, visit <FindDiscordIdLink>this page</FindDiscordIdLink>',
+  validationDiscordId: 'You must provide a valid Discord user ID',
+  applanguage: 'Display Language',
+  languageDefault: 'Default ({language})',
   region: 'Discover Region',
   regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
   originallanguageTip: 'Filter content by original language',
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
-  enableOverride: 'Override Global Limit',
-  applanguage: 'Display Language',
-  languageDefault: 'Default ({language})',
-  discordId: 'Discord User ID',
-  discordIdTip:
-    'The <FindDiscordIdLink>multi-digit ID number</FindDiscordIdLink> associated with your Discord user account',
-  validationDiscordId: 'You must provide a valid Discord user ID',
+  enableOverride: 'Enable Override',
   plexwatchlistsyncmovies: 'Auto-Request Movies',
   plexwatchlistsyncmoviestip:
-    'Automatically request movies on your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink>',
+    'Enable to automatically request movies from your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink>',
   plexwatchlistsyncseries: 'Auto-Request Series',
   plexwatchlistsyncseriestip:
-    'Automatically request series on your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink>',
+    'Enable to automatically request series from your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink>',
+  validationDisplayNameRequired: 'Display name is required',
+  validationDisplayNameMaxLength:
+    'Display name must be less than 256 characters',
 });
 
 const UserGeneralSettings = () => {
   const intl = useIntl();
   const { addToast } = useToasts();
-  const { locale, setLocale } = useLocale();
+  const { locale } = useLocale();
   const [movieQuotaEnabled, setMovieQuotaEnabled] = useState(false);
   const [tvQuotaEnabled, setTvQuotaEnabled] = useState(false);
   const router = useRouter();
@@ -82,9 +84,19 @@ const UserGeneralSettings = () => {
   );
 
   const UserGeneralSettingsSchema = Yup.object().shape({
-    discordId: Yup.string()
-      .nullable()
-      .matches(/^\d{17,19}$/, intl.formatMessage(messages.validationDiscordId)),
+    displayName: Yup.string()
+      .required(intl.formatMessage(messages.validationDisplayNameRequired))
+      .max(256, intl.formatMessage(messages.validationDisplayNameMaxLength)),
+    discordId: Yup.string().nullable(),
+    locale: Yup.string().nullable(),
+    region: Yup.string().nullable(),
+    originalLanguage: Yup.string().nullable(),
+    movieQuotaLimit: Yup.number().nullable(),
+    movieQuotaDays: Yup.number().nullable(),
+    tvQuotaLimit: Yup.number().nullable(),
+    tvQuotaDays: Yup.number().nullable(),
+    watchlistSyncMovies: Yup.boolean(),
+    watchlistSyncTv: Yup.boolean(),
   });
 
   useEffect(() => {
@@ -110,6 +122,7 @@ const UserGeneralSettings = () => {
         title={[
           intl.formatMessage(messages.general),
           intl.formatMessage(globalMessages.usersettings),
+          user?.displayName,
         ]}
       />
       <div className="mb-6">
@@ -121,7 +134,7 @@ const UserGeneralSettings = () => {
         initialValues={{
           displayName: data?.username,
           discordId: data?.discordId,
-          locale: data?.locale,
+          locale: data?.locale ?? '',
           region: data?.region,
           originalLanguage: data?.originalLanguage,
           movieQuotaLimit: data?.movieQuotaLimit,
@@ -138,7 +151,7 @@ const UserGeneralSettings = () => {
             await axios.post(`/api/v1/user/${user?.id}/settings/main`, {
               username: values.displayName,
               discordId: values.discordId,
-              locale: values.locale,
+              locale: values.locale.length > 0 ? values.locale : null,
               region: values.region,
               originalLanguage: values.originalLanguage,
               movieQuotaLimit: movieQuotaEnabled
@@ -150,15 +163,6 @@ const UserGeneralSettings = () => {
               watchlistSyncMovies: values.watchlistSyncMovies,
               watchlistSyncTv: values.watchlistSyncTv,
             });
-
-            if (currentUser?.id === user?.id && setLocale) {
-              setLocale(
-                (values.locale
-                  ? values.locale
-                  : currentSettings.locale) as AvailableLocale
-              );
-            }
-
             addToast(intl.formatMessage(messages.toastSettingsSuccess), {
               autoDismiss: true,
               appearance: 'success',
@@ -512,13 +516,14 @@ const UserGeneralSettings = () => {
                     </div>
                   </div>
                 )}
+
               <div className="actions">
                 <div className="flex justify-end">
                   <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
                       type="submit"
-                      disabled={isSubmitting || !isValid}
+                      disabled={!isValid || isSubmitting}
                     >
                       <ArrowDownOnSquareIcon />
                       <span>

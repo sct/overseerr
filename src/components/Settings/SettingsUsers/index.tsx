@@ -11,6 +11,7 @@ import { Field, Form, Formik } from 'formik';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
+import * as Yup from 'yup';
 
 const messages = defineMessages({
   users: 'Users',
@@ -27,6 +28,9 @@ const messages = defineMessages({
   tvRequestLimitLabel: 'Global Series Request Limit',
   defaultPermissions: 'Default Permissions',
   defaultPermissionsTip: 'Initial permissions assigned to new users',
+  validationRatingRange: 'Rating must be between 0.1 and 10.0',
+  validationMinLessThanMax:
+    'Auto-approve rating must be higher than auto-decline rating',
 });
 
 const SettingsUsers = () => {
@@ -37,6 +41,86 @@ const SettingsUsers = () => {
     error,
     mutate: revalidate,
   } = useSWR<MainSettings>('/api/v1/settings/main');
+
+  const SettingsUsersSchema = Yup.object().shape({
+    defaultPermissions: Yup.number(),
+    movieTmdbMinRating: Yup.number()
+      .min(0.1, intl.formatMessage(messages.validationRatingRange))
+      .max(10.0, intl.formatMessage(messages.validationRatingRange))
+      .nullable(),
+    movieTmdbMaxRating: Yup.number()
+      .min(0.1, intl.formatMessage(messages.validationRatingRange))
+      .max(10.0, intl.formatMessage(messages.validationRatingRange))
+      .nullable()
+      .test(
+        'max-less-than-min',
+        intl.formatMessage(messages.validationMinLessThanMax),
+        function (value) {
+          const { movieTmdbMinRating } = this.parent;
+          if (movieTmdbMinRating && value && value >= movieTmdbMinRating) {
+            return false;
+          }
+          return true;
+        }
+      ),
+    movieTmdb4kMinRating: Yup.number()
+      .min(0.1, intl.formatMessage(messages.validationRatingRange))
+      .max(10.0, intl.formatMessage(messages.validationRatingRange))
+      .nullable(),
+    movieTmdb4kMaxRating: Yup.number()
+      .min(0.1, intl.formatMessage(messages.validationRatingRange))
+      .max(10.0, intl.formatMessage(messages.validationRatingRange))
+      .nullable()
+      .test(
+        'max-less-than-min',
+        intl.formatMessage(messages.validationMinLessThanMax),
+        function (value) {
+          const { movieTmdb4kMinRating } = this.parent;
+          if (movieTmdb4kMinRating && value && value >= movieTmdb4kMinRating) {
+            return false;
+          }
+          return true;
+        }
+      ),
+    tvTmdbMinRating: Yup.number()
+      .min(0.1, intl.formatMessage(messages.validationRatingRange))
+      .max(10.0, intl.formatMessage(messages.validationRatingRange))
+      .nullable(),
+    tvTmdbMaxRating: Yup.number()
+      .min(0.1, intl.formatMessage(messages.validationRatingRange))
+      .max(10.0, intl.formatMessage(messages.validationRatingRange))
+      .nullable()
+      .test(
+        'max-less-than-min',
+        intl.formatMessage(messages.validationMinLessThanMax),
+        function (value) {
+          const { tvTmdbMinRating } = this.parent;
+          if (tvTmdbMinRating && value && value >= tvTmdbMinRating) {
+            return false;
+          }
+          return true;
+        }
+      ),
+    tvTmdb4kMinRating: Yup.number()
+      .min(0.1, intl.formatMessage(messages.validationRatingRange))
+      .max(10.0, intl.formatMessage(messages.validationRatingRange))
+      .nullable(),
+    tvTmdb4kMaxRating: Yup.number()
+      .min(0.1, intl.formatMessage(messages.validationRatingRange))
+      .max(10.0, intl.formatMessage(messages.validationRatingRange))
+      .nullable()
+      .test(
+        'max-less-than-min',
+        intl.formatMessage(messages.validationMinLessThanMax),
+        function (value) {
+          const { tvTmdb4kMinRating } = this.parent;
+          if (tvTmdb4kMinRating && value && value >= tvTmdb4kMinRating) {
+            return false;
+          }
+          return true;
+        }
+      ),
+  });
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -66,7 +150,16 @@ const SettingsUsers = () => {
             tvQuotaLimit: data?.defaultQuotas.tv.quotaLimit ?? 0,
             tvQuotaDays: data?.defaultQuotas.tv.quotaDays ?? 7,
             defaultPermissions: data?.defaultPermissions ?? 0,
+            movieTmdbMinRating: data?.defaultRatings?.movieTmdbMinRating,
+            movieTmdbMaxRating: data?.defaultRatings?.movieTmdbMaxRating,
+            movieTmdb4kMinRating: data?.defaultRatings?.movieTmdb4kMinRating,
+            movieTmdb4kMaxRating: data?.defaultRatings?.movieTmdb4kMaxRating,
+            tvTmdbMinRating: data?.defaultRatings?.tvTmdbMinRating,
+            tvTmdbMaxRating: data?.defaultRatings?.tvTmdbMaxRating,
+            tvTmdb4kMinRating: data?.defaultRatings?.tvTmdb4kMinRating,
+            tvTmdb4kMaxRating: data?.defaultRatings?.tvTmdb4kMaxRating,
           }}
+          validationSchema={SettingsUsersSchema}
           enableReinitialize
           onSubmit={async (values) => {
             try {
@@ -84,6 +177,18 @@ const SettingsUsers = () => {
                   },
                 },
                 defaultPermissions: values.defaultPermissions,
+                defaultRatings: {
+                  movieTmdbMinRating: values.movieTmdbMinRating || undefined,
+                  movieTmdbMaxRating: values.movieTmdbMaxRating || undefined,
+                  movieTmdb4kMinRating:
+                    values.movieTmdb4kMinRating || undefined,
+                  movieTmdb4kMaxRating:
+                    values.movieTmdb4kMaxRating || undefined,
+                  tvTmdbMinRating: values.tvTmdbMinRating || undefined,
+                  tvTmdbMaxRating: values.tvTmdbMaxRating || undefined,
+                  tvTmdb4kMinRating: values.tvTmdb4kMinRating || undefined,
+                  tvTmdb4kMaxRating: values.tvTmdb4kMaxRating || undefined,
+                },
               });
               mutate('/api/v1/settings/public');
 
@@ -101,7 +206,7 @@ const SettingsUsers = () => {
             }
           }}
         >
-          {({ isSubmitting, values, setFieldValue }) => {
+          {({ isSubmitting, values, setFieldValue, errors, touched }) => {
             return (
               <Form className="section">
                 <div className="form-row">
@@ -189,6 +294,10 @@ const SettingsUsers = () => {
                           onUpdate={(newPermissions) =>
                             setFieldValue('defaultPermissions', newPermissions)
                           }
+                          values={values}
+                          errors={errors}
+                          touched={touched}
+                          setFieldValue={setFieldValue}
                         />
                       </div>
                     </div>
