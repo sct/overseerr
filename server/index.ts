@@ -104,14 +104,14 @@ app
     if (settings.main.trustProxy) {
       server.enable('trust proxy');
     }
-    server.use(cookieParser());
+    server.use(cookieParser() as any);
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
     server.use((req, _res, next) => {
       try {
         const descriptor = Object.getOwnPropertyDescriptor(req, 'ip');
         if (descriptor?.writable === true) {
-          req.ip = getClientIp(req) ?? '';
+          (req as any).ip = getClientIp(req) ?? '';
         }
       } catch (e) {
         logger.error('Failed to attach the ip to the request', {
@@ -124,16 +124,17 @@ app
     });
     if (settings.main.csrfProtection) {
       server.use(
+        '/api',
         csurf({
           cookie: {
             httpOnly: true,
             sameSite: true,
             secure: !dev,
           },
-        })
+        }) as any
       );
-      server.use((req, res, next) => {
-        res.cookie('XSRF-TOKEN', req.csrfToken(), {
+      server.use('/api', (req, res, next) => {
+        res.cookie('XSRF-TOKEN', (req as any).csrfToken(), {
           sameSite: true,
           secure: !dev,
         });
@@ -159,10 +160,14 @@ app
           cleanupLimit: 2,
           ttl: 60 * 60 * 24 * 30,
         }).connect(sessionRespository) as Store,
-      })
+      }) as any
     );
     const apiDocs = YAML.load(API_SPEC_PATH);
-    server.use('/api-docs', swaggerUi.serve, swaggerUi.setup(apiDocs));
+    server.use(
+      '/api-docs',
+      swaggerUi.serve as any,
+      swaggerUi.setup(apiDocs) as any
+    );
     server.use(
       OpenApiValidator.middleware({
         apiSpec: API_SPEC_PATH,

@@ -65,6 +65,14 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
         globalTvQuotaLimit: defaultQuotas.tv.quotaLimit,
         watchlistSyncMovies: user.settings?.watchlistSyncMovies,
         watchlistSyncTv: user.settings?.watchlistSyncTv,
+        movieTmdbMinRating: user.settings?.movieTmdbMinRating,
+        movieTmdbMaxRating: user.settings?.movieTmdbMaxRating,
+        movieTmdb4kMinRating: user.settings?.movieTmdb4kMinRating,
+        movieTmdb4kMaxRating: user.settings?.movieTmdb4kMaxRating,
+        tvTmdbMinRating: user.settings?.tvTmdbMinRating,
+        tvTmdbMaxRating: user.settings?.tvTmdbMaxRating,
+        tvTmdb4kMinRating: user.settings?.tvTmdb4kMinRating,
+        tvTmdb4kMaxRating: user.settings?.tvTmdb4kMaxRating,
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -118,6 +126,15 @@ userSettingsRoutes.post<
         originalLanguage: req.body.originalLanguage,
         watchlistSyncMovies: req.body.watchlistSyncMovies,
         watchlistSyncTv: req.body.watchlistSyncTv,
+        // Auto-approval rating settings
+        movieTmdbMinRating: req.body.movieTmdbMinRating,
+        movieTmdbMaxRating: req.body.movieTmdbMaxRating,
+        movieTmdb4kMinRating: req.body.movieTmdb4kMinRating,
+        movieTmdb4kMaxRating: req.body.movieTmdb4kMaxRating,
+        tvTmdbMinRating: req.body.tvTmdbMinRating,
+        tvTmdbMaxRating: req.body.tvTmdbMaxRating,
+        tvTmdb4kMinRating: req.body.tvTmdb4kMinRating,
+        tvTmdb4kMaxRating: req.body.tvTmdb4kMaxRating,
       });
     } else {
       user.settings.discordId = req.body.discordId;
@@ -126,6 +143,15 @@ userSettingsRoutes.post<
       user.settings.originalLanguage = req.body.originalLanguage;
       user.settings.watchlistSyncMovies = req.body.watchlistSyncMovies;
       user.settings.watchlistSyncTv = req.body.watchlistSyncTv;
+      // Auto-approval rating settings
+      user.settings.movieTmdbMinRating = req.body.movieTmdbMinRating;
+      user.settings.movieTmdbMaxRating = req.body.movieTmdbMaxRating;
+      user.settings.movieTmdb4kMinRating = req.body.movieTmdb4kMinRating;
+      user.settings.movieTmdb4kMaxRating = req.body.movieTmdb4kMaxRating;
+      user.settings.tvTmdbMinRating = req.body.tvTmdbMinRating;
+      user.settings.tvTmdbMaxRating = req.body.tvTmdbMaxRating;
+      user.settings.tvTmdb4kMinRating = req.body.tvTmdb4kMinRating;
+      user.settings.tvTmdb4kMaxRating = req.body.tvTmdb4kMaxRating;
     }
 
     await userRepository.save(user);
@@ -138,6 +164,15 @@ userSettingsRoutes.post<
       originalLanguage: user.settings.originalLanguage,
       watchlistSyncMovies: user.settings.watchlistSyncMovies,
       watchlistSyncTv: user.settings.watchlistSyncTv,
+      // Auto-approval rating settings
+      movieTmdbMinRating: user.settings.movieTmdbMinRating,
+      movieTmdbMaxRating: user.settings.movieTmdbMaxRating,
+      movieTmdb4kMinRating: user.settings.movieTmdb4kMinRating,
+      movieTmdb4kMaxRating: user.settings.movieTmdb4kMaxRating,
+      tvTmdbMinRating: user.settings.tvTmdbMinRating,
+      tvTmdbMaxRating: user.settings.tvTmdbMaxRating,
+      tvTmdb4kMinRating: user.settings.tvTmdb4kMinRating,
+      tvTmdb4kMaxRating: user.settings.tvTmdb4kMaxRating,
     });
   } catch (e) {
     next({ status: 500, message: e.message });

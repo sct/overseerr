@@ -96,6 +96,16 @@ export interface MainSettings {
     movie: Quota;
     tv: Quota;
   };
+  defaultRatings?: {
+    movieTmdbMinRating?: number;
+    movieTmdbMaxRating?: number;
+    movieTmdb4kMinRating?: number;
+    movieTmdb4kMaxRating?: number;
+    tvTmdbMinRating?: number;
+    tvTmdbMaxRating?: number;
+    tvTmdb4kMinRating?: number;
+    tvTmdb4kMaxRating?: number;
+  };
   hideAvailable: boolean;
   localLogin: boolean;
   newPlexLogin: boolean;
