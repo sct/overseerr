@@ -115,70 +115,61 @@ const UserPermissions = () => {
       'ratings-validation',
       'Auto-approve rating must be higher than auto-decline rating',
       function (values) {
-        const errors: Yup.ValidationError[] = [];
+        const errors: string[] = [];
 
-        // Check movie HD ratings
-        if (
-          values.movieTmdbMinRating &&
-          values.movieTmdbMaxRating &&
-          values.movieTmdbMinRating <= values.movieTmdbMaxRating
-        ) {
-          errors.push(
-            new Yup.ValidationError(
-              'Auto-approve must be higher than auto-decline',
-              values.movieTmdbMinRating,
-              'movieTmdbMinRating'
-            )
-          );
-        }
+        // Custom validation for rating fields
+        if (values && typeof values === 'object') {
+          Object.keys(values).forEach((key) => {
+            if (key.includes('Rating') && values[key] != null) {
+              const rating = Number(values[key]);
+              if (rating < 0.1 || rating > 10.0) {
+                errors.push(`${key} must be between 0.1 and 10.0`);
+              }
+            }
+          });
 
-        // Check movie 4K ratings
-        if (
-          values.movieTmdb4kMinRating &&
-          values.movieTmdb4kMaxRating &&
-          values.movieTmdb4kMinRating <= values.movieTmdb4kMaxRating
-        ) {
-          errors.push(
-            new Yup.ValidationError(
-              'Auto-approve must be higher than auto-decline',
-              values.movieTmdb4kMinRating,
-              'movieTmdb4kMinRating'
-            )
-          );
-        }
+          // Validate auto-approve > auto-decline for each category
+          const categories = [
+            {
+              approve: 'movieTmdbMinRating',
+              decline: 'movieTmdbMaxRating',
+              name: 'Movie HD',
+            },
+            {
+              approve: 'movieTmdb4kMinRating',
+              decline: 'movieTmdb4kMaxRating',
+              name: 'Movie 4K',
+            },
+            {
+              approve: 'tvTmdbMinRating',
+              decline: 'tvTmdbMaxRating',
+              name: 'TV HD',
+            },
+            {
+              approve: 'tvTmdb4kMinRating',
+              decline: 'tvTmdb4kMaxRating',
+              name: 'TV 4K',
+            },
+          ];
 
-        // Check TV HD ratings
-        if (
-          values.tvTmdbMinRating &&
-          values.tvTmdbMaxRating &&
-          values.tvTmdbMinRating <= values.tvTmdbMaxRating
-        ) {
-          errors.push(
-            new Yup.ValidationError(
-              'Auto-approve must be higher than auto-decline',
-              values.tvTmdbMinRating,
-              'tvTmdbMinRating'
-            )
-          );
-        }
+          categories.forEach(({ approve, decline, name }) => {
+            const approveRating = values[approve];
+            const declineRating = values[decline];
 
-        // Check TV 4K ratings
-        if (
-          values.tvTmdb4kMinRating &&
-          values.tvTmdb4kMaxRating &&
-          values.tvTmdb4kMinRating <= values.tvTmdb4kMaxRating
-        ) {
-          errors.push(
-            new Yup.ValidationError(
-              'Auto-approve must be higher than auto-decline',
-              values.tvTmdb4kMinRating,
-              'tvTmdb4kMinRating'
-            )
-          );
+            if (
+              approveRating != null &&
+              declineRating != null &&
+              approveRating <= declineRating
+            ) {
+              errors.push(
+                `${name}: Auto-approve rating must be higher than auto-decline rating`
+              );
+            }
+          });
         }
 
         if (errors.length > 0) {
-          throw new Yup.ValidationError(errors);
+          return this.createError({ message: errors[0] }); // Return first error instead of throwing multiple
         }
 
         return true;

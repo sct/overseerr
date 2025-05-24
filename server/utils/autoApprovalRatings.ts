@@ -66,13 +66,13 @@ async function checkMediaAutoApprovalByRating(
       voteCount: media.vote_count,
     });
 
-    // Check for auto-decline (rating below maximum threshold)
-    if (maxRating !== undefined && rating < maxRating) {
+    // Check for auto-decline (rating at or below maximum threshold)
+    if (maxRating !== undefined && rating <= maxRating) {
       return {
         shouldAutoApprove: false,
         shouldAutoDecline: true,
         rating,
-        reason: `TMDB rating ${rating} is below decline threshold ${maxRating}`,
+        reason: `TMDB rating ${rating} is at or below decline threshold of ${maxRating}`,
       };
     }
 
