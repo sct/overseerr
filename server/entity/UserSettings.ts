@@ -66,6 +66,32 @@ export class UserSettings {
   @Column({ nullable: true })
   public watchlistSyncTv?: boolean;
 
+  // Auto-approval rating settings for movies
+  @Column({ type: 'float', nullable: true })
+  public movieTmdbMinRating?: number;
+
+  @Column({ type: 'float', nullable: true })
+  public movieTmdbMaxRating?: number;
+
+  @Column({ type: 'float', nullable: true })
+  public movieTmdb4kMinRating?: number;
+
+  @Column({ type: 'float', nullable: true })
+  public movieTmdb4kMaxRating?: number;
+
+  // Auto-approval rating settings for TV shows
+  @Column({ type: 'float', nullable: true })
+  public tvTmdbMinRating?: number;
+
+  @Column({ type: 'float', nullable: true })
+  public tvTmdbMaxRating?: number;
+
+  @Column({ type: 'float', nullable: true })
+  public tvTmdb4kMinRating?: number;
+
+  @Column({ type: 'float', nullable: true })
+  public tvTmdb4kMaxRating?: number;
+
   @Column({
     type: 'text',
     nullable: true,
