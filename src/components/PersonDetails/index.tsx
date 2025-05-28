@@ -3,7 +3,7 @@ import CachedImage from '@app/components/Common/CachedImage';
 import ImageFader from '@app/components/Common/ImageFader';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
-import { ExternalLinkBlockItems } from '@app/components/ExternalLinkBlock';
+import { ExternalLinkBlockItems } from '@app/components/ExternalLinkBlock/ExternalLinkBlockItems';
 import TitleCard from '@app/components/TitleCard';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
