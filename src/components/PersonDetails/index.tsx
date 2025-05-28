@@ -11,7 +11,7 @@ import type { PersonCombinedCreditsResponse } from '@server/interfaces/api/perso
 import type { PersonDetails as PersonDetailsType } from '@server/models/Person';
 import { groupBy } from 'lodash';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import TruncateMarkup from 'react-truncate-markup';
 import useSWR from 'swr';
@@ -73,10 +73,6 @@ const PersonDetails = () => {
       return 1;
     });
   }, [combinedCredits]);
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
