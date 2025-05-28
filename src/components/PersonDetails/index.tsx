@@ -3,6 +3,7 @@ import CachedImage from '@app/components/Common/CachedImage';
 import ImageFader from '@app/components/Common/ImageFader';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
+import { ExternalLinkBlockItems } from '@app/components/ExternalLinkBlock';
 import TitleCard from '@app/components/TitleCard';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
@@ -10,7 +11,7 @@ import type { PersonCombinedCreditsResponse } from '@server/interfaces/api/perso
 import type { PersonDetails as PersonDetailsType } from '@server/models/Person';
 import { groupBy } from 'lodash';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import TruncateMarkup from 'react-truncate-markup';
 import useSWR from 'swr';
@@ -72,6 +73,10 @@ const PersonDetails = () => {
       return 1;
     });
   }, [combinedCredits]);
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -231,6 +236,7 @@ const PersonDetails = () => {
             />
           </div>
         )}
+
         <div className="text-center text-gray-300 lg:text-left">
           <h1 className="text-3xl text-white lg:text-4xl">{data.name}</h1>
           <div className="mt-1 mb-2 space-y-1 text-xs text-white sm:text-sm lg:text-base">
@@ -247,6 +253,9 @@ const PersonDetails = () => {
                 })}
               </div>
             )}
+            <div className="flex items-center justify-center space-x-5 lg:w-full lg:items-start lg:justify-start">
+              <ExternalLinkBlockItems mediaType="actor" imdbId={data.imdbId} />
+            </div>
           </div>
           {data.biography && (
             <div className="relative text-left">
