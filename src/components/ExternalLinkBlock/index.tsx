@@ -4,19 +4,28 @@ import RTLogo from '@app/assets/services/rt.svg';
 import TmdbLogo from '@app/assets/services/tmdb.svg';
 import TraktLogo from '@app/assets/services/trakt.svg';
 import TvdbLogo from '@app/assets/services/tvdb.svg';
-import useLocale from '@app/hooks/useLocale';
 import { MediaType } from '@server/constants/media';
+import { useLocale } from 'react-aria';
 
 interface ExternalLinkBlockProps {
-  mediaType: 'movie' | 'tv';
+  mediaType: 'movie' | 'tv' | 'actor';
   tmdbId?: number;
   tvdbId?: number;
   imdbId?: string;
   rtUrl?: string;
   plexUrl?: string;
+  left?: boolean;
 }
 
-const ExternalLinkBlock = ({
+const ExternalLinkBlock = (props: ExternalLinkBlockProps) => {
+  return (
+    <div className="flex w-full items-center justify-center space-x-5">
+      <ExternalLinkBlockItems {...props} />
+    </div>
+  );
+};
+
+export const ExternalLinkBlockItems = ({
   mediaType,
   tmdbId,
   tvdbId,
@@ -27,7 +36,7 @@ const ExternalLinkBlock = ({
   const { locale } = useLocale();
 
   return (
-    <div className="flex w-full items-center justify-center space-x-5">
+    <>
       {plexUrl && (
         <a
           href={plexUrl}
@@ -58,7 +67,17 @@ const ExternalLinkBlock = ({
           <TvdbLogo />
         </a>
       )}
-      {imdbId && (
+      {imdbId && mediaType === 'actor' && (
+        <a
+          href={`https://www.imdb.com/name/${imdbId}`}
+          className="w-8 opacity-50 transition duration-300 hover:opacity-100"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <ImdbLogo />
+        </a>
+      )}
+      {imdbId && mediaType !== 'actor' && (
         <a
           href={`https://www.imdb.com/title/${imdbId}`}
           className="w-8 opacity-50 transition duration-300 hover:opacity-100"
@@ -90,7 +109,7 @@ const ExternalLinkBlock = ({
           <TraktLogo />
         </a>
       )}
-    </div>
+    </>
   );
 };
 
