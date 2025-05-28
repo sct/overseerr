@@ -8,7 +8,7 @@ import { MediaType } from '@server/constants/media';
 import { useLocale } from 'react-aria';
 
 interface ExternalLinkBlockProps {
-  mediaType: 'movie' | 'tv' | 'actor';
+  mediaType: 'movie' | 'tv' | 'person';
   tmdbId?: number;
   tvdbId?: number;
   imdbId?: string;
@@ -67,7 +67,7 @@ export const ExternalLinkBlockItems = ({
           <TvdbLogo />
         </a>
       )}
-      {imdbId && mediaType === 'actor' && (
+      {imdbId && mediaType === 'person' && (
         <a
           href={`https://www.imdb.com/name/${imdbId}`}
           className="w-8 opacity-50 transition duration-300 hover:opacity-100"
@@ -77,7 +77,7 @@ export const ExternalLinkBlockItems = ({
           <ImdbLogo />
         </a>
       )}
-      {imdbId && mediaType !== 'actor' && (
+      {imdbId && mediaType !== 'person' && (
         <a
           href={`https://www.imdb.com/title/${imdbId}`}
           className="w-8 opacity-50 transition duration-300 hover:opacity-100"
@@ -97,7 +97,7 @@ export const ExternalLinkBlockItems = ({
           <RTLogo />
         </a>
       )}
-      {tmdbId && (
+      {tmdbId && mediaType !== 'person' && (
         <a
           href={`https://trakt.tv/search/tmdb/${tmdbId}?id_type=${
             mediaType === 'movie' ? 'movie' : 'show'

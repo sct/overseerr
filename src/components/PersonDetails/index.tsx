@@ -249,8 +249,12 @@ const PersonDetails = () => {
                 })}
               </div>
             )}
-            <div className="flex items-center justify-center space-x-5 lg:w-full lg:items-start lg:justify-start">
-              <ExternalLinkBlockItems mediaType="actor" imdbId={data.imdbId} />
+            <div className="media-fact flex items-center justify-center space-x-5 lg:w-full lg:justify-start">
+              <ExternalLinkBlockItems
+                mediaType="person"
+                imdbId={data.imdbId}
+                tmdbId={Number(router.query.personId as string)}
+              />
             </div>
           </div>
           {data.biography && (
