@@ -4,8 +4,8 @@ import RTLogo from '@app/assets/services/rt.svg';
 import TmdbLogo from '@app/assets/services/tmdb.svg';
 import TraktLogo from '@app/assets/services/trakt.svg';
 import TvdbLogo from '@app/assets/services/tvdb.svg';
+import useLocale from '@app/hooks/useLocale';
 import { MediaType } from '@server/constants/media';
-import { useLocale } from 'react-aria';
 
 interface ExternalLinkBlockProps {
   mediaType: 'movie' | 'tv' | 'person';
