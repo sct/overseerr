@@ -19,6 +19,7 @@ interface TelegramMessagePayload {
   parse_mode: string;
   chat_id: string;
   disable_notification: boolean;
+  message_thread_id?: number;
 }
 
 interface TelegramPhotoPayload {
@@ -27,6 +28,7 @@ interface TelegramPhotoPayload {
   parse_mode: string;
   chat_id: string;
   disable_notification: boolean;
+  message_thread_id?: number;
 }
 
 class TelegramAgent
@@ -179,6 +181,11 @@ class TelegramAgent
           ...notificationPayload,
           chat_id: settings.options.chatId,
           disable_notification: !!settings.options.sendSilently,
+          ...(settings.options.messageThreadId
+            ? {
+                message_thread_id: Number(settings.options.messageThreadId),
+              }
+            : {}),
         } as TelegramMessagePayload | TelegramPhotoPayload);
       } catch (e) {
         logger.error('Error sending Telegram notification', {
@@ -215,6 +222,13 @@ class TelegramAgent
             chat_id: payload.notifyUser.settings.telegramChatId,
             disable_notification:
               !!payload.notifyUser.settings.telegramSendSilently,
+            ...(payload.notifyUser.settings.telegramMessageThreadId
+              ? {
+                  message_thread_id: Number(
+                    payload.notifyUser.settings.telegramMessageThreadId
+                  ),
+                }
+              : {}),
           } as TelegramMessagePayload | TelegramPhotoPayload);
         } catch (e) {
           logger.error('Error sending Telegram notification', {
@@ -261,6 +275,13 @@ class TelegramAgent
                   ...notificationPayload,
                   chat_id: user.settings.telegramChatId,
                   disable_notification: !!user.settings?.telegramSendSilently,
+                  ...(user.settings?.telegramMessageThreadId
+                    ? {
+                        message_thread_id: Number(
+                          user.settings.telegramMessageThreadId
+                        ),
+                      }
+                    : {}),
                 } as TelegramMessagePayload | TelegramPhotoPayload);
               } catch (e) {
                 logger.error('Error sending Telegram notification', {

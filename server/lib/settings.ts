@@ -178,6 +178,12 @@ export interface NotificationAgentTelegram extends NotificationAgentConfig {
     botAPI: string;
     chatId: string;
     sendSilently: boolean;
+    /**
+     * Optional Telegram message thread ID (for discussion topics in supergroups)
+     * If provided, Overseerr will send all system notifications to
+     * the specified thread within the configured chat.
+     */
+    messageThreadId?: string;
   };
 }
 
@@ -359,6 +365,7 @@ class Settings {
               botAPI: '',
               chatId: '',
               sendSilently: false,
+              messageThreadId: '',
             },
           },
           pushbullet: {

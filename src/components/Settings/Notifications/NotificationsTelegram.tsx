@@ -32,6 +32,8 @@ const messages = defineMessages({
   toastTelegramTestFailed: 'Telegram test notification failed to send.',
   sendSilently: 'Send Silently',
   sendSilentlyTip: 'Send notifications with no sound',
+  messageThreadId: 'Message Thread ID',
+  messageThreadIdTip: 'Optional message thread ID',
 });
 
 const NotificationsTelegram = () => {
@@ -64,6 +66,9 @@ const NotificationsTelegram = () => {
         /^-?\d+$/,
         intl.formatMessage(messages.validationChatIdRequired)
       ),
+    messageThreadId: Yup.string()
+      .nullable()
+      .matches(/^\d*$/, intl.formatMessage(messages.validationChatIdRequired)),
   });
 
   if (!data && !error) {
@@ -79,6 +84,7 @@ const NotificationsTelegram = () => {
         botAPI: data?.options.botAPI,
         chatId: data?.options.chatId,
         sendSilently: data?.options.sendSilently,
+        messageThreadId: data?.options.messageThreadId,
       }}
       validationSchema={NotificationsTelegramSchema}
       onSubmit={async (values) => {
@@ -91,6 +97,7 @@ const NotificationsTelegram = () => {
               chatId: values.chatId,
               sendSilently: values.sendSilently,
               botUsername: values.botUsername,
+              messageThreadId: values.messageThreadId,
             },
           });
 
@@ -139,6 +146,7 @@ const NotificationsTelegram = () => {
                 chatId: values.chatId,
                 sendSilently: values.sendSilently,
                 botUsername: values.botUsername,
+                messageThreadId: values.messageThreadId,
               },
             });
 
@@ -282,6 +290,32 @@ const NotificationsTelegram = () => {
                   touched.chatId &&
                   typeof errors.chatId === 'string' && (
                     <div className="error">{errors.chatId}</div>
+                  )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="messageThreadId" className="text-label">
+                {intl.formatMessage(messages.messageThreadId)}
+                <span className="label-tip">
+                  {intl.formatMessage(messages.messageThreadIdTip)}
+                </span>
+              </label>
+              <div className="form-input-area">
+                <div className="form-input-field">
+                  <Field
+                    id="messageThreadId"
+                    name="messageThreadId"
+                    type="text"
+                    autoComplete="off"
+                    data-1pignore="true"
+                    data-lpignore="true"
+                    data-bwignore="true"
+                  />
+                </div>
+                {errors.messageThreadId &&
+                  touched.messageThreadId &&
+                  typeof errors.messageThreadId === 'string' && (
+                    <div className="error">{errors.messageThreadId}</div>
                   )}
               </div>
             </div>

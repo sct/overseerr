@@ -61,6 +61,9 @@ export class UserSettings {
   public telegramSendSilently?: boolean;
 
   @Column({ nullable: true })
+  public telegramMessageThreadId?: string;
+
+  @Column({ nullable: true })
   public watchlistSyncMovies?: boolean;
 
   @Column({ nullable: true })

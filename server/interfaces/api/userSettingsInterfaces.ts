@@ -33,6 +33,7 @@ export interface UserSettingsNotificationsResponse {
   telegramBotUsername?: string;
   telegramChatId?: string;
   telegramSendSilently?: boolean;
+  telegramMessageThreadId?: string;
   webPushEnabled?: boolean;
   notificationTypes: Partial<NotificationAgentTypes>;
 }

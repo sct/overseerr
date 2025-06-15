@@ -22,6 +22,8 @@ const messages = defineMessages({
   sendSilently: 'Send Silently',
   sendSilentlyDescription: 'Send notifications with no sound',
   validationTelegramChatId: 'You must provide a valid chat ID',
+  messageThreadId: 'Message Thread ID',
+  messageThreadIdTip: 'Optional message thread ID for topics',
 });
 
 const UserTelegramSettings = () => {
@@ -50,6 +52,9 @@ const UserTelegramSettings = () => {
         /^-?\d+$/,
         intl.formatMessage(messages.validationTelegramChatId)
       ),
+    telegramMessageThreadId: Yup.string()
+      .nullable()
+      .matches(/^\d*$/, intl.formatMessage(messages.validationTelegramChatId)),
   });
 
   if (!data && !error) {
@@ -61,6 +66,7 @@ const UserTelegramSettings = () => {
       initialValues={{
         telegramChatId: data?.telegramChatId,
         telegramSendSilently: data?.telegramSendSilently,
+        telegramMessageThreadId: data?.telegramMessageThreadId,
         types: data?.notificationTypes.telegram ?? 0,
       }}
       validationSchema={UserNotificationsTelegramSchema}
@@ -75,6 +81,7 @@ const UserTelegramSettings = () => {
             pushoverUserKey: data?.pushoverUserKey,
             telegramChatId: values.telegramChatId,
             telegramSendSilently: values.telegramSendSilently,
+            telegramMessageThreadId: values.telegramMessageThreadId,
             notificationTypes: {
               telegram: values.types,
             },
@@ -146,6 +153,30 @@ const UserTelegramSettings = () => {
                   touched.telegramChatId &&
                   typeof errors.telegramChatId === 'string' && (
                     <div className="error">{errors.telegramChatId}</div>
+                  )}
+              </div>
+            </div>
+            <div className="form-row">
+              <label htmlFor="telegramMessageThreadId" className="text-label">
+                {intl.formatMessage(messages.messageThreadId)}
+                <span className="label-tip">
+                  {intl.formatMessage(messages.messageThreadIdTip)}
+                </span>
+              </label>
+              <div className="form-input-area">
+                <div className="form-input-field">
+                  <Field
+                    id="telegramMessageThreadId"
+                    name="telegramMessageThreadId"
+                    type="text"
+                  />
+                </div>
+                {errors.telegramMessageThreadId &&
+                  touched.telegramMessageThreadId &&
+                  typeof errors.telegramMessageThreadId === 'string' && (
+                    <div className="error">
+                      {errors.telegramMessageThreadId}
+                    </div>
                   )}
               </div>
             </div>

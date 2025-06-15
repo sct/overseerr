@@ -28,6 +28,10 @@ At the end of the bot creation process, [@BotFather](https://telegram.me/botfath
 
 To obtain your chat ID, simply create a new group chat, add [@get_id_bot](https://telegram.me/get_id_bot), and issue the `/my_id` command.
 
+### Message Thread ID
+
+To obtain your message thread ID, you must have threads enabled on your group. Click on the thread you want and copy the last number after the last '/' in the url.
+
 ### Send Silently (optional)
 
 Optionally, notifications can be sent silently. Silent notifications send messages without notification sounds.

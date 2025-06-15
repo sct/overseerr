@@ -36,13 +36,14 @@ Customize the JSON payload to suit your needs. Overseerr provides several [templ
 
 These variables are for the target recipient of the notification.
 
-| Variable                                 | Value                                                         |
-| ---------------------------------------- | ------------------------------------------------------------- |
-| `{{notifyuser_username}}`                | The target notification recipient's username                  |
-| `{{notifyuser_email}}`                   | The target notification recipient's email address             |
-| `{{notifyuser_avatar}}`                  | The target notification recipient's avatar URL                |
-| `{{notifyuser_settings_discordId}}`      | The target notification recipient's Discord ID (if set)       |
-| `{{notifyuser_settings_telegramChatId}}` | The target notification recipient's Telegram Chat ID (if set) |
+| Variable                                          | Value                                                                   |
+| ------------------------------------------------- | ----------------------------------------------------------------------- |
+| `{{notifyuser_username}}`                         | The target notification recipient's username                            |
+| `{{notifyuser_email}}`                            | The target notification recipient's email address                       |
+| `{{notifyuser_avatar}}`                           | The target notification recipient's avatar URL                          |
+| `{{notifyuser_settings_discordId}}`               | The target notification recipient's Discord ID (if set)                 |
+| `{{notifyuser_settings_telegramChatId}}`          | The target notification recipient's Telegram Chat ID (if set)           |
+| `{{notifyuser_settings_telegramMessageThreadId}}` | The target notification recipient's Telegram Message Thread ID (if set) |
 
 {% hint style="info" %}
 The `notifyuser` variables are not defined for the following request notification types, as they are intended for application administrators rather than end users:
