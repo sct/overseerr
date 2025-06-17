@@ -109,7 +109,7 @@ const UserWebPushSettings = () => {
 
   // Unsubscribes from the push manager
   // Deletes/disables corresponding push subscription from database
-  const disablePushNotifications = async (p256dh?: string) => {
+  const disablePushNotifications = async (endpoint?: string) => {
     if ('serviceWorker' in navigator && user?.id) {
       navigator.serviceWorker.getRegistration('/sw.js').then((registration) => {
         registration?.pushManager
@@ -118,17 +118,21 @@ const UserWebPushSettings = () => {
             const parsedSub = JSON.parse(JSON.stringify(subscription));
 
             await axios.delete(
-              `/api/v1/user/${user?.id}/pushSubscription/${
-                p256dh ? p256dh : parsedSub.keys.p256dh
-              }`
+              `/api/v1/user/${user.id}/pushSubscription/${encodeURIComponent(
+                endpoint ?? parsedSub.endpoint
+              )}`
             );
-            if (subscription && (p256dh === parsedSub.keys.p256dh || !p256dh)) {
+
+            if (
+              subscription &&
+              (endpoint === parsedSub.endpoint || !endpoint)
+            ) {
               subscription.unsubscribe();
               setWebPushEnabled(false);
             }
             addToast(
               intl.formatMessage(
-                p256dh
+                endpoint
                   ? messages.subscriptiondeleted
                   : messages.webpushhasbeendisabled
               ),
@@ -141,7 +145,7 @@ const UserWebPushSettings = () => {
           .catch(function () {
             addToast(
               intl.formatMessage(
-                p256dh
+                endpoint
                   ? messages.subscriptiondeleteerror
                   : messages.disablingwebpusherror
               ),
@@ -172,12 +176,17 @@ const UserWebPushSettings = () => {
                 const parsedKey = JSON.parse(JSON.stringify(subscription));
                 const currentUserPushSub =
                   await axios.get<UserPushSubscription>(
-                    `/api/v1/user/${user.id}/pushSubscription/${parsedKey.keys.p256dh}`
+                    `/api/v1/user/${
+                      user.id
+                    }/pushSubscription/${encodeURIComponent(
+                      parsedKey.endpoint
+                    )}`
                   );
 
-                if (currentUserPushSub.data.p256dh !== parsedKey.keys.p256dh) {
+                if (currentUserPushSub.data.endpoint !== parsedKey.endpoint) {
                   return;
                 }
+
                 setWebPushEnabled(true);
               } else {
                 setWebPushEnabled(false);
