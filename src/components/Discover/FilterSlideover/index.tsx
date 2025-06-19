@@ -29,6 +29,7 @@ const messages = defineMessages({
   to: 'To',
   studio: 'Studio',
   genres: 'Genres',
+  withoutGenres: 'Exclude genres',
   keywords: 'Keywords',
   originalLanguage: 'Original Language',
   runtimeText: '{minValue}-{maxValue} minute runtime',
@@ -147,6 +148,20 @@ const FilterSlideover = ({
           isMulti
           onChange={(value) => {
             updateQueryParams('genre', value?.map((v) => v.value).join(','));
+          }}
+        />
+        <span className="text-lg font-semibold">
+          {intl.formatMessage(messages.withoutGenres)}
+        </span>
+        <GenreSelector
+          type={type}
+          defaultValue={currentFilters.withoutGenre}
+          isMulti
+          onChange={(value) => {
+            updateQueryParams(
+              'withoutGenre',
+              value?.map((v) => v.value).join(',')
+            );
           }}
         />
         <span className="text-lg font-semibold">

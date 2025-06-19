@@ -69,6 +69,7 @@ interface DiscoverMovieOptions {
   voteCountLte?: string;
   originalLanguage?: string;
   genre?: string;
+  withoutGenre?: string;
   studio?: string;
   keywords?: string;
   sortBy?: SortOptions;
@@ -90,6 +91,7 @@ interface DiscoverTvOptions {
   includeEmptyReleaseDate?: boolean;
   originalLanguage?: string;
   genre?: string;
+  withoutGenre?: string;
   network?: number;
   keywords?: string;
   sortBy?: SortOptions;
@@ -460,6 +462,7 @@ class TheMovieDb extends ExternalAPI {
     primaryReleaseDateLte,
     originalLanguage,
     genre,
+    withoutGenre,
     studio,
     keywords,
     withRuntimeGte,
@@ -506,6 +509,7 @@ class TheMovieDb extends ExternalAPI {
               ? defaultFutureDate
               : primaryReleaseDateLte,
           with_genres: genre,
+          without_genres: withoutGenre,
           with_companies: studio,
           with_keywords: keywords,
           'with_runtime.gte': withRuntimeGte,
@@ -534,6 +538,7 @@ class TheMovieDb extends ExternalAPI {
     includeEmptyReleaseDate = false,
     originalLanguage,
     genre,
+    withoutGenre,
     network,
     keywords,
     withRuntimeGte,
@@ -580,6 +585,7 @@ class TheMovieDb extends ExternalAPI {
               : this.originalLanguage,
           include_null_first_air_dates: includeEmptyReleaseDate,
           with_genres: genre,
+          without_genres: withoutGenre,
           with_networks: network,
           with_keywords: keywords,
           'with_runtime.gte': withRuntimeGte,

@@ -98,6 +98,7 @@ export const QueryFilterOptions = z.object({
   firstAirDateLte: z.string().optional(),
   studio: z.string().optional(),
   genre: z.string().optional(),
+  withoutGenre: z.string().optional(),
   keywords: z.string().optional(),
   language: z.string().optional(),
   withRuntimeGte: z.string().optional(),
@@ -118,7 +119,6 @@ export const prepareFilterValues = (
   const filterValues: FilterOptions = {};
 
   const values = QueryFilterOptions.parse(inputValues);
-
   if (values.sortBy) {
     filterValues.sortBy = values.sortBy;
   }
@@ -145,6 +145,10 @@ export const prepareFilterValues = (
 
   if (values.genre) {
     filterValues.genre = values.genre;
+  }
+
+  if (values.withoutGenre) {
+    filterValues.withoutGenre = values.withoutGenre;
   }
 
   if (values.keywords) {
