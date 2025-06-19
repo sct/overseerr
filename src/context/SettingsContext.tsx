@@ -17,6 +17,8 @@ const defaultSettings = {
   series4kEnabled: false,
   region: '',
   originalLanguage: '',
+  filterMovieGenresDefault: '',
+  filterTvGenresDefault: '',
   partialRequestsEnabled: true,
   cacheImages: false,
   vapidPublic: '',

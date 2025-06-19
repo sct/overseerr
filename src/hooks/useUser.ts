@@ -30,6 +30,8 @@ export interface UserSettings {
   region?: string;
   originalLanguage?: string;
   locale?: string;
+  filterMovieGenresDefault?: string;
+  filterTvGenresDefault?: string;
   notificationTypes: Partial<NotificationAgentTypes>;
   watchlistSyncMovies?: boolean;
   watchlistSyncTv?: boolean;

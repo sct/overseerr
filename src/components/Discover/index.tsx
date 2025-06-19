@@ -233,8 +233,8 @@ const Discover = () => {
               <MediaSlider
                 sliderKey="popular-movies"
                 title={intl.formatMessage(sliderTitles.popularmovies)}
-                url="/api/v1/discover/movies?without_genres=42"
-                linkUrl="/discover/movies?without_genres=42"
+                url="/api/v1/discover/movies"
+                linkUrl="/discover/movies"
               />
             );
             break;

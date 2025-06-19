@@ -15,6 +15,7 @@ import {
   useBatchUpdateQueryParams,
   useUpdateQueryParams,
 } from '@app/hooks/useUpdateQueryParams';
+import { useUser } from '@app/hooks/useUser';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { defineMessages, useIntl } from 'react-intl';
 import Datepicker from 'react-tailwindcss-datepicker-sct';
@@ -29,7 +30,7 @@ const messages = defineMessages({
   to: 'To',
   studio: 'Studio',
   genres: 'Genres',
-  withoutGenres: 'Exclude genres',
+  filterGenres: 'Exclude genres',
   keywords: 'Keywords',
   originalLanguage: 'Original Language',
   runtimeText: '{minValue}-{maxValue} minute runtime',
@@ -57,6 +58,7 @@ const FilterSlideover = ({
 }: FilterSlideoverProps) => {
   const intl = useIntl();
   const { currentSettings } = useSettings();
+  const { user } = useUser();
   const updateQueryParams = useUpdateQueryParams({});
   const batchUpdateQueryParams = useBatchUpdateQueryParams({});
 
@@ -65,12 +67,24 @@ const FilterSlideover = ({
   const dateLte =
     type === 'movie' ? 'primaryReleaseDateLte' : 'firstAirDateLte';
 
+  const userDefaultfilterGenres =
+    type === 'movie'
+      ? user?.settings?.filterMovieGenresDefault
+      : user?.settings?.filterTvGenresDefault;
+
+  const filterGenresValue =
+    currentFilters.filterGenre !== undefined
+      ? currentFilters.filterGenre === 'none'
+        ? ''
+        : currentFilters.filterGenre
+      : userDefaultfilterGenres;
+
   return (
     <SlideOver
       show={show}
       title={intl.formatMessage(messages.filters)}
       subText={intl.formatMessage(messages.activefilters, {
-        count: countActiveFilters(currentFilters),
+        count: countActiveFilters(currentFilters, !!userDefaultfilterGenres),
       })}
       onClose={() => onClose()}
     >
@@ -147,21 +161,71 @@ const FilterSlideover = ({
           defaultValue={currentFilters.genre}
           isMulti
           onChange={(value) => {
-            updateQueryParams('genre', value?.map((v) => v.value).join(','));
+            const selectedGenres = value?.map((v) => v.value.toString()) || [];
+
+            // Remove conflicting genres from exclusions
+            if (selectedGenres.length > 0 && filterGenresValue) {
+              const hasConflicts = selectedGenres.some((genre) =>
+                filterGenresValue.includes(genre)
+              );
+              if (hasConflicts) {
+                const cleanedExclusions = filterGenresValue
+                  .split(',')
+                  .filter((id) => !selectedGenres.includes(id))
+                  .join(',');
+
+                batchUpdateQueryParams({
+                  genre: selectedGenres.join(',') || undefined,
+                  filterGenre: cleanedExclusions || 'none',
+                });
+              } else {
+                updateQueryParams(
+                  'genre',
+                  selectedGenres.join(',') || undefined
+                );
+              }
+            } else {
+              updateQueryParams('genre', selectedGenres.join(',') || undefined);
+            }
           }}
         />
         <span className="text-lg font-semibold">
-          {intl.formatMessage(messages.withoutGenres)}
+          {intl.formatMessage(messages.filterGenres)}
         </span>
         <GenreSelector
           type={type}
-          defaultValue={currentFilters.withoutGenre}
+          defaultValue={filterGenresValue}
           isMulti
           onChange={(value) => {
-            updateQueryParams(
-              'withoutGenre',
-              value?.map((v) => v.value).join(',')
-            );
+            const filterGenres = value?.map((v) => v.value.toString()) || [];
+
+            // Remove conflicting genres from inclusions
+            if (filterGenres.length > 0 && currentFilters.genre) {
+              const hasConflicts = filterGenres.some((genre) =>
+                currentFilters.genre!.includes(genre)
+              );
+              if (hasConflicts) {
+                const cleanedInclusions = currentFilters.genre
+                  .split(',')
+                  .filter((id) => !filterGenres.includes(id))
+                  .join(',');
+
+                batchUpdateQueryParams({
+                  filterGenre: filterGenres.join(',') || 'none',
+                  genre: cleanedInclusions || undefined,
+                });
+              } else {
+                updateQueryParams(
+                  'filterGenre',
+                  filterGenres.join(',') || 'none'
+                );
+              }
+            } else {
+              updateQueryParams(
+                'filterGenre',
+                filterGenres.join(',') || 'none'
+              );
+            }
           }}
         />
         <span className="text-lg font-semibold">
@@ -335,7 +399,7 @@ const FilterSlideover = ({
               (
                 Object.keys(copyCurrent) as (keyof typeof currentFilters)[]
               ).forEach((k) => {
-                copyCurrent[k] = undefined;
+                copyCurrent[k] = k === 'filterGenre' ? 'none' : undefined;
               });
               batchUpdateQueryParams(copyCurrent);
               onClose();

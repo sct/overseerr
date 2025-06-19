@@ -4264,7 +4264,7 @@ paths:
             type: string
             example: 18
         - in: query
-          name: withoutGenre
+          name: filterGenre
           schema:
             type: string
             example: 28
@@ -4558,7 +4558,7 @@ paths:
             type: string
             example: 18
         - in: query
-          name: withoutGenre
+          name: filterGenre
           schema:
             type: string
             example: 28
