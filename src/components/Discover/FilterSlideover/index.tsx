@@ -16,6 +16,7 @@ import {
   useUpdateQueryParams,
 } from '@app/hooks/useUpdateQueryParams';
 import { useUser } from '@app/hooks/useUser';
+import { resolveGenreConflicts } from '@app/utils/genreHelpers';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { defineMessages, useIntl } from 'react-intl';
 import Datepicker from 'react-tailwindcss-datepicker-sct';
@@ -162,30 +163,18 @@ const FilterSlideover = ({
           isMulti
           onChange={(value) => {
             const selectedGenres = value?.map((v) => v.value.toString()) || [];
+            const result = resolveGenreConflicts(
+              selectedGenres,
+              filterGenresValue
+            );
 
-            // Remove conflicting genres from exclusions
-            if (selectedGenres.length > 0 && filterGenresValue) {
-              const hasConflicts = selectedGenres.some((genre) =>
-                filterGenresValue.includes(genre)
-              );
-              if (hasConflicts) {
-                const cleanedExclusions = filterGenresValue
-                  .split(',')
-                  .filter((id) => !selectedGenres.includes(id))
-                  .join(',');
-
-                batchUpdateQueryParams({
-                  genre: selectedGenres.join(',') || undefined,
-                  filterGenre: cleanedExclusions || 'none',
-                });
-              } else {
-                updateQueryParams(
-                  'genre',
-                  selectedGenres.join(',') || undefined
-                );
-              }
+            if (result.hasConflicts) {
+              batchUpdateQueryParams({
+                genre: result.changingList,
+                filterGenre: result.otherList || 'none',
+              });
             } else {
-              updateQueryParams('genre', selectedGenres.join(',') || undefined);
+              updateQueryParams('genre', result.changingList);
             }
           }}
         />
@@ -198,33 +187,18 @@ const FilterSlideover = ({
           isMulti
           onChange={(value) => {
             const filterGenres = value?.map((v) => v.value.toString()) || [];
+            const result = resolveGenreConflicts(
+              filterGenres,
+              currentFilters.genre
+            );
 
-            // Remove conflicting genres from inclusions
-            if (filterGenres.length > 0 && currentFilters.genre) {
-              const hasConflicts = filterGenres.some((genre) =>
-                currentFilters.genre!.includes(genre)
-              );
-              if (hasConflicts) {
-                const cleanedInclusions = currentFilters.genre
-                  .split(',')
-                  .filter((id) => !filterGenres.includes(id))
-                  .join(',');
-
-                batchUpdateQueryParams({
-                  filterGenre: filterGenres.join(',') || 'none',
-                  genre: cleanedInclusions || undefined,
-                });
-              } else {
-                updateQueryParams(
-                  'filterGenre',
-                  filterGenres.join(',') || 'none'
-                );
-              }
+            if (result.hasConflicts) {
+              batchUpdateQueryParams({
+                genre: result.otherList,
+                filterGenre: result.changingList || 'none',
+              });
             } else {
-              updateQueryParams(
-                'filterGenre',
-                filterGenres.join(',') || 'none'
-              );
+              updateQueryParams('filterGenre', result.changingList || 'none');
             }
           }}
         />
@@ -399,7 +373,7 @@ const FilterSlideover = ({
               (
                 Object.keys(copyCurrent) as (keyof typeof currentFilters)[]
               ).forEach((k) => {
-                copyCurrent[k] = k === 'filterGenre' ? 'none' : undefined;
+                copyCurrent[k] = undefined;
               });
               batchUpdateQueryParams(copyCurrent);
               onClose();

@@ -119,6 +119,7 @@ export const prepareFilterValues = (
   const filterValues: FilterOptions = {};
 
   const values = QueryFilterOptions.parse(inputValues);
+
   if (values.sortBy) {
     filterValues.sortBy = values.sortBy;
   }

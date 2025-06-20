@@ -235,6 +235,8 @@ CoreApp.getInitialProps = async (initialProps) => {
     localLogin: true,
     region: '',
     originalLanguage: '',
+    filterMovieGenresDefault: '',
+    filterTvGenresDefault: '',
     partialRequestsEnabled: true,
     cacheImages: false,
     vapidPublic: '',
