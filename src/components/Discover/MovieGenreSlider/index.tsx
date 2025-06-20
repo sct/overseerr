@@ -24,7 +24,6 @@ const MovieGenreSlider = () => {
 
   return (
     <>
-      MovieGenreSlider
       <div className="slider-header">
         <Link href="/discover/movies/genres">
           <a className="slider-title">
