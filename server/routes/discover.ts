@@ -82,7 +82,7 @@ discoverRoutes.get('/movies', async (req, res, next) => {
     const query = QueryFilterOptions.parse(req.query);
     const keywords = query.keywords;
 
-    // Handle user default excluded genres
+    // Handle user default excluded genres, resolve genres
     let filterGenre = query.filterGenre;
     if (filterGenre === 'none') {
       filterGenre = undefined;
@@ -92,8 +92,6 @@ discoverRoutes.get('/movies', async (req, res, next) => {
     ) {
       filterGenre = req.user.settings.filterMovieGenresDefault;
     }
-
-    // Resolve conflicts: when explicit genres are present, remove them from exclusions
     if (query.genre && filterGenre) {
       const explicitGenres = query.genre.split(',');
       const excludedGenres = filterGenre.split(',');
@@ -385,7 +383,7 @@ discoverRoutes.get('/tv', async (req, res, next) => {
     const query = QueryFilterOptions.parse(req.query);
     const keywords = query.keywords;
 
-    // Handle user default excluded genres
+    // Handle user default excluded genres, resolve genres
     let filterGenre = query.filterGenre;
     if (filterGenre === 'none') {
       filterGenre = undefined;
@@ -395,15 +393,12 @@ discoverRoutes.get('/tv', async (req, res, next) => {
     ) {
       filterGenre = req.user.settings.filterTvGenresDefault;
     }
-
-    // Always resolve conflicts between explicit genres and exclusions
     if (query.genre && filterGenre) {
       const explicitGenres = query.genre.split(',');
       const excludedGenres = filterGenre.split(',');
       const resolvedExclusions = excludedGenres.filter(
         (id) => !explicitGenres.includes(id)
       );
-
       filterGenre =
         resolvedExclusions.length > 0
           ? resolvedExclusions.join(',')

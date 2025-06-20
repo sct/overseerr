@@ -51,6 +51,7 @@ const DiscoverMovies = () => {
   const { user } = useUser();
 
   const preparedFilters = prepareFilterValues(router.query);
+
   const {
     isLoadingInitialData,
     isEmpty,
