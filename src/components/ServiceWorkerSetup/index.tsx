@@ -18,15 +18,19 @@ const ServiceWorkerSetup = () => {
             registration.scope
           );
 
-          // Do not prompt for permissions as we will handle this in the settings
+          // Do not prompt for permissions as we will handle this in the settings.
           if (Notification.permission !== 'granted') {
             console.warn(
               '[SW] Push permissions not granted — skipping resubscribe'
             );
-            return false;
+            return;
           }
 
           const subscription = await registration.pushManager.getSubscription();
+          // Bypass resubscribing if we have manually disabled the subscription
+          if (!subscription) {
+            return;
+          }
 
           if (subscription) {
             console.log(

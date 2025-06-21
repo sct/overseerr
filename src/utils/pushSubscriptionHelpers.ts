@@ -70,8 +70,12 @@ export const verifyAndResubscribePushSubscription = async (
 
   if (currentSettings.enablePushRegistration) {
     try {
+      // Unsubscribe from the backend to clear the existing push subscription (keys and endpoint)
       await unsubscribeToPushNotifications(userId);
+
+      // Subscribe again to generate a fresh push subscription with updated keys and endpoint
       await subscribeToPushNotifications(userId, currentSettings);
+
       return true;
     } catch (err) {
       console.error('[SW] Resubscribe failed:', err);
@@ -101,12 +105,12 @@ export const subscribeToPushNotifications = async (
       return false;
     }
 
-    const sub = await registration.pushManager.subscribe({
+    const subscription = await registration.pushManager.subscribe({
       userVisibleOnly: true,
       applicationServerKey: currentSettings.vapidPublic,
     });
 
-    const { endpoint, keys } = JSON.parse(JSON.stringify(sub));
+    const { endpoint, keys } = JSON.parse(JSON.stringify(subscription));
 
     if (keys?.p256dh && keys?.auth) {
       await axios.post('/api/v1/user/registerPushSubscription', {
