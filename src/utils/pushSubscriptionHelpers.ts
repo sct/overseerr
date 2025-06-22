@@ -71,10 +71,12 @@ export const verifyAndResubscribePushSubscription = async (
   if (currentSettings.enablePushRegistration) {
     try {
       // Unsubscribe from the backend to clear the existing push subscription (keys and endpoint)
-      await unsubscribeToPushNotifications(userId);
+      const hasUnsubscribed = await unsubscribeToPushNotifications(userId);
 
       // Subscribe again to generate a fresh push subscription with updated keys and endpoint
-      await subscribeToPushNotifications(userId, currentSettings);
+      if (hasUnsubscribed) {
+        await subscribeToPushNotifications(userId, currentSettings);
+      }
 
       return true;
     } catch (err) {
@@ -142,19 +144,13 @@ export const unsubscribeToPushNotifications = async (
       '/sw.js'
     );
     const subscription = await registration?.pushManager.getSubscription();
+
     if (!subscription) {
       return false;
     }
 
     const { endpoint: currentEndpoint } = JSON.parse(
       JSON.stringify(subscription)
-    );
-    const resolvedEndpoint = endpoint ?? currentEndpoint;
-
-    await axios.delete(
-      `/api/v1/user/${userId}/pushSubscription/${encodeURIComponent(
-        resolvedEndpoint
-      )}`
     );
 
     if (!endpoint || endpoint === currentEndpoint) {
