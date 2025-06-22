@@ -8,6 +8,7 @@ import { useEffect } from 'react';
 const ServiceWorkerSetup = () => {
   const { user } = useUser();
   const { currentSettings } = useSettings();
+
   useEffect(() => {
     if ('serviceWorker' in navigator && user?.id) {
       navigator.serviceWorker
@@ -56,7 +57,7 @@ const ServiceWorkerSetup = () => {
           console.log('[SW] Service worker registration failed, error:', error);
         });
     }
-  }, [user]);
+  }, [currentSettings, user]);
   return null;
 };
 

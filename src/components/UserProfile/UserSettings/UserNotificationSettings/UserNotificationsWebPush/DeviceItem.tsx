@@ -9,7 +9,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { UAParser } from 'ua-parser-js';
 
 interface DeviceItemProps {
-  disablePushNotifications: (p256dh: string) => void;
+  deletePushSubscriptionFromBackend: (endpoint: string) => void;
   device: {
     endpoint: string;
     p256dh: string;
@@ -27,7 +27,10 @@ const messages = defineMessages({
   unknown: 'Unknown',
 });
 
-const DeviceItem = ({ disablePushNotifications, device }: DeviceItemProps) => {
+const DeviceItem = ({
+  deletePushSubscriptionFromBackend,
+  device,
+}: DeviceItemProps) => {
   const intl = useIntl();
   const parsedUserAgent = UAParser(device.userAgent);
 
@@ -88,7 +91,7 @@ const DeviceItem = ({ disablePushNotifications, device }: DeviceItemProps) => {
       </div>
       <div className="z-10 mt-4 flex w-full flex-col justify-center space-y-2 pl-4 pr-4 xl:mt-0 xl:w-96 xl:items-end xl:pl-0">
         <ConfirmButton
-          onClick={() => disablePushNotifications(device.endpoint)}
+          onClick={() => deletePushSubscriptionFromBackend(device.endpoint)}
           confirmText={intl.formatMessage(globalMessages.areyousure)}
           className="w-full"
         >

@@ -102,39 +102,40 @@ const UserWebPushSettings = () => {
   // Deletes/disables corresponding push subscription from database
   const disablePushNotifications = async (endpoint?: string) => {
     try {
-      const isUnsubscribed = await unsubscribeToPushNotifications(
-        user?.id,
-        endpoint
+      await unsubscribeToPushNotifications(user?.id, endpoint);
+
+      setWebPushEnabled(false);
+      addToast(intl.formatMessage(messages.webpushhasbeendisabled), {
+        autoDismiss: true,
+        appearance: 'success',
+      });
+    } catch (error) {
+      addToast(intl.formatMessage(messages.disablingwebpusherror), {
+        autoDismiss: true,
+        appearance: 'error',
+      });
+    } finally {
+      revalidateDevices();
+    }
+  };
+
+  const deletePushSubscriptionFromBackend = async (endpoint: string) => {
+    try {
+      await axios.delete(
+        `/api/v1/user/${user?.id}/pushSubscription/${encodeURIComponent(
+          endpoint
+        )}`
       );
 
-      if (isUnsubscribed) {
-        setWebPushEnabled(false);
-        addToast(
-          intl.formatMessage(
-            endpoint
-              ? messages.subscriptiondeleted
-              : messages.webpushhasbeendisabled
-          ),
-          {
-            autoDismiss: true,
-            appearance: 'success',
-          }
-        );
-      } else {
-        throw new Error('Unsubscribe failed');
-      }
+      addToast(intl.formatMessage(messages.subscriptiondeleted), {
+        autoDismiss: true,
+        appearance: 'success',
+      });
     } catch (error) {
-      addToast(
-        intl.formatMessage(
-          endpoint
-            ? messages.subscriptiondeleteerror
-            : messages.disablingwebpusherror
-        ),
-        {
-          autoDismiss: true,
-          appearance: 'error',
-        }
-      );
+      addToast(intl.formatMessage(messages.subscriptiondeleteerror), {
+        autoDismiss: true,
+        appearance: 'error',
+      });
     } finally {
       revalidateDevices();
     }
@@ -274,11 +275,12 @@ const UserWebPushSettings = () => {
                 const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
                 return dateB - dateA;
               })
-              .map((device, index) => (
-                <div className="py-2" key={`device-list-${index}`}>
+              .map((device) => (
+                <div className="py-2" key={`device-list-${device.endpoint}`}>
                   <DeviceItem
-                    key={index}
-                    disablePushNotifications={disablePushNotifications}
+                    deletePushSubscriptionFromBackend={
+                      deletePushSubscriptionFromBackend
+                    }
                     device={device}
                   />
                 </div>
