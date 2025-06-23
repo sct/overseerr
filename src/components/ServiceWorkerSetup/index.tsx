@@ -33,12 +33,10 @@ const ServiceWorkerSetup = () => {
             return;
           }
 
-          if (subscription) {
-            console.log(
-              '[SW] Existing push subscription:',
-              subscription.endpoint
-            );
-          }
+          console.log(
+            '[SW] Existing push subscription:',
+            subscription.endpoint
+          );
 
           const verified = await verifyAndResubscribePushSubscription(
             user.id,

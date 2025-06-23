@@ -52,8 +52,7 @@ export const verifyPushSubscription = async (
     );
 
     return expectedServerKey === currentServerKey && data.endpoint === endpoint;
-  } catch (err) {
-    console.warn('[SW] verifyPushSubscription failed:', err);
+  } catch {
     return false;
   }
 };
@@ -79,8 +78,8 @@ export const verifyAndResubscribePushSubscription = async (
       }
 
       return true;
-    } catch (err) {
-      console.error('[SW] Resubscribe failed:', err);
+    } catch (error) {
+      throw new Error(`[SW] Resubscribe failed: ${error.message}`);
     }
   }
 
@@ -112,7 +111,7 @@ export const subscribeToPushNotifications = async (
       applicationServerKey: currentSettings.vapidPublic,
     });
 
-    const { endpoint, keys } = JSON.parse(JSON.stringify(subscription));
+    const { endpoint, keys } = subscription.toJSON();
 
     if (keys?.p256dh && keys?.auth) {
       await axios.post('/api/v1/user/registerPushSubscription', {
@@ -127,7 +126,9 @@ export const subscribeToPushNotifications = async (
 
     return false;
   } catch (error) {
-    console.log('Issue subscribing to push notifications: ', { error });
+    throw new Error(
+      `Issue subscribing to push notifications: ${error.message}`
+    );
   }
 };
 
@@ -149,15 +150,15 @@ export const unsubscribeToPushNotifications = async (
       return false;
     }
 
-    const { endpoint: currentEndpoint } = JSON.parse(
-      JSON.stringify(subscription)
-    );
+    const { endpoint: currentEndpoint } = subscription.toJSON();
 
     if (!endpoint || endpoint === currentEndpoint) {
       await subscription.unsubscribe();
       return true;
     }
   } catch (error) {
-    console.log('Issue unsubscribing to push notifications: ', { error });
+    throw new Error(
+      `Issue unsubscribing to push notifications: ${error.message}`
+    );
   }
 };

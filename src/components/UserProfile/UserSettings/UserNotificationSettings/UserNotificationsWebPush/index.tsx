@@ -53,7 +53,6 @@ const UserWebPushSettings = () => {
   const { user } = useUser({ id: Number(router.query.userId) });
   const { currentSettings } = useSettings();
   const [webPushEnabled, setWebPushEnabled] = useState(false);
-
   const [subEndpoint, setSubEndpoint] = useState<string | null>(null);
   const {
     data,
