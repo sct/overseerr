@@ -53,6 +53,8 @@ const UserWebPushSettings = () => {
   const { user } = useUser({ id: Number(router.query.userId) });
   const { currentSettings } = useSettings();
   const [webPushEnabled, setWebPushEnabled] = useState(false);
+
+  const [subEndpoint, setSubEndpoint] = useState<string | null>(null);
   const {
     data,
     error,
@@ -151,6 +153,23 @@ const UserWebPushSettings = () => {
       verifyWebPush();
     }
   }, [user?.id, currentSettings]);
+
+  useEffect(() => {
+    const getSubscriptionEndpoint = async () => {
+      if ('serviceWorker' in navigator && 'PushManager' in window) {
+        const registration = await navigator.serviceWorker.ready;
+        const subscription = await registration.pushManager.getSubscription();
+
+        if (subscription) {
+          setSubEndpoint(subscription.endpoint);
+        } else {
+          setSubEndpoint(null);
+        }
+      }
+    };
+
+    getSubscriptionEndpoint();
+  }, [webPushEnabled]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -282,6 +301,7 @@ const UserWebPushSettings = () => {
                       deletePushSubscriptionFromBackend
                     }
                     device={device}
+                    subEndpoint={subEndpoint}
                   />
                 </div>
               ))
