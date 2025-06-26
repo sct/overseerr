@@ -232,7 +232,6 @@ const PersonDetails = () => {
             />
           </div>
         )}
-
         <div className="text-center text-gray-300 lg:text-left">
           <h1 className="text-3xl text-white lg:text-4xl">{data.name}</h1>
           <div className="mt-1 mb-2 space-y-1 text-xs text-white sm:text-sm lg:text-base">
