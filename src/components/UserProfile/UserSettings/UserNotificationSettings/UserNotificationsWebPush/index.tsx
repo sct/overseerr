@@ -9,6 +9,7 @@ import useSettings from '@app/hooks/useSettings';
 import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import {
+  getPushSubscription,
   subscribeToPushNotifications,
   unsubscribeToPushNotifications,
   verifyPushSubscription,
@@ -156,8 +157,7 @@ const UserWebPushSettings = () => {
   useEffect(() => {
     const getSubscriptionEndpoint = async () => {
       if ('serviceWorker' in navigator && 'PushManager' in window) {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.getSubscription();
+        const { subscription } = await getPushSubscription();
 
         if (subscription) {
           setSubEndpoint(subscription.endpoint);

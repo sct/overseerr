@@ -18,6 +18,12 @@ function urlBase64ToUint8Array(base64String: string) {
   return outputArray;
 }
 
+export const getPushSubscription = async () => {
+  const registration = await navigator.serviceWorker.ready;
+  const subscription = await registration.pushManager.getSubscription();
+  return { registration, subscription };
+};
+
 export const verifyPushSubscription = async (
   userId: number | undefined,
   currentSettings: PublicSettingsResponse
@@ -27,10 +33,8 @@ export const verifyPushSubscription = async (
   }
 
   try {
-    const registration = await navigator.serviceWorker.getRegistration(
-      '/sw.js'
-    );
-    const subscription = await registration?.pushManager.getSubscription();
+    const { subscription } = await getPushSubscription();
+
     if (!subscription) {
       return false;
     }
@@ -99,9 +103,8 @@ export const subscribeToPushNotifications = async (
   }
 
   try {
-    const registration = await navigator.serviceWorker.getRegistration(
-      '/sw.js'
-    );
+    const { registration } = await getPushSubscription();
+
     if (!registration) {
       return false;
     }
@@ -141,10 +144,7 @@ export const unsubscribeToPushNotifications = async (
   }
 
   try {
-    const registration = await navigator.serviceWorker.getRegistration(
-      '/sw.js'
-    );
-    const subscription = await registration?.pushManager.getSubscription();
+    const { subscription } = await getPushSubscription();
 
     if (!subscription) {
       return false;
