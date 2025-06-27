@@ -23,7 +23,7 @@ import type { UserSettingsNotificationsResponse } from '@server/interfaces/api/u
 import axios from 'axios';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
@@ -170,6 +170,25 @@ const UserWebPushSettings = () => {
     getSubscriptionEndpoint();
   }, [webPushEnabled]);
 
+  const sortedDevices = useMemo(() => {
+    if (!dataDevices || !subEndpoint) {
+      return dataDevices;
+    }
+
+    return [...dataDevices].sort((a, b) => {
+      if (a.endpoint === subEndpoint) {
+        return -1;
+      }
+      if (b.endpoint === subEndpoint) {
+        return 1;
+      }
+
+      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      return dateB - dateA;
+    });
+  }, [dataDevices, subEndpoint]);
+
   if (!data && !error) {
     return <LoadingSpinner />;
   }
@@ -286,24 +305,18 @@ const UserWebPushSettings = () => {
           {intl.formatMessage(messages.managedevices)}
         </h3>
         <div className="section">
-          {dataDevices?.length ? (
-            dataDevices
-              ?.sort((a, b) => {
-                const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-                const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-                return dateB - dateA;
-              })
-              .map((device) => (
-                <div className="py-2" key={`device-list-${device.endpoint}`}>
-                  <DeviceItem
-                    deletePushSubscriptionFromBackend={
-                      deletePushSubscriptionFromBackend
-                    }
-                    device={device}
-                    subEndpoint={subEndpoint}
-                  />
-                </div>
-              ))
+          {sortedDevices?.length ? (
+            sortedDevices.map((device) => (
+              <div className="py-2" key={`device-list-${device.endpoint}`}>
+                <DeviceItem
+                  deletePushSubscriptionFromBackend={
+                    deletePushSubscriptionFromBackend
+                  }
+                  device={device}
+                  subEndpoint={subEndpoint}
+                />
+              </div>
+            ))
           ) : (
             <>
               <Alert
