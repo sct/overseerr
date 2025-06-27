@@ -96,7 +96,7 @@ const DeviceItem = ({
       </div>
       <div className="z-10 mt-4 flex w-full flex-col justify-center space-y-2 pl-4 pr-4 xl:mt-0 xl:w-96 xl:items-end xl:pl-0">
         {subEndpoint === device.endpoint ? (
-          <Button buttonType="primary" disabled>
+          <Button buttonType="primary" className="w-full" disabled>
             <LockClosedIcon />{' '}
             <span>{intl.formatMessage(messages.activesubscription)}</span>
           </Button>
