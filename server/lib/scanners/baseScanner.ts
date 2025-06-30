@@ -335,7 +335,7 @@ class BaseScanner<T> {
           .filter((season) => season.seasonNumber !== 0)
           .every(
             (season) =>
-              season.episodes === season.totalEpisodes && season.episodes > 0
+              !season.totalEpisodes || season.episodes === season.totalEpisodes
           );
 
       const isAll4kSeasons =
@@ -344,8 +344,7 @@ class BaseScanner<T> {
           .filter((season) => season.seasonNumber !== 0)
           .every(
             (season) =>
-              season.episodes4k === season.totalEpisodes &&
-              season.episodes4k > 0
+              !season.totalEpisodes || season.episodes4k === season.totalEpisodes
           );
 
       if (media) {
