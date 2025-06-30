@@ -312,13 +312,15 @@ const MovieRequestModal = ({
     { type: 'or' }
   );
 
+  const canBypassQuota = hasPermission([Permission.MANAGE_REQUESTS]);
+
   return (
     <Modal
       loading={(!data && !error) || !quota}
       backgroundClickable
       onCancel={onCancel}
       onOk={sendRequest}
-      okDisabled={isUpdating || quota?.movie.restricted}
+      okDisabled={isUpdating || (!canBypassQuota && quota?.movie.restricted)}
       title={intl.formatMessage(
         is4k ? messages.requestmovie4ktitle : messages.requestmovietitle
       )}

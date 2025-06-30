@@ -93,6 +93,8 @@ const TvRequestModal = ({
       : null
   );
 
+  const canBypassQuota = hasPermission([Permission.MANAGE_REQUESTS]);
+
   const currentlyRemaining =
     (quota?.tv.remaining ?? 0) -
     selectedSeasons.length +
@@ -432,6 +434,7 @@ const TvRequestModal = ({
         editRequest
           ? false
           : !settings.currentSettings.partialRequestsEnabled &&
+            !canBypassQuota &&
             quota?.tv.limit &&
             unrequestedSeasons.length > quota.tv.limit
           ? true
