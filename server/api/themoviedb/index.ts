@@ -486,7 +486,7 @@ class TheMovieDb extends ExternalAPI {
         params: {
           sort_by: sortBy,
           page,
-          include_adult: false, // Porn blocking: hardcoded to block adult content
+          include_adult: includeAdult,
           language,
           region: this.region,
           with_original_language:
@@ -518,6 +518,11 @@ class TheMovieDb extends ExternalAPI {
           with_watch_providers: watchProviders,
         },
       });
+
+      // Filter out adult content from response as defensive measure against TMDb API inconsistencies
+      if (!includeAdult) {
+        data.results = data.results.filter(movie => !movie.adult);
+      }
 
       return data;
     } catch (e) {
