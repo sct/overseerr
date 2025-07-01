@@ -486,7 +486,7 @@ class TheMovieDb extends ExternalAPI {
         params: {
           sort_by: sortBy,
           page,
-          include_adult: includeAdult,
+          include_adult: false, // Porn blocking: hardcoded to block adult content
           language,
           region: this.region,
           with_original_language:
