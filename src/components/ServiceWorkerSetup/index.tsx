@@ -19,23 +19,32 @@ const ServiceWorkerSetup = () => {
             registration.scope
           );
 
-          // Do not prompt for permissions as we will handle this in the settings.
-          if (Notification.permission !== 'granted') {
+          const pushNotificationsEnabled =
+            localStorage.getItem('pushNotificationsEnabled') === 'true';
+
+          // Reset the notifications flag if permissions were revoked
+          if (
+            Notification.permission !== 'granted' &&
+            pushNotificationsEnabled
+          ) {
+            localStorage.setItem('pushNotificationsEnabled', 'false');
             console.warn(
               '[SW] Push permissions not granted — skipping resubscribe'
             );
+
+            return;
+          }
+
+          // Bypass resubscribing if we have manually disabled push notifications
+          if (!pushNotificationsEnabled) {
             return;
           }
 
           const subscription = await registration.pushManager.getSubscription();
-          // Bypass resubscribing if we have manually disabled the subscription
-          if (!subscription) {
-            return;
-          }
 
           console.log(
             '[SW] Existing push subscription:',
-            subscription.endpoint
+            subscription?.endpoint
           );
 
           const verified = await verifyAndResubscribePushSubscription(
