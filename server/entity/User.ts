@@ -262,6 +262,7 @@ export class User {
             createdAt: AfterDate(movieDate),
             type: MediaType.MOVIE,
             status: Not(MediaRequestStatus.DECLINED),
+            ignoreQuota: false,
           },
         })
       : 0;
@@ -294,6 +295,9 @@ export class User {
             })
             .andWhere('request.status != :declinedStatus', {
               declinedStatus: MediaRequestStatus.DECLINED,
+            })
+            .andWhere('request.ignoreQuota = :ignoreQuota', {
+              ignoreQuota: false,
             })
             .addSelect((subQuery) => {
               return subQuery

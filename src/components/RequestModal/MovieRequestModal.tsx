@@ -92,6 +92,7 @@ const MovieRequestModal = ({
         mediaId: data?.id,
         mediaType: 'movie',
         is4k,
+        ignoreQuota: requestOverrides?.ignoreQuota,
         ...overrideParams,
       });
       mutate('/api/v1/request?filter=all&take=10&sort=modified&skip=0');
@@ -312,15 +313,16 @@ const MovieRequestModal = ({
     { type: 'or' }
   );
 
-  const canBypassQuota = hasPermission([Permission.MANAGE_REQUESTS]);
-
   return (
     <Modal
       loading={(!data && !error) || !quota}
       backgroundClickable
       onCancel={onCancel}
       onOk={sendRequest}
-      okDisabled={isUpdating || (!canBypassQuota && quota?.movie.restricted)}
+      okDisabled={
+        isUpdating ||
+        (quota?.movie.restricted && !requestOverrides?.ignoreQuota)
+      }
       title={intl.formatMessage(
         is4k ? messages.requestmovie4ktitle : messages.requestmovietitle
       )}
@@ -354,6 +356,7 @@ const MovieRequestModal = ({
           }
         />
       )}
+
       {(hasPermission(Permission.REQUEST_ADVANCED) ||
         hasPermission(Permission.MANAGE_REQUESTS)) && (
         <AdvancedRequester

@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { SmallLoadingSpinner } from '@app/components/Common/LoadingSpinner';
+import SlideCheckbox from '@app/components/Common/SlideCheckbox';
 import type { User } from '@app/hooks/useUser';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
@@ -36,6 +37,8 @@ const messages = defineMessages({
   tags: 'Tags',
   selecttags: 'Select tags',
   notagoptions: 'No tags.',
+  ignoreQuotaTitle: 'Ignore Quota',
+  ignoreQuotaDescription: "Do not count this request against the user's quota",
 });
 
 export type RequestOverrides = {
@@ -45,6 +48,7 @@ export type RequestOverrides = {
   tags?: number[];
   language?: number;
   user?: User;
+  ignoreQuota?: boolean;
 };
 
 interface AdvancedRequesterProps {
@@ -93,6 +97,10 @@ const AdvancedRequester = ({
 
   const [selectedTags, setSelectedTags] = useState<number[]>(
     defaultOverrides?.tags ?? []
+  );
+
+  const [ignoreQuota, setIgnoreQuota] = useState<boolean>(
+    defaultOverrides?.ignoreQuota ?? false
   );
 
   const { data: serverData, isValidating } =
@@ -271,6 +279,7 @@ const AdvancedRequester = ({
         user: selectedUser ?? undefined,
         language: selectedLanguage !== -1 ? selectedLanguage : undefined,
         tags: selectedTags,
+        ignoreQuota: ignoreQuota || undefined,
       });
     }
   }, [
@@ -280,6 +289,7 @@ const AdvancedRequester = ({
     selectedUser,
     selectedLanguage,
     selectedTags,
+    ignoreQuota,
   ]);
 
   if (!data && !error) {
@@ -644,6 +654,22 @@ const AdvancedRequester = ({
               )}
             </Listbox>
           )}
+        {currentHasPermission([Permission.MANAGE_REQUESTS]) && (
+          <div className="mb-2">
+            <div className="flex h-10 items-center justify-between">
+              <span className="mb-1 block text-sm font-bold text-gray-400">
+                {intl.formatMessage(messages.ignoreQuotaTitle)}
+              </span>
+              <SlideCheckbox
+                checked={ignoreQuota}
+                onClick={() => setIgnoreQuota(!ignoreQuota)}
+              />
+            </div>
+            <p className="ml-0 mt-1 text-xs text-gray-500">
+              {intl.formatMessage(messages.ignoreQuotaDescription)}
+            </p>
+          </div>
+        )}
         {isAnime && (
           <div className="mt-4 italic">
             {intl.formatMessage(messages.animenote)}

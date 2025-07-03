@@ -237,6 +237,7 @@ export class MediaRequest {
         rootFolder: requestBody.rootFolder,
         tags: requestBody.tags,
         isAutoRequest: options.isAutoRequest ?? false,
+        ignoreQuota: requestBody.ignoreQuota ?? false,
       });
 
       await requestRepository.save(request);
@@ -365,6 +366,7 @@ export class MediaRequest {
             })
         ),
         isAutoRequest: options.isAutoRequest ?? false,
+        ignoreQuota: requestBody.ignoreQuota ?? false,
       });
 
       await requestRepository.save(request);
@@ -464,6 +466,9 @@ export class MediaRequest {
 
   @Column({ default: false })
   public isAutoRequest: boolean;
+
+  @Column({ default: false })
+  public ignoreQuota: boolean;
 
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);

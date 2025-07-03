@@ -93,8 +93,6 @@ const TvRequestModal = ({
       : null
   );
 
-  const canBypassQuota = hasPermission([Permission.MANAGE_REQUESTS]);
-
   const currentlyRemaining =
     (quota?.tv.remaining ?? 0) -
     selectedSeasons.length +
@@ -199,6 +197,7 @@ const TvRequestModal = ({
         tvdbId: tvdbId ?? data?.externalIds.tvdbId,
         mediaType: 'tv',
         is4k,
+        ignoreQuota: requestOverrides?.ignoreQuota,
         seasons: settings.currentSettings.partialRequestsEnabled
           ? selectedSeasons
           : getAllSeasons().filter(
@@ -434,9 +433,9 @@ const TvRequestModal = ({
         editRequest
           ? false
           : !settings.currentSettings.partialRequestsEnabled &&
-            !canBypassQuota &&
             quota?.tv.limit &&
-            unrequestedSeasons.length > quota.tv.limit
+            unrequestedSeasons.length > quota.tv.limit &&
+            !requestOverrides?.ignoreQuota
           ? true
           : getAllRequestedSeasons().length >= getAllSeasons().length ||
             (settings.currentSettings.partialRequestsEnabled &&
@@ -513,6 +512,7 @@ const TvRequestModal = ({
           }
         />
       )}
+
       <div className="flex flex-col">
         <div className="-mx-4 sm:mx-0">
           <div className="inline-block min-w-full py-2 align-middle">
