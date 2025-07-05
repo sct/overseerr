@@ -82,6 +82,7 @@ const UserWebPushSettings = () => {
       );
 
       if (isSubscribed) {
+        localStorage.setItem('pushNotificationsEnabled', 'true');
         setWebPushEnabled(true);
         addToast(intl.formatMessage(messages.webpushhasbeenenabled), {
           appearance: 'success',
@@ -106,6 +107,7 @@ const UserWebPushSettings = () => {
     try {
       await unsubscribeToPushNotifications(user?.id, endpoint);
 
+      localStorage.setItem('pushNotificationsEnabled', 'false');
       setWebPushEnabled(false);
       addToast(intl.formatMessage(messages.webpushhasbeendisabled), {
         autoDismiss: true,

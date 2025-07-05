@@ -74,12 +74,10 @@ export const verifyAndResubscribePushSubscription = async (
   if (currentSettings.enablePushRegistration) {
     try {
       // Unsubscribe from the backend to clear the existing push subscription (keys and endpoint)
-      const hasUnsubscribed = await unsubscribeToPushNotifications(userId);
+      await unsubscribeToPushNotifications(userId);
 
       // Subscribe again to generate a fresh push subscription with updated keys and endpoint
-      if (hasUnsubscribed) {
-        await subscribeToPushNotifications(userId, currentSettings);
-      }
+      await subscribeToPushNotifications(userId, currentSettings);
 
       return true;
     } catch (error) {
