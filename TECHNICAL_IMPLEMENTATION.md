@@ -144,7 +144,7 @@ This fork provides comprehensive content filtering capabilities that enable:
 
 ### Enhanced Content Management Features
 
-1. **User-Configurable Rating Preferences**: Each user can set their own maximum allowed ratings
+1. **User-Configurable Rating Preferences**: The admin can modify each user to their own maximum allowed ratings
 2. **Comprehensive Rating Support**: Full movie (G-NC-17) and TV (TV-Y-TV-MA) rating system integration
 3. **Family-Safe Defaults**: New users start with age-appropriate content settings
 4. **Database-Driven Preferences**: Persistent user settings that maintain preferences across sessions
