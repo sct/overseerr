@@ -16,7 +16,7 @@
 
 ## Overview
 
-**Overseerr Content Filtering** is an enhanced fork of Overseerr that adds intelligent content filtering capabilities with enterprise-grade family safety controls. This version features **global adult content blocking** and **admin-only rating controls**, providing maximum content safety and centralized management.
+**Overseerr Content Filtering** is an enhanced fork of Overseerr that adds intelligent content filtering capabilities. This version automatically filters movies and TV shows based on age ratings, providing better content management and discovery controls.
 
 ## 📋 Why This Fork Exists: Comprehensive Content Filtering
 
@@ -41,18 +41,6 @@ This fork uses **dual-layer filtering architecture** to ensure reliable content 
 - Comprehensive filtering across all discovery and search endpoints
 
 ## ✨ Enhanced Features
-
-### 🛡️ **Global Adult Content Blocking (v1.1.0)**
-- **Zero Tolerance**: Adult content never appears regardless of user settings
-- **Global Enforcement**: Applied to all discovery, search, and genre browsing
-- **TMDb API Override**: Hardcoded filtering bypasses API inconsistencies
-- **Family-Safe Discovery**: All genre images and content safe for all ages
-
-### 👥 **Admin-Only Content Controls (v1.1.0)**
-- **Centralized Management**: Only admins can modify content rating settings
-- **User Protection**: Regular users cannot bypass or change rating restrictions
-- **Permission-Based**: Uses standard admin permissions for consistency
-- **Setting Preservation**: Existing rating preferences maintained during upgrade
 
 ### 🔒 **Smart Content Filtering**
 - **Movie Ratings**: User-configurable limits from G through NC-17
@@ -95,13 +83,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Larrikinau/overseerr-content
 ```bash
 docker run -d \
   --name overseerr-content-filtering \
+  -e LOG_LEVEL=debug \
+  -e TZ=Asia/Tokyo \
   -p 5055:5055 \
   -v /path/to/appdata/config:/app/config \
   --restart unless-stopped \
   larrikinau/overseerr-content-filtering
 ```
-
-📖 **[Complete Docker Deployment Guide](DOCKER_DEPLOYMENT.md)** - Advanced configuration, security, troubleshooting
 
 #### Docker Compose
 ```yaml
@@ -110,6 +98,9 @@ services:
   overseerr-content-filtering:
     image: larrikinau/overseerr-content-filtering
     container_name: overseerr-content-filtering
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Asia/Tashkent
     ports:
       - 5055:5055
     volumes:

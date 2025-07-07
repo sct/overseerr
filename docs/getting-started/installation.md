@@ -76,13 +76,11 @@ Define the `overseerr` service in your `docker-compose.yml` as follows:
 version: '3'
 
 services:
-  overseerr:
-    image: sctx/overseerr:latest
-    container_name: overseerr
+  overseerr-content-filtering:
+    image: larrikinau/overseerr-content-filtering:latest
+    container_name: overseerr-content-filtering
     environment:
-      - LOG_LEVEL=debug
       - TZ=Asia/Tokyo
-      - PORT=5055 #optional
     ports:
       - 5055:5055
     volumes:
@@ -101,7 +99,7 @@ docker-compose up -d
 Pull the latest image:
 
 ```bash
-docker-compose pull overseerr
+docker-compose pull overseerr-content-filtering
 ```
 
 Then, restart all services defined in the Compose file:
@@ -145,7 +143,7 @@ or the Docker Desktop app:
 Then, create and start the Overseerr container:
 
 ```bash
-docker run -d --name overseerr -e LOG_LEVEL=debug -e TZ=Asia/Tokyo -p 5055:5055 -v "overseerr-data:/app/config" --restart unless-stopped sctx/overseerr:latest
+docker run -d --name overseerr-content-filtering -p 5055:5055 -v "overseerr-data:/app/config" --restart unless-stopped larrikinau/overseerr-content-filtering:latest
 ```
 
 To access the files inside the volume created above, navigate to `\\wsl$\docker-desktop-data\version-pack-data\community\docker\volumes\overseerr-data\_data` using File Explorer.
