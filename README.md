@@ -20,7 +20,7 @@
 
 ## 📋 Why This Fork Exists: Comprehensive Content Filtering
 
-The filtering system provides user-configurable age rating controls:
+The filtering system provides admin-configurable age rating controls:
 
 1. **User Preference Storage**: Individual rating limits stored in user settings
 2. **Multi-Layer Protection**: Combined API-level and application-level filtering
@@ -34,8 +34,8 @@ This fork uses **dual-layer filtering architecture** to ensure reliable content 
 **📖 For detailed technical explanation:** See [TECHNICAL_IMPLEMENTATION.md](TECHNICAL_IMPLEMENTATION.md)
 
 **Key Features:**
-- User-configurable movie ratings (G, PG, PG-13, R, NC-17)
-- User-configurable TV ratings (TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA)
+- Admin-configurable movie ratings (G, PG, PG-13, R, NC-17)
+- Admin-configurable TV ratings (TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA)
 - Hardcoded baseline safety parameters for API reliability
 - Database-driven user preferences with family-safe defaults
 - Comprehensive filtering across all discovery and search endpoints

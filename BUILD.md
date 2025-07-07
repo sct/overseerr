@@ -337,7 +337,7 @@ yarn type-check
    
    # Complete setup at http://localhost:5055
    # 1. Connect to your Plex server
-   # 2. Set up user ratings preferences
+   # 2. Configure user rating preferences (admin only)
    # 3. Test movie/TV discovery pages
    # 4. Verify filtering is applied
    ```

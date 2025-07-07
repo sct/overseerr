@@ -20,7 +20,7 @@
 
 ## 📋 Why This Fork Exists: Comprehensive Content Filtering
 
-The filtering system provides user-configurable age rating controls:
+The filtering system provides admin-configurable age rating controls:
 
 1. **User Preference Storage**: Individual rating limits stored in user settings
 2. **Multi-Layer Protection**: Combined API-level and application-level filtering
@@ -34,8 +34,8 @@ This fork uses **dual-layer filtering architecture** to ensure reliable content 
 **📖 For detailed technical explanation:** See [TECHNICAL_IMPLEMENTATION.md](TECHNICAL_IMPLEMENTATION.md)
 
 **Key Features:**
-- User-configurable movie ratings (G, PG, PG-13, R, NC-17)
-- User-configurable TV ratings (TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA)
+- Admin-configurable movie ratings (G, PG, PG-13, R, NC-17)
+- Admin-configurable TV ratings (TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA)
 - Hardcoded baseline safety parameters for API reliability
 - Database-driven user preferences with family-safe defaults
 - Comprehensive filtering across all discovery and search endpoints
@@ -43,9 +43,9 @@ This fork uses **dual-layer filtering architecture** to ensure reliable content 
 ## ✨ Enhanced Features
 
 ### 🔒 **Smart Content Filtering**
-- **Movie Ratings**: User-configurable limits from G through NC-17
-- **TV Ratings**: User-configurable limits from TV-Y through TV-MA
-- **Per-user preferences**: Each user sets their own maximum allowed ratings
+- **Movie Ratings**: Admin-configurable limits from G through NC-17
+- **TV Ratings**: Admin-configurable limits from TV-Y through TV-MA
+- **Per-user preferences**: Admins set maximum allowed ratings for each user
 - **Automatic application**: Filtering works across all discovery and search
 - **Family-safe defaults**: New users start with age-appropriate content settings
 - **Professional implementation**: Dual-layer filtering architecture for reliability
@@ -154,15 +154,18 @@ yarn start
 ## 🔧 Configuration
 
 ### Content Filtering Setup
+**Admin Users Only:**
 1. Navigate to **Settings** → **Users** → **User Settings**
-2. Configure **Rating Preferences** for each user:
+2. Configure **Rating Preferences** for users:
    - **Max Movie Rating**: Set maximum allowed movie rating
    - **Max TV Rating**: Set maximum allowed TV show rating
 3. Save settings - filtering applies immediately
 
+**Note**: Only administrators can modify content rating settings. Regular users cannot see or change these controls.
+
 ### Rating System
-- **Movies**: G → PG → PG-13 → R → NC-17 (users choose their maximum allowed rating)
-- **TV Shows**: TV-Y → TV-Y7 → TV-G → TV-PG → TV-14 → TV-MA (users choose their maximum allowed rating)
+- **Movies**: G → PG → PG-13 → R → NC-17 (admins set maximum allowed rating per user)
+- **TV Shows**: TV-Y → TV-Y7 → TV-G → TV-PG → TV-14 → TV-MA (admins set maximum allowed rating per user)
 - **Defaults**: New users start with PG-13 (movies) and TV-PG (TV shows) for family-safe browsing
 
 ## 🤝 Contributing

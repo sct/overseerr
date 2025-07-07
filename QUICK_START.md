@@ -17,16 +17,18 @@ curl -fsSL https://raw.githubusercontent.com/Larrikinau/overseerr-content-filter
 1. **Access the web interface** at `http://localhost:5055`
 2. **Connect to Plex**: Follow the setup wizard to link your Plex server
 3. **Configure services**: Set up Sonarr/Radarr if you use them
-4. **Set content filtering**: Go to your profile settings to configure rating preferences
+4. **Set content filtering**: Admins can configure rating preferences for users in Settings → Users
 
 ## 🔒 Content Filtering Configuration
 
-### Per-User Setup
-1. Click your **profile picture** in the top-right corner
-2. Go to **Settings → General**
-3. Find the **Content Filtering** section
-4. Set your maximum allowed ratings:
-   - **Movies**: Choose from G, PG, PG-13, R, NC-17, Adult
+### Admin-Only Setup
+**Note**: Only administrators can configure content rating settings.
+
+1. Go to **Settings → Users**
+2. Select a user to configure
+3. Find the **Content Rating Filtering** section
+4. Set maximum allowed ratings for that user:
+   - **Movies**: Choose from G, PG, PG-13, R, NC-17
    - **TV Shows**: Choose from TV-Y, TV-Y7, TV-G, TV-PG, TV-14, TV-MA
 
 ### Family-Friendly Defaults
@@ -175,7 +177,7 @@ docker run -d \
 
 1. **Explore the interface**: Browse movies and TV shows with filtering active
 2. **Set up notifications**: Configure Discord, email, or other notification methods
-3. **Invite family members**: Add users and help them configure their rating preferences
+3. **Invite family members**: Add users and configure their rating preferences as an admin
 4. **Customize requests**: Set up approval workflows for different user types
 
 Enjoy your family-friendly media management! 🍿📺
