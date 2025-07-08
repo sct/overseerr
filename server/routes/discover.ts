@@ -26,6 +26,56 @@ import { sortBy } from 'lodash';
 import { z } from 'zod';
 
 export const createTmdbWithRegionLanguage = (user?: User): TheMovieDb => {
+
+// Helper function to filter results based on user rating preferences
+const filterResultsByRating = (results: any[], user?: User): any[] => {
+  if (!user?.settings?.maxMovieRating && !user?.settings?.maxTvRating) {
+    return results;
+  }
+
+  return results.filter((result: any) => {
+    // Skip filtering if no user preferences set
+    if (!user?.settings) return true;
+
+    const isMovie = result.media_type === 'movie' || (!result.media_type && result.title);
+    const isTv = result.media_type === 'tv' || (!result.media_type && result.name);
+
+    // Movie filtering
+    if (isMovie && user.settings.maxMovieRating) {
+      // Block adult content for any rating restriction
+      if (result.adult && user.settings.maxMovieRating !== 'Adult') {
+        return false;
+      }
+      
+      // Apply certification-based filtering
+      const maxRating = user.settings.maxMovieRating;
+      const allowedRatings: { [key: string]: string[] } = {
+        'G': ['G'],
+        'PG': ['G'],
+        'PG-13': ['G', 'PG'],
+        'R': ['G', 'PG', 'PG-13'],
+        'Adult': ['G', 'PG', 'PG-13', 'R'],
+      };
+      
+      // If we have release info with certification, check it
+      if (result.release_dates?.results) {
+        const usCert = result.release_dates.results.find((r: any) => r.iso_3166_1 === 'US');
+        if (usCert?.release_dates?.[0]?.certification) {
+          const cert = usCert.release_dates[0].certification;
+          return allowedRatings[maxRating]?.includes(cert) || false;
+        }
+      }
+    }
+
+    // TV filtering (similar logic)
+    if (isTv && user.settings.maxTvRating) {
+      // Apply TV rating filtering logic here if needed
+      // For now, we'll leave TV filtering less strict
+    }
+
+    return true;
+  });
+};
   const settings = getSettings();
 
   const region =
@@ -45,6 +95,8 @@ export const createTmdbWithRegionLanguage = (user?: User): TheMovieDb => {
   return new TheMovieDb({
     region,
     originalLanguage,
+    maxMovieRating: user?.settings?.maxMovieRating,
+    maxTvRating: user?.settings?.maxTvRating,
   });
 };
 

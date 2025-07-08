@@ -55,6 +55,12 @@ const messages = defineMessages({
   plexwatchlistsyncseries: 'Auto-Request Series',
   plexwatchlistsyncseriestip:
     'Automatically request series on your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink>',
+
+  maxMovieRating: 'Maximum Movie Rating',
+  maxMovieRatingTip: 'Block content at the selected rating level and above',
+  maxTvRating: 'Maximum TV Rating', 
+  maxTvRatingTip: 'Block TV content at the selected rating level and above',
+  ratingFilteringTitle: 'Content Rating Filtering',
 });
 
 const UserGeneralSettings = () => {
@@ -130,6 +136,8 @@ const UserGeneralSettings = () => {
           tvQuotaDays: data?.tvQuotaDays,
           watchlistSyncMovies: data?.watchlistSyncMovies,
           watchlistSyncTv: data?.watchlistSyncTv,
+          maxMovieRating: data?.maxMovieRating ?? 'Adult',
+          maxTvRating: data?.maxTvRating ?? '',
         }}
         validationSchema={UserGeneralSettingsSchema}
         enableReinitialize
@@ -149,6 +157,8 @@ const UserGeneralSettings = () => {
               tvQuotaDays: tvQuotaEnabled ? values.tvQuotaDays : null,
               watchlistSyncMovies: values.watchlistSyncMovies,
               watchlistSyncTv: values.watchlistSyncTv,
+              maxMovieRating: values.maxMovieRating,
+              maxTvRating: values.maxTvRating,
             });
 
             if (currentUser?.id === user?.id && setLocale) {
@@ -298,6 +308,63 @@ const UserGeneralSettings = () => {
                   </div>
                 </div>
               </div>
+            {currentHasPermission(Permission.MANAGE_USERS) && (
+              <>
+
+              <div className="mt-6">
+                <h3 className="mb-2 text-xl font-bold text-white">
+                  {intl.formatMessage(messages.ratingFilteringTitle)}
+                </h3>
+                <p className="text-sm text-gray-400 mb-4">
+                  Block content at the selected rating level and above
+                </p>
+              </div>
+
+              <div className="form-row">
+                <label htmlFor="maxMovieRating" className="text-label">
+                  {intl.formatMessage(messages.maxMovieRating)}
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.maxMovieRatingTip)}
+                  </span>
+                </label>
+                <div className="form-input-area">
+                  <div className="form-input-field">
+                    <Field as="select" id="maxMovieRating" name="maxMovieRating">
+                      <option value="">No restrictions - Allow all content</option>
+                      <option value="G">G - Allow only G (block PG and above)</option>
+                      <option value="PG">PG - Block PG and above (allow G only)</option>
+                      <option value="PG-13">PG-13 - Block PG-13 and above (allow G, PG)</option>
+                      <option value="R">R - Block R and above (allow G, PG, PG-13)</option>
+                      <option value="Adult">Adult - Block only Adult/XXX content (allow R and below)</option>
+                    </Field>
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <label htmlFor="maxTvRating" className="text-label">
+                  {intl.formatMessage(messages.maxTvRating)}
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.maxTvRatingTip)}
+                  </span>
+                </label>
+                <div className="form-input-area">
+                  <div className="form-input-field">
+                    <Field as="select" id="maxTvRating" name="maxTvRating">
+                      <option value="">No restriction - Allow all TV content</option>
+                      <option value="TV-Y">TV-Y - Allow only TV-Y (block TV-Y7 and above)</option>
+                      <option value="TV-Y7">TV-Y7 - Block TV-Y7 and above</option>
+                      <option value="TV-G">TV-G - Block TV-G and above</option>
+                      <option value="TV-PG">TV-PG - Block TV-PG and above</option>
+                      <option value="TV-14">TV-14 - Block TV-14 and above</option>
+                      <option value="TV-MA">TV-MA - Block only TV-MA (allow all others)</option>
+                    </Field>
+                  </div>
+                </div>
+              </div>
+              </>
+            )}
+
               <div className="form-row">
                 <label htmlFor="displayName" className="text-label">
                   <span>{intl.formatMessage(messages.region)}</span>

@@ -1,6 +1,6 @@
 {
   "name": "overseerr",
-  "version": "0.1.0",
+  "version": "1.1.0",
   "private": true,
   "scripts": {
     "dev": "nodemon -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x ts-node -r tsconfig-paths/register --files --project server/tsconfig.json server/index.ts",
@@ -25,7 +25,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/sct/overseerr.git"
+    "url": "https://github.com/larrikinau/overseerr-content-filtering.git"
   },
   "license": "MIT",
   "dependencies": {
@@ -232,8 +232,8 @@
           "COMMIT_TAG": "$GIT_SHA"
         },
         "imageNames": [
-          "sctx/overseerr",
-          "ghcr.io/sct/overseerr"
+          "larrikinau/overseerr-content-filtering",
+          "ghcr.io/larrikinau/overseerr-content-filtering"
         ],
         "platforms": [
           "linux/amd64",

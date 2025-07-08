@@ -126,6 +126,13 @@ export class UserSettings {
   })
   public notificationTypes: Partial<NotificationAgentTypes>;
 
+  // User-configurable content rating filters following proven methodology
+  @Column({ nullable: true, default: "Adult" })
+  public maxMovieRating?: string = "Adult"; // e.g., "PG-13", "R", etc.
+  
+  @Column({ nullable: true })
+  public maxTvRating?: string; // e.g., "TV-14", "TV-MA", etc.
+
   public hasNotificationType(
     key: NotificationAgentKey,
     type: Notification

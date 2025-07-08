@@ -65,6 +65,8 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
         globalTvQuotaLimit: defaultQuotas.tv.quotaLimit,
         watchlistSyncMovies: user.settings?.watchlistSyncMovies,
         watchlistSyncTv: user.settings?.watchlistSyncTv,
+        maxMovieRating: user.settings?.maxMovieRating,
+        maxTvRating: user.settings?.maxTvRating,
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -118,6 +120,8 @@ userSettingsRoutes.post<
         originalLanguage: req.body.originalLanguage,
         watchlistSyncMovies: req.body.watchlistSyncMovies,
         watchlistSyncTv: req.body.watchlistSyncTv,
+        maxMovieRating: req.body.maxMovieRating || 'Adult',
+        maxTvRating: req.body.maxTvRating,
       });
     } else {
       user.settings.discordId = req.body.discordId;
@@ -126,6 +130,8 @@ userSettingsRoutes.post<
       user.settings.originalLanguage = req.body.originalLanguage;
       user.settings.watchlistSyncMovies = req.body.watchlistSyncMovies;
       user.settings.watchlistSyncTv = req.body.watchlistSyncTv;
+      user.settings.maxMovieRating = req.body.maxMovieRating;
+      user.settings.maxTvRating = req.body.maxTvRating;
     }
 
     await userRepository.save(user);
@@ -138,6 +144,8 @@ userSettingsRoutes.post<
       originalLanguage: user.settings.originalLanguage,
       watchlistSyncMovies: user.settings.watchlistSyncMovies,
       watchlistSyncTv: user.settings.watchlistSyncTv,
+      maxMovieRating: user.settings.maxMovieRating,
+      maxTvRating: user.settings.maxTvRating,
     });
   } catch (e) {
     next({ status: 500, message: e.message });
