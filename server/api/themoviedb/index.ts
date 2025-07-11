@@ -100,10 +100,14 @@ interface DiscoverTvOptions {
 class TheMovieDb extends ExternalAPI {
   private region?: string;
   private originalLanguage?: string;
+  private maxMovieRating?: string;
+  private maxTvRating?: string;
   constructor({
     region,
     originalLanguage,
-  }: { region?: string; originalLanguage?: string } = {}) {
+    maxMovieRating,
+    maxTvRating,
+  }: { region?: string; originalLanguage?: string; maxMovieRating?: string; maxTvRating?: string } = {}) {
     super(
       'https://api.themoviedb.org/3',
       {
@@ -119,6 +123,46 @@ class TheMovieDb extends ExternalAPI {
     );
     this.region = region;
     this.originalLanguage = originalLanguage;
+    this.maxMovieRating = maxMovieRating;
+    this.maxTvRating = maxTvRating;
+  }
+  
+  private shouldIncludeAdult(): boolean {
+    // Include adult content only if no restriction is set (empty string)
+    // If "Adult" is selected, we should NOT include adult content
+    return false; // Global adult content blocking - never include adult content regardless of user preferences
+  }
+  
+  private getMovieCertification(): { [key: string]: string } {
+    if (!this.maxMovieRating) return {}; // No restrictions
+    
+    // Blocking logic based on dropdown descriptions:
+    // "Adult" = Block only Adult/XXX content (allow R and below)
+    // "R" = Block R and above (allow G, PG, PG-13)
+    // etc.
+    const ratingMap: { [key: string]: string } = {
+      'G': 'G', // Allow only G
+      'PG': 'G', // Block PG and above, allow only G
+      'PG-13': 'PG', // Block PG-13 and above, allow G and PG
+      'R': 'PG-13', // Block R and above, allow G, PG, PG-13
+      'Adult': 'R', // Block Adult/XXX content, allow R and below
+    };
+    
+    const allowedRating = ratingMap[this.maxMovieRating];
+    if (this.maxMovieRating === 'G') {
+      // Special case: only allow G-rated content
+      return {
+        'certification_country': 'US',
+        'certification': 'G'
+      };
+    }
+    
+    if (!allowedRating) return {};
+    
+    return {
+      'certification_country': 'US',
+      'certification.lte': allowedRating
+    };
   }
 
   public searchMulti = async ({
@@ -129,7 +173,7 @@ class TheMovieDb extends ExternalAPI {
   }: SearchOptions): Promise<TmdbSearchMultiResponse> => {
     try {
       const data = await this.get<TmdbSearchMultiResponse>('/search/multi', {
-        params: { query, page, include_adult: includeAdult, language },
+        params: { query, page, include_adult: this.shouldIncludeAdult(), language },
       });
 
       return data;
@@ -155,7 +199,7 @@ class TheMovieDb extends ExternalAPI {
         params: {
           query,
           page,
-          include_adult: includeAdult,
+          include_adult: this.shouldIncludeAdult(),
           language,
           primary_release_year: year,
         },
@@ -184,7 +228,7 @@ class TheMovieDb extends ExternalAPI {
         params: {
           query,
           page,
-          include_adult: includeAdult,
+          include_adult: this.shouldIncludeAdult(),
           language,
           first_air_date_year: year,
         },
@@ -486,7 +530,7 @@ class TheMovieDb extends ExternalAPI {
         params: {
           sort_by: sortBy,
           page,
-          include_adult: includeAdult,
+          include_adult: this.shouldIncludeAdult(),          ...this.getMovieCertification(),
           language,
           region: this.region,
           with_original_language:
