@@ -18,7 +18,7 @@ interface TelegramMessagePayload {
   text: string;
   parse_mode: string;
   chat_id: string;
-  message_thread_id: string;
+  message_thread_id?: string;
   disable_notification: boolean;
 }
 
