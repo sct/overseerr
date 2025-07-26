@@ -333,6 +333,7 @@ export class MediaRequest {
         rootFolder: requestBody.rootFolder,
         languageProfileId: requestBody.languageProfileId,
         tags: requestBody.tags,
+        monitorType: requestBody.monitorType,
         seasons: finalSeasons.map(
           (sn) =>
             new SeasonRequest({
@@ -453,6 +454,9 @@ export class MediaRequest {
 
   @Column({ default: false })
   public isAutoRequest: boolean;
+
+  @Column({ nullable: true })
+  public monitorType?: string;
 
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);

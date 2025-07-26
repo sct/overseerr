@@ -593,6 +593,7 @@ export class MediaRequestSubscriber
           seriesType,
           tags,
           monitored: true,
+          monitorType: entity.monitorType,
           searchNow: !sonarrSettings.preventSearch,
         };
 

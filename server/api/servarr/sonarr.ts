@@ -98,7 +98,15 @@ export interface AddSeriesOptions {
   tags?: number[];
   seriesType: SonarrSeries['seriesType'];
   monitored?: boolean;
+  monitorType?: string;
+  // could consider to absorb `searchNow` into `searchForMissingEpisodes`
+  // since current implementation uses it as such `searchForMissingEpisodes: options.searchNow`
   searchNow?: boolean;
+  addOptions?: {
+    ignoreEpisodesWithFiles?: boolean;
+    ignoreEpisodesWithoutFiles?: boolean;
+    searchForMissingEpisodes?: boolean;
+  };
 }
 
 export interface LanguageProfile {
@@ -191,7 +199,11 @@ class SonarrAPI extends ServarrBase<{
         series.tags = options.tags
           ? Array.from(new Set([...series.tags, ...options.tags]))
           : series.tags;
-        series.seasons = this.buildSeasonList(options.seasons, series.seasons);
+        series.seasons = this.buildSeasonList(
+          options.seasons,
+          series.seasons,
+          options.monitorType
+        );
 
         const newSeriesResponse = await this.axios.put<SonarrSeries>(
           '/series',
@@ -236,7 +248,8 @@ class SonarrAPI extends ServarrBase<{
               seasonNumber: season.seasonNumber,
               // We force all seasons to false if its the first request
               monitored: false,
-            }))
+            })),
+            options.monitorType
           ),
           tags: options.tags,
           seasonFolder: options.seasonFolder,
@@ -245,7 +258,10 @@ class SonarrAPI extends ServarrBase<{
           seriesType: options.seriesType,
           addOptions: {
             ignoreEpisodesWithFiles: true,
-            searchForMissingEpisodes: options.searchNow,
+            ...options.addOptions,
+            searchForMissingEpisodes:
+              // not sure if should update the logic above in L:177
+              options.addOptions?.searchForMissingEpisodes || options.searchNow,
           },
         } as Partial<SonarrSeries>
       );
@@ -320,14 +336,29 @@ class SonarrAPI extends ServarrBase<{
 
   private buildSeasonList(
     seasons: number[],
-    existingSeasons?: SonarrSeason[]
+    existingSeasons?: SonarrSeason[],
+    monitorType?: string
   ): SonarrSeason[] {
     if (existingSeasons) {
       const newSeasons = existingSeasons.map((season) => {
-        if (seasons.includes(season.seasonNumber)) {
-          season.monitored = true;
+        // Create a new season object to avoid mutating the original
+        const newSeason: SonarrSeason = {
+          ...season,
+          monitored: false, // Default to false, then apply logic
+        };
+
+        // If we have a specific monitor type, use that logic
+        if (monitorType && monitorType !== 'all') {
+          newSeason.monitored = this.shouldMonitorSeason(
+            season.seasonNumber,
+            monitorType,
+            existingSeasons
+          );
+        } else {
+          // Default behavior: monitor seasons that are in the request
+          newSeason.monitored = seasons.includes(season.seasonNumber);
         }
-        return season;
+        return newSeason;
       });
 
       return newSeasons;
@@ -341,6 +372,39 @@ class SonarrAPI extends ServarrBase<{
     );
 
     return newSeasons;
+  }
+
+  private shouldMonitorSeason(
+    seasonNumber: number,
+    monitorType: string,
+    allSeasons: SonarrSeason[]
+  ): boolean {
+    switch (monitorType) {
+      case 'future':
+        // Monitor all seasons - Sonarr will handle future episodes internally
+        return true;
+      case 'missing':
+        // Monitor all seasons - Sonarr will determine what's missing
+        return true;
+      case 'existing':
+        // Monitor all seasons - Sonarr will determine what exists
+        return true;
+      case 'firstSeason': {
+        // Monitor only the first season (season 1, or first non-zero season)
+        const firstSeason = allSeasons.find((s) => s.seasonNumber > 0);
+        return seasonNumber === (firstSeason?.seasonNumber ?? 1);
+      }
+      case 'latestSeason': {
+        // Monitor only the latest season
+        const latestSeason = Math.max(...allSeasons.map((s) => s.seasonNumber));
+        return seasonNumber === latestSeason;
+      }
+      case 'none':
+        return false;
+      case 'all':
+      default:
+        return true;
+    }
   }
 }
 

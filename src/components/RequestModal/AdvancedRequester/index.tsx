@@ -36,6 +36,14 @@ const messages = defineMessages({
   tags: 'Tags',
   selecttags: 'Select tags',
   notagoptions: 'No tags.',
+  monitortype: 'Monitor Type',
+  monitorall: 'All Episodes',
+  monitorfuture: 'Future Episodes',
+  monitormissing: 'Missing Episodes',
+  monitorexisting: 'Existing Episodes',
+  monitorfirstseason: 'First Season',
+  monitorlatestseason: 'Latest Season',
+  monitornone: 'None',
 });
 
 export type RequestOverrides = {
@@ -45,6 +53,7 @@ export type RequestOverrides = {
   tags?: number[];
   language?: number;
   user?: User;
+  monitorType?: string;
 };
 
 interface AdvancedRequesterProps {
@@ -94,6 +103,26 @@ const AdvancedRequester = ({
   const [selectedTags, setSelectedTags] = useState<number[]>(
     defaultOverrides?.tags ?? []
   );
+
+  const [selectedMonitorType, setSelectedMonitorType] = useState<string>(
+    defaultOverrides?.monitorType ?? 'all'
+  );
+
+  const monitorTypeOptions = [
+    { value: 'all', label: intl.formatMessage(messages.monitorall) },
+    { value: 'future', label: intl.formatMessage(messages.monitorfuture) },
+    { value: 'missing', label: intl.formatMessage(messages.monitormissing) },
+    { value: 'existing', label: intl.formatMessage(messages.monitorexisting) },
+    {
+      value: 'firstSeason',
+      label: intl.formatMessage(messages.monitorfirstseason),
+    },
+    {
+      value: 'latestSeason',
+      label: intl.formatMessage(messages.monitorlatestseason),
+    },
+    { value: 'none', label: intl.formatMessage(messages.monitornone) },
+  ];
 
   const { data: serverData, isValidating } =
     useSWR<ServiceCommonServerWithDetails>(
@@ -251,6 +280,10 @@ const AdvancedRequester = ({
       setSelectedLanguage(defaultOverrides.language);
     }
 
+    if (defaultOverrides && defaultOverrides.monitorType != null) {
+      setSelectedMonitorType(defaultOverrides.monitorType);
+    }
+
     if (defaultOverrides && defaultOverrides.tags != null) {
       setSelectedTags(defaultOverrides.tags);
     }
@@ -260,6 +293,7 @@ const AdvancedRequester = ({
     defaultOverrides?.profile,
     defaultOverrides?.language,
     defaultOverrides?.tags,
+    defaultOverrides?.monitorType,
   ]);
 
   useEffect(() => {
@@ -271,6 +305,8 @@ const AdvancedRequester = ({
         user: selectedUser ?? undefined,
         language: selectedLanguage !== -1 ? selectedLanguage : undefined,
         tags: selectedTags,
+        monitorType:
+          selectedMonitorType !== 'all' ? selectedMonitorType : undefined,
       });
     }
   }, [
@@ -280,6 +316,7 @@ const AdvancedRequester = ({
     selectedUser,
     selectedLanguage,
     selectedTags,
+    selectedMonitorType,
   ]);
 
   if (!data && !error) {
@@ -311,152 +348,51 @@ const AdvancedRequester = ({
       </div>
       <div className="rounded-md">
         {!!data && selectedServer !== null && (
-          <div className="flex flex-col md:flex-row">
-            {data.filter((server) => server.is4k === is4k).length > 1 && (
-              <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
-                <label htmlFor="server">
-                  {intl.formatMessage(messages.destinationserver)}
-                </label>
-                <select
-                  id="server"
-                  name="server"
-                  value={selectedServer}
-                  onChange={(e) => setSelectedServer(Number(e.target.value))}
-                  onBlur={(e) => setSelectedServer(Number(e.target.value))}
-                  className="border-gray-700 bg-gray-800"
-                >
-                  {data
-                    .filter((server) => server.is4k === is4k)
-                    .map((server) => (
-                      <option
-                        key={`server-list-${server.id}`}
-                        value={server.id}
-                      >
-                        {server.isDefault
-                          ? intl.formatMessage(messages.default, {
-                              name: server.name,
-                            })
-                          : server.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            )}
-            {(isValidating ||
-              !serverData ||
-              serverData.profiles.length > 1) && (
-              <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
-                <label htmlFor="profile">
-                  {intl.formatMessage(messages.qualityprofile)}
-                </label>
-                <select
-                  id="profile"
-                  name="profile"
-                  value={selectedProfile}
-                  onChange={(e) => setSelectedProfile(Number(e.target.value))}
-                  onBlur={(e) => setSelectedProfile(Number(e.target.value))}
-                  className="border-gray-700 bg-gray-800"
-                  disabled={isValidating || !serverData}
-                >
-                  {(isValidating || !serverData) && (
-                    <option value="">
-                      {intl.formatMessage(globalMessages.loading)}
-                    </option>
-                  )}
-                  {!isValidating &&
-                    serverData &&
-                    serverData.profiles.map((profile) => (
-                      <option
-                        key={`profile-list${profile.id}`}
-                        value={profile.id}
-                      >
-                        {isAnime &&
-                        serverData.server.activeAnimeProfileId === profile.id
-                          ? intl.formatMessage(messages.default, {
-                              name: profile.name,
-                            })
-                          : !isAnime &&
-                            serverData.server.activeProfileId === profile.id
-                          ? intl.formatMessage(messages.default, {
-                              name: profile.name,
-                            })
-                          : profile.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            )}
-            {(isValidating ||
-              !serverData ||
-              serverData.rootFolders.length > 1) && (
-              <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
-                <label htmlFor="folder">
-                  {intl.formatMessage(messages.rootfolder)}
-                </label>
-                <select
-                  id="folder"
-                  name="folder"
-                  value={selectedFolder}
-                  onChange={(e) => setSelectedFolder(e.target.value)}
-                  onBlur={(e) => setSelectedFolder(e.target.value)}
-                  className="border-gray-700 bg-gray-800"
-                  disabled={isValidating || !serverData}
-                >
-                  {(isValidating || !serverData) && (
-                    <option value="">
-                      {intl.formatMessage(globalMessages.loading)}
-                    </option>
-                  )}
-                  {!isValidating &&
-                    serverData &&
-                    serverData.rootFolders.map((folder) => (
-                      <option
-                        key={`folder-list${folder.id}`}
-                        value={folder.path}
-                      >
-                        {isAnime &&
-                        serverData.server.activeAnimeDirectory === folder.path
-                          ? intl.formatMessage(messages.default, {
-                              name: intl.formatMessage(messages.folder, {
-                                path: folder.path,
-                                space: formatBytes(folder.freeSpace ?? 0),
-                              }),
-                            })
-                          : !isAnime &&
-                            serverData.server.activeDirectory === folder.path
-                          ? intl.formatMessage(messages.default, {
-                              name: intl.formatMessage(messages.folder, {
-                                path: folder.path,
-                                space: formatBytes(folder.freeSpace ?? 0),
-                              }),
-                            })
-                          : intl.formatMessage(messages.folder, {
-                              path: folder.path,
-                              space: formatBytes(folder.freeSpace ?? 0),
-                            })}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            )}
-            {type === 'tv' &&
-              (isValidating ||
-                !serverData ||
-                (serverData.languageProfiles ?? []).length > 1) && (
+          <div className="overflow-x-auto">
+            <div className="flex flex-col md:min-w-max md:flex-row">
+              {data.filter((server) => server.is4k === is4k).length > 1 && (
                 <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
-                  <label htmlFor="language">
-                    {intl.formatMessage(messages.languageprofile)}
+                  <label htmlFor="server">
+                    {intl.formatMessage(messages.destinationserver)}
                   </label>
                   <select
-                    id="language"
-                    name="language"
-                    value={selectedLanguage}
-                    onChange={(e) =>
-                      setSelectedLanguage(parseInt(e.target.value))
-                    }
-                    onBlur={(e) =>
-                      setSelectedLanguage(parseInt(e.target.value))
-                    }
+                    id="server"
+                    name="server"
+                    value={selectedServer}
+                    onChange={(e) => setSelectedServer(Number(e.target.value))}
+                    onBlur={(e) => setSelectedServer(Number(e.target.value))}
+                    className="border-gray-700 bg-gray-800"
+                  >
+                    {data
+                      .filter((server) => server.is4k === is4k)
+                      .map((server) => (
+                        <option
+                          key={`server-list-${server.id}`}
+                          value={server.id}
+                        >
+                          {server.isDefault
+                            ? intl.formatMessage(messages.default, {
+                                name: server.name,
+                              })
+                            : server.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
+              {(isValidating ||
+                !serverData ||
+                serverData.profiles.length > 1) && (
+                <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
+                  <label htmlFor="profile">
+                    {intl.formatMessage(messages.qualityprofile)}
+                  </label>
+                  <select
+                    id="profile"
+                    name="profile"
+                    value={selectedProfile}
+                    onChange={(e) => setSelectedProfile(Number(e.target.value))}
+                    onBlur={(e) => setSelectedProfile(Number(e.target.value))}
                     className="border-gray-700 bg-gray-800"
                     disabled={isValidating || !serverData}
                   >
@@ -467,29 +403,153 @@ const AdvancedRequester = ({
                     )}
                     {!isValidating &&
                       serverData &&
-                      serverData.languageProfiles?.map((language) => (
+                      serverData.profiles.map((profile) => (
                         <option
-                          key={`folder-list${language.id}`}
-                          value={language.id}
+                          key={`profile-list${profile.id}`}
+                          value={profile.id}
                         >
                           {isAnime &&
-                          serverData.server.activeAnimeLanguageProfileId ===
-                            language.id
+                          serverData.server.activeAnimeProfileId === profile.id
                             ? intl.formatMessage(messages.default, {
-                                name: language.name,
+                                name: profile.name,
                               })
                             : !isAnime &&
-                              serverData.server.activeLanguageProfileId ===
-                                language.id
+                              serverData.server.activeProfileId === profile.id
                             ? intl.formatMessage(messages.default, {
-                                name: language.name,
+                                name: profile.name,
                               })
-                            : language.name}
+                            : profile.name}
                         </option>
                       ))}
                   </select>
                 </div>
               )}
+              {(isValidating ||
+                !serverData ||
+                serverData.rootFolders.length > 1) && (
+                <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
+                  <label htmlFor="folder">
+                    {intl.formatMessage(messages.rootfolder)}
+                  </label>
+                  <select
+                    id="folder"
+                    name="folder"
+                    value={selectedFolder}
+                    onChange={(e) => setSelectedFolder(e.target.value)}
+                    onBlur={(e) => setSelectedFolder(e.target.value)}
+                    className="border-gray-700 bg-gray-800"
+                    disabled={isValidating || !serverData}
+                  >
+                    {(isValidating || !serverData) && (
+                      <option value="">
+                        {intl.formatMessage(globalMessages.loading)}
+                      </option>
+                    )}
+                    {!isValidating &&
+                      serverData &&
+                      serverData.rootFolders.map((folder) => (
+                        <option
+                          key={`folder-list${folder.id}`}
+                          value={folder.path}
+                        >
+                          {isAnime &&
+                          serverData.server.activeAnimeDirectory === folder.path
+                            ? intl.formatMessage(messages.default, {
+                                name: intl.formatMessage(messages.folder, {
+                                  path: folder.path,
+                                  space: formatBytes(folder.freeSpace ?? 0),
+                                }),
+                              })
+                            : !isAnime &&
+                              serverData.server.activeDirectory === folder.path
+                            ? intl.formatMessage(messages.default, {
+                                name: intl.formatMessage(messages.folder, {
+                                  path: folder.path,
+                                  space: formatBytes(folder.freeSpace ?? 0),
+                                }),
+                              })
+                            : intl.formatMessage(messages.folder, {
+                                path: folder.path,
+                                space: formatBytes(folder.freeSpace ?? 0),
+                              })}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
+              {type === 'tv' &&
+                (isValidating ||
+                  !serverData ||
+                  (serverData.languageProfiles ?? []).length > 1) && (
+                  <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
+                    <label htmlFor="language">
+                      {intl.formatMessage(messages.languageprofile)}
+                    </label>
+                    <select
+                      id="language"
+                      name="language"
+                      value={selectedLanguage}
+                      onChange={(e) =>
+                        setSelectedLanguage(parseInt(e.target.value))
+                      }
+                      onBlur={(e) =>
+                        setSelectedLanguage(parseInt(e.target.value))
+                      }
+                      className="border-gray-700 bg-gray-800"
+                      disabled={isValidating || !serverData}
+                    >
+                      {(isValidating || !serverData) && (
+                        <option value="">
+                          {intl.formatMessage(globalMessages.loading)}
+                        </option>
+                      )}
+                      {!isValidating &&
+                        serverData &&
+                        serverData.languageProfiles?.map((language) => (
+                          <option
+                            key={`folder-list${language.id}`}
+                            value={language.id}
+                          >
+                            {isAnime &&
+                            serverData.server.activeAnimeLanguageProfileId ===
+                              language.id
+                              ? intl.formatMessage(messages.default, {
+                                  name: language.name,
+                                })
+                              : !isAnime &&
+                                serverData.server.activeLanguageProfileId ===
+                                  language.id
+                              ? intl.formatMessage(messages.default, {
+                                  name: language.name,
+                                })
+                              : language.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                )}
+              {type === 'tv' && (
+                <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
+                  <label htmlFor="monitorType">
+                    {intl.formatMessage(messages.monitortype)}
+                  </label>
+                  <select
+                    id="monitorType"
+                    name="monitorType"
+                    value={selectedMonitorType}
+                    onChange={(e) => setSelectedMonitorType(e.target.value)}
+                    onBlur={(e) => setSelectedMonitorType(e.target.value)}
+                    className="border-gray-700 bg-gray-800"
+                  >
+                    {monitorTypeOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+            </div>
           </div>
         )}
         {selectedServer !== null &&
