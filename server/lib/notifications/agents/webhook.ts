@@ -32,6 +32,8 @@ const KeyMap: Record<string, string | KeyMapFunction> = {
     payload.media ? MediaStatus[payload.media.status] : '',
   media_status4k: (payload) =>
     payload.media ? MediaStatus[payload.media.status4k] : '',
+  media_ratingKey: (payload) => payload.media?.ratingKey ?? '',
+  media_ratingKey4k: (payload) => payload.media?.ratingKey4k ?? '',
   request_id: 'request.id',
   requestedBy_username: 'request.requestedBy.displayName',
   requestedBy_email: 'request.requestedBy.email',
