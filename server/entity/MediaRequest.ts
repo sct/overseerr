@@ -454,6 +454,9 @@ export class MediaRequest {
   @Column({ default: false })
   public isAutoRequest: boolean;
 
+  @Column({ nullable: true, type: 'text' })
+  public declineReason?: string;
+
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }
@@ -594,6 +597,18 @@ export class MediaRequest {
 
       if (entity.type === MediaType.MOVIE) {
         const movie = await tmdb.getMovie({ movieId: media.tmdbId });
+
+        // For declined requests, include the decline reason in the message
+        let notificationMessage = truncate(movie.overview, {
+          length: 500,
+          separator: /\s/,
+          omission: '…',
+        });
+
+        if (type === Notification.MEDIA_DECLINED && entity.declineReason) {
+          notificationMessage = `Decline reason: ${entity.declineReason}\n\n${notificationMessage}`;
+        }
+
         notificationManager.sendNotification(type, {
           media,
           request: entity,
@@ -604,15 +619,40 @@ export class MediaRequest {
           subject: `${movie.title}${
             movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
           }`,
-          message: truncate(movie.overview, {
-            length: 500,
-            separator: /\s/,
-            omission: '…',
-          }),
+          message: notificationMessage,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
         });
       } else if (entity.type === MediaType.TV) {
         const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
+
+        // For declined requests, include the decline reason in the message
+        let notificationMessage = truncate(tv.overview, {
+          length: 500,
+          separator: /\s/,
+          omission: '…',
+        });
+
+        if (type === Notification.MEDIA_DECLINED && entity.declineReason) {
+          notificationMessage = `Decline reason: ${entity.declineReason}\n\n${notificationMessage}`;
+        }
+
+        const extraFields = [
+          {
+            name: 'Requested Seasons',
+            value: entity.seasons
+              .map((season) => season.seasonNumber)
+              .join(', '),
+          },
+        ];
+
+        // Add decline reason as an extra field for declined requests
+        if (type === Notification.MEDIA_DECLINED && entity.declineReason) {
+          extraFields.unshift({
+            name: 'Decline Reason',
+            value: entity.declineReason,
+          });
+        }
+
         notificationManager.sendNotification(type, {
           media,
           request: entity,
@@ -623,20 +663,9 @@ export class MediaRequest {
           subject: `${tv.name}${
             tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
           }`,
-          message: truncate(tv.overview, {
-            length: 500,
-            separator: /\s/,
-            omission: '…',
-          }),
+          message: notificationMessage,
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
-          extra: [
-            {
-              name: 'Requested Seasons',
-              value: entity.seasons
-                .map((season) => season.seasonNumber)
-                .join(', '),
-            },
-          ],
+          extra: extraFields,
         });
       }
     } catch (e) {

@@ -2,12 +2,16 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import ConfirmButton from '@app/components/Common/ConfirmButton';
+import Tooltip from '@app/components/Common/Tooltip';
+import DeclineReasonModal from '@app/components/DeclineReasonModal';
 import RequestModal from '@app/components/RequestModal';
 import StatusBadge from '@app/components/StatusBadge';
+import { useDeclineReasons } from '@app/hooks/useDeclineReasons';
 import useDeepLinks from '@app/hooks/useDeepLinks';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
+import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import {
   ArrowPathIcon,
   CheckIcon,
@@ -21,7 +25,7 @@ import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -38,6 +42,7 @@ const messages = defineMessages({
   editrequest: 'Edit Request',
   deleterequest: 'Delete Request',
   cancelRequest: 'Cancel Request',
+  declinewithreason: 'Decline With Reason',
   tmdbid: 'TMDB ID',
   tvdbid: 'TheTVDB ID',
   unknowntitle: 'Unknown Title',
@@ -58,6 +63,57 @@ const RequestItemError = ({
 }: RequestItemErrorProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
+  const [isTextTruncated, setIsTextTruncated] = useState(false);
+  const textElementRef = useRef<HTMLSpanElement>(null);
+
+  const getDeclineText = (reason: string) =>
+    `${intl.formatMessage(globalMessages.declined)} - ${reason}`;
+
+  const checkTruncation = useCallback(() => {
+    if (textElementRef.current) {
+      const element = textElementRef.current;
+      const isOverflowing = element.scrollWidth > element.clientWidth;
+      setIsTextTruncated(isOverflowing);
+    }
+  }, []);
+
+  const setTextElementRef = useCallback(
+    (node: HTMLSpanElement | null) => {
+      if (textElementRef.current !== node) {
+        (
+          textElementRef as React.MutableRefObject<HTMLSpanElement | null>
+        ).current = node;
+        if (node) {
+          setTimeout(() => {
+            checkTruncation();
+          }, 0);
+        }
+      }
+    },
+    [checkTruncation]
+  );
+
+  useEffect(() => {
+    if (requestData?.declineReason) {
+      const timeoutId = setTimeout(() => {
+        checkTruncation();
+      }, 0);
+
+      // Use ResizeObserver to detect when container size changes
+      const resizeObserver = new ResizeObserver(() => {
+        checkTruncation();
+      });
+
+      if (textElementRef.current) {
+        resizeObserver.observe(textElementRef.current);
+      }
+
+      return () => {
+        clearTimeout(timeoutId);
+        resizeObserver.disconnect();
+      };
+    }
+  }, [checkTruncation, requestData?.declineReason]);
 
   const deleteRequest = async () => {
     await axios.delete(`/api/v1/media/${requestData?.media.id}`);
@@ -119,11 +175,41 @@ const RequestItemError = ({
                 </span>
                 {requestData.status === MediaRequestStatus.DECLINED ||
                 requestData.status === MediaRequestStatus.FAILED ? (
-                  <Badge badgeType="danger">
-                    {requestData.status === MediaRequestStatus.DECLINED
-                      ? intl.formatMessage(globalMessages.declined)
-                      : intl.formatMessage(globalMessages.failed)}
-                  </Badge>
+                  requestData.status === MediaRequestStatus.DECLINED ? (
+                    requestData.declineReason ? (
+                      <>
+                        {isTextTruncated ? (
+                          <Tooltip
+                            content={getDeclineText(requestData.declineReason)}
+                            className="!rounded-full !border-red-700 !bg-red-600 !px-2 !py-1 !text-xs !font-semibold !text-white"
+                          >
+                            <Badge badgeType="danger" className="min-w-0">
+                              <span
+                                ref={setTextElementRef}
+                                className="truncate"
+                              >
+                                {getDeclineText(requestData.declineReason)}
+                              </span>
+                            </Badge>
+                          </Tooltip>
+                        ) : (
+                          <Badge badgeType="danger" className="min-w-0">
+                            <span ref={setTextElementRef} className="truncate">
+                              {getDeclineText(requestData.declineReason)}
+                            </span>
+                          </Badge>
+                        )}
+                      </>
+                    ) : (
+                      <Badge badgeType="danger">
+                        {intl.formatMessage(globalMessages.declined)}
+                      </Badge>
+                    )
+                  ) : (
+                    <Badge badgeType="danger">
+                      {intl.formatMessage(globalMessages.failed)}
+                    </Badge>
+                  )
                 ) : (
                   <StatusBadge
                     status={
@@ -284,6 +370,39 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [isTextTruncated, setIsTextTruncated] = useState(false);
+  const textElementRef = useRef<HTMLSpanElement>(null);
+
+  useDeclineReasons();
+
+  const getDeclineText = (reason: string) =>
+    `${intl.formatMessage(globalMessages.declined)} - ${reason}`;
+
+  const checkTruncation = useCallback(() => {
+    if (textElementRef.current) {
+      const element = textElementRef.current;
+      const isOverflowing = element.scrollWidth > element.clientWidth;
+      setIsTextTruncated(isOverflowing);
+    }
+  }, []);
+
+  const setTextElementRef = useCallback(
+    (node: HTMLSpanElement | null) => {
+      if (textElementRef.current !== node) {
+        (
+          textElementRef as React.MutableRefObject<HTMLSpanElement | null>
+        ).current = node;
+        if (node) {
+          setTimeout(() => {
+            checkTruncation();
+          }, 0);
+        }
+      }
+    },
+    [checkTruncation]
+  );
+
   const url =
     request.type === 'movie'
       ? `/api/v1/movie/${request.media.tmdbId}`
@@ -304,6 +423,28 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
       ),
     }
   );
+
+  useEffect(() => {
+    if (requestData?.declineReason) {
+      const timeoutId = setTimeout(() => {
+        checkTruncation();
+      }, 0);
+
+      // Use ResizeObserver to detect when container size changes
+      const resizeObserver = new ResizeObserver(() => {
+        checkTruncation();
+      });
+
+      if (textElementRef.current) {
+        resizeObserver.observe(textElementRef.current);
+      }
+
+      return () => {
+        clearTimeout(timeoutId);
+        resizeObserver.disconnect();
+      };
+    }
+  }, [checkTruncation, requestData?.declineReason]);
 
   const [isRetrying, setRetrying] = useState(false);
 
@@ -378,6 +519,17 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
           setShowEditModal(false);
         }}
       />
+      {showDeclineModal && (
+        <DeclineReasonModal
+          request={requestData}
+          onCancel={() => setShowDeclineModal(false)}
+          onComplete={() => {
+            setShowDeclineModal(false);
+            revalidateList();
+            mutate('/api/v1/request/count');
+          }}
+        />
+      )}
       <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
         {title.backdropPath && (
           <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
@@ -469,9 +621,32 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                 {intl.formatMessage(globalMessages.status)}
               </span>
               {requestData.status === MediaRequestStatus.DECLINED ? (
-                <Badge badgeType="danger">
-                  {intl.formatMessage(globalMessages.declined)}
-                </Badge>
+                requestData.declineReason ? (
+                  <>
+                    {isTextTruncated ? (
+                      <Tooltip
+                        content={getDeclineText(requestData.declineReason)}
+                        className="!rounded-full !border-red-700 !bg-red-600 !px-2 !py-1 !text-xs !font-semibold !text-white"
+                      >
+                        <Badge badgeType="danger" className="min-w-0">
+                          <span ref={setTextElementRef} className="truncate">
+                            {getDeclineText(requestData.declineReason)}
+                          </span>
+                        </Badge>
+                      </Tooltip>
+                    ) : (
+                      <Badge badgeType="danger" className="min-w-0">
+                        <span ref={setTextElementRef} className="truncate">
+                          {getDeclineText(requestData.declineReason)}
+                        </span>
+                      </Badge>
+                    )}
+                  </>
+                ) : (
+                  <Badge badgeType="danger">
+                    {intl.formatMessage(globalMessages.declined)}
+                  </Badge>
+                )
               ) : requestData.status === MediaRequestStatus.FAILED ? (
                 <Badge
                   badgeType="danger"
@@ -658,14 +833,22 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                     <span>{intl.formatMessage(globalMessages.approve)}</span>
                   </Button>
                 </span>
-                <span className="w-full">
+                <span className="flex w-full">
                   <Button
-                    className="w-full"
+                    className="flex-grow"
                     buttonType="danger"
                     onClick={() => modifyRequest('decline')}
                   >
                     <XMarkIcon />
                     <span>{intl.formatMessage(globalMessages.decline)}</span>
+                  </Button>
+                  <Button
+                    className="ml-1 w-8 px-2"
+                    buttonType="danger"
+                    onClick={() => setShowDeclineModal(true)}
+                    title={intl.formatMessage(messages.declinewithreason)}
+                  >
+                    <DocumentTextIcon className="h-4 w-4" />
                   </Button>
                 </span>
               </div>

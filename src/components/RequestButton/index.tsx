@@ -1,9 +1,15 @@
+import Button from '@app/components/Common/Button';
 import ButtonWithDropdown from '@app/components/Common/ButtonWithDropdown';
+import DeclineReasonModal from '@app/components/DeclineReasonModal';
 import RequestModal from '@app/components/RequestModal';
+import { useDeclineReasons } from '@app/hooks/useDeclineReasons';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
-import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import {
+  ArrowDownTrayIcon,
+  DocumentTextIcon,
+} from '@heroicons/react/24/outline';
 import {
   CheckIcon,
   InformationCircleIcon,
@@ -26,6 +32,7 @@ const messages = defineMessages({
   approverequest4k: 'Approve 4K Request',
   declinerequest: 'Decline Request',
   declinerequest4k: 'Decline 4K Request',
+  declinewithreason: 'Decline With Reason',
   approverequests:
     'Approve {requestCount, plural, one {Request} other {{requestCount} Requests}}',
   declinerequests:
@@ -66,6 +73,12 @@ const RequestButton = ({
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [showRequest4kModal, setShowRequest4kModal] = useState(false);
   const [editRequest, setEditRequest] = useState(false);
+  const [showDeclineModal, setShowDeclineModal] = useState(false);
+  const [declineRequest, setDeclineRequest] = useState<MediaRequest | null>(
+    null
+  );
+
+  useDeclineReasons();
 
   // All pending requests
   const activeRequests = media?.requests.filter(
@@ -162,6 +175,15 @@ const RequestButton = ({
             modifyRequest(activeRequest, 'decline');
           },
           svg: <XMarkIcon />,
+        },
+        {
+          id: 'decline-request-with-reason',
+          text: intl.formatMessage(messages.declinewithreason),
+          action: () => {
+            setDeclineRequest(activeRequest);
+            setShowDeclineModal(true);
+          },
+          svg: <XMarkIcon />,
         }
       );
     } else if (
@@ -230,6 +252,15 @@ const RequestButton = ({
           text: intl.formatMessage(messages.declinerequest4k),
           action: () => {
             modifyRequest(active4kRequest, 'decline');
+          },
+          svg: <XMarkIcon />,
+        },
+        {
+          id: 'decline-4k-request-with-reason',
+          text: intl.formatMessage(messages.declinewithreason),
+          action: () => {
+            setDeclineRequest(active4kRequest);
+            setShowDeclineModal(true);
           },
           svg: <XMarkIcon />,
         }
@@ -387,28 +418,77 @@ const RequestButton = ({
         }}
         onCancel={() => setShowRequest4kModal(false)}
       />
-      <ButtonWithDropdown
-        text={
-          <>
-            {buttonOne.svg}
-            <span>{buttonOne.text}</span>
-          </>
-        }
-        onClick={buttonOne.action}
-        className="ml-2"
-      >
-        {others && others.length > 0
-          ? others.map((button) => (
-              <ButtonWithDropdown.Item
-                onClick={button.action}
-                key={`request-option-${button.id}`}
-              >
-                {button.svg}
-                <span>{button.text}</span>
-              </ButtonWithDropdown.Item>
-            ))
-          : null}
-      </ButtonWithDropdown>
+      {showDeclineModal && declineRequest && (
+        <DeclineReasonModal
+          request={declineRequest}
+          onCancel={() => {
+            setShowDeclineModal(false);
+            setDeclineRequest(null);
+          }}
+          onComplete={() => {
+            setShowDeclineModal(false);
+            setDeclineRequest(null);
+            onUpdate();
+          }}
+        />
+      )}
+      {buttons.length === 1 ? (
+        <Button
+          buttonType="primary"
+          onClick={buttonOne.action}
+          className="ml-2"
+        >
+          {buttonOne.svg}
+          <span>{buttonOne.text}</span>
+        </Button>
+      ) : buttons.length === 2 &&
+        buttons[0].id.includes('decline') &&
+        buttons[1].id.includes('decline-') &&
+        buttons[1].id.includes('-with-reason') ? (
+        // Special case: decline + decline with reason - render side by side
+        <div className="ml-2 flex">
+          <Button
+            buttonType="danger"
+            onClick={buttons[0].action}
+            className="flex-grow"
+          >
+            {buttons[0].svg}
+            <span>{buttons[0].text}</span>
+          </Button>
+          <Button
+            buttonType="danger"
+            onClick={buttons[1].action}
+            className="w-8 px-2"
+            style={{ marginLeft: '8px' }}
+            title={intl.formatMessage(messages.declinewithreason)}
+          >
+            <DocumentTextIcon className="h-4 w-4" />
+          </Button>
+        </div>
+      ) : (
+        <ButtonWithDropdown
+          text={
+            <>
+              {buttonOne.svg}
+              <span>{buttonOne.text}</span>
+            </>
+          }
+          onClick={buttonOne.action}
+          className="ml-2"
+        >
+          {others && others.length > 0
+            ? others.map((button) => (
+                <ButtonWithDropdown.Item
+                  onClick={button.action}
+                  key={`request-option-${button.id}`}
+                >
+                  {button.svg}
+                  <span>{button.text}</span>
+                </ButtonWithDropdown.Item>
+              ))
+            : null}
+        </ButtonWithDropdown>
+      )}
     </>
   );
 };

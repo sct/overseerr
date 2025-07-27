@@ -548,6 +548,12 @@ requestRoutes.post<{
 
       request.status = newStatus;
       request.modifiedBy = req.user;
+
+      // If declining with a reason, save the decline reason
+      if (newStatus === MediaRequestStatus.DECLINED && req.body.reason) {
+        request.declineReason = req.body.reason;
+      }
+
       await requestRepository.save(request);
 
       return res.status(200).json(request);
