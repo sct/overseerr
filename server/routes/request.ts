@@ -370,7 +370,10 @@ requestRoutes.put<{ requestId: string }>(
         request.tags = req.body.tags;
         request.requestedBy = requestUser as User;
 
-        requestRepository.save(request);
+        await requestRepository.save(request);
+
+        // Send MEDIA_PENDING_UPDATED notification for the updated request
+        await request.notifyRequestUpdated();
       } else if (req.body.mediaType === MediaType.TV) {
         const mediaRepository = getRepository(Media);
         request.serverId = req.body.serverId;
@@ -447,6 +450,9 @@ requestRoutes.put<{ requestId: string }>(
         }
 
         await requestRepository.save(request);
+
+        // Send MEDIA_PENDING_UPDATED notification for the updated request
+        await request.notifyRequestUpdated();
       }
 
       return res.status(200).json(request);

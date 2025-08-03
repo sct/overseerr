@@ -95,6 +95,11 @@ class WebPushAgent
           payload.request?.requestedBy.displayName
         }.`;
         break;
+      case Notification.MEDIA_PENDING_UPDATED:
+        message = `Updated ${is4k ? '4K ' : ''}${mediaType} request from ${
+          payload.request?.requestedBy.displayName
+        } requires approval.`;
+        break;
       case Notification.ISSUE_CREATED:
         message = `A new ${issueType} was reported by ${payload.issue?.createdBy.displayName}.`;
         break;

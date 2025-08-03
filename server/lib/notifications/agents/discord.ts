@@ -127,6 +127,10 @@ class DiscordAgent
           color = EmbedColors.ORANGE;
           status = 'Pending Approval';
           break;
+        case Notification.MEDIA_PENDING_UPDATED:
+          color = EmbedColors.ORANGE;
+          status = 'Pending Approval (Updated)';
+          break;
         case Notification.MEDIA_APPROVED:
         case Notification.MEDIA_AUTO_APPROVED:
           color = EmbedColors.PURPLE;
