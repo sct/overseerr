@@ -13,7 +13,7 @@ const messages = defineMessages({
     'Send notifications when users submit new media requests which require approval.',
   usermediarequestedDescription:
     'Get notified when other users submit new media requests which require approval.',
-  mediarequestedupdated: 'Request Updated',
+  mediarequestedupdated: 'Request Pending Updated',
   mediarequestedupdatedDescription:
     'Send notifications when pending media requests are updated.',
   usermediarequestedupdatedDescription:
