@@ -49,6 +49,7 @@ export const hasNotificationType = (
 export const getAdminPermission = (type: Notification): Permission => {
   switch (type) {
     case Notification.MEDIA_PENDING:
+    case Notification.MEDIA_PENDING_UPDATED:
     case Notification.MEDIA_APPROVED:
     case Notification.MEDIA_AVAILABLE:
     case Notification.MEDIA_FAILED:
