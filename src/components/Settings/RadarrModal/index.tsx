@@ -736,6 +736,114 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                     />
                   </div>
                 </div>
+                <div className="form-row">
+                  <label htmlFor="activeAnimeProfileId" className="text-label">
+                    Anime Quality Profile
+                  </label>
+                  <div className="form-input-area">
+                    <div className="form-input-field">
+                      <Field
+                        as="select"
+                        id="activeAnimeProfileId"
+                        name="activeAnimeProfileId"
+                        disabled={!isValidated || isTesting}
+                      >
+                        <option value="">
+                          {isTesting
+                            ? 'Loading profiles...'
+                            : !isValidated
+                            ? 'Test connection to load profiles'
+                            : 'Select a quality profile'}
+                        </option>
+                        {testResponse.profiles?.map((profile) => (
+                          <option key={`anime-profile-${profile.id}`} value={profile.id}>
+                            {profile.name}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="activeAnimeDirectory" className="text-label">
+                    Anime Root Folder
+                  </label>
+                  <div className="form-input-area">
+                    <div className="form-input-field">
+                      <Field
+                        as="select"
+                        id="activeAnimeDirectory"
+                        name="activeAnimeDirectory"
+                        disabled={!isValidated || isTesting}
+                      >
+                        <option value="">
+                          {isTesting
+                            ? 'Loading root folders...'
+                            : !isValidated
+                            ? 'Test connection to load root folders'
+                            : 'Select a root folder'}
+                        </option>
+                        {testResponse.rootFolders?.map((folder) => (
+                          <option key={`anime-folder-${folder.id}`} value={folder.path}>
+                            {folder.path}
+                          </option>
+                        ))}
+                      </Field>
+                    </div>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="animeTags" className="text-label">
+                    Anime Tags
+                  </label>
+                  <div className="form-input-area">
+                    <Select<OptionType, true>
+                      options={
+                        isValidated
+                          ? testResponse.tags?.map((tag) => ({
+                              label: tag.label,
+                              value: tag.id,
+                            }))
+                          : []
+                      }
+                      isMulti
+                      isDisabled={!isValidated}
+                      placeholder={
+                        !isValidated
+                          ? 'Test connection to load tags'
+                          : isTesting
+                          ? 'Loading tags...'
+                          : 'Select tags'
+                      }
+                      isLoading={isTesting}
+                      className="react-select-container"
+                      classNamePrefix="react-select"
+                      value={
+                        isTesting
+                          ? []
+                          : (values.animeTags
+                              ?.map((tagId) => {
+                                const foundTag = testResponse.tags?.find(
+                                  (tag) => tag.id === tagId
+                                );
+                                if (!foundTag) return undefined;
+                                return {
+                                  value: foundTag.id,
+                                  label: foundTag.label,
+                                };
+                              })
+                              .filter((option) => option !== undefined) as OptionType[])
+                      }
+                      onChange={(value) => {
+                        setFieldValue(
+                          'animeTags',
+                          value.map((option) => option.value)
+                        );
+                      }}
+                      noOptionsMessage={() => 'No tag options'}
+                    />
+                  </div>
+                </div>
               </div>
             </Modal>
           );

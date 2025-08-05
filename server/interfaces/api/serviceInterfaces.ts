@@ -23,3 +23,11 @@ export interface ServiceCommonServerWithDetails {
   languageProfiles?: LanguageProfile[];
   tags: Tag[];
 }
+
+export interface RadarrSettings extends DVRSettings {
+  minimumAvailability: string;
+  activeAnimeProfileId?: number;
+  activeAnimeProfileName?: string;
+  activeAnimeDirectory?: string;
+  animeTags?: number[];
+}

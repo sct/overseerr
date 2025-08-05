@@ -186,47 +186,24 @@ export class MediaRequestSubscriber
           return;
         }
 
-        let rootFolder = radarrSettings.activeDirectory;
-        let qualityProfile = radarrSettings.activeProfileId;
-        let tags = radarrSettings.tags ? [...radarrSettings.tags] : [];
+        // Pseudocode for context:
+        const isAnime =
+          entity.tags?.includes('anime') ||
+          entity.mediaInfo?.genres?.includes('Animation') ||
+          entity.mediaInfo?.keywords?.includes('anime');
 
-        if (
-          entity.rootFolder &&
-          entity.rootFolder !== '' &&
-          entity.rootFolder !== radarrSettings.activeDirectory
-        ) {
-          rootFolder = entity.rootFolder;
-          logger.info(`Request has an override root folder: ${rootFolder}`, {
-            label: 'Media Request',
-            requestId: entity.id,
-            mediaId: entity.media.id,
-          });
-        }
+        // Use anime settings if anime, otherwise use default
+        const profileId = isAnime
+          ? radarrSettings.activeAnimeProfileId || radarrSettings.activeProfileId
+          : radarrSettings.activeProfileId;
 
-        if (
-          entity.profileId &&
-          entity.profileId !== radarrSettings.activeProfileId
-        ) {
-          qualityProfile = entity.profileId;
-          logger.info(
-            `Request has an override quality profile ID: ${qualityProfile}`,
-            {
-              label: 'Media Request',
-              requestId: entity.id,
-              mediaId: entity.media.id,
-            }
-          );
-        }
+        const rootFolder = isAnime
+          ? radarrSettings.activeAnimeDirectory || radarrSettings.activeDirectory
+          : radarrSettings.activeDirectory;
 
-        if (entity.tags && !isEqual(entity.tags, radarrSettings.tags)) {
-          tags = entity.tags;
-          logger.info(`Request has override tags`, {
-            label: 'Media Request',
-            requestId: entity.id,
-            mediaId: entity.media.id,
-            tagIds: tags,
-          });
-        }
+        const tags = isAnime
+          ? radarrSettings.animeTags || radarrSettings.tags
+          : radarrSettings.tags;
 
         const tmdb = new TheMovieDb();
         const radarr = new RadarrAPI({
@@ -297,8 +274,8 @@ export class MediaRequestSubscriber
         }
 
         const radarrMovieOptions: RadarrMovieOptions = {
-          profileId: qualityProfile,
-          qualityProfileId: qualityProfile,
+          profileId: profileId,
+          qualityProfileId: profileId,
           rootFolderPath: rootFolder,
           minimumAvailability: radarrSettings.minimumAvailability,
           title: movie.title,
