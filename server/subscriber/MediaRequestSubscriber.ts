@@ -188,9 +188,11 @@ export class MediaRequestSubscriber
 
         // Pseudocode for context:
         const isAnime =
-          entity.tags?.includes('anime') ||
-          entity.mediaInfo?.genres?.includes('Animation') ||
-          entity.mediaInfo?.keywords?.includes('anime');
+          entity.media &&
+          (
+            entity.media.genres?.includes('Animation') ||
+            entity.media.keywords?.includes('anime')
+          );
 
         // Use anime settings if anime, otherwise use default
         const profileId = isAnime
