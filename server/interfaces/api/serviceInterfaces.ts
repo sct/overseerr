@@ -1,6 +1,7 @@
 import type { QualityProfile, RootFolder, Tag } from '@server/api/servarr/base';
 import type { LanguageProfile } from '@server/api/servarr/sonarr';
 import type { DVRSettings } from './dvrInterfaces';
+
 export interface ServiceCommonServer {
   id: number;
   name: string;
@@ -31,9 +32,3 @@ export interface RadarrSettings extends DVRSettings {
   activeAnimeDirectory?: string;
   animeTags?: number[];
 }
-
-interface FormValues {
-  // ...existing fields...
-  animeTags?: number[];
-  // ...existing fields...
-};

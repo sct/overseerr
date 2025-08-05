@@ -242,6 +242,9 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
           syncEnabled: radarr?.syncEnabled ?? false,
           enableSearch: !radarr?.preventSearch,
           tagRequests: radarr?.tagRequests ?? false,
+          activeAnimeProfileId: radarr?.activeAnimeProfileId,
+          activeAnimeDirectory: radarr?.activeAnimeDirectory,
+          animeTags: radarr?.animeTags,
         }}
         validationSchema={RadarrSettingsSchema}
         onSubmit={async (values) => {
