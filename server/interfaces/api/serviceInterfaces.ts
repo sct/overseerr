@@ -1,6 +1,6 @@
 import type { QualityProfile, RootFolder, Tag } from '@server/api/servarr/base';
 import type { LanguageProfile } from '@server/api/servarr/sonarr';
-import type { DVRSettings } from './dvrInterfaces'; // <-- Adjust path as needed
+import type { DVRSettings } from '../dvrInterfaces';
 
 export interface ServiceCommonServer {
   id: number;
