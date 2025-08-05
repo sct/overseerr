@@ -186,13 +186,12 @@ export class MediaRequestSubscriber
           return;
         }
 
-        // Pseudocode for context:
+        const tmdb = new TheMovieDb();
+        const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
+
         const isAnime =
-          entity.media &&
-          (
-            entity.media.genres?.includes('Animation') ||
-            entity.media.keywords?.includes('anime')
-          );
+          movie.genres?.some((g) => g.name === 'Animation') ||
+          movie.keywords?.some?.((k) => typeof k === 'string' ? k.toLowerCase() === 'anime' : k.name?.toLowerCase() === 'anime');
 
         // Use anime settings if anime, otherwise use default
         const profileId = isAnime
@@ -207,12 +206,10 @@ export class MediaRequestSubscriber
           ? radarrSettings.animeTags || radarrSettings.tags
           : radarrSettings.tags;
 
-        const tmdb = new TheMovieDb();
         const radarr = new RadarrAPI({
           apiKey: radarrSettings.apiKey,
           url: RadarrAPI.buildUrl(radarrSettings, '/api/v3'),
         });
-        const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
 
         const media = await mediaRepository.findOne({
           where: { id: entity.media.id },
