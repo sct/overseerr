@@ -191,7 +191,12 @@ export class MediaRequestSubscriber
 
         const isAnime =
           movie.genres?.some((g) => g.name === 'Animation') ||
-          movie.keywords?.some?.((k) => typeof k === 'string' ? k.toLowerCase() === 'anime' : k.name?.toLowerCase() === 'anime');
+          (Array.isArray(movie.keywords?.keywords) &&
+            movie.keywords.keywords.some(
+              (k: any) =>
+                (typeof k === 'string' && k.toLowerCase() === 'anime') ||
+                (typeof k === 'object' && k.name?.toLowerCase() === 'anime')
+            ));
 
         // Use anime settings if anime, otherwise use default
         const profileId = isAnime
