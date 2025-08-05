@@ -268,6 +268,9 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
               syncEnabled: values.syncEnabled,
               preventSearch: !values.enableSearch,
               tagRequests: values.tagRequests,
+              activeAnimeProfileId: values.activeAnimeProfileId,
+              activeAnimeDirectory: values.activeAnimeDirectory,
+              animeTags: values.animeTags,
             };
             if (!radarr) {
               await axios.post('/api/v1/settings/radarr', submission);

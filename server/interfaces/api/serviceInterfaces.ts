@@ -31,3 +31,15 @@ export interface RadarrSettings extends DVRSettings {
   activeAnimeDirectory?: string;
   animeTags?: number[];
 }
+
+interface FormValues {
+  // ...existing fields...
+  animeTags?: number[];
+  // ...existing fields...
+}
+
+const initialValues: FormValues = {
+  // ...existing fields...
+  animeTags: radarrSettings.animeTags ?? [],
+  // ...existing fields...
+};
