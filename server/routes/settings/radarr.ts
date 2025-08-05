@@ -152,9 +152,5 @@ radarrRoutes.delete<{ id: string }>('/:id', (req, res, next) => {
 });
 
 // When saving/updating settings, include the new anime fields:
-activeAnimeProfileId,
-activeAnimeProfileName,
-activeAnimeDirectory,
-animeTags,
 
 export default radarrRoutes;
