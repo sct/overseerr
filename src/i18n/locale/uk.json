@@ -1070,7 +1070,7 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.emailsettingsfailed": "Не вдалося зберегти налаштування повідомлень електронною поштою.",
   "i18n.available": "Доступний",
   "components.UserList.user": "Користувач",
-  "i18n.pending": "Чекаючи",
+  "i18n.pending": "Очікує",
   "i18n.decline": "Відхилити",
   "i18n.movie": "Фільм",
   "components.UserList.owner": "Власник",
