@@ -1,3 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root {
+  --bg: #0f141a;
+  --bg-1: #121821;
+  --ink: #eef2f7;
+  --accent: #f59e0b;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* Cards & panels */
+.card {
+  @apply rounded-2xl bg-bg-1 border border-white/5 shadow-soft;
+}
+
+/* Primary button */
+.btn-primary {
+  @apply inline-flex items-center justify-center px-4 py-2 rounded-2xl
+    bg-accent hover:bg-accent-600 active:bg-accent-700 text-black font-semibold
+    focus:outline-none focus:ring-2 focus:ring-accent-300;
+}
+
+/* Links */
+a {
+  @apply text-accent hover:underline;
+}
+
+/* Login splash */
+.login-hero {
+  background: radial-gradient(800px 400px at 20% -10%, rgba(245, 158, 11, 0.25), transparent),
+              linear-gradient(180deg, rgba(17, 24, 39, 0.6), transparent);
+}
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
