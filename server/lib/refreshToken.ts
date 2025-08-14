@@ -28,7 +28,7 @@ class RefreshToken {
     }
 
     const plexTvApi = new PlexTvAPI(user.plexToken);
-    plexTvApi.pingToken();
+    plexTvApi.pingToken(user.displayName);
   }
 }
 

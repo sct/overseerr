@@ -365,7 +365,7 @@ class PlexTvAPI extends ExternalAPI {
     }
   }
 
-  public async pingToken() {
+  public async pingToken(displayName?: string) {
     try {
       const response = await this.axios.get('/api/v2/ping', {
         headers: {
@@ -376,9 +376,10 @@ class PlexTvAPI extends ExternalAPI {
         throw new Error('No pong response');
       }
     } catch (e) {
-      logger.error('Failed to ping token', {
+      logger.error(`Failed to ping token for ${displayName ?? 'a user'}`, {
         label: 'Plex Refresh Token',
         errorMessage: e.message,
+        userDisplayName: displayName,
       });
     }
   }

@@ -1,7 +1,6 @@
 import PlexTvAPI from '@server/api/plextv';
 import TautulliAPI from '@server/api/tautulli';
 import { MediaType } from '@server/constants/media';
-import { UserType } from '@server/constants/user';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
@@ -121,7 +120,6 @@ router.post(
         password: body.password,
         permissions: settings.main.defaultPermissions,
         plexToken: '',
-        userType: UserType.LOCAL,
       });
 
       if (passedExplicitPassword) {
@@ -517,12 +515,7 @@ router.post(
             user.avatar = account.thumb;
             user.email = account.email;
             user.plexUsername = account.username;
-
-            // In case the user was previously a local account
-            if (user.userType === UserType.LOCAL) {
-              user.userType = UserType.PLEX;
-              user.plexId = parseInt(account.id);
-            }
+            user.plexId = parseInt(account.id);
             await userRepository.save(user);
           } else if (!body || body.plexIds.includes(account.id)) {
             if (await mainPlexTv.checkUserAccess(parseInt(account.id))) {
@@ -533,7 +526,6 @@ router.post(
                 plexId: parseInt(account.id),
                 plexToken: '',
                 avatar: account.thumb,
-                userType: UserType.PLEX,
               });
               await userRepository.save(newUser);
               createdUsers.push(newUser);

@@ -8,6 +8,7 @@ import IssueComment from '@app/components/IssueDetails/IssueComment';
 import IssueDescription from '@app/components/IssueDetails/IssueDescription';
 import { issueOptions } from '@app/components/IssueModal/constants';
 import useDeepLinks from '@app/hooks/useDeepLinks';
+import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
@@ -76,6 +77,7 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
 
 const IssueDetails = () => {
   const { addToast } = useToasts();
+  const { currentSettings } = useSettings();
   const router = useRouter();
   const intl = useIntl();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -361,7 +363,7 @@ const IssueDetails = () => {
               </div>
             </div>
             <div className="mt-4 mb-6 flex flex-col space-y-2">
-              {issueData?.media.plexUrl && (
+              {currentSettings.plexLoginEnabled && issueData?.media.plexUrl && (
                 <Button
                   as="a"
                   href={plexUrl}
@@ -599,7 +601,7 @@ const IssueDetails = () => {
             </div>
           </div>
           <div className="mt-4 mb-6 flex flex-col space-y-2">
-            {issueData?.media.plexUrl && (
+            {currentSettings.plexLoginEnabled && issueData?.media.plexUrl && (
               <Button
                 as="a"
                 href={plexUrl}

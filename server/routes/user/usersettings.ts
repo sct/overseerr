@@ -10,6 +10,7 @@ import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
+import { z } from 'zod';
 import { canMakePermissionsChange } from '.';
 
 const isOwnProfileOrAdmin = (): Middleware => {
@@ -166,6 +167,83 @@ userSettingsRoutes.get<{ id: string }, { hasPassword: boolean }>(
     }
   }
 );
+
+const EmailValidationObject = z.object({
+  newEmail: z.string().email('You must provide a valid email address.'),
+  currentPassword: z.string().optional(),
+});
+
+userSettingsRoutes.post<
+  { id: string },
+  null,
+  { currentPassword?: string; newEmail: string }
+>('/email', isOwnProfileOrAdmin(), async (req, res, next) => {
+  const userRepository = getRepository(User);
+
+  try {
+    const requestBody = EmailValidationObject.parse(req.body);
+    const user = await userRepository.findOne({
+      where: { id: Number(req.params.id) },
+    });
+
+    const userWithPassword = await userRepository.findOne({
+      select: ['id', 'password'],
+      where: { id: Number(req.params.id) },
+    });
+
+    if (!user || !userWithPassword) {
+      return next({ status: 404, message: 'User not found.' });
+    }
+
+    if (
+      (user.id === 1 && req.user?.id !== 1) ||
+      (user.hasPermission(Permission.ADMIN) &&
+        user.id !== req.user?.id &&
+        req.user?.id !== 1)
+    ) {
+      return next({
+        status: 403,
+        message: "You do not have permission to modify this user's email.",
+      });
+    }
+
+    // If the user has the permission to manage users and they are not
+    // editing themselves, we will just set the new password
+    if (
+      req.user?.hasPermission(Permission.MANAGE_USERS) &&
+      req.user?.id !== user.id
+    ) {
+      user.email = requestBody.newEmail;
+      await userRepository.save(user);
+      logger.debug('Email overriden by user.', {
+        label: 'User Settings',
+        userEmail: user.email,
+        changingUser: req.user.email,
+      });
+      return res.status(204).send();
+    }
+
+    // If the user has a password, we need to check the currentPassword is correct
+    if (
+      user.password &&
+      (!requestBody.currentPassword ||
+        !(await userWithPassword.passwordMatch(requestBody.currentPassword)))
+    ) {
+      logger.debug(
+        'Attempt to change email for user failed. Invalid current password provided.',
+        { label: 'User Settings', userEmail: user.email }
+      );
+      return next({ status: 403, message: 'Current password is invalid.' });
+    }
+
+    user.email = requestBody.newEmail;
+    await userRepository.save(user);
+
+    return res.status(204).send();
+  } catch (e) {
+    next({ status: 500, message: e.message });
+  }
+});
 
 userSettingsRoutes.post<
   { id: string },

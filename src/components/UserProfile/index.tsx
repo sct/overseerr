@@ -6,7 +6,7 @@ import RequestCard from '@app/components/RequestCard';
 import Slider from '@app/components/Slider';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
 import ProfileHeader from '@app/components/UserProfile/ProfileHeader';
-import { Permission, UserType, useUser } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
 import { ArrowRightCircleIcon } from '@heroicons/react/24/outline';
 import type { WatchlistResponse } from '@server/interfaces/api/discoverInterfaces';
@@ -73,14 +73,14 @@ const UserProfile = () => {
   );
   const { data: watchData, error: watchDataError } =
     useSWR<UserWatchDataResponse>(
-      user?.userType === UserType.PLEX &&
+      user?.isPlexUser &&
         (user.id === currentUser?.id || currentHasPermission(Permission.ADMIN))
         ? `/api/v1/user/${user.id}/watch_data`
         : null
     );
   const { data: watchlistItems, error: watchlistError } =
     useSWR<WatchlistResponse>(
-      user?.userType === UserType.PLEX &&
+      user?.isPlexUser &&
         (user.id === currentUser?.id ||
           currentHasPermission(
             [Permission.MANAGE_REQUESTS, Permission.WATCHLIST_VIEW],
@@ -309,7 +309,7 @@ const UserProfile = () => {
             />
           </>
         )}
-      {user.userType === UserType.PLEX &&
+      {user.isPlexUser &&
         (user.id === currentUser?.id ||
           currentHasPermission(
             [Permission.MANAGE_REQUESTS, Permission.WATCHLIST_VIEW],
@@ -363,7 +363,7 @@ const UserProfile = () => {
             />
           </>
         )}
-      {user.userType === UserType.PLEX &&
+      {user.isPlexUser &&
         (user.id === currentUser?.id ||
           currentHasPermission(Permission.ADMIN)) &&
         (!watchData || !!watchData.recentlyWatched.length) &&

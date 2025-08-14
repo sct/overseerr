@@ -24,7 +24,7 @@ export const UserContext = ({ initialUser, children }: UserContextProps) => {
 
   useEffect(() => {
     if (
-      !router.pathname.match(/(setup|login|resetpassword)/) &&
+      !router.pathname.match(/(setup|login|resetpassword|loading)/) &&
       (!user || error) &&
       !routing.current
     ) {

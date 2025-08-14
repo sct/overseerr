@@ -149,7 +149,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
 
   const mediaLinks: PlayButtonLink[] = [];
 
-  if (plexUrl) {
+  if (settings.currentSettings.plexLoginEnabled && plexUrl) {
     mediaLinks.push({
       text: intl.formatMessage(messages.playonplex),
       url: plexUrl,
@@ -158,6 +158,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
   }
 
   if (
+    settings.currentSettings.plexLoginEnabled &&
     settings.currentSettings.series4kEnabled &&
     plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {

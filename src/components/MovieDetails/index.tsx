@@ -154,6 +154,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   const mediaLinks: PlayButtonLink[] = [];
 
   if (
+    settings.currentSettings.plexLoginEnabled &&
     plexUrl &&
     hasPermission([Permission.REQUEST, Permission.REQUEST_MOVIE], {
       type: 'or',
@@ -167,6 +168,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   }
 
   if (
+    settings.currentSettings.plexLoginEnabled &&
     settings.currentSettings.movie4kEnabled &&
     plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {

@@ -1,4 +1,3 @@
-import { UserType } from '@server/constants/user';
 import dataSource, { getRepository } from '@server/datasource';
 import { User } from '@server/entity/User';
 import { copyFileSync } from 'fs';
@@ -43,7 +42,6 @@ const prepareDb = async () => {
   user.plexUsername = 'admin';
   user.username = 'admin';
   user.email = 'admin@seerr.dev';
-  user.userType = UserType.PLEX;
   await user.setPassword('test1234');
   user.permissions = 2;
   user.avatar = gravatarUrl('admin@seerr.dev', { default: 'mm', size: 200 });
@@ -59,7 +57,6 @@ const prepareDb = async () => {
   otherUser.plexUsername = 'friend';
   otherUser.username = 'friend';
   otherUser.email = 'friend@seerr.dev';
-  otherUser.userType = UserType.PLEX;
   await otherUser.setPassword('test1234');
   otherUser.permissions = 32;
   otherUser.avatar = gravatarUrl('friend@seerr.dev', {

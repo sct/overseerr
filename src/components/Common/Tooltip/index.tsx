@@ -8,6 +8,10 @@ type TooltipProps = {
   children: React.ReactElement;
   tooltipConfig?: Partial<Config>;
   className?: string;
+  /**
+   * When true, the tooltip will not be shown
+   */
+  disabled?: boolean;
 };
 
 const Tooltip = ({
@@ -15,6 +19,7 @@ const Tooltip = ({
   content,
   tooltipConfig,
   className,
+  disabled,
 }: TooltipProps) => {
   const { getTooltipProps, setTooltipRef, setTriggerRef, visible } =
     usePopperTooltip({
@@ -23,6 +28,10 @@ const Tooltip = ({
       placement: 'auto-end',
       ...tooltipConfig,
     });
+
+  if (disabled) {
+    return children;
+  }
 
   const tooltipStyle = [
     'z-50 text-sm absolute font-normal bg-gray-800 px-2 py-1 rounded border border-gray-600 shadow text-gray-100',

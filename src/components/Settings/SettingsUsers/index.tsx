@@ -3,6 +3,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import PermissionEdit from '@app/components/PermissionEdit';
 import QuotaSelector from '@app/components/QuotaSelector';
+import useSettings from '@app/hooks/useSettings';
 import globalMessages from '@app/i18n/globalMessages';
 import { ArrowDownOnSquareIcon } from '@heroicons/react/24/outline';
 import type { MainSettings } from '@server/lib/settings';
@@ -20,7 +21,7 @@ const messages = defineMessages({
   toastSettingsFailure: 'Something went wrong while saving settings.',
   localLogin: 'Enable Local Sign-In',
   localLoginTip:
-    'Allow users to sign in using their email address and password, instead of Plex OAuth',
+    'Allow users to sign in using their email address and password, instead of Plex OAuth. If Plex is not setup, this will be enabled by default.',
   newPlexLogin: 'Enable New Plex Sign-In',
   newPlexLoginTip: 'Allow Plex users to sign in without first being imported',
   movieRequestLimitLabel: 'Global Movie Request Limit',
@@ -37,6 +38,7 @@ const SettingsUsers = () => {
     error,
     mutate: revalidate,
   } = useSWR<MainSettings>('/api/v1/settings/main');
+  const { currentSettings } = useSettings();
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -59,7 +61,9 @@ const SettingsUsers = () => {
       <div className="section">
         <Formik
           initialValues={{
-            localLogin: data?.localLogin,
+            localLogin: !currentSettings.plexLoginEnabled
+              ? true
+              : data?.localLogin,
             newPlexLogin: data?.newPlexLogin,
             movieQuotaLimit: data?.defaultQuotas.movie.quotaLimit ?? 0,
             movieQuotaDays: data?.defaultQuotas.movie.quotaDays ?? 7,
@@ -116,8 +120,12 @@ const SettingsUsers = () => {
                       type="checkbox"
                       id="localLogin"
                       name="localLogin"
+                      disabled={!currentSettings.plexLoginEnabled}
                       onChange={() => {
                         setFieldValue('localLogin', !values.localLogin);
+                      }}
+                      style={{
+                        opacity: currentSettings.plexLoginEnabled ? 1 : 0.5,
                       }}
                     />
                   </div>
