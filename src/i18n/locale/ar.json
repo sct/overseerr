@@ -458,6 +458,8 @@
   "components.Settings.Notifications.emailsettingssaved": "تم حفظ اعدادات تنبيه الايميل بنجاح!",
   "components.Settings.Notifications.encryptionDefault": "استخدم STARTTLS اذا كان متاحا",
   "components.Settings.Notifications.chatIdTip": "ابدأ محادثة مع البوت، أضف<GetIdBotLink>@get_id_bot</GetIdBotLink>, and و أعط <code>/my_id</code> الأمر",
+  "components.Settings.Notifications.messageThreadId": "معرّف الخيط/الموضوع",
+  "components.Settings.Notifications.messageThreadIdTip": "إذا كانت الدردشة الجماعية تدعم المواضيع، يمكنك تحديد معرّف الخيط/الموضوع هنا",
   "components.Settings.Notifications.discordsettingsfailed": "فشل حفظ اعدادات تنبيه الديسكورد.",
   "components.Settings.Notifications.emailsender": "عنوان المرسل",
   "components.Settings.Notifications.emailsettingsfailed": "فشل حفظ اعدادات تنبيه الايميل.",

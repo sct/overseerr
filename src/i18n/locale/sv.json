@@ -774,6 +774,8 @@
   "components.Settings.Notifications.encryptionDefault": "Använd STARTTLS om tillgängligt",
   "components.Settings.Notifications.encryption": "Krypteringsmetod",
   "components.Settings.Notifications.chatIdTip": "Starta en chatt med din bot, lägg till <GetIdBotLink>@get_id_bot</GetIdBotLink> och ge kommandot <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "Tråd-/ämne-ID",
+  "components.Settings.Notifications.messageThreadIdTip": "Om ämnen är aktiverade i din gruppchatt kan du ange ett tråd-/ämne-ID här",
   "components.Settings.Notifications.botApiTip": "<CreateBotLink>Skapa en bot</CreateBotLink> för användning med Overseerr",
   "components.Settings.Notifications.NotificationsSlack.webhookUrlTip": "Skapa en <WebhookLink>Inkommande Webhook</WebhookLink> integration",
   "components.Settings.Notifications.NotificationsPushover.userTokenTip": "Din 30-tecken <UsersGroupsLink>användare eller gruppidentifierare</UsersGroupsLink>",

@@ -625,6 +625,8 @@
   "components.Settings.Notifications.encryptionOpportunisticTls": "Përdorni gjithmonë STARTTLS",
   "components.Settings.Notifications.NotificationsPushover.userToken": "Çelësi i përdoruesit ose i grupit",
   "components.Settings.Notifications.chatIdTip": "Fillo një bisedë me robotin tënd, shto <GetIdBotLink>@get_id_bot</GetIdBotLink>, dhe vendos komandën <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID i fije/teme",
+  "components.Settings.Notifications.messageThreadIdTip": "Nëse biseda juaj grupore ka temat të aktivizuara, mund të specifikoni këtu ID-në e një fije/teme.",
   "components.Settings.Notifications.NotificationsPushover.toastPushoverTestSending": "Duke dërguar njoftimin e testit Pushover…",
   "components.Settings.Notifications.NotificationsPushover.toastPushoverTestSuccess": "Njoftimi i testit Pushover është dërguar!",
   "components.Settings.Notifications.webhookUrlTip": "Krijo një integrim <DiscordWebhookLink>webhook</DiscordWebhookLink> në serverin tuaj",

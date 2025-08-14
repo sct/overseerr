@@ -793,6 +793,8 @@
   "components.Settings.Notifications.toastDiscordTestSending": "Envoi de la notification de test Discord…",
   "components.Settings.Notifications.toastDiscordTestFailed": "Échec de l'envoi de la notification de test Discord.",
   "components.Settings.Notifications.chatIdTip": "Démarrez une discussion avec votre bot, ajoutez <GetIdBotLink>@get_id_bot</GetIdBotLink> et exécutez la commande <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID du fil/sujet",
+  "components.Settings.Notifications.messageThreadIdTip": "Si votre chat de groupe a les sujets activés, vous pouvez spécifier ici l’ID d’un fil/sujet",
   "components.Settings.Notifications.botApiTip": "<CreateBotLink>Créer un bot</CreateBotLink> à utiliser avec Overseerr",
   "components.Settings.Notifications.NotificationsWebhook.validationTypes": "Vous devez sélectionner au moins un type de notification",
   "components.Settings.Notifications.NotificationsSlack.validationTypes": "Vous devez sélectionner au moins un type de notification",

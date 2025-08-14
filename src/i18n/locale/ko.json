@@ -798,6 +798,8 @@
   "components.Settings.Notifications.botApiTip": "Overseerr와 함께 사용할 <CreateBotLink>봇 생성</CreateBotLink>이 필요합니다",
   "components.Settings.Notifications.botUsername": "봇 사용자 이름",
   "components.Settings.Notifications.chatIdTip": "봇과 채팅을 시작하고 <GetIdBotLink>@get_id_bot</GetIdBotLink>, <code>/my_id</code> 명령을 실행하세요",
+  "components.Settings.Notifications.messageThreadId": "스레드/주제 ID",
+  "components.Settings.Notifications.messageThreadIdTip": "그룹 채팅에 주제 기능이 활성화된 경우 여기에 스레드/주제 ID를 지정할 수 있습니다",
   "components.Settings.Notifications.discordsettingsfailed": "Discord 알림 설정을 저장하지 못했습니다.",
   "components.Settings.Notifications.chatId": "Chat ID",
   "components.Settings.Notifications.botUsernameTip": "사용자가 봇과 채팅을 시작하고 자신의 알림을 구성하도록 허용",

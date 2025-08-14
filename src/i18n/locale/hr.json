@@ -1069,6 +1069,8 @@
   "components.Settings.Notifications.NotificationsWebPush.httpsRequirement": "Za primanje web push obavijesti, Overseerr se mora posluživati putem HTTPS-a.",
   "components.Settings.Notifications.NotificationsWebhook.templatevariablehelp": "Pomoć za varijablu predloška",
   "components.Settings.Notifications.chatIdTip": "Započni chat s tvojim botom, dodaj <GetIdBotLink>@get_id_bot</GetIdBotLink> i zadaj naredbu <code>/my_id</code>",
+  "components.Settings.Notifications.messageThreadId": "ID niti/teme",
+  "components.Settings.Notifications.messageThreadIdTip": "Ako je u vašem grupnom chatu omogućeno korištenje tema, možete ovdje navesti ID niti/teme",
   "components.Settings.SettingsJobsCache.radarr-scan": "Radarr pretraživanje",
   "components.Settings.SettingsJobsCache.sonarr-scan": "Sonarr pretraživanje",
   "components.Settings.SonarrModal.syncEnabled": "Aktiviraj pretraživanje",
