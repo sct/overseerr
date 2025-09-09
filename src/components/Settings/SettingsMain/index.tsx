@@ -3,6 +3,7 @@ import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import Tooltip from '@app/components/Common/Tooltip';
+import GenreSelector from '@app/components/GenreSelector';
 import LanguageSelector from '@app/components/LanguageSelector';
 import RegionSelector from '@app/components/RegionSelector';
 import CopyButton from '@app/components/Settings/CopyButton';
@@ -35,6 +36,8 @@ const messages = defineMessages({
   regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
   originallanguageTip: 'Filter content by original language',
+  excludedGenres: 'Genre Exclusions',
+  excludedGenresTip: 'Exclude content with specific genres from all pages',
   toastApiKeySuccess: 'New API key generated successfully!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
   toastSettingsSuccess: 'Settings saved successfully!',
@@ -131,6 +134,7 @@ const SettingsMain = () => {
             locale: data?.locale ?? 'en',
             region: data?.region,
             originalLanguage: data?.originalLanguage,
+            excludedGenres: data?.excludedGenres,
             partialRequestsEnabled: data?.partialRequestsEnabled,
             trustProxy: data?.trustProxy,
             cacheImages: data?.cacheImages,
@@ -147,6 +151,7 @@ const SettingsMain = () => {
                 locale: values.locale,
                 region: values.region,
                 originalLanguage: values.originalLanguage,
+                excludedGenres: values.excludedGenres,
                 partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
                 cacheImages: values.cacheImages,
@@ -382,6 +387,22 @@ const SettingsMain = () => {
                       <LanguageSelector
                         setFieldValue={setFieldValue}
                         value={values.originalLanguage}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="excludedGenres" className="text-label">
+                    <span>{intl.formatMessage(messages.excludedGenres)}</span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.excludedGenresTip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <div className="form-input-field">
+                      <GenreSelector
+                        setFieldValue={setFieldValue}
+                        value={values.excludedGenres}
                       />
                     </div>
                   </div>

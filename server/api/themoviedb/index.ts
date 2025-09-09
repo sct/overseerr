@@ -69,6 +69,7 @@ interface DiscoverMovieOptions {
   voteCountLte?: string;
   originalLanguage?: string;
   genre?: string;
+  excludedGenres?: string;
   studio?: string;
   keywords?: string;
   sortBy?: SortOptions;
@@ -90,6 +91,7 @@ interface DiscoverTvOptions {
   includeEmptyReleaseDate?: boolean;
   originalLanguage?: string;
   genre?: string;
+  excludedGenres?: string;
   network?: number;
   keywords?: string;
   sortBy?: SortOptions;
@@ -100,10 +102,16 @@ interface DiscoverTvOptions {
 class TheMovieDb extends ExternalAPI {
   private region?: string;
   private originalLanguage?: string;
+  private excludedGenres?: string;
   constructor({
     region,
     originalLanguage,
-  }: { region?: string; originalLanguage?: string } = {}) {
+    excludedGenres,
+  }: {
+    region?: string;
+    originalLanguage?: string;
+    excludedGenres?: string;
+  } = {}) {
     super(
       'https://api.themoviedb.org/3',
       {
@@ -119,7 +127,44 @@ class TheMovieDb extends ExternalAPI {
     );
     this.region = region;
     this.originalLanguage = originalLanguage;
+    this.excludedGenres = excludedGenres;
   }
+
+  private filterByExcludedGenres = (
+    results: any[],
+    excludedGenres?: string
+  ): any[] => {
+    const genresToExclude = excludedGenres || this.excludedGenres;
+    if (!genresToExclude) {
+      return results;
+    }
+
+    const excludedGenreIds = genresToExclude.split('|').map(Number);
+    return results.filter((result) => {
+      // Skip filtering for items without genre_ids (like persons, collections)
+      if (!result.genre_ids || result.genre_ids.length === 0) {
+        return true;
+      }
+      return !result.genre_ids.some((genreId: number) =>
+        excludedGenreIds.includes(genreId)
+      );
+    });
+  };
+
+  private applyResultFilters = (
+    data: TmdbSearchMovieResponse | TmdbSearchTvResponse | TmdbSearchMultiResponse,
+    options: { excludedGenres?: string } = {}
+  ): typeof data => {
+    // Apply excluded genres filter
+    data.results = this.filterByExcludedGenres(data.results, options.excludedGenres);
+
+    // Future filters can be added here, for example:
+    // data.results = this.filterByRating(data.results, options.minRating);
+    // data.results = this.filterByLanguage(data.results, options.excludedLanguages);
+    // data.results = this.filterByYear(data.results, options.yearRange);
+
+    return data;
+  };
 
   public searchMulti = async ({
     query,
@@ -394,7 +439,7 @@ class TheMovieDb extends ExternalAPI {
         }
       );
 
-      return data;
+      return this.applyResultFilters(data);
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch movies by keyword: ${e.message}`);
     }
@@ -460,6 +505,7 @@ class TheMovieDb extends ExternalAPI {
     primaryReleaseDateLte,
     originalLanguage,
     genre,
+    excludedGenres,
     studio,
     keywords,
     withRuntimeGte,
@@ -506,6 +552,7 @@ class TheMovieDb extends ExternalAPI {
               ? defaultFutureDate
               : primaryReleaseDateLte,
           with_genres: genre,
+          without_genres: excludedGenres ?? this.excludedGenres,
           with_companies: studio,
           with_keywords: keywords,
           'with_runtime.gte': withRuntimeGte,
@@ -534,6 +581,7 @@ class TheMovieDb extends ExternalAPI {
     includeEmptyReleaseDate = false,
     originalLanguage,
     genre,
+    excludedGenres,
     network,
     keywords,
     withRuntimeGte,
@@ -580,6 +628,7 @@ class TheMovieDb extends ExternalAPI {
               : this.originalLanguage,
           include_null_first_air_dates: includeEmptyReleaseDate,
           with_genres: genre,
+          without_genres: excludedGenres ?? this.excludedGenres,
           with_networks: network,
           with_keywords: keywords,
           'with_runtime.gte': withRuntimeGte,
@@ -646,7 +695,7 @@ class TheMovieDb extends ExternalAPI {
         }
       );
 
-      return data;
+      return this.applyResultFilters(data);
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
     }
@@ -669,7 +718,7 @@ class TheMovieDb extends ExternalAPI {
         }
       );
 
-      return data;
+      return this.applyResultFilters(data);
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
     }
@@ -692,7 +741,7 @@ class TheMovieDb extends ExternalAPI {
         }
       );
 
-      return data;
+      return this.applyResultFilters(data);
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
     }

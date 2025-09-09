@@ -101,6 +101,7 @@ export interface MainSettings {
   newPlexLogin: boolean;
   region: string;
   originalLanguage: string;
+  excludedGenres: string;
   trustProxy: boolean;
   partialRequestsEnabled: boolean;
   locale: string;
@@ -298,6 +299,7 @@ class Settings {
         newPlexLogin: true,
         region: '',
         originalLanguage: '',
+        excludedGenres: '',
         trustProxy: false,
         partialRequestsEnabled: true,
         locale: 'en',

@@ -42,9 +42,17 @@ export const createTmdbWithRegionLanguage = (user?: User): TheMovieDb => {
       ? user?.settings?.originalLanguage
       : settings.main.originalLanguage;
 
+  const excludedGenres =
+    user?.settings?.excludedGenres === 'none'
+      ? ''
+      : user?.settings?.excludedGenres
+      ? user?.settings?.excludedGenres
+      : settings.main.excludedGenres;
+
   return new TheMovieDb({
     region,
     originalLanguage,
+    excludedGenres,
   });
 };
 
@@ -261,7 +269,7 @@ discoverRoutes.get<{ genreId: string }>(
 discoverRoutes.get<{ studioId: string }>(
   '/movies/studio/:studioId',
   async (req, res, next) => {
-    const tmdb = new TheMovieDb();
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     try {
       const studio = await tmdb.getStudio(Number(req.params.studioId));
@@ -537,7 +545,7 @@ discoverRoutes.get<{ genreId: string }>(
 discoverRoutes.get<{ networkId: string }>(
   '/tv/network/:networkId',
   async (req, res, next) => {
-    const tmdb = new TheMovieDb();
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     try {
       const network = await tmdb.getNetwork(Number(req.params.networkId));
@@ -680,7 +688,7 @@ discoverRoutes.get('/trending', async (req, res, next) => {
 discoverRoutes.get<{ keywordId: string }>(
   '/keyword/:keywordId/movies',
   async (req, res, next) => {
-    const tmdb = new TheMovieDb();
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     try {
       const data = await tmdb.getMoviesByKeyword({
@@ -724,14 +732,31 @@ discoverRoutes.get<{ keywordId: string }>(
 discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   '/genreslider/movie',
   async (req, res, next) => {
-    const tmdb = new TheMovieDb();
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     try {
       const mappedGenres: GenreSliderItem[] = [];
 
-      const genres = await tmdb.getMovieGenres({
+      const allGenres = await tmdb.getMovieGenres({
         language: (req.query.language as string) ?? req.locale,
       });
+
+      // Filter out excluded genres
+      const settings = getSettings();
+      const user = req.user;
+      const excludedGenres =
+        user?.settings?.excludedGenres === 'none'
+          ? ''
+          : user?.settings?.excludedGenres
+          ? user?.settings?.excludedGenres
+          : settings.main.excludedGenres;
+
+      const excludedGenreIds = excludedGenres
+        ? excludedGenres.split('|').map(Number)
+        : [];
+      const genres = allGenres.filter(
+        (genre) => !excludedGenreIds.includes(genre.id)
+      );
 
       await Promise.all(
         genres.map(async (genre) => {
@@ -768,14 +793,31 @@ discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
 discoverRoutes.get<{ language: string }, GenreSliderItem[]>(
   '/genreslider/tv',
   async (req, res, next) => {
-    const tmdb = new TheMovieDb();
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     try {
       const mappedGenres: GenreSliderItem[] = [];
 
-      const genres = await tmdb.getTvGenres({
+      const allGenres = await tmdb.getTvGenres({
         language: (req.query.language as string) ?? req.locale,
       });
+
+      // Filter out excluded genres
+      const settings = getSettings();
+      const user = req.user;
+      const excludedGenres =
+        user?.settings?.excludedGenres === 'none'
+          ? ''
+          : user?.settings?.excludedGenres
+          ? user?.settings?.excludedGenres
+          : settings.main.excludedGenres;
+
+      const excludedGenreIds = excludedGenres
+        ? excludedGenres.split('|').map(Number)
+        : [];
+      const genres = allGenres.filter(
+        (genre) => !excludedGenreIds.includes(genre.id)
+      );
 
       await Promise.all(
         genres.map(async (genre) => {

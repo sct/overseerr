@@ -6,6 +6,7 @@ export interface UserSettingsGeneralResponse {
   locale?: string;
   region?: string;
   originalLanguage?: string;
+  excludedGenres?: string;
   movieQuotaLimit?: number;
   movieQuotaDays?: number;
   tvQuotaLimit?: number;
