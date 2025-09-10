@@ -20,6 +20,7 @@
     "originalLanguage": "",
     "trustProxy": false,
     "partialRequestsEnabled": true,
+    "hideSpecials": false,
     "locale": "en"
   },
   "plex": {

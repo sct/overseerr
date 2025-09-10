@@ -202,7 +202,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
 
   // Does NOT include "Specials"
   const seasonCount = data.seasons.filter(
-    (season) => season.seasonNumber !== 0 && season.episodeCount !== 0
+    (season) => (settings.currentSettings.hideSpecials ? season.seasonNumber !== 0 : true) && season.episodeCount !== 0
   ).length;
 
   if (seasonCount) {
@@ -259,17 +259,13 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     return [...requestedSeasons, ...availableSeasons];
   };
 
-  const showHasSpecials = data.seasons.some(
-    (season) => season.seasonNumber === 0
-  );
-
-  const isComplete =
-    (showHasSpecials ? seasonCount + 1 : seasonCount) <=
-    getAllRequestedSeasons(false).length;
-
-  const is4kComplete =
-    (showHasSpecials ? seasonCount + 1 : seasonCount) <=
-    getAllRequestedSeasons(true).length;
+  // Calculate total seasons to consider for completion status
+  const totalSeasons = settings.currentSettings.hideSpecials 
+    ? seasonCount 
+    : (data.seasons.some(s => s.seasonNumber === 0) ? seasonCount + 1 : seasonCount);
+    
+  const isComplete = totalSeasons <= getAllRequestedSeasons(false).length;
+  const is4kComplete = totalSeasons <= getAllRequestedSeasons(true).length;
 
   const streamingProviders =
     data?.watchProviders?.find((provider) => provider.iso_3166_1 === region)
@@ -530,6 +526,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
           <h2 className="py-4">{intl.formatMessage(messages.seasonstitle)}</h2>
           <div className="flex w-full flex-col space-y-2">
             {data.seasons
+              .filter((season) => !settings.currentSettings.hideSpecials || season.seasonNumber !== 0)
               .slice()
               .reverse()
               .map((season) => {

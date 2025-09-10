@@ -32,6 +32,7 @@ export interface PublicSettingsResponse {
   originalLanguage: string;
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
+  hideSpecials: boolean;
   vapidPublic: string;
   enablePushRegistration: boolean;
   locale: string;

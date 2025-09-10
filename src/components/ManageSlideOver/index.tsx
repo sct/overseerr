@@ -97,7 +97,9 @@ const ManageSlideOver = ({
       await axios.post(`/api/v1/media/${data.mediaInfo?.id}/available`, {
         is4k,
         ...(mediaType === 'tv' && {
-          seasons: data.seasons.filter((season) => season.seasonNumber !== 0),
+          seasons: data.seasons.filter((season) => 
+            settings.currentSettings.hideSpecials ? season.seasonNumber !== 0 : true
+          ),
         }),
       });
       revalidate();

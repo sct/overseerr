@@ -126,6 +126,9 @@ components:
         partialRequestsEnabled:
           type: boolean
           example: false
+        hideSpecials:
+          type: boolean
+          example: false
         localLogin:
           type: boolean
           example: true
