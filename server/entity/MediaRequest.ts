@@ -36,6 +36,25 @@ type MediaRequestOptions = {
   isAutoRequest?: boolean;
 };
 
+type TmdbSeason = {
+  season_number: number;
+};
+
+export const resolveRequestedSeasonNumbers = (
+  requestSeasons: MediaRequestBody['seasons'],
+  tmdbSeasons: TmdbSeason[],
+  includeSpecialsInRequests: boolean
+): number[] => {
+  const normalizedSeasons =
+    requestSeasons === 'all'
+      ? tmdbSeasons.map((season) => season.season_number)
+      : [...(requestSeasons ?? [])];
+
+  return includeSpecialsInRequests
+    ? normalizedSeasons
+    : normalizedSeasons.filter((seasonNumber) => seasonNumber !== 0);
+};
+
 @Entity()
 export class MediaRequest {
   public static async request(
@@ -238,15 +257,11 @@ export class MediaRequest {
       >;
       const includeSpecialsInRequests =
         getSettings().main.includeSpecialsInRequests;
-      const requestedSeasons =
-        requestBody.seasons === 'all'
-          ? tmdbMediaShow.seasons
-              .filter(
-                (season) =>
-                  includeSpecialsInRequests || season.season_number !== 0
-              )
-              .map((season) => season.season_number)
-          : (requestBody.seasons as number[]);
+      const requestedSeasons = resolveRequestedSeasonNumbers(
+        requestBody.seasons,
+        tmdbMediaShow.seasons,
+        includeSpecialsInRequests
+      );
       let existingSeasons: number[] = [];
 
       // We need to check existing requests on this title to make sure we don't double up on seasons that were
