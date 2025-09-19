@@ -57,6 +57,7 @@ export interface DVRSettings {
   activeDirectory: string;
   tags: number[];
   is4k: boolean;
+  isAnime?: boolean;
   isDefault: boolean;
   externalUrl?: string;
   syncEnabled: boolean;
@@ -502,7 +503,7 @@ class Settings {
       hideAvailable: this.data.main.hideAvailable,
       localLogin: this.data.main.localLogin,
       movie4kEnabled: this.data.radarr.some(
-        (radarr) => radarr.is4k && radarr.isDefault
+        (radarr) => radarr.is4k && radarr.isDefault && !radarr.isAnime
       ),
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault

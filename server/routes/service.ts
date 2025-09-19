@@ -19,10 +19,14 @@ serviceRoutes.get('/radarr', async (req, res) => {
       id: radarr.id,
       name: radarr.name,
       is4k: radarr.is4k,
+      isAnime: radarr.isAnime ?? false,
       isDefault: radarr.isDefault,
       activeDirectory: radarr.activeDirectory,
       activeProfileId: radarr.activeProfileId,
+      activeAnimeProfileId: radarr.activeAnimeProfileId,
+      activeAnimeDirectory: radarr.activeAnimeDirectory,
       activeTags: radarr.tags ?? [],
+      activeAnimeTags: radarr.animeTags,
     })
   );
 
@@ -59,10 +63,14 @@ serviceRoutes.get<{ radarrId: string }>(
         id: radarrSettings.id,
         name: radarrSettings.name,
         is4k: radarrSettings.is4k,
+        isAnime: radarrSettings.isAnime ?? false,
         isDefault: radarrSettings.isDefault,
         activeDirectory: radarrSettings.activeDirectory,
         activeProfileId: radarrSettings.activeProfileId,
+        activeAnimeProfileId: radarrSettings.activeAnimeProfileId,
+        activeAnimeDirectory: radarrSettings.activeAnimeDirectory,
         activeTags: radarrSettings.tags,
+        activeAnimeTags: radarrSettings.animeTags,
       },
       profiles: profiles.map((profile) => ({
         id: profile.id,

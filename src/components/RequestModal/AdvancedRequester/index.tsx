@@ -30,6 +30,10 @@ const messages = defineMessages({
   rootfolder: 'Root Folder',
   animenote: '* This series is an anime.',
   default: '{name} (Default)',
+  defaultServerOption: '{name} (Default)',
+  defaultServerOption4k: '{name} (Default 4K)',
+  defaultServerOptionAnime: '{name} (Default Anime)',
+  defaultServerOptionAnime4k: '{name} (Default 4K Anime)',
   folder: '{path} ({space})',
   requestas: 'Request As',
   languageprofile: 'Language Profile',
@@ -152,8 +156,20 @@ const AdvancedRequester = ({
 
   useEffect(() => {
     let defaultServer = data?.find(
-      (server) => server.isDefault && is4k === server.is4k
+      (server) =>
+        server.isDefault &&
+        is4k === server.is4k &&
+        (server.isAnime ?? false) === isAnime
     );
+
+    if (!defaultServer && isAnime) {
+      defaultServer = data?.find(
+        (server) =>
+          server.isDefault &&
+          is4k === server.is4k &&
+          !(server.isAnime ?? false)
+      );
+    }
 
     if (!defaultServer && (data ?? []).length > 0) {
       defaultServer = data?.[0];
@@ -166,7 +182,7 @@ const AdvancedRequester = ({
     ) {
       setSelectedServer(defaultServer.id);
     }
-  }, [data]);
+  }, [data, isAnime, is4k, defaultOverrides?.server]);
 
   useEffect(() => {
     if (serverData) {
@@ -332,11 +348,39 @@ const AdvancedRequester = ({
                         key={`server-list-${server.id}`}
                         value={server.id}
                       >
-                        {server.isDefault
-                          ? intl.formatMessage(messages.default, {
-                              name: server.name,
-                            })
-                          : server.name}
+                        {(() => {
+                          if (!server.isDefault) {
+                            return server.name;
+                          }
+
+                          const serverIsAnime = server.isAnime ?? false;
+
+                          if (serverIsAnime && server.is4k) {
+                            return intl.formatMessage(
+                              messages.defaultServerOptionAnime4k,
+                              { name: server.name }
+                            );
+                          }
+
+                          if (serverIsAnime) {
+                            return intl.formatMessage(
+                              messages.defaultServerOptionAnime,
+                              { name: server.name }
+                            );
+                          }
+
+                          if (server.is4k) {
+                            return intl.formatMessage(
+                              messages.defaultServerOption4k,
+                              { name: server.name }
+                            );
+                          }
+
+                          return intl.formatMessage(
+                            messages.defaultServerOption,
+                            { name: server.name }
+                          );
+                        })()}
                       </option>
                     ))}
                 </select>

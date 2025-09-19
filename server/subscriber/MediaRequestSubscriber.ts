@@ -148,44 +148,6 @@ export class MediaRequestSubscriber
           return;
         }
 
-        let radarrSettings = settings.radarr.find(
-          (radarr) => radarr.isDefault && radarr.is4k === entity.is4k
-        );
-
-        if (
-          entity.serverId !== null &&
-          entity.serverId >= 0 &&
-          radarrSettings?.id !== entity.serverId
-        ) {
-          radarrSettings = settings.radarr.find(
-            (radarr) => radarr.id === entity.serverId
-          );
-          logger.info(
-            `Request has an override server: ${radarrSettings?.name}`,
-            {
-              label: 'Media Request',
-              requestId: entity.id,
-              mediaId: entity.media.id,
-            }
-          );
-        }
-
-        if (!radarrSettings) {
-          logger.warn(
-            `There is no default ${
-              entity.is4k ? '4K ' : ''
-            }Radarr server configured. Did you set any of your ${
-              entity.is4k ? '4K ' : ''
-            }Radarr servers as default?`,
-            {
-              label: 'Media Request',
-              requestId: entity.id,
-              mediaId: entity.media.id,
-            }
-          );
-          return;
-        }
-
         const tmdb = new TheMovieDb();
         const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
 
@@ -197,6 +159,60 @@ export class MediaRequestSubscriber
                 (typeof k === 'string' && k.toLowerCase() === 'anime') ||
                 (typeof k === 'object' && k.name?.toLowerCase() === 'anime')
             ));
+
+        let radarrSettings =
+          entity.serverId !== null && entity.serverId >= 0
+            ? settings.radarr.find((radarr) => radarr.id === entity.serverId)
+            : undefined;
+
+        if (
+          entity.serverId !== null &&
+          entity.serverId >= 0 &&
+          radarrSettings
+        ) {
+          logger.info(
+            `Request has an override server: ${radarrSettings?.name}`,
+            {
+              label: 'Media Request',
+              requestId: entity.id,
+              mediaId: entity.media.id,
+            }
+          );
+        }
+
+        if (!radarrSettings) {
+          radarrSettings = settings.radarr.find(
+            (radarr) =>
+              radarr.isDefault &&
+              radarr.is4k === entity.is4k &&
+              (radarr.isAnime ?? false) === isAnime
+          );
+
+          if (!radarrSettings && isAnime) {
+            radarrSettings = settings.radarr.find(
+              (radarr) =>
+                radarr.isDefault &&
+                radarr.is4k === entity.is4k &&
+                !(radarr.isAnime ?? false)
+            );
+          }
+        }
+
+        if (!radarrSettings) {
+          logger.warn(
+            `There is no default ${
+              entity.is4k ? '4K ' : ''
+            }${isAnime ? 'anime ' : ''}Radarr server configured. Did you set any of your ${
+              entity.is4k ? '4K ' : ''
+            }${isAnime ? 'anime ' : ''}Radarr servers as default?`,
+            {
+              label: 'Media Request',
+              requestId: entity.id,
+              mediaId: entity.media.id,
+            }
+          );
+          return;
+        }
 
         // Use anime settings if anime, otherwise use default
         const profileId = isAnime
