@@ -21,7 +21,7 @@ import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -307,6 +307,19 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
 
   const [isRetrying, setRetrying] = useState(false);
 
+  const isAnimeMovie = useMemo(() => {
+    if (!title || !isMovie(title)) {
+      return false;
+    }
+
+    return !!(
+      title.genres?.some((genre) => genre.name === 'Animation') ||
+      title.keywords?.some(
+        (keyword) => keyword.name?.toLowerCase() === 'anime'
+      )
+    );
+  }, [title]);
+
   const modifyRequest = async (type: 'approve' | 'decline') => {
     const response = await axios.post(`/api/v1/request/${request.id}/${type}`);
 
@@ -515,6 +528,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                       ? requestData.media.serviceUrl4k
                       : requestData.media.serviceUrl
                   }
+                  isAnime={requestData.type === 'movie' ? isAnimeMovie : false}
                 />
               )}
             </div>

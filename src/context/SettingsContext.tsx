@@ -14,6 +14,7 @@ const defaultSettings = {
   hideAvailable: false,
   localLogin: true,
   movie4kEnabled: false,
+  movie4kAnimeEnabled: false,
   series4kEnabled: false,
   region: '',
   originalLanguage: '',

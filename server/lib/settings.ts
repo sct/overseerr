@@ -122,6 +122,7 @@ interface FullPublicSettings extends PublicSettings {
   hideAvailable: boolean;
   localLogin: boolean;
   movie4kEnabled: boolean;
+  movie4kAnimeEnabled: boolean;
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
@@ -507,6 +508,9 @@ class Settings {
       localLogin: this.data.main.localLogin,
       movie4kEnabled: this.data.radarr.some(
         (radarr) => radarr.is4k && radarr.isDefault && !radarr.isAnime
+      ),
+      movie4kAnimeEnabled: this.data.radarr.some(
+        (radarr) => radarr.is4k && radarr.isDefault && (radarr.isAnime ?? false)
       ),
       series4kEnabled: this.data.sonarr.some(
         (sonarr) => sonarr.is4k && sonarr.isDefault

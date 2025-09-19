@@ -22,7 +22,7 @@ import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -226,6 +226,18 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}` : null
   );
+  const isAnimeMovie = useMemo(() => {
+    if (!title || !isMovie(title)) {
+      return false;
+    }
+
+    return !!(
+      title.genres?.some((genre) => genre.name === 'Animation') ||
+      title.keywords?.some(
+        (keyword) => keyword.name?.toLowerCase() === 'anime'
+      )
+    );
+  }, [title]);
   const {
     data: requestData,
     error: requestError,
@@ -453,6 +465,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                     ? requestData.media.serviceUrl4k
                     : requestData.media.serviceUrl
                 }
+                isAnime={requestData.type === 'movie' ? isAnimeMovie : false}
               />
             )}
           </div>

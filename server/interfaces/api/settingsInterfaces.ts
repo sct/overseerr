@@ -27,6 +27,7 @@ export interface PublicSettingsResponse {
   hideAvailable: boolean;
   localLogin: boolean;
   movie4kEnabled: boolean;
+  movie4kAnimeEnabled: boolean;
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;

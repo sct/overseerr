@@ -28,6 +28,7 @@ interface StatusBadgeProps {
   tmdbId?: number;
   mediaType?: 'movie' | 'tv';
   title?: string | string[];
+  isAnime?: boolean;
 }
 
 const StatusBadge = ({
@@ -40,10 +41,15 @@ const StatusBadge = ({
   tmdbId,
   mediaType,
   title,
+  isAnime = false,
 }: StatusBadgeProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
   const settings = useSettings();
+
+  const movie4kEnabled = isAnime
+    ? settings.currentSettings.movie4kAnimeEnabled
+    : settings.currentSettings.movie4kEnabled;
 
   let mediaLink: string | undefined;
   let mediaLinkDescription: string | undefined;
@@ -75,7 +81,7 @@ const StatusBadge = ({
     ) &&
     (!is4k ||
       (mediaType === 'movie'
-        ? settings.currentSettings.movie4kEnabled
+        ? movie4kEnabled
         : settings.currentSettings.series4kEnabled))
   ) {
     mediaLink = plexUrl;
