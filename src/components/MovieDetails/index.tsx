@@ -131,6 +131,21 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     [data]
   );
 
+  const isAnime = useMemo(
+    () =>
+      !!(
+        data?.genres?.some((genre) => genre.name === 'Animation') ||
+        data?.keywords?.some(
+          (keyword) => keyword.name?.toLowerCase() === 'anime'
+        )
+      ),
+    [data?.genres, data?.keywords]
+  );
+
+  const movie4kRequestsEnabled = isAnime
+    ? settings.currentSettings.movie4kAnimeEnabled
+    : settings.currentSettings.movie4kEnabled;
+
   useEffect(() => {
     setShowManager(router.query.manage == '1' ? true : false);
   }, [router.query.manage]);
@@ -167,7 +182,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   }
 
   if (
-    settings.currentSettings.movie4kEnabled &&
+    movie4kRequestsEnabled &&
     plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
       type: 'or',
@@ -323,8 +338,9 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               mediaType="movie"
               plexUrl={plexUrl}
               serviceUrl={data.mediaInfo?.serviceUrl}
+              isAnime={isAnime}
             />
-            {settings.currentSettings.movie4kEnabled &&
+            {movie4kRequestsEnabled &&
               hasPermission(
                 [
                   Permission.MANAGE_REQUESTS,
@@ -347,6 +363,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                   mediaType="movie"
                   plexUrl={plexUrl4k}
                   serviceUrl={data.mediaInfo?.serviceUrl4k}
+                  isAnime={isAnime}
                 />
               )}
           </div>
@@ -378,9 +395,10 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
             media={data.mediaInfo}
             tmdbId={data.id}
             onUpdate={() => revalidate()}
+            isAnime={isAnime}
           />
           {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
-            (settings.currentSettings.movie4kEnabled &&
+            (movie4kRequestsEnabled &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                 {

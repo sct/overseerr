@@ -487,6 +487,9 @@ components:
         includeSpecialsInRequests:
           type: boolean
           example: false
+        movie4kAnimeEnabled:
+          type: boolean
+          example: false
     MovieResult:
       type: object
       required:

@@ -69,6 +69,32 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   const { data: genres } =
     useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
 
+  const animationGenreIds = useMemo(
+    () =>
+      (genres ?? [])
+        .filter((genre) => genre.name === 'Animation')
+        .map((genre) => genre.id),
+    [genres]
+  );
+
+  const isCollectionAnime = useMemo(
+    () =>
+      !!(
+        animationGenreIds.length &&
+        data?.parts.length &&
+        data.parts.every((part) =>
+          (part.genreIds ?? []).some((genreId) =>
+            animationGenreIds.includes(genreId)
+          )
+        )
+      ),
+    [animationGenreIds, data?.parts]
+  );
+
+  const movie4kRequestsEnabled = isCollectionAnime
+    ? settings.currentSettings.movie4kAnimeEnabled
+    : settings.currentSettings.movie4kEnabled;
+
   const [downloadStatus, downloadStatus4k] = useMemo(() => {
     const downloadItems = returnCollectionDownloadItems(data);
     return [downloadItems.downloadStatus, downloadItems.downloadStatus4k];
@@ -137,7 +163,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
     ).length > 0;
 
   const hasRequestable4k =
-    settings.currentSettings.movie4kEnabled &&
+    movie4kRequestsEnabled &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
       type: 'or',
     }) &&
@@ -244,8 +270,9 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
               inProgress={data.parts.some(
                 (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
               )}
+              isAnime={isCollectionAnime}
             />
-            {settings.currentSettings.movie4kEnabled &&
+            {movie4kRequestsEnabled &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                 {
@@ -261,6 +288,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
                     (part) =>
                       (part.mediaInfo?.downloadStatus4k ?? []).length > 0
                   )}
+                  isAnime={isCollectionAnime}
                 />
               )}
           </div>

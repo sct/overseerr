@@ -13,7 +13,7 @@ import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import { Permission } from '@server/lib/permissions';
 import type { Collection } from '@server/models/Collection';
 import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
@@ -53,6 +53,8 @@ const CollectionRequestModal = ({
   const { data, error } = useSWR<Collection>(`/api/v1/collection/${tmdbId}`, {
     revalidateOnMount: true,
   });
+  const { data: genres } =
+    useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const { data: quota } = useSWR<QuotaResponse>(
@@ -60,6 +62,28 @@ const CollectionRequestModal = ({
       (!requestOverrides?.user?.id || hasPermission(Permission.MANAGE_USERS))
       ? `/api/v1/user/${requestOverrides?.user?.id ?? user.id}/quota`
       : null
+  );
+
+  const animationGenreIds = useMemo(
+    () =>
+      (genres ?? [])
+        .filter((genre) => genre.name === 'Animation')
+        .map((genre) => genre.id),
+    [genres]
+  );
+
+  const isCollectionAnime = useMemo(
+    () =>
+      !!(
+        animationGenreIds.length &&
+        data?.parts.length &&
+        data.parts.every((part) =>
+          (part.genreIds ?? []).some((genreId) =>
+            animationGenreIds.includes(genreId)
+          )
+        )
+      ),
+    [animationGenreIds, data?.parts]
   );
 
   const currentlyRemaining =
@@ -475,6 +499,7 @@ const CollectionRequestModal = ({
         <AdvancedRequester
           type="movie"
           is4k={is4k}
+          isAnime={isCollectionAnime}
           onChange={(overrides) => {
             setRequestOverrides(overrides);
           }}

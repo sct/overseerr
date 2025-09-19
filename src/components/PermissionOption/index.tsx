@@ -35,6 +35,9 @@ const PermissionOption = ({
   parent,
 }: PermissionOptionProps) => {
   const settings = useSettings();
+  const movie4kRequestsEnabled =
+    settings.currentSettings.movie4kEnabled ||
+    settings.currentSettings.movie4kAnimeEnabled;
 
   const autoApprovePermissions = [
     Permission.AUTO_APPROVE,
@@ -84,12 +87,12 @@ const PermissionOption = ({
     // Request 4K and Auto-Approve 4K require both 4K movie & 4K series requests to be enabled
     ((option.permission === Permission.REQUEST_4K ||
       option.permission === Permission.AUTO_APPROVE_4K) &&
-      (!settings.currentSettings.movie4kEnabled ||
+      (!movie4kRequestsEnabled ||
         !settings.currentSettings.series4kEnabled)) ||
     // Request 4K Movie and Auto-Approve 4K Movie require 4K movie requests to be enabled
     ((option.permission === Permission.REQUEST_4K_MOVIE ||
       option.permission === Permission.AUTO_APPROVE_4K_MOVIE) &&
-      !settings.currentSettings.movie4kEnabled) ||
+      !movie4kRequestsEnabled) ||
     // Request 4K Series and Auto-Approve 4K Series require 4K series requests to be enabled
     ((option.permission === Permission.REQUEST_4K_TV ||
       option.permission === Permission.AUTO_APPROVE_4K_TV) &&
