@@ -7,8 +7,14 @@ let commitTag = 'local';
 
 if (existsSync(COMMIT_TAG_PATH)) {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
-  commitTag = require(COMMIT_TAG_PATH).commitTag;
-  logger.info(`Commit Tag: ${commitTag}`);
+  const commitTagFromFile = require(COMMIT_TAG_PATH).commitTag;
+
+  if (commitTagFromFile) {
+    commitTag = commitTagFromFile;
+    logger.info(`Commit Tag: ${commitTag}`);
+  } else {
+    logger.warn('Commit tag file exists but is empty. Falling back to local.');
+  }
 }
 
 export const getCommitTag = (): string => {
