@@ -18,6 +18,7 @@ const defaultSettings = {
   region: '',
   originalLanguage: '',
   partialRequestsEnabled: true,
+  includeSpecialsInRequests: false,
   cacheImages: false,
   vapidPublic: '',
   enablePushRegistration: false,

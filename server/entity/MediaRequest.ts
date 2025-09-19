@@ -8,6 +8,7 @@ import { getRepository } from '@server/datasource';
 import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces';
 import notificationManager, { Notification } from '@server/lib/notifications';
 import { Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { truncate } from 'lodash';
 import {
@@ -235,10 +236,15 @@ export class MediaRequest {
       const tmdbMediaShow = tmdbMedia as Awaited<
         ReturnType<typeof tmdb.getTvShow>
       >;
+      const includeSpecialsInRequests =
+        getSettings().main.includeSpecialsInRequests;
       const requestedSeasons =
         requestBody.seasons === 'all'
           ? tmdbMediaShow.seasons
-              .filter((season) => season.season_number !== 0)
+              .filter(
+                (season) =>
+                  includeSpecialsInRequests || season.season_number !== 0
+              )
               .map((season) => season.season_number)
           : (requestBody.seasons as number[]);
       let existingSeasons: number[] = [];

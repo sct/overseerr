@@ -126,6 +126,9 @@ components:
         partialRequestsEnabled:
           type: boolean
           example: false
+        includeSpecialsInRequests:
+          type: boolean
+          example: false
         localLogin:
           type: boolean
           example: true
@@ -479,6 +482,9 @@ components:
       type: object
       properties:
         initialized:
+          type: boolean
+          example: false
+        includeSpecialsInRequests:
           type: boolean
           example: false
     MovieResult:

@@ -236,6 +236,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     region: '',
     originalLanguage: '',
     partialRequestsEnabled: true,
+    includeSpecialsInRequests: false,
     cacheImages: false,
     vapidPublic: '',
     enablePushRegistration: false,
