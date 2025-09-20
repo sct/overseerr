@@ -6,7 +6,6 @@ import type {
 } from '@server/api/servarr/sonarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
 import TheMovieDb from '@server/api/themoviedb';
-import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import {
   MediaRequestStatus,
   MediaStatus,
@@ -16,7 +15,9 @@ import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
 import SeasonRequest from '@server/entity/SeasonRequest';
+import { hasAnimeKeyword } from '@server/lib/anime';
 import notificationManager, { Notification } from '@server/lib/notifications';
+import { selectDefaultRadarrServer } from '@server/lib/radarr';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isEqual, truncate } from 'lodash';
@@ -151,14 +152,7 @@ export class MediaRequestSubscriber
         const tmdb = new TheMovieDb();
         const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
 
-        const isAnime =
-          movie.genres?.some((g) => g.name === 'Animation') ||
-          (Array.isArray(movie.keywords?.keywords) &&
-            movie.keywords.keywords.some(
-              (k: any) =>
-                (typeof k === 'string' && k.toLowerCase() === 'anime') ||
-                (typeof k === 'object' && k.name?.toLowerCase() === 'anime')
-            ));
+        const isAnime = hasAnimeKeyword(movie.keywords);
 
         let radarrSettings =
           entity.serverId !== null && entity.serverId >= 0
@@ -181,28 +175,17 @@ export class MediaRequestSubscriber
         }
 
         if (!radarrSettings) {
-          radarrSettings = settings.radarr.find(
-            (radarr) =>
-              radarr.isDefault &&
-              radarr.is4k === entity.is4k &&
-              (radarr.isAnime ?? false) === isAnime
-          );
-
-          if (!radarrSettings && isAnime) {
-            radarrSettings = settings.radarr.find(
-              (radarr) =>
-                radarr.isDefault &&
-                radarr.is4k === entity.is4k &&
-                !(radarr.isAnime ?? false)
-            );
-          }
+          radarrSettings = selectDefaultRadarrServer(settings.radarr, {
+            is4k: entity.is4k,
+            isAnime,
+          });
         }
 
         if (!radarrSettings) {
           logger.warn(
-            `There is no default ${
-              entity.is4k ? '4K ' : ''
-            }${isAnime ? 'anime ' : ''}Radarr server configured. Did you set any of your ${
+            `There is no default ${entity.is4k ? '4K ' : ''}${
+              isAnime ? 'anime ' : ''
+            }Radarr server configured. Did you set any of your ${
               entity.is4k ? '4K ' : ''
             }${isAnime ? 'anime ' : ''}Radarr servers as default?`,
             {
@@ -216,11 +199,13 @@ export class MediaRequestSubscriber
 
         // Use anime settings if anime, otherwise use default
         const profileId = isAnime
-          ? radarrSettings.activeAnimeProfileId || radarrSettings.activeProfileId
+          ? radarrSettings.activeAnimeProfileId ||
+            radarrSettings.activeProfileId
           : radarrSettings.activeProfileId;
 
         const rootFolder = isAnime
-          ? radarrSettings.activeAnimeDirectory || radarrSettings.activeDirectory
+          ? radarrSettings.activeAnimeDirectory ||
+            radarrSettings.activeDirectory
           : radarrSettings.activeDirectory;
 
         const tags = isAnime
@@ -467,11 +452,7 @@ export class MediaRequestSubscriber
         let seriesType: SonarrSeries['seriesType'] = 'standard';
 
         // Change series type to anime if the anime keyword is present on tmdb
-        if (
-          series.keywords.results.some(
-            (keyword) => keyword.id === ANIME_KEYWORD_ID
-          )
-        ) {
+        if (hasAnimeKeyword(series.keywords)) {
           seriesType = sonarrSettings.animeSeriesType ?? 'anime';
         }
 
