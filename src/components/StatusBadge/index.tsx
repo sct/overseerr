@@ -9,7 +9,11 @@ import { MediaStatus } from '@server/constants/media';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
 import { defineMessages, useIntl } from 'react-intl';
 
-const IMPORTING_STATES = new Set(['importpending', 'waitingtoimport', 'importing']);
+const IMPORTING_STATES = new Set([
+  'importblocked',
+  'importpending',
+  'importing',
+]);
 
 const messages = defineMessages({
   status: '{status}',
