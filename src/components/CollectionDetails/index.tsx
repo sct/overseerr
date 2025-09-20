@@ -60,10 +60,11 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   } = useSWR<Collection>(`/api/v1/collection/${router.query.collectionId}`, {
     fallbackData: collection,
     revalidateOnMount: true,
-    refreshInterval: refreshIntervalHelper(
-      returnCollectionDownloadItems(collection),
-      15000
-    ),
+    refreshInterval: (currentData) =>
+      refreshIntervalHelper(
+        returnCollectionDownloadItems(currentData ?? collection),
+        15000
+      ),
   });
 
   const { data: genres } =

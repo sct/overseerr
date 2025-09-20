@@ -110,13 +110,18 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     mutate: revalidate,
   } = useSWR<TvDetailsType>(`/api/v1/tv/${router.query.tvId}`, {
     fallbackData: tv,
-    refreshInterval: refreshIntervalHelper(
-      {
-        downloadStatus: tv?.mediaInfo?.downloadStatus,
-        downloadStatus4k: tv?.mediaInfo?.downloadStatus4k,
-      },
-      15000
-    ),
+    refreshInterval: (currentData) =>
+      refreshIntervalHelper(
+        {
+          downloadStatus:
+            currentData?.mediaInfo?.downloadStatus ??
+            tv?.mediaInfo?.downloadStatus,
+          downloadStatus4k:
+            currentData?.mediaInfo?.downloadStatus4k ??
+            tv?.mediaInfo?.downloadStatus4k,
+        },
+        15000
+      ),
   });
 
   const { data: ratingData } = useSWR<RTRating>(

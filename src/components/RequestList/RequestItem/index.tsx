@@ -295,13 +295,18 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
     `/api/v1/request/${request.id}`,
     {
       fallbackData: request,
-      refreshInterval: refreshIntervalHelper(
-        {
-          downloadStatus: request.media.downloadStatus,
-          downloadStatus4k: request.media.downloadStatus4k,
-        },
-        15000
-      ),
+      refreshInterval: (currentData) =>
+        refreshIntervalHelper(
+          {
+            downloadStatus:
+              currentData?.media.downloadStatus ??
+              request.media.downloadStatus,
+            downloadStatus4k:
+              currentData?.media.downloadStatus4k ??
+              request.media.downloadStatus4k,
+          },
+          15000
+        ),
     }
   );
 
