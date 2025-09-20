@@ -268,9 +268,6 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
               status={collectionStatus}
               downloadItem={downloadStatus}
               title={titles}
-              inProgress={data.parts.some(
-                (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
-              )}
               isAnime={isCollectionAnime}
             />
             {movie4kRequestsEnabled &&
@@ -285,10 +282,6 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
                   downloadItem={downloadStatus4k}
                   title={titles4k}
                   is4k
-                  inProgress={data.parts.some(
-                    (part) =>
-                      (part.mediaInfo?.downloadStatus4k ?? []).length > 0
-                  )}
                   isAnime={isCollectionAnime}
                 />
               )}
