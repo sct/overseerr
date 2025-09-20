@@ -5,6 +5,7 @@ import AdvancedRequester from '@app/components/RequestModal/AdvancedRequester';
 import QuotaDisplay from '@app/components/RequestModal/QuotaDisplay';
 import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
@@ -63,13 +64,10 @@ const MovieRequestModal = ({
   const { user, hasPermission } = useUser();
   const isAnime = useMemo(
     () =>
-      !!(
-        data?.genres?.some((genre) => genre.name === 'Animation') ||
-        data?.keywords?.some((keyword) =>
-          keyword.name?.toLowerCase() === 'anime'
-        )
+      !!data?.keywords?.some(
+        (keyword) => keyword.id === ANIME_KEYWORD_ID
       ),
-    [data]
+    [data?.keywords]
   );
   const { data: quota } = useSWR<QuotaResponse>(
     user &&
