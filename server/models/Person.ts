@@ -4,6 +4,7 @@ import type {
   TmdbPersonDetails,
 } from '@server/api/themoviedb/interfaces';
 import type Media from '@server/entity/Media';
+import { mapMediaInfo } from './common';
 
 export interface PersonDetails {
   id: number;
@@ -105,7 +106,7 @@ export const mapCastCredits = (
   adult: cast.adult,
   releaseDate: cast.release_date,
   character: cast.character,
-  mediaInfo: media,
+  mediaInfo: mapMediaInfo(media),
 });
 
 export const mapCrewCredits = (
@@ -135,5 +136,5 @@ export const mapCrewCredits = (
   releaseDate: crew.release_date,
   department: crew.department,
   job: crew.job,
-  mediaInfo: media,
+  mediaInfo: mapMediaInfo(media),
 });
