@@ -17,6 +17,8 @@ export interface DownloadingItem {
   size: number;
   sizeLeft: number;
   status: string;
+  trackedDownloadStatus: string;
+  trackedDownloadState: string;
   timeLeft: string;
   estimatedCompletionTime: Date;
   title: string;
@@ -93,6 +95,8 @@ class DownloadTracker {
               size: item.size,
               sizeLeft: item.sizeleft,
               status: item.status,
+              trackedDownloadStatus: item.trackedDownloadStatus,
+              trackedDownloadState: item.trackedDownloadState,
               timeLeft: item.timeleft,
               title: item.title,
             }));
@@ -169,6 +173,8 @@ class DownloadTracker {
               size: item.size,
               sizeLeft: item.sizeleft,
               status: item.status,
+              trackedDownloadStatus: item.trackedDownloadStatus,
+              trackedDownloadState: item.trackedDownloadState,
               timeLeft: item.timeleft,
               title: item.title,
               episode: item.episode,

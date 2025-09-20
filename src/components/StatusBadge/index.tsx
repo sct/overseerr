@@ -9,6 +9,8 @@ import { MediaStatus } from '@server/constants/media';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
 import { defineMessages, useIntl } from 'react-intl';
 
+const IMPORTING_STATES = new Set(['importpending', 'waitingtoimport', 'importing']);
+
 const messages = defineMessages({
   status: '{status}',
   status4k: '4K {status}',
@@ -51,12 +53,25 @@ const StatusBadge = ({
     ? settings.currentSettings.movie4kAnimeEnabled
     : settings.currentSettings.movie4kEnabled;
 
+  const activeDownloadItem = downloadItem?.[0];
+  const trackedDownloadState =
+    activeDownloadItem?.trackedDownloadState?.toLowerCase();
+  const isImportingState = trackedDownloadState
+    ? IMPORTING_STATES.has(trackedDownloadState)
+    : false;
   let mediaLink: string | undefined;
   let mediaLinkDescription: string | undefined;
 
   const calculateDownloadProgress = (media: DownloadingItem) => {
     return Math.round(((media?.size - media?.sizeLeft) / media?.size) * 100);
   };
+
+  const inProgressStatusMessage = intl.formatMessage(
+    isImportingState ? globalMessages.importing : globalMessages.processing
+  );
+  const downloadProgress = activeDownloadItem
+    ? calculateDownloadProgress(activeDownloadItem)
+    : 0;
 
   if (
     mediaType &&
@@ -120,18 +135,18 @@ const StatusBadge = ({
   );
 
   const badgeDownloadProgress = (
-    <div
-      className={`
+    activeDownloadItem && (
+      <div
+        className={`
       absolute top-0 left-0 z-10 flex h-full bg-opacity-80 ${
         status === MediaStatus.PROCESSING ? 'bg-indigo-500' : 'bg-green-500'
       } transition-all duration-200 ease-in-out
     `}
-      style={{
-        width: `${
-          downloadItem ? calculateDownloadProgress(downloadItem[0]) : 0
-        }%`,
-      }}
-    />
+        style={{
+          width: `${downloadProgress}%`,
+        }}
+      />
+    )
   );
 
   switch (status) {
@@ -165,18 +180,18 @@ const StatusBadge = ({
                   is4k ? messages.status4k : messages.status,
                   {
                     status: inProgress
-                      ? intl.formatMessage(globalMessages.processing)
+                      ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.available),
                   }
                 )}
               </span>
               {inProgress && (
                 <>
-                  {mediaType === 'tv' && downloadItem[0].episode && (
+                  {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode.seasonNumber,
-                        episodeNumber: downloadItem[0].episode.episodeNumber,
+                        seasonNumber: activeDownloadItem.episode.seasonNumber,
+                        episodeNumber: activeDownloadItem.episode.episodeNumber,
                       })}
                     </span>
                   )}
@@ -218,18 +233,18 @@ const StatusBadge = ({
                   is4k ? messages.status4k : messages.status,
                   {
                     status: inProgress
-                      ? intl.formatMessage(globalMessages.processing)
+                      ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.partiallyavailable),
                   }
                 )}
               </span>
               {inProgress && (
                 <>
-                  {mediaType === 'tv' && downloadItem[0].episode && (
+                  {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode.seasonNumber,
-                        episodeNumber: downloadItem[0].episode.episodeNumber,
+                        seasonNumber: activeDownloadItem.episode.seasonNumber,
+                        episodeNumber: activeDownloadItem.episode.episodeNumber,
                       })}
                     </span>
                   )}
@@ -271,18 +286,18 @@ const StatusBadge = ({
                   is4k ? messages.status4k : messages.status,
                   {
                     status: inProgress
-                      ? intl.formatMessage(globalMessages.processing)
+                      ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.requested),
                   }
                 )}
               </span>
               {inProgress && (
                 <>
-                  {mediaType === 'tv' && downloadItem[0].episode && (
+                  {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode.seasonNumber,
-                        episodeNumber: downloadItem[0].episode.episodeNumber,
+                        seasonNumber: activeDownloadItem.episode.seasonNumber,
+                        episodeNumber: activeDownloadItem.episode.episodeNumber,
                       })}
                     </span>
                   )}
