@@ -53,12 +53,25 @@ const StatusBadge = ({
     ? settings.currentSettings.movie4kAnimeEnabled
     : settings.currentSettings.movie4kEnabled;
 
-  const activeDownloadItem = downloadItem?.[0];
+  const hasImportingTrackedState = (item?: DownloadingItem) => {
+    const state = item?.trackedDownloadState?.toLowerCase();
+    return state ? IMPORTING_STATES.has(state) : false;
+  };
+
+  const activeDownloadItem =
+    downloadItem.find((item) => hasImportingTrackedState(item)) ??
+    downloadItem?.[0];
+
   const trackedDownloadState =
     activeDownloadItem?.trackedDownloadState?.toLowerCase();
   const isImportingState = trackedDownloadState
     ? IMPORTING_STATES.has(trackedDownloadState)
     : false;
+  const isTrackedImporting = downloadItem.some((item) =>
+    hasImportingTrackedState(item)
+  );
+  const hasDownloadItems = downloadItem.length > 0;
+  const isInProgress = inProgress || hasDownloadItems || isTrackedImporting;
   let mediaLink: string | undefined;
   let mediaLinkDescription: string | undefined;
 
@@ -153,39 +166,39 @@ const StatusBadge = ({
     case MediaStatus.AVAILABLE:
       return (
         <Tooltip
-          content={inProgress ? tooltipContent : mediaLinkDescription}
+          content={isInProgress ? tooltipContent : mediaLinkDescription}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
+            isInProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{
-            ...(inProgress && { interactive: true, delayHide: 100 }),
+            ...(isInProgress && { interactive: true, delayHide: 100 }),
           }}
         >
           <Badge
             badgeType="success"
             href={mediaLink}
             className={`${
-              inProgress &&
+              isInProgress &&
               'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
-            {inProgress && badgeDownloadProgress}
+            {isInProgress && badgeDownloadProgress}
             <div
               className={`relative z-20 flex items-center ${
-                inProgress && 'px-2'
+                isInProgress && 'px-2'
               }`}
             >
               <span>
                 {intl.formatMessage(
                   is4k ? messages.status4k : messages.status,
                   {
-                    status: inProgress
+                    status: isInProgress
                       ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.available),
                   }
                 )}
               </span>
-              {inProgress && (
+              {isInProgress && (
                 <>
                   {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">
@@ -206,39 +219,39 @@ const StatusBadge = ({
     case MediaStatus.PARTIALLY_AVAILABLE:
       return (
         <Tooltip
-          content={inProgress ? tooltipContent : mediaLinkDescription}
+          content={isInProgress ? tooltipContent : mediaLinkDescription}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
+            isInProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{
-            ...(inProgress && { interactive: true, delayHide: 100 }),
+            ...(isInProgress && { interactive: true, delayHide: 100 }),
           }}
         >
           <Badge
             badgeType="success"
             href={mediaLink}
             className={`${
-              inProgress &&
+              isInProgress &&
               'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
-            {inProgress && badgeDownloadProgress}
+            {isInProgress && badgeDownloadProgress}
             <div
               className={`relative z-20 flex items-center ${
-                inProgress && 'px-2'
+                isInProgress && 'px-2'
               }`}
             >
               <span>
                 {intl.formatMessage(
                   is4k ? messages.status4k : messages.status,
                   {
-                    status: inProgress
+                    status: isInProgress
                       ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.partiallyavailable),
                   }
                 )}
               </span>
-              {inProgress && (
+              {isInProgress && (
                 <>
                   {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">
@@ -259,39 +272,39 @@ const StatusBadge = ({
     case MediaStatus.PROCESSING:
       return (
         <Tooltip
-          content={inProgress ? tooltipContent : mediaLinkDescription}
+          content={isInProgress ? tooltipContent : mediaLinkDescription}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
+            isInProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{
-            ...(inProgress && { interactive: true, delayHide: 100 }),
+            ...(isInProgress && { interactive: true, delayHide: 100 }),
           }}
         >
           <Badge
             badgeType="primary"
             href={mediaLink}
             className={`${
-              inProgress &&
+              isInProgress &&
               'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
-            {inProgress && badgeDownloadProgress}
+            {isInProgress && badgeDownloadProgress}
             <div
               className={`relative z-20 flex items-center ${
-                inProgress && 'px-2'
+                isInProgress && 'px-2'
               }`}
             >
               <span>
                 {intl.formatMessage(
                   is4k ? messages.status4k : messages.status,
                   {
-                    status: inProgress
+                    status: isInProgress
                       ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.requested),
                   }
                 )}
               </span>
-              {inProgress && (
+              {isInProgress && (
                 <>
                   {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">

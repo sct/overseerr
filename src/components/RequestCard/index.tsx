@@ -147,15 +147,6 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
                         ]
                       }
                       title={intl.formatMessage(messages.unknowntitle)}
-                      inProgress={
-                        (
-                          requestData.media[
-                            requestData.is4k
-                              ? 'downloadStatus4k'
-                              : 'downloadStatus'
-                          ] ?? []
-                        ).length > 0
-                      }
                       is4k={requestData.is4k}
                       mediaType={requestData.type}
                       plexUrl={requestData.is4k ? plexUrl4k : plexUrl}
@@ -454,13 +445,6 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                   ]
                 }
                 title={isMovie(title) ? title.title : title.name}
-                inProgress={
-                  (
-                    requestData.media[
-                      requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
-                    ] ?? []
-                  ).length > 0
-                }
                 is4k={requestData.is4k}
                 tmdbId={requestData.media.tmdbId}
                 mediaType={requestData.type}
