@@ -41,6 +41,7 @@ import {
   ChevronDoubleDownIcon,
   ChevronDoubleUpIcon,
 } from '@heroicons/react/24/solid';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { type RatingResponse } from '@server/api/ratings';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaStatus } from '@server/constants/media';
@@ -138,13 +139,10 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
 
   const isAnime = useMemo(
     () =>
-      !!(
-        data?.genres?.some((genre) => genre.name === 'Animation') ||
-        data?.keywords?.some(
-          (keyword) => keyword.name?.toLowerCase() === 'anime'
-        )
+      !!data?.keywords?.some(
+        (keyword) => keyword.id === ANIME_KEYWORD_ID
       ),
-    [data?.genres, data?.keywords]
+    [data?.keywords]
   );
 
   const movie4kRequestsEnabled = isAnime

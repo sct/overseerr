@@ -15,6 +15,7 @@ import {
   TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { MovieDetails } from '@server/models/Movie';
@@ -308,11 +309,8 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
       return false;
     }
 
-    return !!(
-      title.genres?.some((genre) => genre.name === 'Animation') ||
-      title.keywords?.some(
-        (keyword) => keyword.name?.toLowerCase() === 'anime'
-      )
+    return !!title.keywords?.some(
+      (keyword) => keyword.id === ANIME_KEYWORD_ID
     );
   }, [title]);
 
