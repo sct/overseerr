@@ -9,6 +9,7 @@ import type {
 } from '@server/api/themoviedb/interfaces';
 import { MediaType as MainMediaType } from '@server/constants/media';
 import type Media from '@server/entity/Media';
+import { mapMediaInfo } from './common';
 
 export type MediaType = 'tv' | 'movie' | 'person' | 'collection';
 
@@ -87,7 +88,7 @@ export const mapMovieResult = (
   voteCount: movieResult.vote_count,
   backdropPath: movieResult.backdrop_path,
   posterPath: movieResult.poster_path,
-  mediaInfo: media,
+  mediaInfo: mapMediaInfo(media),
 });
 
 export const mapTvResult = (
@@ -109,7 +110,7 @@ export const mapTvResult = (
   voteCount: tvResult.vote_count,
   backdropPath: tvResult.backdrop_path,
   posterPath: tvResult.poster_path,
-  mediaInfo: media,
+  mediaInfo: mapMediaInfo(media),
 });
 
 export const mapCollectionResult = (

@@ -18,12 +18,21 @@ import type {
   MediaRequestBody,
   RequestResultsResponse,
 } from '@server/interfaces/api/requestInterfaces';
+import { mapMediaInfo } from '@server/models/common';
 import { Permission } from '@server/lib/permissions';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
 
 const requestRoutes = Router();
+
+const mapRequestMedia = (request: MediaRequest): MediaRequest => {
+  if (request.media) {
+    mapMediaInfo(request.media);
+  }
+
+  return request;
+};
 
 requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
   '/',
@@ -152,6 +161,8 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
         .skip(skip)
         .getManyAndCount();
 
+      const serializedRequests = requests.map(mapRequestMedia);
+
       return res.status(200).json({
         pageInfo: {
           pages: Math.ceil(requestCount / pageSize),
@@ -159,7 +170,7 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
           results: requestCount,
           page: Math.ceil(skip / pageSize) + 1,
         },
-        results: requests,
+        results: serializedRequests,
       });
     } catch (e) {
       next({ status: 500, message: e.message });
@@ -179,7 +190,7 @@ requestRoutes.post<never, MediaRequest, MediaRequestBody>(
       }
       const request = await MediaRequest.request(req.body, req.user);
 
-      return res.status(201).json(request);
+      return res.status(201).json(mapRequestMedia(request));
     } catch (error) {
       if (!(error instanceof Error)) {
         return;
@@ -305,7 +316,7 @@ requestRoutes.get('/:requestId', async (req, res, next) => {
       });
     }
 
-    return res.status(200).json(request);
+    return res.status(200).json(mapRequestMedia(request));
   } catch (e) {
     logger.debug('Failed to retrieve request.', {
       label: 'API',
@@ -449,7 +460,7 @@ requestRoutes.put<{ requestId: string }>(
         await requestRepository.save(request);
       }
 
-      return res.status(200).json(request);
+      return res.status(200).json(mapRequestMedia(request));
     } catch (e) {
       next({ status: 500, message: e.message });
     }
@@ -506,7 +517,7 @@ requestRoutes.post<{
       request.status = MediaRequestStatus.APPROVED;
       await requestRepository.save(request);
 
-      return res.status(200).json(request);
+      return res.status(200).json(mapRequestMedia(request));
     } catch (e) {
       logger.error('Error processing request retry', {
         label: 'Media Request',
@@ -550,7 +561,7 @@ requestRoutes.post<{
       request.modifiedBy = req.user;
       await requestRepository.save(request);
 
-      return res.status(200).json(request);
+      return res.status(200).json(mapRequestMedia(request));
     } catch (e) {
       logger.error('Error processing request update', {
         label: 'Media Request',

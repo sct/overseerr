@@ -23,6 +23,7 @@ import {
   mapExternalIds,
   mapVideos,
   mapWatchProviders,
+  mapMediaInfo,
 } from './common';
 import type { Video } from './Movie';
 
@@ -221,6 +222,6 @@ export const mapTvDetails = (
     id: keyword.id,
     name: keyword.name,
   })),
-  mediaInfo: media,
+  mediaInfo: mapMediaInfo(media),
   watchProviders: mapWatchProviders(show['watch/providers']?.results ?? {}),
 });

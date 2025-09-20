@@ -19,6 +19,7 @@ import {
   mapExternalIds,
   mapVideos,
   mapWatchProviders,
+  mapMediaInfo,
 } from './common';
 
 export interface Video {
@@ -142,7 +143,7 @@ export const mapMovieDetails = (
       }
     : undefined,
   externalIds: mapExternalIds(movie.external_ids),
-  mediaInfo: media,
+  mediaInfo: mapMediaInfo(media),
   watchProviders: mapWatchProviders(movie['watch/providers']?.results ?? {}),
   keywords: movie.keywords.keywords.map((keyword) => ({
     id: keyword.id,
