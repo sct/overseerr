@@ -2,6 +2,7 @@ import Badge from '@app/components/Common/Badge';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import ConfirmButton from '@app/components/Common/ConfirmButton';
+import Tooltip from '@app/components/Common/Tooltip';
 import RequestModal from '@app/components/RequestModal';
 import StatusBadge from '@app/components/StatusBadge';
 import useDeepLinks from '@app/hooks/useDeepLinks';
@@ -29,6 +30,7 @@ import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
+  episodes: '{episodeCount, plural, one {Episode} other {Episodes}}',
   failedretry: 'Something went wrong while retrying the request.',
   requested: 'Requested',
   requesteddate: 'Requested',
@@ -73,7 +75,7 @@ const RequestItemError = ({
   });
 
   return (
-    <div className="flex h-64 w-full flex-col justify-center rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-red-500 xl:h-28 xl:flex-row">
+    <div className="xl:min-h-28 flex h-64 w-full flex-col justify-center rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-red-500 xl:flex-row">
       <div className="flex w-full flex-col justify-between overflow-hidden sm:flex-row">
         <div className="flex w-full flex-col justify-center overflow-hidden pl-4 pr-4 sm:pr-0 xl:w-7/12 2xl:w-2/3">
           <div className="flex text-lg font-bold text-white xl:text-xl">
@@ -349,7 +351,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
   if (!title && !error) {
     return (
       <div
-        className="h-64 w-full animate-pulse rounded-xl bg-gray-800 xl:h-28"
+        className="xl:min-h-28 h-64 w-full animate-pulse rounded-xl bg-gray-800"
         ref={ref}
       />
     );
@@ -378,7 +380,7 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
           setShowEditModal(false);
         }}
       />
-      <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
+      <div className="xl:min-h-28 relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:flex-row">
         {title.backdropPath && (
           <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
             <CachedImage
@@ -448,19 +450,99 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
                           : request.seasons.length,
                     })}
                   </span>
-                  <div className="hide-scrollbar flex flex-nowrap overflow-x-scroll">
-                    {request.seasons.map((season) => (
-                      <span key={`season-${season.id}`} className="mr-2">
-                        <Badge>
-                          {season.seasonNumber === 0
-                            ? intl.formatMessage(globalMessages.specials)
-                            : season.seasonNumber}
-                        </Badge>
-                      </span>
-                    ))}
+                  <div className="relative">
+                    <div className="hide-scrollbar flex overflow-x-scroll">
+                      {request.seasons.slice(0, 4).map((season) => (
+                        <span
+                          key={`season-${season.id}`}
+                          className="mr-2 flex-shrink-0"
+                        >
+                          <Badge>
+                            {season.seasonNumber === 0
+                              ? intl.formatMessage(globalMessages.specials)
+                              : season.seasonNumber}
+                          </Badge>
+                        </span>
+                      ))}
+                      {request.seasons.length > 4 && (
+                        <Tooltip
+                          content={
+                            <div className="max-w-xs">
+                              {request.seasons.slice(4).map((season, index) => (
+                                <span key={`tooltip-season-${season.id}`}>
+                                  {season.seasonNumber === 0
+                                    ? intl.formatMessage(
+                                        globalMessages.specials
+                                      )
+                                    : season.seasonNumber}
+                                  {index <
+                                    request.seasons.slice(4).length - 1 && ', '}
+                                </span>
+                              ))}
+                            </div>
+                          }
+                        >
+                          <span className="flex-shrink-0">
+                            <Badge badgeType="default">
+                              +{request.seasons.length - 4}
+                            </Badge>
+                          </span>
+                        </Tooltip>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
+              {!isMovie(title) &&
+                request.episodes &&
+                request.episodes.length > 0 && (
+                  <div className="card-field">
+                    <span className="card-field-name">
+                      {intl.formatMessage(messages.episodes, {
+                        episodeCount: request.episodes.length,
+                      })}
+                    </span>
+                    <div className="relative">
+                      <div className="hide-scrollbar flex overflow-x-scroll">
+                        {request.episodes.slice(0, 5).map((episode) => (
+                          <span
+                            key={`episode-${episode.id}`}
+                            className="mr-2 flex-shrink-0"
+                          >
+                            <Badge>
+                              S{episode.seasonNumber}E{episode.episodeNumber}
+                            </Badge>
+                          </span>
+                        ))}
+                        {request.episodes.length > 5 && (
+                          <Tooltip
+                            content={
+                              <div className="max-w-xs">
+                                {request.episodes
+                                  .slice(5)
+                                  .map((episode, index) => (
+                                    <span key={`tooltip-episode-${episode.id}`}>
+                                      S{episode.seasonNumber}E
+                                      {episode.episodeNumber}
+                                      {index <
+                                        request.episodes.slice(5).length - 1 &&
+                                        ', '}
+                                    </span>
+                                  ))}
+                              </div>
+                            }
+                          >
+                            <span className="flex-shrink-0">
+                              <Badge badgeType="default">
+                                +{request.episodes.length - 5}
+                              </Badge>
+                            </span>
+                          </Tooltip>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
             </div>
           </div>
           <div className="z-10 mt-4 ml-4 flex w-full flex-col justify-center overflow-hidden pr-4 text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">

@@ -299,7 +299,7 @@ class SonarrAPI extends ServarrBase<{
   }
 
   public async searchSeries(seriesId: number): Promise<void> {
-    logger.info('Executing series search command.', {
+    logger.debug('Executing series search command.', {
       label: 'Sonarr API',
       seriesId,
     });
@@ -341,6 +341,160 @@ class SonarrAPI extends ServarrBase<{
     );
 
     return newSeasons;
+  }
+
+  /**
+   * Get episodes for a series
+   */
+  public async getEpisodes(seriesId: number): Promise<EpisodeResult[]> {
+    try {
+      const response = await this.axios.get<EpisodeResult[]>('/episode', {
+        params: { seriesId },
+      });
+      return response.data;
+    } catch (e) {
+      logger.error('Failed to get episodes from Sonarr', {
+        label: 'Sonarr',
+        errorMessage: e.message,
+        seriesId,
+      });
+      throw new Error('Failed to get episodes from Sonarr');
+    }
+  }
+
+  /**
+   * Update episode monitoring status in bulk
+   */
+  public async updateEpisodeMonitoring(
+    episodeIds: number[],
+    monitored: boolean
+  ): Promise<void> {
+    try {
+      await this.axios.put('/episode/monitor', {
+        episodeIds,
+        monitored,
+      });
+      logger.debug(`Updated monitoring for ${episodeIds.length} episodes`, {
+        label: 'Sonarr',
+        episodeIds,
+        monitored,
+      });
+    } catch (e) {
+      logger.error('Failed to update episode monitoring in Sonarr', {
+        label: 'Sonarr',
+        errorMessage: e.message,
+        episodeIds,
+        monitored,
+      });
+      throw new Error('Failed to update episode monitoring in Sonarr');
+    }
+  }
+
+  /**
+   * Configure episode monitoring for partial season requests.
+   * Monitors requested episodes and unmonitors all others in the season.
+   * Includes retry logic to handle timing issues when episodes aren't immediately available.
+   */
+  public async configureEpisodeMonitoring(
+    seriesId: number,
+    seasonNumber: number,
+    requestedEpisodes: number[]
+  ): Promise<void> {
+    const maxRetries = 30;
+    const retryDelayMs = 2000; // 2 seconds
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        // Get all episodes for the season
+        const allEpisodes = await this.getEpisodes(seriesId);
+        const seasonEpisodes = allEpisodes.filter(
+          (ep) => ep.seasonNumber === seasonNumber
+        );
+
+        // Check if we have episodes for this season
+        if (seasonEpisodes.length === 0) {
+          if (attempt < maxRetries) {
+            logger.warn(
+              `No episodes found for season ${seasonNumber}, retrying in ${
+                retryDelayMs / 1000
+              }s (attempt ${attempt}/${maxRetries})`,
+              {
+                label: 'Sonarr',
+                seriesId,
+                seasonNumber,
+              }
+            );
+            await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+            continue;
+          } else {
+            throw new Error(
+              `No episodes found for season ${seasonNumber} after ${maxRetries} attempts`
+            );
+          }
+        }
+
+        // Split episodes into requested vs unrequested
+        const episodesToMonitor = seasonEpisodes
+          .filter((ep) => requestedEpisodes.includes(ep.episodeNumber))
+          .map((ep) => ep.id);
+
+        const episodesToUnmonitor = seasonEpisodes
+          .filter((ep) => !requestedEpisodes.includes(ep.episodeNumber))
+          .map((ep) => ep.id);
+
+        // Monitor requested episodes
+        if (episodesToMonitor.length > 0) {
+          await this.updateEpisodeMonitoring(episodesToMonitor, true);
+        }
+
+        // Unmonitor unrequested episodes
+        if (episodesToUnmonitor.length > 0) {
+          await this.updateEpisodeMonitoring(episodesToUnmonitor, false);
+        }
+
+        logger.debug(
+          `Configured episode monitoring for season ${seasonNumber}`,
+          {
+            label: 'Sonarr',
+            seriesId,
+            seasonNumber,
+            requestedEpisodes,
+            monitoredCount: episodesToMonitor.length,
+            unmonitoredCount: episodesToUnmonitor.length,
+          }
+        );
+
+        // Success! Break out of retry loop
+        return;
+      } catch (e) {
+        if (attempt === maxRetries) {
+          logger.error(
+            'Failed to configure episode monitoring after all retries',
+            {
+              label: 'Sonarr',
+              errorMessage: e.message,
+              seriesId,
+              seasonNumber,
+              requestedEpisodes,
+              attempts: maxRetries,
+            }
+          );
+          throw new Error('Failed to configure episode monitoring');
+        } else {
+          logger.warn(
+            `Episode monitoring attempt ${attempt} failed, retrying`,
+            {
+              label: 'Sonarr',
+              errorMessage: e.message,
+              seriesId,
+              seasonNumber,
+              attempt,
+            }
+          );
+          await new Promise((resolve) => setTimeout(resolve, retryDelayMs));
+        }
+      }
+    }
   }
 }
 

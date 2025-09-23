@@ -7,6 +7,7 @@ import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import MediaRequest from '@server/entity/MediaRequest';
+// import EpisodeRequest from '@server/entity/EpisodeRequest';
 import type Season from '@server/entity/Season';
 import { User } from '@server/entity/User';
 import type { RadarrSettings, SonarrSettings } from '@server/lib/settings';
@@ -185,6 +186,9 @@ class AvailabilitySync {
           if ([...finalSeasons4k.values()].includes(false)) {
             await this.seasonUpdater(media, finalSeasons4k, true);
           }
+
+          // Sync episode-level status from Sonarr
+          await this.syncEpisodeStatus(media);
 
           if (
             !showExists &&
@@ -667,6 +671,128 @@ class AvailabilitySync {
     }
 
     return seasonExistsInPlex;
+  }
+
+  /**
+   * Sync episode-level status from Sonarr to EpisodeRequest entities
+   */
+  private async syncEpisodeStatus(media: Media): Promise<void> {
+    if (media.mediaType !== 'tv') return;
+
+    try {
+      const mediaRequestRepository = getRepository(MediaRequest);
+
+      // Get all requests for this media that have episode requests
+      const requestsWithEpisodes = await mediaRequestRepository.find({
+        where: { media: { id: media.id } },
+        relations: { episodes: true },
+      });
+
+      const episodeRequestsToUpdate = requestsWithEpisodes
+        .flatMap((request) => request.episodes || [])
+        .filter((episode) => episode.status !== MediaRequestStatus.COMPLETED);
+
+      if (episodeRequestsToUpdate.length === 0) return;
+
+      // Check both standard and 4K Sonarr instances
+      for (const server of this.sonarrServers) {
+        const sonarrAPI = new SonarrAPI({
+          apiKey: server.apiKey,
+          url: SonarrAPI.buildUrl(server, '/api/v3'),
+        });
+
+        let seriesId: number | undefined;
+
+        // Determine which series ID to use based on server type
+        if (server.is4k && media.externalServiceId4k) {
+          seriesId = media.externalServiceId4k;
+        } else if (!server.is4k && media.externalServiceId) {
+          seriesId = media.externalServiceId;
+        }
+
+        if (!seriesId) continue;
+
+        try {
+          // Get all episodes from Sonarr
+          const sonarrEpisodes = await sonarrAPI.getEpisodes(seriesId);
+
+          // Update episode request statuses based on Sonarr data
+          for (const episodeRequest of episodeRequestsToUpdate) {
+            // Only update episodes that match this server's 4K setting
+            const requestIs4k =
+              episodeRequestsToUpdate[0]?.request?.is4k || false;
+            if (requestIs4k !== server.is4k) continue;
+
+            const sonarrEpisode = sonarrEpisodes.find(
+              (ep) =>
+                ep.seasonNumber === episodeRequest.seasonNumber &&
+                ep.episodeNumber === episodeRequest.episodeNumber
+            );
+
+            if (sonarrEpisode) {
+              let newStatus = episodeRequest.status;
+
+              if (sonarrEpisode.hasFile) {
+                // Episode has been downloaded
+                newStatus = MediaRequestStatus.COMPLETED;
+              } else if (sonarrEpisode.monitored) {
+                // Episode is being monitored (approved for download)
+                newStatus = MediaRequestStatus.APPROVED;
+              }
+
+              if (newStatus !== episodeRequest.status) {
+                const oldStatus = episodeRequest.status;
+                episodeRequest.status = newStatus;
+                await mediaRequestRepository.save(episodeRequest.request);
+
+                logger.info(`Updated episode request status`, {
+                  label: 'Availability Sync',
+                  mediaId: media.id,
+                  seasonNumber: episodeRequest.seasonNumber,
+                  episodeNumber: episodeRequest.episodeNumber,
+                  oldStatus: MediaRequestStatus[oldStatus],
+                  newStatus: MediaRequestStatus[newStatus],
+                  is4k: server.is4k,
+                });
+
+                // Trigger notification if episode became available (completed)
+                if (
+                  newStatus === MediaRequestStatus.COMPLETED &&
+                  oldStatus !== MediaRequestStatus.COMPLETED
+                ) {
+                  // The MediaRequestSubscriber will handle the notification
+                  // when it detects the MediaRequest was updated
+                  logger.debug(
+                    `Episode became available, notification will be triggered`,
+                    {
+                      label: 'Availability Sync',
+                      mediaId: media.id,
+                      requestId: episodeRequest.request.id,
+                      seasonNumber: episodeRequest.seasonNumber,
+                      episodeNumber: episodeRequest.episodeNumber,
+                    }
+                  );
+                }
+              }
+            }
+          }
+        } catch (episodeError) {
+          logger.error('Failed to sync episode status from Sonarr', {
+            label: 'Availability Sync',
+            errorMessage: episodeError.message,
+            mediaId: media.id,
+            serverId: server.id,
+            seriesId,
+          });
+        }
+      }
+    } catch (error) {
+      logger.error('Failed to sync episode status', {
+        label: 'Availability Sync',
+        errorMessage: error.message,
+        mediaId: media.id,
+      });
+    }
   }
 }
 

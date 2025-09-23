@@ -3,6 +3,7 @@ import MovieRequestModal from '@app/components/RequestModal/MovieRequestModal';
 import TvRequestModal from '@app/components/RequestModal/TvRequestModal';
 import { Transition } from '@headlessui/react';
 import type { MediaStatus } from '@server/constants/media';
+import type Media from '@server/entity/Media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 
 interface RequestModalProps {
@@ -11,6 +12,7 @@ interface RequestModalProps {
   tmdbId: number;
   is4k?: boolean;
   editRequest?: MediaRequest;
+  media?: Media;
   onComplete?: (newStatus: MediaStatus) => void;
   onCancel?: () => void;
   onUpdating?: (isUpdating: boolean) => void;
@@ -22,6 +24,7 @@ const RequestModal = ({
   tmdbId,
   is4k,
   editRequest,
+  media,
   onComplete,
   onUpdating,
   onCancel,
@@ -54,6 +57,7 @@ const RequestModal = ({
           onUpdating={onUpdating}
           is4k={is4k}
           editRequest={editRequest}
+          media={media}
         />
       ) : (
         <CollectionRequestModal

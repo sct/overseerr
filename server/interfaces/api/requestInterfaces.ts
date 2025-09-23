@@ -6,11 +6,16 @@ export interface RequestResultsResponse extends PaginatedResponse {
   results: MediaRequest[];
 }
 
+export type SeasonRequestInput = {
+  seasonNumber: number;
+  episodes: number[] | 'all';
+};
+
 export type MediaRequestBody = {
   mediaType: MediaType;
   mediaId: number;
   tvdbId?: number;
-  seasons?: number[] | 'all';
+  seasons?: number[] | 'all' | SeasonRequestInput[];
   is4k?: boolean;
   serverId?: number;
   profileId?: number;

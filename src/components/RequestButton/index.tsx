@@ -369,6 +369,7 @@ const RequestButton = ({
         show={showRequestModal}
         type={mediaType}
         editRequest={editRequest ? activeRequest : undefined}
+        media={media}
         onComplete={() => {
           onUpdate();
           setShowRequestModal(false);

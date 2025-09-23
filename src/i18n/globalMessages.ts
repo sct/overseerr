@@ -8,6 +8,7 @@ const globalMessages = defineMessages({
   unavailable: 'Unavailable',
   notrequested: 'Not Requested',
   requested: 'Requested',
+  partiallyrequested: 'Partially Requested',
   requesting: 'Requesting…',
   request: 'Request',
   request4k: 'Request in 4K',

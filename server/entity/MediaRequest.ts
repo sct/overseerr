@@ -5,7 +5,10 @@ import {
   MediaType,
 } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
-import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces';
+import type {
+  MediaRequestBody,
+  SeasonRequestInput,
+} from '@server/interfaces/api/requestInterfaces';
 import notificationManager, { Notification } from '@server/lib/notifications';
 import { Permission } from '@server/lib/permissions';
 import logger from '@server/logger';
@@ -22,6 +25,7 @@ import {
   RelationCount,
   UpdateDateColumn,
 } from 'typeorm';
+import EpisodeRequest from './EpisodeRequest';
 import Media from './Media';
 import SeasonRequest from './SeasonRequest';
 import { User } from './User';
@@ -235,38 +239,71 @@ export class MediaRequest {
       const tmdbMediaShow = tmdbMedia as Awaited<
         ReturnType<typeof tmdb.getTvShow>
       >;
-      const requestedSeasons =
-        requestBody.seasons === 'all'
-          ? tmdbMediaShow.seasons
-              .filter((season) => season.season_number !== 0)
-              .map((season) => season.season_number)
-          : (requestBody.seasons as number[]);
-      let existingSeasons: number[] = [];
 
-      // We need to check existing requests on this title to make sure we don't double up on seasons that were
-      // already requested. In the case they were, we just throw out any duplicates but still approve the request.
-      // (Unless there are no seasons, in which case we abort)
+      // Parse the new episode-level request format
+      let seasonRequestInputs: SeasonRequestInput[] = [];
+
+      if (requestBody.seasons === 'all') {
+        // Request all seasons as full seasons
+        seasonRequestInputs = tmdbMediaShow.seasons
+          .filter((season) => season.season_number !== 0)
+          .map((season) => ({
+            seasonNumber: season.season_number,
+            episodes: 'all' as const,
+          }));
+      } else if (Array.isArray(requestBody.seasons)) {
+        // Check if it's the old format (number[]) or new format (SeasonRequestInput[])
+        if (
+          requestBody.seasons.length > 0 &&
+          typeof requestBody.seasons[0] === 'number'
+        ) {
+          // Old format: convert number[] to SeasonRequestInput[]
+          seasonRequestInputs = (requestBody.seasons as number[]).map(
+            (seasonNumber) => ({
+              seasonNumber,
+              episodes: 'all' as const,
+            })
+          );
+        } else {
+          // New format: SeasonRequestInput[]
+          seasonRequestInputs = requestBody.seasons as SeasonRequestInput[];
+        }
+      }
+
+      // Collect existing episodes to avoid duplicates
+      const existingEpisodes: {
+        seasonNumber: number;
+        episodeNumber: number;
+      }[] = [];
+      const existingSeasons: number[] = [];
+
       if (media.requests) {
-        existingSeasons = media.requests
+        media.requests
           .filter(
             (request) =>
               request.is4k === requestBody.is4k &&
               request.status !== MediaRequestStatus.DECLINED &&
               request.status !== MediaRequestStatus.COMPLETED
           )
-          .reduce((seasons, request) => {
-            const combinedSeasons = request.seasons.map(
-              (season) => season.seasonNumber
-            );
+          .forEach((request) => {
+            // Add existing full seasons
+            request.seasons.forEach((season) => {
+              existingSeasons.push(season.seasonNumber);
+            });
 
-            return [...seasons, ...combinedSeasons];
-          }, [] as number[]);
+            // Add existing episode requests
+            request.episodes.forEach((episode) => {
+              existingEpisodes.push({
+                seasonNumber: episode.seasonNumber,
+                episodeNumber: episode.episodeNumber,
+              });
+            });
+          });
       }
 
-      // We should also check seasons that are available/partially available but don't have existing requests
+      // Check seasons that are available/partially available but don't have existing requests
       if (media.seasons) {
-        existingSeasons = [
-          ...existingSeasons,
+        existingSeasons.push(
           ...media.seasons
             .filter(
               (season) =>
@@ -275,19 +312,104 @@ export class MediaRequest {
                 season[requestBody.is4k ? 'status4k' : 'status'] !==
                   MediaStatus.DELETED
             )
-            .map((season) => season.seasonNumber),
-        ];
+            .map((season) => season.seasonNumber)
+        );
       }
 
-      const finalSeasons = requestedSeasons.filter(
-        (rs) => !existingSeasons.includes(rs)
-      );
+      // Process the season requests and create appropriate entities
+      const finalSeasonRequests: SeasonRequest[] = [];
+      const finalEpisodeRequests: EpisodeRequest[] = [];
+      let totalSeasonCount = 0;
 
-      if (finalSeasons.length === 0) {
-        throw new NoSeasonsAvailableError('No seasons available to request');
+      for (const seasonInput of seasonRequestInputs) {
+        const { seasonNumber, episodes } = seasonInput;
+
+        if (episodes === 'all') {
+          // Skip full season requests if season is already available/requested
+          if (existingSeasons.includes(seasonNumber)) {
+            continue;
+          }
+          // Full season request
+          finalSeasonRequests.push(
+            new SeasonRequest({
+              seasonNumber,
+              status: user.hasPermission(
+                [
+                  requestBody.is4k
+                    ? Permission.AUTO_APPROVE_4K
+                    : Permission.AUTO_APPROVE,
+                  requestBody.is4k
+                    ? Permission.AUTO_APPROVE_4K_TV
+                    : Permission.AUTO_APPROVE_TV,
+                  Permission.MANAGE_REQUESTS,
+                ],
+                { type: 'or' }
+              )
+                ? MediaRequestStatus.APPROVED
+                : MediaRequestStatus.PENDING,
+            })
+          );
+          totalSeasonCount += 1;
+        } else {
+          // Episode-level request
+          const requestedEpisodes = episodes as number[];
+
+          // Validate episode array is not empty
+          if (requestedEpisodes.length === 0) {
+            throw new Error(
+              `Season ${seasonNumber} has empty episodes array. Please specify episode numbers or use "all".`
+            );
+          }
+
+          const filteredEpisodes = requestedEpisodes.filter(
+            (episodeNumber) =>
+              !existingEpisodes.some(
+                (existing) =>
+                  existing.seasonNumber === seasonNumber &&
+                  existing.episodeNumber === episodeNumber
+              )
+          );
+
+          if (filteredEpisodes.length > 0) {
+            finalEpisodeRequests.push(
+              ...filteredEpisodes.map(
+                (episodeNumber) =>
+                  new EpisodeRequest({
+                    seasonNumber,
+                    episodeNumber,
+                    status: user.hasPermission(
+                      [
+                        requestBody.is4k
+                          ? Permission.AUTO_APPROVE_4K
+                          : Permission.AUTO_APPROVE,
+                        requestBody.is4k
+                          ? Permission.AUTO_APPROVE_4K_TV
+                          : Permission.AUTO_APPROVE_TV,
+                        Permission.MANAGE_REQUESTS,
+                      ],
+                      { type: 'or' }
+                    )
+                      ? MediaRequestStatus.APPROVED
+                      : MediaRequestStatus.PENDING,
+                  })
+              )
+            );
+            // Count partial seasons as fractions for quota
+            totalSeasonCount += filteredEpisodes.length / 10; // Arbitrary weighting
+          }
+        }
+      }
+
+      if (
+        finalSeasonRequests.length === 0 &&
+        finalEpisodeRequests.length === 0
+      ) {
+        throw new NoSeasonsAvailableError(
+          'No seasons or episodes available to request'
+        );
       } else if (
         quotas.tv.limit &&
-        finalSeasons.length > (quotas.tv.remaining ?? 0)
+        totalSeasonCount > (quotas.tv.remaining ?? 0)
       ) {
         throw new QuotaRestrictedError('Series Quota exceeded.');
       }
@@ -298,7 +420,6 @@ export class MediaRequest {
         type: MediaType.TV,
         media,
         requestedBy: requestUser,
-        // If the user is an admin or has the "auto approve" permission, automatically approve the request
         status: user.hasPermission(
           [
             requestBody.is4k
@@ -333,26 +454,8 @@ export class MediaRequest {
         rootFolder: requestBody.rootFolder,
         languageProfileId: requestBody.languageProfileId,
         tags: requestBody.tags,
-        seasons: finalSeasons.map(
-          (sn) =>
-            new SeasonRequest({
-              seasonNumber: sn,
-              status: user.hasPermission(
-                [
-                  requestBody.is4k
-                    ? Permission.AUTO_APPROVE_4K
-                    : Permission.AUTO_APPROVE,
-                  requestBody.is4k
-                    ? Permission.AUTO_APPROVE_4K_TV
-                    : Permission.AUTO_APPROVE_TV,
-                  Permission.MANAGE_REQUESTS,
-                ],
-                { type: 'or' }
-              )
-                ? MediaRequestStatus.APPROVED
-                : MediaRequestStatus.PENDING,
-            })
-        ),
+        seasons: finalSeasonRequests,
+        episodes: finalEpisodeRequests,
         isAutoRequest: options.isAutoRequest ?? false,
       });
 
@@ -404,6 +507,15 @@ export class MediaRequest {
     cascade: true,
   })
   public seasons: SeasonRequest[];
+
+  @RelationCount((request: MediaRequest) => request.episodes)
+  public episodeCount: number;
+
+  @OneToMany(() => EpisodeRequest, (episode) => episode.request, {
+    eager: true,
+    cascade: true,
+  })
+  public episodes: EpisodeRequest[];
 
   @Column({ default: false })
   public is4k: boolean;

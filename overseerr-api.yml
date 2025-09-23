@@ -5107,6 +5107,24 @@ paths:
                         minimum: 0
                     - type: string
                       enum: [all]
+                    - type: array
+                      items:
+                        type: object
+                        properties:
+                          seasonNumber:
+                            type: number
+                            minimum: 0
+                          episodes:
+                            oneOf:
+                              - type: array
+                                items:
+                                  type: number
+                                  minimum: 1
+                              - type: string
+                                enum: [all]
+                        required:
+                          - seasonNumber
+                          - episodes
                 is4k:
                   type: boolean
                   example: false

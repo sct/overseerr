@@ -30,6 +30,7 @@ import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
+  episodes: '{episodeCount, plural, one {Episode} other {Episodes}}',
   failedretry: 'Something went wrong while retrying the request.',
   mediaerror: '{mediaType} Not Found',
   tmdbid: 'TMDB ID',
@@ -389,19 +390,93 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                       : request.seasons.length,
                 })}
               </span>
-              <div className="hide-scrollbar overflow-x-scroll">
-                {request.seasons.map((season) => (
-                  <span key={`season-${season.id}`} className="mr-2">
-                    <Badge>
-                      {season.seasonNumber === 0
-                        ? intl.formatMessage(globalMessages.specials)
-                        : season.seasonNumber}
-                    </Badge>
-                  </span>
-                ))}
+              <div className="relative pr-4">
+                <div className="hide-scrollbar flex overflow-x-scroll">
+                  {request.seasons.slice(0, 4).map((season) => (
+                    <span
+                      key={`season-${season.id}`}
+                      className="mr-2 flex-shrink-0"
+                    >
+                      <Badge>
+                        {season.seasonNumber === 0
+                          ? intl.formatMessage(globalMessages.specials)
+                          : season.seasonNumber}
+                      </Badge>
+                    </span>
+                  ))}
+                  {request.seasons.length > 4 && (
+                    <Tooltip
+                      content={
+                        <div className="max-w-xs">
+                          {request.seasons.slice(4).map((season, index) => (
+                            <span key={`tooltip-season-${season.id}`}>
+                              {season.seasonNumber === 0
+                                ? intl.formatMessage(globalMessages.specials)
+                                : season.seasonNumber}
+                              {index < request.seasons.slice(4).length - 1 &&
+                                ', '}
+                            </span>
+                          ))}
+                        </div>
+                      }
+                    >
+                      <span className="flex-shrink-0">
+                        <Badge badgeType="default">
+                          +{request.seasons.length - 4}
+                        </Badge>
+                      </span>
+                    </Tooltip>
+                  )}
+                </div>
               </div>
             </div>
           )}
+          {!isMovie(title) &&
+            request.episodes &&
+            request.episodes.length > 0 && (
+              <div className="my-0.5 hidden items-center text-sm sm:my-1 sm:flex">
+                <span className="mr-2 font-bold ">
+                  {intl.formatMessage(messages.episodes, {
+                    episodeCount: request.episodes.length,
+                  })}
+                </span>
+                <div className="relative pr-4">
+                  <div className="hide-scrollbar flex overflow-x-scroll">
+                    {request.episodes.slice(0, 2).map((episode) => (
+                      <span
+                        key={`episode-${episode.id}`}
+                        className="mr-2 flex-shrink-0"
+                      >
+                        <Badge>
+                          S{episode.seasonNumber}E{episode.episodeNumber}
+                        </Badge>
+                      </span>
+                    ))}
+                    {request.episodes.length > 2 && (
+                      <Tooltip
+                        content={
+                          <div className="max-w-xs">
+                            {request.episodes.slice(2).map((episode, index) => (
+                              <span key={`tooltip-episode-${episode.id}`}>
+                                S{episode.seasonNumber}E{episode.episodeNumber}
+                                {index < request.episodes.slice(2).length - 1 &&
+                                  ', '}
+                              </span>
+                            ))}
+                          </div>
+                        }
+                      >
+                        <span className="flex-shrink-0">
+                          <Badge badgeType="default">
+                            +{request.episodes.length - 2}
+                          </Badge>
+                        </span>
+                      </Tooltip>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
           <div className="mt-2 flex items-center text-sm sm:mt-1">
             <span className="mr-2 hidden font-bold sm:block">
               {intl.formatMessage(globalMessages.status)}

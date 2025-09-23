@@ -13,6 +13,7 @@ import {
   MediaType,
 } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
+import EpisodeRequest from '@server/entity/EpisodeRequest';
 import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
 import SeasonRequest from '@server/entity/SeasonRequest';
@@ -27,7 +28,7 @@ import type {
   RemoveEvent,
   UpdateEvent,
 } from 'typeorm';
-import { EventSubscriber } from 'typeorm';
+import { EventSubscriber, Not } from 'typeorm';
 
 @EventSubscriber()
 export class MediaRequestSubscriber
@@ -73,9 +74,7 @@ export class MediaRequestSubscriber
   }
 
   private async notifyAvailableSeries(entity: MediaRequest) {
-    // Find all seasons in the related media entity
-    // and see if they are available, then we can check
-    // if the request contains the same seasons
+    // Handle season-level availability notifications
     const requestedSeasons =
       entity.seasons?.map((entitySeason) => entitySeason.seasonNumber) ?? [];
     const availableSeasons = entity.media.seasons.filter(
@@ -125,6 +124,88 @@ export class MediaRequestSubscriber
           mediaId: entity.id,
         });
       }
+    }
+
+    // Handle episode-level availability notifications
+    await this.notifyAvailableEpisodes(entity);
+  }
+
+  private async notifyAvailableEpisodes(entity: MediaRequest) {
+    // Only process TV requests with episode-level requests
+    if (entity.type !== MediaType.TV || !entity.episodes?.length) {
+      return;
+    }
+
+    // Find episodes that just became available (status changed to COMPLETED)
+    const availableEpisodes = entity.episodes.filter(
+      (episode) => episode.status === MediaRequestStatus.COMPLETED
+    );
+
+    if (availableEpisodes.length === 0) {
+      return;
+    }
+
+    // Group available episodes by season for better notification formatting
+    const episodesBySeason = new Map<number, number[]>();
+    availableEpisodes.forEach((episode) => {
+      if (!episodesBySeason.has(episode.seasonNumber)) {
+        episodesBySeason.set(episode.seasonNumber, []);
+      }
+      episodesBySeason.get(episode.seasonNumber)?.push(episode.episodeNumber);
+    });
+
+    const tmdb = new TheMovieDb();
+
+    try {
+      const tv = await tmdb.getTvShow({ tvId: entity.media.tmdbId });
+
+      // Create episode summary for notification
+      const episodeSummary = Array.from(episodesBySeason.entries())
+        .map(([seasonNum, episodeNums]) => {
+          const sortedEpisodes = episodeNums.sort((a, b) => a - b);
+          return `S${seasonNum}: E${sortedEpisodes.join(', E')}`;
+        })
+        .join('; ');
+
+      const episodeCount = availableEpisodes.length;
+      const episodeWord = episodeCount === 1 ? 'Episode' : 'Episodes';
+
+      notificationManager.sendNotification(Notification.EPISODE_AVAILABLE, {
+        event: `${entity.is4k ? '4K ' : ''}${episodeWord} Now Available`,
+        subject: `${tv.name}${
+          tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
+        }`,
+        message: `${episodeCount} requested ${episodeWord.toLowerCase()} ${
+          episodeCount === 1 ? 'is' : 'are'
+        } now available for download.`,
+        notifyAdmin: false,
+        notifySystem: true,
+        notifyUser: entity.requestedBy,
+        image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`,
+        media: entity.media,
+        extra: [
+          {
+            name: 'Available Episodes',
+            value: episodeSummary,
+          },
+        ],
+        request: entity,
+      });
+
+      logger.info(`Sent episode availability notification`, {
+        label: 'Notifications',
+        requestId: entity.id,
+        mediaId: entity.media.id,
+        episodeCount,
+        episodes: episodeSummary,
+      });
+    } catch (e) {
+      logger.error('Something went wrong sending episode notification(s)', {
+        label: 'Notifications',
+        errorMessage: e.message,
+        requestId: entity.id,
+        mediaId: entity.media.id,
+      });
     }
   }
 
@@ -582,18 +663,43 @@ export class MediaRequestSubscriber
           }
         }
 
+        // Collect seasons for Sonarr
+        // Only include FULL season requests in the seasons array
+        // Episode-only requests will be handled by unmonitoring unrequested episodes
+        const fullSeasonRequests = new Set<number>();
+        const episodeOnlySeasons = new Set<number>();
+
+        // Add full season requests
+        entity.seasons.forEach((season) => {
+          fullSeasonRequests.add(season.seasonNumber);
+        });
+
+        // Collect seasons that have episode requests but no full season request
+        entity.episodes?.forEach((episode) => {
+          if (!fullSeasonRequests.has(episode.seasonNumber)) {
+            episodeOnlySeasons.add(episode.seasonNumber);
+          }
+        });
+
+        // Combine full season requests + episode-only seasons for Sonarr
+        const allSeasonsForSonarr = new Set([
+          ...fullSeasonRequests,
+          ...episodeOnlySeasons,
+        ]);
+
         const sonarrSeriesOptions: AddSeriesOptions = {
           profileId: qualityProfile,
           languageProfileId: languageProfile,
           rootFolderPath: rootFolder,
           title: series.name,
           tvdbid: tvdbId,
-          seasons: entity.seasons.map((season) => season.seasonNumber),
+          seasons: Array.from(allSeasonsForSonarr),
           seasonFolder: sonarrSettings.enableSeasonFolders,
           seriesType,
           tags,
           monitored: true,
           searchNow: !sonarrSettings.preventSearch,
+          // Don't use unmonitoredSeasons - let all seasons be monitored, then selectively manage episodes
         };
 
         // Run entity asynchronously so we don't wait for it on the UI side
@@ -618,6 +724,72 @@ export class MediaRequestSubscriber
             media[entity.is4k ? 'serviceId4k' : 'serviceId'] =
               sonarrSettings?.id;
             await mediaRepository.save(media);
+
+            // Handle episode-level monitoring for partial season requests
+            if (entity.episodes && entity.episodes.length > 0) {
+              try {
+                // Get ALL episode requests for this media (including existing ones)
+                const episodeRequestRepository = getRepository(EpisodeRequest);
+                const allEpisodeRequests = await episodeRequestRepository.find({
+                  where: {
+                    request: {
+                      media: { id: entity.media.id },
+                      is4k: entity.is4k,
+                      status: Not(MediaRequestStatus.DECLINED),
+                    },
+                  },
+                });
+
+                // Group all episodes by season
+                const episodesByseason = new Map<number, number[]>();
+                allEpisodeRequests.forEach((episode) => {
+                  if (!episodesByseason.has(episode.seasonNumber)) {
+                    episodesByseason.set(episode.seasonNumber, []);
+                  }
+                  episodesByseason
+                    .get(episode.seasonNumber)
+                    ?.push(episode.episodeNumber);
+                });
+
+                // For each season with episode requests, monitor only the requested episodes
+                for (const [
+                  seasonNumber,
+                  requestedEpisodes,
+                ] of episodesByseason) {
+                  // Only configure episode monitoring if this season doesn't have a full season request
+                  const hasFullSeasonRequest = entity.seasons.some(
+                    (s) => s.seasonNumber === seasonNumber
+                  );
+
+                  if (!hasFullSeasonRequest && sonarrSeries.id) {
+                    await sonarr.configureEpisodeMonitoring(
+                      sonarrSeries.id,
+                      seasonNumber,
+                      requestedEpisodes
+                    );
+                    logger.debug(
+                      `Configured episode-level monitoring for season ${seasonNumber}`,
+                      {
+                        label: 'Media Request',
+                        requestId: entity.id,
+                        mediaId: entity.media.id,
+                        seasonNumber,
+                        requestedEpisodes: requestedEpisodes.sort(),
+                        totalEpisodes: requestedEpisodes.length,
+                      }
+                    );
+                  }
+                }
+              } catch (episodeError) {
+                logger.error('Failed to configure episode-level monitoring', {
+                  label: 'Media Request',
+                  errorMessage: episodeError.message,
+                  requestId: entity.id,
+                  mediaId: entity.media.id,
+                });
+                // Don't throw here - series was added successfully, episode monitoring is secondary
+              }
+            }
           })
           .catch(async () => {
             const requestRepository = getRepository(MediaRequest);
@@ -673,6 +845,7 @@ export class MediaRequestSubscriber
       return;
     }
     const seasonRequestRepository = getRepository(SeasonRequest);
+    const episodeRequestRepository = getRepository(EpisodeRequest);
     if (
       entity.status === MediaRequestStatus.APPROVED &&
       // Do not update the status if the item is already partially available or available
@@ -713,7 +886,7 @@ export class MediaRequestSubscriber
       mediaRepository.save(media);
     }
 
-    // Approve child seasons if parent is approved
+    // Approve child seasons and episodes if parent is approved
     if (
       media.mediaType === MediaType.TV &&
       entity.status === MediaRequestStatus.APPROVED
@@ -721,6 +894,12 @@ export class MediaRequestSubscriber
       entity.seasons.forEach((season) => {
         season.status = MediaRequestStatus.APPROVED;
         seasonRequestRepository.save(season);
+      });
+
+      // Also approve child episodes (fixes retry scenario where episodes stay PENDING)
+      entity.episodes?.forEach((episode) => {
+        episode.status = MediaRequestStatus.APPROVED;
+        episodeRequestRepository.save(episode);
       });
     }
   }

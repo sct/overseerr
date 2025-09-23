@@ -7,7 +7,7 @@ Welcome to the Overseerr Documentation.
 - **Full Plex integration**. Login and manage user access with Plex.
 - **Syncs to your Plex library** to show what titles you already have.
 - **Integrates with Sonarr and Radarr**. With more services to come in the future.
-- **Easy to use request system** allowing users to request individual seasons or movies in a friendly, clean UI.
+- **Easy to use request system** allowing users to request movies, individual seasons, or even specific episodes in a friendly, clean UI.
 - **Simple request management UI**. Don't dig through the app to approve recent requests.
 - **Mobile-friendly design**, for when you need to approve requests on the go.
 - Granular permission system.

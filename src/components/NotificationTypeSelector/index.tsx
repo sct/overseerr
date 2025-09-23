@@ -28,6 +28,11 @@ const messages = defineMessages({
     'Send notifications when media requests become available.',
   usermediaavailableDescription:
     'Get notified when your media requests become available.',
+  episodeavailable: 'Episode Available',
+  episodeavailableDescription:
+    'Send notifications when individual episodes become available.',
+  userepisodeavailableDescription:
+    'Get notified when your requested episodes become available.',
   mediafailed: 'Request Processing Failed',
   mediafailedDescription:
     'Send notifications when media requests fail to be added to Radarr or Sonarr.',
@@ -105,6 +110,7 @@ export enum Notification {
   ISSUE_RESOLVED = 1024,
   ISSUE_REOPENED = 2048,
   MEDIA_AUTO_REQUESTED = 4096,
+  EPISODE_AVAILABLE = 8192,
 }
 
 export const ALL_NOTIFICATIONS = Object.values(Notification)
@@ -284,6 +290,20 @@ const NotificationTypeSelector = ({
         value: Notification.MEDIA_FAILED,
         hidden: user && !hasPermission(Permission.MANAGE_REQUESTS),
         hasNotifyUser: false,
+      },
+      {
+        id: 'episode-available',
+        name: intl.formatMessage(messages.episodeavailable),
+        description: intl.formatMessage(
+          user
+            ? hasPermission(Permission.MANAGE_REQUESTS)
+              ? messages.episodeavailableDescription
+              : messages.userepisodeavailableDescription
+            : messages.episodeavailableDescription
+        ),
+        value: Notification.EPISODE_AVAILABLE,
+        hasNotifyUser:
+          !user || hasPermission(Permission.MANAGE_REQUESTS) ? false : true,
       },
       {
         id: 'issue-created',
