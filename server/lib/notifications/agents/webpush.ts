@@ -82,11 +82,6 @@ class WebPushAgent
           is4k ? '4K ' : ''
         }${mediaType} request is now available!`;
         break;
-      case Notification.MEDIA_PARTIALLY_AVAILABLE:
-        message = `New episodes for your ${
-          is4k ? '4K ' : ''
-        }${mediaType} request are available.`;
-        break;
       case Notification.MEDIA_DECLINED:
         message = `Your ${is4k ? '4K ' : ''}${mediaType} request was declined.`;
         break;

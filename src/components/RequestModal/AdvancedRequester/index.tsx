@@ -142,6 +142,24 @@ const AdvancedRequester = ({
     [userData?.results]
   );
 
+  const serversFor4k = useMemo(
+    () => (data ?? []).filter((server) => server.is4k === is4k),
+    [data, is4k]
+  );
+
+  const hasAnimeServers = useMemo(
+    () => serversFor4k.some((server) => !!server.isAnime),
+    [serversFor4k]
+  );
+
+  const availableServers = useMemo(() => {
+    if (isAnime && hasAnimeServers) {
+      return serversFor4k.filter((server) => !!server.isAnime);
+    }
+
+    return serversFor4k;
+  }, [serversFor4k, isAnime, hasAnimeServers]);
+
   useEffect(() => {
     if (filteredUserData && !requestUser) {
       setSelectedUser(
@@ -151,12 +169,14 @@ const AdvancedRequester = ({
   }, [filteredUserData]);
 
   useEffect(() => {
-    let defaultServer = data?.find(
-      (server) => server.isDefault && is4k === server.is4k
-    );
+    let defaultServer = availableServers.find((server) => server.isDefault);
 
-    if (!defaultServer && (data ?? []).length > 0) {
-      defaultServer = data?.[0];
+    if (!defaultServer && availableServers.length > 0) {
+      defaultServer = availableServers[0];
+    }
+
+    if (!defaultServer && serversFor4k.length > 0) {
+      defaultServer = serversFor4k[0];
     }
 
     if (
@@ -166,7 +186,7 @@ const AdvancedRequester = ({
     ) {
       setSelectedServer(defaultServer.id);
     }
-  }, [data]);
+  }, [availableServers, serversFor4k, selectedServer, defaultOverrides]);
 
   useEffect(() => {
     if (serverData) {
@@ -293,7 +313,7 @@ const AdvancedRequester = ({
   if (
     (!data ||
       selectedServer === null ||
-      (data.filter((server) => server.is4k === is4k).length < 2 &&
+      (availableServers.length < 2 &&
         (!serverData ||
           (serverData.profiles.length < 2 &&
             serverData.rootFolders.length < 2 &&
@@ -304,6 +324,12 @@ const AdvancedRequester = ({
     return null;
   }
 
+  const serversToDisplay =
+    selectedServer !== null &&
+    !availableServers.some((server) => server.id === selectedServer)
+      ? serversFor4k
+      : availableServers;
+
   return (
     <>
       <div className="mt-4 mb-2 flex items-center text-lg font-semibold">
@@ -312,7 +338,7 @@ const AdvancedRequester = ({
       <div className="rounded-md">
         {!!data && selectedServer !== null && (
           <div className="flex flex-col md:flex-row">
-            {data.filter((server) => server.is4k === is4k).length > 1 && (
+            {serversToDisplay.length > 1 && (
               <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
                 <label htmlFor="server">
                   {intl.formatMessage(messages.destinationserver)}
@@ -325,20 +351,15 @@ const AdvancedRequester = ({
                   onBlur={(e) => setSelectedServer(Number(e.target.value))}
                   className="border-gray-700 bg-gray-800"
                 >
-                  {data
-                    .filter((server) => server.is4k === is4k)
-                    .map((server) => (
-                      <option
-                        key={`server-list-${server.id}`}
-                        value={server.id}
-                      >
-                        {server.isDefault
-                          ? intl.formatMessage(messages.default, {
-                              name: server.name,
-                            })
-                          : server.name}
-                      </option>
-                    ))}
+                  {serversToDisplay.map((server) => (
+                    <option key={`server-list-${server.id}`} value={server.id}>
+                      {server.isDefault
+                        ? intl.formatMessage(messages.default, {
+                            name: server.name,
+                          })
+                        : server.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             )}

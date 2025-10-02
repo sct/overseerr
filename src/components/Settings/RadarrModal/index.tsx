@@ -34,6 +34,8 @@ const messages = defineMessages({
   add: 'Add Server',
   defaultserver: 'Default Server',
   default4kserver: 'Default 4K Server',
+  defaultAnimeServer: 'Default Anime Server',
+  default4kAnimeServer: 'Default 4K Anime Server',
   servername: 'Server Name',
   hostname: 'Hostname or IP Address',
   port: 'Port',
@@ -60,6 +62,7 @@ const messages = defineMessages({
   tagRequests: 'Tag Requests',
   tagRequestsInfo:
     "Automatically add an additional tag with the requester's user ID & display name",
+  animeserver: 'Anime Server',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'URL base must have a leading slash',
@@ -238,6 +241,7 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
           tags: radarr?.tags ?? [],
           isDefault: radarr?.isDefault ?? false,
           is4k: radarr?.is4k ?? false,
+          isAnime: radarr?.isAnime ?? false,
           externalUrl: radarr?.externalUrl,
           syncEnabled: radarr?.syncEnabled ?? false,
           enableSearch: !radarr?.preventSearch,
@@ -261,6 +265,7 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
               activeProfileName: profileName,
               activeDirectory: values.rootFolder,
               is4k: values.is4k,
+              isAnime: values.isAnime,
               minimumAvailability: values.minimumAvailability,
               tags: values.tags,
               isDefault: values.isDefault,
@@ -349,7 +354,11 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="isDefault" className="checkbox-label">
                     {intl.formatMessage(
-                      values.is4k
+                      values.isAnime
+                        ? values.is4k
+                          ? messages.default4kAnimeServer
+                          : messages.defaultAnimeServer
+                        : values.is4k
                         ? messages.default4kserver
                         : messages.defaultserver
                     )}
@@ -364,6 +373,14 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                   </label>
                   <div className="form-input-area">
                     <Field type="checkbox" id="is4k" name="is4k" />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="isAnime" className="checkbox-label">
+                    {intl.formatMessage(messages.animeserver)}
+                  </label>
+                  <div className="form-input-area">
+                    <Field type="checkbox" id="isAnime" name="isAnime" />
                   </div>
                 </div>
                 <div className="form-row">

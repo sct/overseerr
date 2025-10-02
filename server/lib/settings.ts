@@ -66,6 +66,7 @@ export interface DVRSettings {
 
 export interface RadarrSettings extends DVRSettings {
   minimumAvailability: string;
+  isAnime: boolean;
 }
 
 export interface SonarrSettings extends DVRSettings {
@@ -474,7 +475,10 @@ class Settings {
   }
 
   set radarr(data: RadarrSettings[]) {
-    this.data.radarr = data;
+    this.data.radarr = data.map((radarr) => ({
+      ...radarr,
+      isAnime: radarr.isAnime ?? false,
+    }));
   }
 
   get sonarr(): SonarrSettings[] {

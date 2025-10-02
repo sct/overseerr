@@ -148,9 +148,31 @@ export class MediaRequestSubscriber
           return;
         }
 
-        let radarrSettings = settings.radarr.find(
-          (radarr) => radarr.isDefault && radarr.is4k === entity.is4k
+        const tmdb = new TheMovieDb();
+
+        const matchingServers = settings.radarr.filter(
+          (radarr) => radarr.is4k === entity.is4k
         );
+
+        const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
+        const isAnimeMovie =
+          movie.keywords?.some((keyword) => keyword.id === ANIME_KEYWORD_ID) ??
+          false;
+
+        const animeServers = matchingServers.filter(
+          (radarr) => !!radarr.isAnime
+        );
+
+        const defaultPool =
+          isAnimeMovie && animeServers.length > 0
+            ? animeServers
+            : matchingServers;
+
+        let radarrSettings = defaultPool.find((radarr) => radarr.isDefault);
+
+        if (!radarrSettings) {
+          radarrSettings = defaultPool[0];
+        }
 
         if (
           entity.serverId !== null &&
@@ -173,10 +195,10 @@ export class MediaRequestSubscriber
         if (!radarrSettings) {
           logger.warn(
             `There is no default ${
-              entity.is4k ? '4K ' : ''
-            }Radarr server configured. Did you set any of your ${
-              entity.is4k ? '4K ' : ''
-            }Radarr servers as default?`,
+              isAnimeMovie ? 'anime ' : ''
+            }${entity.is4k ? '4K ' : ''}Radarr server configured. Did you set any of your ${
+              isAnimeMovie ? 'anime ' : ''
+            }${entity.is4k ? '4K ' : ''}Radarr servers as default?`,
             {
               label: 'Media Request',
               requestId: entity.id,
@@ -184,6 +206,18 @@ export class MediaRequestSubscriber
             }
           );
           return;
+        }
+
+        if (isAnimeMovie && !radarrSettings.isAnime) {
+          logger.info(
+            'Anime movie request falling back to standard Radarr server',
+            {
+              label: 'Media Request',
+              requestId: entity.id,
+              mediaId: entity.media.id,
+              radarrServer: radarrSettings.name,
+            }
+          );
         }
 
         let rootFolder = radarrSettings.activeDirectory;
@@ -228,12 +262,10 @@ export class MediaRequestSubscriber
           });
         }
 
-        const tmdb = new TheMovieDb();
         const radarr = new RadarrAPI({
           apiKey: radarrSettings.apiKey,
           url: RadarrAPI.buildUrl(radarrSettings, '/api/v3'),
         });
-        const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
 
         const media = await mediaRepository.findOne({
           where: { id: entity.media.id },

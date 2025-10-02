@@ -10,6 +10,7 @@ import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import { Permission } from '@server/lib/permissions';
 import type { MovieDetails } from '@server/models/Movie';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -287,6 +288,10 @@ const MovieRequestModal = ({
           <AdvancedRequester
             type="movie"
             is4k={is4k}
+            isAnime={
+              data?.keywords.some((keyword) => keyword.id === ANIME_KEYWORD_ID) ??
+              false
+            }
             requestUser={editRequest.requestedBy}
             defaultOverrides={{
               folder: editRequest.rootFolder,
@@ -357,6 +362,10 @@ const MovieRequestModal = ({
         <AdvancedRequester
           type="movie"
           is4k={is4k}
+          isAnime={
+            data?.keywords.some((keyword) => keyword.id === ANIME_KEYWORD_ID) ??
+            false
+          }
           onChange={(overrides) => {
             setRequestOverrides(overrides);
           }}

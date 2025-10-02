@@ -1,3 +1,4 @@
+import SonarrAPI from '@server/api/servarr/sonarr';
 import TheMovieDb from '@server/api/themoviedb';
 import {
   MediaRequestStatus,
@@ -10,6 +11,7 @@ import { MediaRequest } from '@server/entity/MediaRequest';
 import Season from '@server/entity/Season';
 import SeasonRequest from '@server/entity/SeasonRequest';
 import notificationManager, { Notification } from '@server/lib/notifications';
+import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { truncate } from 'lodash';
 import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
@@ -35,76 +37,125 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
     }
   }
 
-  private async notifyPartiallyAvailable(
+  private async notifyRequestCaughtUp(
     request: MediaRequest,
-    seasons: number[],
     is4k: boolean
   ) {
-    if (seasons.length === 0) {
+    if (request.partialAvailabilityNotified) {
       return;
     }
 
-    const tmdb = new TheMovieDb();
+    const media = request.media;
+    const serviceId = media[is4k ? 'serviceId4k' : 'serviceId'];
+    const externalServiceId = media[is4k ? 'externalServiceId4k' : 'externalServiceId'];
+
+    if (serviceId === null || serviceId === undefined) {
+      return;
+    }
+
+    if (externalServiceId === null || externalServiceId === undefined) {
+      return;
+    }
+
+    const settings = getSettings();
+    const sonarrSettings = settings.sonarr.find(
+      (sonarr) => sonarr.id === serviceId
+    );
+
+    if (!sonarrSettings) {
+      return;
+    }
 
     try {
-      const tv = await tmdb.getTvShow({ tvId: request.media.tmdbId });
+      const sonarr = new SonarrAPI({
+        apiKey: sonarrSettings.apiKey,
+        url: SonarrAPI.buildUrl(sonarrSettings, '/api/v3'),
+      });
+
+      const series = await sonarr.getSeriesById(externalServiceId);
+
+      let hasAiredEpisodes = false;
+
+      const allCaughtUp = request.seasons.every((seasonRequest) => {
+        if (seasonRequest.seasonNumber === 0) {
+          return true;
+        }
+
+        const sonarrSeason = series.seasons.find(
+          (season) => season.seasonNumber === seasonRequest.seasonNumber
+        );
+
+        if (!sonarrSeason?.statistics) {
+          return false;
+        }
+
+        const { episodeCount = 0, episodeFileCount = 0 } =
+          sonarrSeason.statistics;
+
+        if (episodeCount === 0) {
+          return true;
+        }
+
+        hasAiredEpisodes = true;
+
+        return episodeFileCount >= episodeCount;
+      });
+
+      if (!hasAiredEpisodes || !allCaughtUp) {
+        return;
+      }
+
+      const tmdb = new TheMovieDb();
+      const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
 
       if (!tv.inProduction && tv.status !== 'Returning Series') {
         return;
       }
 
-      const updatedSeasons = [...seasons].sort((a, b) => a - b).join(', ');
-      const requestedSeasons = request.seasons
-        ?.map((season) => season.seasonNumber)
-        .sort((a, b) => a - b)
-        .join(', ');
+      const requestedSeasonNumbers = request.seasons
+        .map((season) => season.seasonNumber)
+        .filter((seasonNumber) => seasonNumber !== 0)
+        .sort((a, b) => a - b);
 
-      notificationManager.sendNotification(
-        Notification.MEDIA_PARTIALLY_AVAILABLE,
-        {
-          event: `${is4k ? '4K ' : ''}Series Request Updated`,
-          subject: `${tv.name}${
-            tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
-          }`,
-          message: truncate(tv.overview, {
-            length: 500,
-            separator: /\s/,
-            omission: '…',
-          }),
-          notifyAdmin: false,
-          notifySystem: true,
-          notifyUser: request.requestedBy,
-          image: tv.poster_path
-            ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`
+      notificationManager.sendNotification(Notification.MEDIA_AVAILABLE, {
+        event: `${is4k ? '4K ' : ''}Series Request Now Available`,
+        subject: `${tv.name}${
+          tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
+        }`,
+        message: truncate(tv.overview, {
+          length: 500,
+          separator: /\s/,
+          omission: '…',
+        }),
+        notifyAdmin: false,
+        notifySystem: true,
+        notifyUser: request.requestedBy,
+        image: tv.poster_path
+          ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`
+          : undefined,
+        media,
+        extra:
+          requestedSeasonNumbers.length > 0
+            ? [
+                {
+                  name: 'Requested Seasons',
+                  value: requestedSeasonNumbers.join(', '),
+                },
+              ]
             : undefined,
-          media: request.media,
-          extra: [
-            {
-              name: 'Updated Seasons',
-              value: updatedSeasons,
-            },
-            ...(requestedSeasons
-              ? [
-                  {
-                    name: 'Requested Seasons',
-                    value: requestedSeasons,
-                  },
-                ]
-              : []),
-          ],
-          request,
-        }
-      );
+        request,
+      });
+
+      const requestRepository = getRepository(MediaRequest);
+      request.partialAvailabilityNotified = true;
+      await requestRepository.save(request);
     } catch (e) {
-      logger.error(
-        'Something went wrong sending partial availability notification',
-        {
-          label: 'Notifications',
-          errorMessage: (e as Error).message,
-          mediaId: request.media.id,
-          requestId: request.id,
-        }
-      );
+      logger.error('Unable to send catch-up notification', {
+        label: 'Notifications',
+        errorMessage: (e as Error).message,
+        mediaId: request.media.id,
+        requestId: request.id,
+      });
     }
   }
 
@@ -134,7 +185,6 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
       for (const request of relatedRequests) {
         let shouldComplete = false;
-        const partialSeasonUpdates: number[] = [];
 
         if (
           (event[request.is4k ? 'status4k' : 'status'] ===
@@ -165,19 +215,8 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
               const previousSeasonStatus =
                 matchingOldSeason?.[request.is4k ? 'status4k' : 'status'];
 
-              const hasStatusChanged =
-                currentSeasonStatus !== previousSeasonStatus;
-
-              if (
-                hasStatusChanged &&
-                currentSeasonStatus === MediaStatus.PARTIALLY_AVAILABLE &&
-                requestSeason.status !== MediaRequestStatus.COMPLETED
-              ) {
-                partialSeasonUpdates.push(requestSeason.seasonNumber);
-              }
-
               const shouldUpdate =
-                (hasStatusChanged ||
+                (currentSeasonStatus !== previousSeasonStatus ||
                   requestSeason.status === MediaRequestStatus.COMPLETED) &&
                 (currentSeasonStatus === MediaStatus.AVAILABLE ||
                   currentSeasonStatus === MediaStatus.DELETED);
@@ -200,12 +239,8 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
         if (shouldComplete) {
           request.status = MediaRequestStatus.COMPLETED;
           completedRequests.push(request);
-        } else if (partialSeasonUpdates.length > 0) {
-          await this.notifyPartiallyAvailable(
-            request,
-            partialSeasonUpdates,
-            is4k
-          );
+        } else if (event.mediaType === MediaType.TV) {
+          await this.notifyRequestCaughtUp(request, is4k);
         }
       }
 

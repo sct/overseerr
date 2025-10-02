@@ -28,11 +28,6 @@ const messages = defineMessages({
     'Send notifications when media requests become available.',
   usermediaavailableDescription:
     'Get notified when your media requests become available.',
-  mediapartiallyavailable: 'Request Updated',
-  mediapartiallyavailableDescription:
-    'Send notifications when new episodes become available for ongoing requests.',
-  usermediapartiallyavailableDescription:
-    'Get notified when new episodes become available for your ongoing requests.',
   mediafailed: 'Request Processing Failed',
   mediafailedDescription:
     'Send notifications when media requests fail to be added to Radarr or Sonarr.',
@@ -110,7 +105,6 @@ export enum Notification {
   ISSUE_RESOLVED = 1024,
   ISSUE_REOPENED = 2048,
   MEDIA_AUTO_REQUESTED = 4096,
-  MEDIA_PARTIALLY_AVAILABLE = 8192,
 }
 
 export const ALL_NOTIFICATIONS = Object.values(Notification)
@@ -277,17 +271,6 @@ const NotificationTypeSelector = ({
             : messages.mediaavailableDescription
         ),
         value: Notification.MEDIA_AVAILABLE,
-        hasNotifyUser: true,
-      },
-      {
-        id: 'media-partially-available',
-        name: intl.formatMessage(messages.mediapartiallyavailable),
-        description: intl.formatMessage(
-          user
-            ? messages.usermediapartiallyavailableDescription
-            : messages.mediapartiallyavailableDescription
-        ),
-        value: Notification.MEDIA_PARTIALLY_AVAILABLE,
         hasNotifyUser: true,
       },
       {

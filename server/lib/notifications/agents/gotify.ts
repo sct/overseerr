@@ -65,9 +65,6 @@ class GotifyAgent
         case Notification.MEDIA_AVAILABLE:
           status = 'Available';
           break;
-        case Notification.MEDIA_PARTIALLY_AVAILABLE:
-          status = 'Partially Available';
-          break;
         case Notification.MEDIA_DECLINED:
           status = 'Declined';
           break;

@@ -461,6 +461,9 @@ export class MediaRequest {
   @Column({ default: false })
   public isAutoRequest: boolean;
 
+  @Column({ default: false })
+  public partialAvailabilityNotified: boolean;
+
   constructor(init?: Partial<MediaRequest>) {
     Object.assign(this, init);
   }

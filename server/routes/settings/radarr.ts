@@ -18,13 +18,18 @@ radarrRoutes.post('/', (req, res) => {
   const newRadarr = req.body as RadarrSettings;
   const lastItem = settings.radarr[settings.radarr.length - 1];
   newRadarr.id = lastItem ? lastItem.id + 1 : 0;
+  newRadarr.isAnime = req.body.isAnime ?? false;
 
   // If we are setting this as the default, clear any previous defaults for the same type first
   // ex: if is4k is true, it will only remove defaults for other servers that have is4k set to true
   // and are the default
   if (req.body.isDefault) {
     settings.radarr
-      .filter((radarrInstance) => radarrInstance.is4k === req.body.is4k)
+      .filter(
+        (radarrInstance) =>
+          radarrInstance.is4k === req.body.is4k &&
+          !!radarrInstance.isAnime === !!req.body.isAnime
+      )
       .forEach((radarrInstance) => {
         radarrInstance.isDefault = false;
       });
@@ -92,7 +97,11 @@ radarrRoutes.put<{ id: string }, RadarrSettings, RadarrSettings>(
     // and are the default
     if (req.body.isDefault) {
       settings.radarr
-        .filter((radarrInstance) => radarrInstance.is4k === req.body.is4k)
+        .filter(
+          (radarrInstance) =>
+            radarrInstance.is4k === req.body.is4k &&
+            !!radarrInstance.isAnime === !!req.body.isAnime
+        )
         .forEach((radarrInstance) => {
           radarrInstance.isDefault = false;
         });
@@ -101,6 +110,7 @@ radarrRoutes.put<{ id: string }, RadarrSettings, RadarrSettings>(
     settings.radarr[radarrIndex] = {
       ...req.body,
       id: Number(req.params.id),
+      isAnime: req.body.isAnime ?? false,
     } as RadarrSettings;
     settings.save();
 

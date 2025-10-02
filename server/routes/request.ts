@@ -369,6 +369,7 @@ requestRoutes.put<{ requestId: string }>(
         request.rootFolder = req.body.rootFolder;
         request.tags = req.body.tags;
         request.requestedBy = requestUser as User;
+        request.partialAvailabilityNotified = false;
 
         requestRepository.save(request);
       } else if (req.body.mediaType === MediaType.TV) {
@@ -379,6 +380,7 @@ requestRoutes.put<{ requestId: string }>(
         request.languageProfileId = req.body.languageProfileId;
         request.tags = req.body.tags;
         request.requestedBy = requestUser as User;
+        request.partialAvailabilityNotified = false;
 
         const requestedSeasons = req.body.seasons as number[] | undefined;
 
