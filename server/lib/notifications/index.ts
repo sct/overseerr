@@ -17,6 +17,7 @@ export enum Notification {
   ISSUE_RESOLVED = 1024,
   ISSUE_REOPENED = 2048,
   MEDIA_AUTO_REQUESTED = 4096,
+  MEDIA_PARTIALLY_AVAILABLE = 8192,
 }
 
 export const hasNotificationType = (
@@ -50,6 +51,7 @@ export const getAdminPermission = (type: Notification): Permission => {
     case Notification.MEDIA_PENDING:
     case Notification.MEDIA_APPROVED:
     case Notification.MEDIA_AVAILABLE:
+    case Notification.MEDIA_PARTIALLY_AVAILABLE:
     case Notification.MEDIA_FAILED:
     case Notification.MEDIA_DECLINED:
     case Notification.MEDIA_AUTO_APPROVED:

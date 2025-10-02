@@ -69,9 +69,12 @@ const TvRequestModal = ({
 }: RequestModalProps) => {
   const settings = useSettings();
   const { addToast } = useToasts();
-  const editingSeasons: number[] = (editRequest?.seasons ?? []).map(
-    (season) => season.seasonNumber
-  );
+  const editingSeasons: number[] = (editRequest?.seasons ?? [])
+    .map((season) => season.seasonNumber)
+    .filter(
+      (seasonNumber) =>
+        !settings.currentSettings.ignoreSpecials || seasonNumber !== 0
+    );
   const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
@@ -235,7 +238,20 @@ const TvRequestModal = ({
 
   const getAllSeasons = (): number[] => {
     return (data?.seasons ?? [])
-      .filter((season) => season.episodeCount !== 0)
+      .filter((season) => {
+        if (season.episodeCount === 0) {
+          return false;
+        }
+
+        if (
+          settings.currentSettings.ignoreSpecials &&
+          season.seasonNumber === 0
+        ) {
+          return false;
+        }
+
+        return true;
+      })
       .map((season) => season.seasonNumber);
   };
 
@@ -568,11 +584,19 @@ const TvRequestModal = ({
                 </thead>
                 <tbody className="divide-y divide-gray-700">
                   {data?.seasons
-                    .filter((season) =>
-                      !settings.currentSettings.partialRequestsEnabled
-                        ? season.episodeCount !== 0 && season.seasonNumber !== 0
-                        : season.episodeCount !== 0
-                    )
+                    .filter((season) => {
+                      if (
+                        settings.currentSettings.ignoreSpecials &&
+                        season.seasonNumber === 0
+                      ) {
+                        return false;
+                      }
+
+                      return !settings.currentSettings.partialRequestsEnabled
+                        ? season.episodeCount !== 0 &&
+                            season.seasonNumber !== 0
+                        : season.episodeCount !== 0;
+                    })
                     .map((season) => {
                       const seasonRequest = getSeasonRequest(
                         season.seasonNumber

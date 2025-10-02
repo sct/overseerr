@@ -54,6 +54,7 @@ const messages = defineMessages({
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   partialRequestsEnabled: 'Allow Partial Series Requests',
+  ignoreSpecials: 'Exclude Specials From Series Requests',
   locale: 'Display Language',
 });
 
@@ -132,6 +133,7 @@ const SettingsMain = () => {
             region: data?.region,
             originalLanguage: data?.originalLanguage,
             partialRequestsEnabled: data?.partialRequestsEnabled,
+            ignoreSpecials: data?.ignoreSpecials,
             trustProxy: data?.trustProxy,
             cacheImages: data?.cacheImages,
           }}
@@ -148,6 +150,7 @@ const SettingsMain = () => {
                 region: values.region,
                 originalLanguage: values.originalLanguage,
                 partialRequestsEnabled: values.partialRequestsEnabled,
+                ignoreSpecials: values.ignoreSpecials,
                 trustProxy: values.trustProxy,
                 cacheImages: values.cacheImages,
               });
@@ -423,6 +426,23 @@ const SettingsMain = () => {
                           'partialRequestsEnabled',
                           !values.partialRequestsEnabled
                         );
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="ignoreSpecials" className="checkbox-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.ignoreSpecials)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="ignoreSpecials"
+                      name="ignoreSpecials"
+                      onChange={() => {
+                        setFieldValue('ignoreSpecials', !values.ignoreSpecials);
                       }}
                     />
                   </div>

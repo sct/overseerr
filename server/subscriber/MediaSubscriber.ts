@@ -1,3 +1,4 @@
+import TheMovieDb from '@server/api/themoviedb';
 import {
   MediaRequestStatus,
   MediaStatus,
@@ -8,6 +9,9 @@ import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
 import Season from '@server/entity/Season';
 import SeasonRequest from '@server/entity/SeasonRequest';
+import notificationManager, { Notification } from '@server/lib/notifications';
+import logger from '@server/logger';
+import { truncate } from 'lodash';
 import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
 import { EventSubscriber } from 'typeorm';
 
@@ -28,6 +32,79 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
         request.status = MediaRequestStatus.APPROVED;
         await requestRepository.save(request);
       }
+    }
+  }
+
+  private async notifyPartiallyAvailable(
+    request: MediaRequest,
+    seasons: number[],
+    is4k: boolean
+  ) {
+    if (seasons.length === 0) {
+      return;
+    }
+
+    const tmdb = new TheMovieDb();
+
+    try {
+      const tv = await tmdb.getTvShow({ tvId: request.media.tmdbId });
+
+      if (!tv.inProduction && tv.status !== 'Returning Series') {
+        return;
+      }
+
+      const updatedSeasons = [...seasons].sort((a, b) => a - b).join(', ');
+      const requestedSeasons = request.seasons
+        ?.map((season) => season.seasonNumber)
+        .sort((a, b) => a - b)
+        .join(', ');
+
+      notificationManager.sendNotification(
+        Notification.MEDIA_PARTIALLY_AVAILABLE,
+        {
+          event: `${is4k ? '4K ' : ''}Series Request Updated`,
+          subject: `${tv.name}${
+            tv.first_air_date ? ` (${tv.first_air_date.slice(0, 4)})` : ''
+          }`,
+          message: truncate(tv.overview, {
+            length: 500,
+            separator: /\s/,
+            omission: '…',
+          }),
+          notifyAdmin: false,
+          notifySystem: true,
+          notifyUser: request.requestedBy,
+          image: tv.poster_path
+            ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tv.poster_path}`
+            : undefined,
+          media: request.media,
+          extra: [
+            {
+              name: 'Updated Seasons',
+              value: updatedSeasons,
+            },
+            ...(requestedSeasons
+              ? [
+                  {
+                    name: 'Requested Seasons',
+                    value: requestedSeasons,
+                  },
+                ]
+              : []),
+          ],
+          request,
+        }
+      );
+    } catch (e) {
+      logger.error(
+        'Something went wrong sending partial availability notification',
+        {
+          label: 'Notifications',
+          errorMessage: (e as Error).message,
+          mediaId: request.media.id,
+          requestId: request.id,
+        }
+      );
     }
   }
 
@@ -57,6 +134,7 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
 
       for (const request of relatedRequests) {
         let shouldComplete = false;
+        const partialSeasonUpdates: number[] = [];
 
         if (
           (event[request.is4k ? 'status4k' : 'status'] ===
@@ -90,6 +168,14 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
               const hasStatusChanged =
                 currentSeasonStatus !== previousSeasonStatus;
 
+              if (
+                hasStatusChanged &&
+                currentSeasonStatus === MediaStatus.PARTIALLY_AVAILABLE &&
+                requestSeason.status !== MediaRequestStatus.COMPLETED
+              ) {
+                partialSeasonUpdates.push(requestSeason.seasonNumber);
+              }
+
               const shouldUpdate =
                 (hasStatusChanged ||
                   requestSeason.status === MediaRequestStatus.COMPLETED) &&
@@ -114,6 +200,12 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
         if (shouldComplete) {
           request.status = MediaRequestStatus.COMPLETED;
           completedRequests.push(request);
+        } else if (partialSeasonUpdates.length > 0) {
+          await this.notifyPartiallyAvailable(
+            request,
+            partialSeasonUpdates,
+            is4k
+          );
         }
       }
 

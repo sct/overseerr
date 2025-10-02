@@ -136,6 +136,10 @@ class DiscordAgent
           color = EmbedColors.GREEN;
           status = 'Available';
           break;
+        case Notification.MEDIA_PARTIALLY_AVAILABLE:
+          color = EmbedColors.GREEN;
+          status = 'Partially Available';
+          break;
         case Notification.MEDIA_DECLINED:
           color = EmbedColors.RED;
           status = 'Declined';

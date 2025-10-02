@@ -103,6 +103,7 @@ export interface MainSettings {
   originalLanguage: string;
   trustProxy: boolean;
   partialRequestsEnabled: boolean;
+  ignoreSpecials: boolean;
   locale: string;
 }
 
@@ -120,6 +121,7 @@ interface FullPublicSettings extends PublicSettings {
   region: string;
   originalLanguage: string;
   partialRequestsEnabled: boolean;
+  ignoreSpecials: boolean;
   cacheImages: boolean;
   vapidPublic: string;
   enablePushRegistration: boolean;
@@ -300,6 +302,7 @@ class Settings {
         originalLanguage: '',
         trustProxy: false,
         partialRequestsEnabled: true,
+        ignoreSpecials: false,
         locale: 'en',
       },
       plex: {
@@ -506,6 +509,7 @@ class Settings {
       region: this.data.main.region,
       originalLanguage: this.data.main.originalLanguage,
       partialRequestsEnabled: this.data.main.partialRequestsEnabled,
+      ignoreSpecials: this.data.main.ignoreSpecials,
       cacheImages: this.data.main.cacheImages,
       vapidPublic: this.vapidPublic,
       enablePushRegistration: this.data.notifications.agents.webpush.enabled,

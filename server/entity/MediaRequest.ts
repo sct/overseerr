@@ -8,6 +8,7 @@ import { getRepository } from '@server/datasource';
 import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces';
 import notificationManager, { Notification } from '@server/lib/notifications';
 import { Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { truncate } from 'lodash';
 import {
@@ -235,12 +236,18 @@ export class MediaRequest {
       const tmdbMediaShow = tmdbMedia as Awaited<
         ReturnType<typeof tmdb.getTvShow>
       >;
-      const requestedSeasons =
+      const { ignoreSpecials } = getSettings().main;
+
+      let requestedSeasons =
         requestBody.seasons === 'all'
           ? tmdbMediaShow.seasons
               .filter((season) => season.season_number !== 0)
               .map((season) => season.season_number)
           : (requestBody.seasons as number[]);
+
+      if (ignoreSpecials) {
+        requestedSeasons = requestedSeasons.filter((season) => season !== 0);
+      }
       let existingSeasons: number[] = [];
 
       // We need to check existing requests on this title to make sure we don't double up on seasons that were
