@@ -156,8 +156,9 @@ export class MediaRequestSubscriber
 
         const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
         const isAnimeMovie =
-          movie.keywords?.some((keyword) => keyword.id === ANIME_KEYWORD_ID) ??
-          false;
+          movie.keywords?.keywords?.some(
+            (keyword) => keyword.id === ANIME_KEYWORD_ID
+          ) ?? false;
 
         const animeServers = matchingServers.filter(
           (radarr) => !!radarr.isAnime
