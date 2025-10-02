@@ -54,6 +54,7 @@ const messages = defineMessages({
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   partialRequestsEnabled: 'Allow Partial Series Requests',
+  includeSpecialsInRequests: 'Include Specials in Series Requests',
   locale: 'Display Language',
 });
 
@@ -132,6 +133,7 @@ const SettingsMain = () => {
             region: data?.region,
             originalLanguage: data?.originalLanguage,
             partialRequestsEnabled: data?.partialRequestsEnabled,
+            includeSpecialsInRequests: data?.includeSpecialsInRequests,
             trustProxy: data?.trustProxy,
             cacheImages: data?.cacheImages,
           }}
@@ -148,6 +150,7 @@ const SettingsMain = () => {
                 region: values.region,
                 originalLanguage: values.originalLanguage,
                 partialRequestsEnabled: values.partialRequestsEnabled,
+                includeSpecialsInRequests: values.includeSpecialsInRequests,
                 trustProxy: values.trustProxy,
                 cacheImages: values.cacheImages,
               });
@@ -422,6 +425,31 @@ const SettingsMain = () => {
                         setFieldValue(
                           'partialRequestsEnabled',
                           !values.partialRequestsEnabled
+                        );
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label
+                    htmlFor="includeSpecialsInRequests"
+                    className="checkbox-label"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(
+                        messages.includeSpecialsInRequests
+                      )}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="includeSpecialsInRequests"
+                      name="includeSpecialsInRequests"
+                      onChange={() => {
+                        setFieldValue(
+                          'includeSpecialsInRequests',
+                          !values.includeSpecialsInRequests
                         );
                       }}
                     />

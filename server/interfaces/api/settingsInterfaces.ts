@@ -27,10 +27,12 @@ export interface PublicSettingsResponse {
   hideAvailable: boolean;
   localLogin: boolean;
   movie4kEnabled: boolean;
+  movie4kAnimeEnabled: boolean;
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
   partialRequestsEnabled: boolean;
+  includeSpecialsInRequests: boolean;
   cacheImages: boolean;
   vapidPublic: string;
   enablePushRegistration: boolean;

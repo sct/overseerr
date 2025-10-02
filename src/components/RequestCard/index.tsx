@@ -16,13 +16,14 @@ import {
   TrashIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
@@ -147,15 +148,6 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
                         ]
                       }
                       title={intl.formatMessage(messages.unknowntitle)}
-                      inProgress={
-                        (
-                          requestData.media[
-                            requestData.is4k
-                              ? 'downloadStatus4k'
-                              : 'downloadStatus'
-                          ] ?? []
-                        ).length > 0
-                      }
                       is4k={requestData.is4k}
                       mediaType={requestData.type}
                       plexUrl={requestData.is4k ? plexUrl4k : plexUrl}
@@ -226,19 +218,33 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   const { data: title, error } = useSWR<MovieDetails | TvDetails>(
     inView ? `${url}` : null
   );
+  const isAnimeMovie = useMemo(() => {
+    if (!title || !isMovie(title)) {
+      return false;
+    }
+
+    return !!title.keywords?.some(
+      (keyword) => keyword.id === ANIME_KEYWORD_ID
+    );
+  }, [title]);
   const {
     data: requestData,
     error: requestError,
     mutate: revalidate,
   } = useSWR<MediaRequest>(`/api/v1/request/${request.id}`, {
     fallbackData: request,
-    refreshInterval: refreshIntervalHelper(
-      {
-        downloadStatus: request.media.downloadStatus,
-        downloadStatus4k: request.media.downloadStatus4k,
-      },
-      15000
-    ),
+    refreshInterval: (currentData) =>
+      refreshIntervalHelper(
+        {
+          downloadStatus:
+            currentData?.media.downloadStatus ??
+            request.media.downloadStatus,
+          downloadStatus4k:
+            currentData?.media.downloadStatus4k ??
+            request.media.downloadStatus4k,
+        },
+        15000
+      ),
   });
 
   const { plexUrl, plexUrl4k } = useDeepLinks({
@@ -437,13 +443,6 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                   ]
                 }
                 title={isMovie(title) ? title.title : title.name}
-                inProgress={
-                  (
-                    requestData.media[
-                      requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
-                    ] ?? []
-                  ).length > 0
-                }
                 is4k={requestData.is4k}
                 tmdbId={requestData.media.tmdbId}
                 mediaType={requestData.type}
@@ -453,6 +452,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                     ? requestData.media.serviceUrl4k
                     : requestData.media.serviceUrl
                 }
+                isAnime={requestData.type === 'movie' ? isAnimeMovie : false}
               />
             )}
           </div>

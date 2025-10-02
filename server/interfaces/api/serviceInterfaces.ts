@@ -1,10 +1,12 @@
 import type { QualityProfile, RootFolder, Tag } from '@server/api/servarr/base';
 import type { LanguageProfile } from '@server/api/servarr/sonarr';
+import type { DVRSettings } from './dvrInterfaces';
 
 export interface ServiceCommonServer {
   id: number;
   name: string;
   is4k: boolean;
+  isAnime?: boolean;
   isDefault: boolean;
   activeProfileId: number;
   activeDirectory: string;
@@ -22,4 +24,12 @@ export interface ServiceCommonServerWithDetails {
   rootFolders: Partial<RootFolder>[];
   languageProfiles?: LanguageProfile[];
   tags: Tag[];
+}
+
+export interface RadarrSettings extends DVRSettings {
+  minimumAvailability: string;
+  activeAnimeProfileId?: number;
+  activeAnimeProfileName?: string;
+  activeAnimeDirectory?: string;
+  animeTags?: number[];
 }

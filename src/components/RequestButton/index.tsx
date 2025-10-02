@@ -50,6 +50,7 @@ interface RequestButtonProps {
   media?: Media;
   isShowComplete?: boolean;
   is4kShowComplete?: boolean;
+  isAnime?: boolean;
 }
 
 const RequestButton = ({
@@ -59,6 +60,7 @@ const RequestButton = ({
   mediaType,
   isShowComplete = false,
   is4kShowComplete = false,
+  isAnime = false,
 }: RequestButtonProps) => {
   const intl = useIntl();
   const settings = useSettings();
@@ -266,6 +268,10 @@ const RequestButton = ({
   }
 
   // Standard request button
+  const isMovie4kEnabled = isAnime
+    ? settings.currentSettings.movie4kAnimeEnabled
+    : settings.currentSettings.movie4kEnabled;
+
   if (
     (!media ||
       media.status === MediaStatus.UNKNOWN ||
@@ -323,7 +329,7 @@ const RequestButton = ({
       ],
       { type: 'or' }
     ) &&
-    ((settings.currentSettings.movie4kEnabled && mediaType === 'movie') ||
+    ((isMovie4kEnabled && mediaType === 'movie') ||
       (settings.currentSettings.series4kEnabled && mediaType === 'tv'))
   ) {
     buttons.push({

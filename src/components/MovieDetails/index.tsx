@@ -41,6 +41,7 @@ import {
   ChevronDoubleDownIcon,
   ChevronDoubleUpIcon,
 } from '@heroicons/react/24/solid';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { type RatingResponse } from '@server/api/ratings';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaStatus } from '@server/constants/media';
@@ -113,13 +114,18 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     mutate: revalidate,
   } = useSWR<MovieDetailsType>(`/api/v1/movie/${router.query.movieId}`, {
     fallbackData: movie,
-    refreshInterval: refreshIntervalHelper(
-      {
-        downloadStatus: movie?.mediaInfo?.downloadStatus,
-        downloadStatus4k: movie?.mediaInfo?.downloadStatus4k,
-      },
-      15000
-    ),
+    refreshInterval: (currentData) =>
+      refreshIntervalHelper(
+        {
+          downloadStatus:
+            currentData?.mediaInfo?.downloadStatus ??
+            movie?.mediaInfo?.downloadStatus,
+          downloadStatus4k:
+            currentData?.mediaInfo?.downloadStatus4k ??
+            movie?.mediaInfo?.downloadStatus4k,
+        },
+        15000
+      ),
   });
 
   const { data: ratingData } = useSWR<RatingResponse>(
@@ -130,6 +136,18 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     () => sortCrewPriority(data?.credits.crew ?? []),
     [data]
   );
+
+  const isAnime = useMemo(
+    () =>
+      !!data?.keywords?.some(
+        (keyword) => keyword.id === ANIME_KEYWORD_ID
+      ),
+    [data?.keywords]
+  );
+
+  const movie4kRequestsEnabled = isAnime
+    ? settings.currentSettings.movie4kAnimeEnabled
+    : settings.currentSettings.movie4kEnabled;
 
   useEffect(() => {
     setShowManager(router.query.manage == '1' ? true : false);
@@ -167,7 +185,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   }
 
   if (
-    settings.currentSettings.movie4kEnabled &&
+    movie4kRequestsEnabled &&
     plexUrl4k &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
       type: 'or',
@@ -318,13 +336,13 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               status={data.mediaInfo?.status}
               downloadItem={data.mediaInfo?.downloadStatus}
               title={data.title}
-              inProgress={(data.mediaInfo?.downloadStatus ?? []).length > 0}
               tmdbId={data.mediaInfo?.tmdbId}
               mediaType="movie"
               plexUrl={plexUrl}
               serviceUrl={data.mediaInfo?.serviceUrl}
+              isAnime={isAnime}
             />
-            {settings.currentSettings.movie4kEnabled &&
+            {movie4kRequestsEnabled &&
               hasPermission(
                 [
                   Permission.MANAGE_REQUESTS,
@@ -340,13 +358,11 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                   downloadItem={data.mediaInfo?.downloadStatus4k}
                   title={data.title}
                   is4k
-                  inProgress={
-                    (data.mediaInfo?.downloadStatus4k ?? []).length > 0
-                  }
                   tmdbId={data.mediaInfo?.tmdbId}
                   mediaType="movie"
                   plexUrl={plexUrl4k}
                   serviceUrl={data.mediaInfo?.serviceUrl4k}
+                  isAnime={isAnime}
                 />
               )}
           </div>
@@ -378,9 +394,10 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
             media={data.mediaInfo}
             tmdbId={data.id}
             onUpdate={() => revalidate()}
+            isAnime={isAnime}
           />
           {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
-            (settings.currentSettings.movie4kEnabled &&
+            (movie4kRequestsEnabled &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                 {

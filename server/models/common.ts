@@ -8,6 +8,8 @@ import type {
   TmdbWatchProviderDetails,
   TmdbWatchProviders,
 } from '@server/api/themoviedb/interfaces';
+import type Media from '@server/entity/Media';
+import type { DownloadingItem } from '@server/lib/downloadtracker';
 import type { Video } from '@server/models/Movie';
 
 export interface ProductionCompany {
@@ -164,6 +166,50 @@ export const mapWatchProviderDetails = (
         name: provider.provider_name,
       } as WatchProviderDetails)
   );
+
+const mapDownloadStatuses = (
+  downloadStatus?: DownloadingItem[]
+): DownloadingItem[] | undefined =>
+  downloadStatus?.map(
+    ({
+      mediaType,
+      externalId,
+      size,
+      sizeLeft,
+      status,
+      trackedDownloadStatus,
+      trackedDownloadState,
+      timeLeft,
+      estimatedCompletionTime,
+      title,
+      episode,
+    }) => ({
+      mediaType,
+      externalId,
+      size,
+      sizeLeft,
+      status,
+      trackedDownloadStatus,
+      trackedDownloadState,
+      timeLeft,
+      estimatedCompletionTime,
+      title,
+      ...(episode ? { episode } : {}),
+    })
+  );
+
+export const mapMediaInfo = (media?: Media | null): Media | undefined => {
+  if (!media) {
+    return undefined;
+  }
+
+  Object.assign(media, {
+    downloadStatus: mapDownloadStatuses(media.downloadStatus),
+    downloadStatus4k: mapDownloadStatuses(media.downloadStatus4k),
+  });
+
+  return media;
+};
 
 const siteUrlCreator = (site: Video['site'], key: string): string =>
   ({

@@ -9,6 +9,12 @@ import { MediaStatus } from '@server/constants/media';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
 import { defineMessages, useIntl } from 'react-intl';
 
+const IMPORTING_STATES = new Set([
+  'importblocked',
+  'importpending',
+  'importing',
+]);
+
 const messages = defineMessages({
   status: '{status}',
   status4k: '4K {status}',
@@ -28,6 +34,7 @@ interface StatusBadgeProps {
   tmdbId?: number;
   mediaType?: 'movie' | 'tv';
   title?: string | string[];
+  isAnime?: boolean;
 }
 
 const StatusBadge = ({
@@ -40,17 +47,48 @@ const StatusBadge = ({
   tmdbId,
   mediaType,
   title,
+  isAnime = false,
 }: StatusBadgeProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
   const settings = useSettings();
 
+  const movie4kEnabled = isAnime
+    ? settings.currentSettings.movie4kAnimeEnabled
+    : settings.currentSettings.movie4kEnabled;
+
+  const hasImportingTrackedState = (item?: DownloadingItem) => {
+    const state = item?.trackedDownloadState?.toLowerCase();
+    return state ? IMPORTING_STATES.has(state) : false;
+  };
+
+  const activeDownloadItem =
+    downloadItem.find((item) => hasImportingTrackedState(item)) ??
+    downloadItem?.[0];
+
+  const trackedDownloadState =
+    activeDownloadItem?.trackedDownloadState?.toLowerCase();
+  const isImportingState = trackedDownloadState
+    ? IMPORTING_STATES.has(trackedDownloadState)
+    : false;
+  const isTrackedImporting = downloadItem.some((item) =>
+    hasImportingTrackedState(item)
+  );
+  const hasDownloadItems = downloadItem.length > 0;
+  const isInProgress = inProgress || hasDownloadItems || isTrackedImporting;
   let mediaLink: string | undefined;
   let mediaLinkDescription: string | undefined;
 
   const calculateDownloadProgress = (media: DownloadingItem) => {
     return Math.round(((media?.size - media?.sizeLeft) / media?.size) * 100);
   };
+
+  const inProgressStatusMessage = intl.formatMessage(
+    isImportingState ? globalMessages.importing : globalMessages.processing
+  );
+  const downloadProgress = activeDownloadItem
+    ? calculateDownloadProgress(activeDownloadItem)
+    : 0;
 
   if (
     mediaType &&
@@ -75,7 +113,7 @@ const StatusBadge = ({
     ) &&
     (!is4k ||
       (mediaType === 'movie'
-        ? settings.currentSettings.movie4kEnabled
+        ? movie4kEnabled
         : settings.currentSettings.series4kEnabled))
   ) {
     mediaLink = plexUrl;
@@ -114,63 +152,63 @@ const StatusBadge = ({
   );
 
   const badgeDownloadProgress = (
-    <div
-      className={`
+    activeDownloadItem && (
+      <div
+        className={`
       absolute top-0 left-0 z-10 flex h-full bg-opacity-80 ${
         status === MediaStatus.PROCESSING ? 'bg-indigo-500' : 'bg-green-500'
       } transition-all duration-200 ease-in-out
     `}
-      style={{
-        width: `${
-          downloadItem ? calculateDownloadProgress(downloadItem[0]) : 0
-        }%`,
-      }}
-    />
+        style={{
+          width: `${downloadProgress}%`,
+        }}
+      />
+    )
   );
 
   switch (status) {
     case MediaStatus.AVAILABLE:
       return (
         <Tooltip
-          content={inProgress ? tooltipContent : mediaLinkDescription}
+          content={isInProgress ? tooltipContent : mediaLinkDescription}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
+            isInProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{
-            ...(inProgress && { interactive: true, delayHide: 100 }),
+            ...(isInProgress && { interactive: true, delayHide: 100 }),
           }}
         >
           <Badge
             badgeType="success"
             href={mediaLink}
             className={`${
-              inProgress &&
+              isInProgress &&
               'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
-            {inProgress && badgeDownloadProgress}
+            {isInProgress && badgeDownloadProgress}
             <div
               className={`relative z-20 flex items-center ${
-                inProgress && 'px-2'
+                isInProgress && 'px-2'
               }`}
             >
               <span>
                 {intl.formatMessage(
                   is4k ? messages.status4k : messages.status,
                   {
-                    status: inProgress
-                      ? intl.formatMessage(globalMessages.processing)
+                    status: isInProgress
+                      ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.available),
                   }
                 )}
               </span>
-              {inProgress && (
+              {isInProgress && (
                 <>
-                  {mediaType === 'tv' && downloadItem[0].episode && (
+                  {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode.seasonNumber,
-                        episodeNumber: downloadItem[0].episode.episodeNumber,
+                        seasonNumber: activeDownloadItem.episode.seasonNumber,
+                        episodeNumber: activeDownloadItem.episode.episodeNumber,
                       })}
                     </span>
                   )}
@@ -185,45 +223,45 @@ const StatusBadge = ({
     case MediaStatus.PARTIALLY_AVAILABLE:
       return (
         <Tooltip
-          content={inProgress ? tooltipContent : mediaLinkDescription}
+          content={isInProgress ? tooltipContent : mediaLinkDescription}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
+            isInProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{
-            ...(inProgress && { interactive: true, delayHide: 100 }),
+            ...(isInProgress && { interactive: true, delayHide: 100 }),
           }}
         >
           <Badge
             badgeType="success"
             href={mediaLink}
             className={`${
-              inProgress &&
+              isInProgress &&
               'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
-            {inProgress && badgeDownloadProgress}
+            {isInProgress && badgeDownloadProgress}
             <div
               className={`relative z-20 flex items-center ${
-                inProgress && 'px-2'
+                isInProgress && 'px-2'
               }`}
             >
               <span>
                 {intl.formatMessage(
                   is4k ? messages.status4k : messages.status,
                   {
-                    status: inProgress
-                      ? intl.formatMessage(globalMessages.processing)
+                    status: isInProgress
+                      ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.partiallyavailable),
                   }
                 )}
               </span>
-              {inProgress && (
+              {isInProgress && (
                 <>
-                  {mediaType === 'tv' && downloadItem[0].episode && (
+                  {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode.seasonNumber,
-                        episodeNumber: downloadItem[0].episode.episodeNumber,
+                        seasonNumber: activeDownloadItem.episode.seasonNumber,
+                        episodeNumber: activeDownloadItem.episode.episodeNumber,
                       })}
                     </span>
                   )}
@@ -238,45 +276,45 @@ const StatusBadge = ({
     case MediaStatus.PROCESSING:
       return (
         <Tooltip
-          content={inProgress ? tooltipContent : mediaLinkDescription}
+          content={isInProgress ? tooltipContent : mediaLinkDescription}
           className={`${
-            inProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
+            isInProgress && 'hidden max-h-96 w-96 overflow-y-auto sm:block'
           }`}
           tooltipConfig={{
-            ...(inProgress && { interactive: true, delayHide: 100 }),
+            ...(isInProgress && { interactive: true, delayHide: 100 }),
           }}
         >
           <Badge
             badgeType="primary"
             href={mediaLink}
             className={`${
-              inProgress &&
+              isInProgress &&
               'relative !bg-gray-700 !bg-opacity-80 !px-0 hover:!bg-gray-700'
             } overflow-hidden`}
           >
-            {inProgress && badgeDownloadProgress}
+            {isInProgress && badgeDownloadProgress}
             <div
               className={`relative z-20 flex items-center ${
-                inProgress && 'px-2'
+                isInProgress && 'px-2'
               }`}
             >
               <span>
                 {intl.formatMessage(
                   is4k ? messages.status4k : messages.status,
                   {
-                    status: inProgress
-                      ? intl.formatMessage(globalMessages.processing)
+                    status: isInProgress
+                      ? inProgressStatusMessage
                       : intl.formatMessage(globalMessages.requested),
                   }
                 )}
               </span>
-              {inProgress && (
+              {isInProgress && (
                 <>
-                  {mediaType === 'tv' && downloadItem[0].episode && (
+                  {mediaType === 'tv' && activeDownloadItem?.episode && (
                     <span className="ml-1">
                       {intl.formatMessage(messages.seasonepisodenumber, {
-                        seasonNumber: downloadItem[0].episode.seasonNumber,
-                        episodeNumber: downloadItem[0].episode.episodeNumber,
+                        seasonNumber: activeDownloadItem.episode.seasonNumber,
+                        episodeNumber: activeDownloadItem.episode.episodeNumber,
                       })}
                     </span>
                   )}

@@ -16,7 +16,7 @@ import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import { Permission } from '@server/lib/permissions';
 import type { TvDetails } from '@server/models/Tv';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
@@ -69,14 +69,20 @@ const TvRequestModal = ({
 }: RequestModalProps) => {
   const settings = useSettings();
   const { addToast } = useToasts();
+  const includeSpecialsInRequests =
+    settings.currentSettings.includeSpecialsInRequests;
   const editingSeasons: number[] = (editRequest?.seasons ?? []).map(
     (season) => season.seasonNumber
   );
   const { data, error } = useSWR<TvDetails>(`/api/v1/tv/${tmdbId}`);
   const [requestOverrides, setRequestOverrides] =
     useState<RequestOverrides | null>(null);
-  const [selectedSeasons, setSelectedSeasons] = useState<number[]>(
-    editRequest ? editingSeasons : []
+  const sanitizeSeasonList = (seasons: number[]): number[] =>
+    includeSpecialsInRequests
+      ? seasons
+      : seasons.filter((season) => season !== 0);
+  const [selectedSeasons, setSelectedSeasons] = useState<number[]>(() =>
+    editRequest ? sanitizeSeasonList(editingSeasons) : []
   );
   const intl = useIntl();
   const { user, hasPermission } = useUser();
@@ -93,9 +99,23 @@ const TvRequestModal = ({
       : null
   );
 
+  useEffect(() => {
+    if (!includeSpecialsInRequests) {
+      setSelectedSeasons((seasons) =>
+        seasons.some((season) => season === 0)
+          ? seasons.filter((season) => season !== 0)
+          : seasons
+      );
+    }
+  }, [includeSpecialsInRequests]);
+
+  const sanitizedSelectedSeasons = sanitizeSeasonList(selectedSeasons);
+
+  const selectedSeasonCount = sanitizedSelectedSeasons.length;
+
   const currentlyRemaining =
     (quota?.tv.remaining ?? 0) -
-    selectedSeasons.length +
+    selectedSeasonCount +
     (editRequest?.seasons ?? []).length;
 
   const updateRequest = async (alsoApproveRequest = false) => {
@@ -109,7 +129,7 @@ const TvRequestModal = ({
     }
 
     try {
-      if (selectedSeasons.length > 0) {
+      if (selectedSeasonCount > 0) {
         await axios.put(`/api/v1/request/${editRequest.id}`, {
           mediaType: 'tv',
           serverId: requestOverrides?.server,
@@ -118,7 +138,7 @@ const TvRequestModal = ({
           languageProfileId: requestOverrides?.language,
           userId: requestOverrides?.user?.id,
           tags: requestOverrides?.tags,
-          seasons: selectedSeasons,
+          seasons: sanitizedSelectedSeasons,
         });
 
         if (alsoApproveRequest) {
@@ -132,7 +152,7 @@ const TvRequestModal = ({
 
       addToast(
         <span>
-          {selectedSeasons.length > 0
+          {selectedSeasonCount > 0
             ? intl.formatMessage(
                 alsoApproveRequest
                   ? messages.requestApproved
@@ -170,7 +190,7 @@ const TvRequestModal = ({
   const sendRequest = async () => {
     if (
       settings.currentSettings.partialRequestsEnabled &&
-      selectedSeasons.length === 0
+      selectedSeasonCount === 0
     ) {
       return;
     }
@@ -198,10 +218,9 @@ const TvRequestModal = ({
         mediaType: 'tv',
         is4k,
         seasons: settings.currentSettings.partialRequestsEnabled
-          ? selectedSeasons
+          ? sanitizedSelectedSeasons
           : getAllSeasons().filter(
-              (season) =>
-                !getAllRequestedSeasons().includes(season) && season !== 0
+              (season) => !getAllRequestedSeasons().includes(season)
             ),
         ...overrideParams,
       });
@@ -234,9 +253,11 @@ const TvRequestModal = ({
   };
 
   const getAllSeasons = (): number[] => {
-    return (data?.seasons ?? [])
-      .filter((season) => season.episodeCount !== 0)
-      .map((season) => season.seasonNumber);
+    return sanitizeSeasonList(
+      (data?.seasons ?? [])
+        .filter((season) => season.episodeCount !== 0)
+        .map((season) => season.seasonNumber)
+    );
   };
 
   const getAllRequestedSeasons = (): number[] => {
@@ -267,7 +288,10 @@ const TvRequestModal = ({
       )
       .map((season) => season.seasonNumber);
 
-    return [...requestedSeasons, ...availableSeasons];
+    return sanitizeSeasonList([
+      ...requestedSeasons,
+      ...availableSeasons,
+    ]);
   };
 
   const isSelectedSeason = (seasonNumber: number): boolean =>
@@ -288,6 +312,10 @@ const TvRequestModal = ({
       return;
     }
 
+    if (!includeSpecialsInRequests && seasonNumber === 0) {
+      return;
+    }
+
     if (selectedSeasons.includes(seasonNumber)) {
       setSelectedSeasons((seasons) =>
         seasons.filter((sn) => sn !== seasonNumber)
@@ -297,10 +325,8 @@ const TvRequestModal = ({
     }
   };
 
-  const unrequestedSeasons = getAllSeasons().filter((season) =>
-    !settings.currentSettings.partialRequestsEnabled
-      ? !getAllRequestedSeasons().includes(season) && season !== 0
-      : !getAllRequestedSeasons().includes(season)
+  const unrequestedSeasons = getAllSeasons().filter(
+    (season) => !getAllRequestedSeasons().includes(season)
   );
 
   const toggleAllSeasons = (): void => {
@@ -312,16 +338,8 @@ const TvRequestModal = ({
       return;
     }
 
-    const standardUnrequestedSeasons = unrequestedSeasons.filter(
-      (seasonNumber) => seasonNumber !== 0
-    );
-
-    if (
-      data &&
-      selectedSeasons.length >= 0 &&
-      selectedSeasons.length < standardUnrequestedSeasons.length
-    ) {
-      setSelectedSeasons(standardUnrequestedSeasons);
+    if (data && selectedSeasonCount < unrequestedSeasons.length) {
+      setSelectedSeasons(unrequestedSeasons);
     } else {
       setSelectedSeasons([]);
     }
@@ -331,12 +349,7 @@ const TvRequestModal = ({
     if (!data) {
       return false;
     }
-    return (
-      selectedSeasons.filter((season) => season !== 0).length ===
-      getAllSeasons().filter(
-        (season) => !getAllRequestedSeasons().includes(season) && season !== 0
-      ).length
-    );
+    return selectedSeasonCount === unrequestedSeasons.length;
   };
 
   const getSeasonRequest = (
@@ -408,7 +421,7 @@ const TvRequestModal = ({
       subTitle={data?.name}
       okText={
         editRequest
-          ? selectedSeasons.length === 0
+          ? selectedSeasonCount === 0
             ? intl.formatMessage(messages.cancel)
             : hasPermission(Permission.MANAGE_REQUESTS)
             ? intl.formatMessage(messages.approve)
@@ -419,12 +432,12 @@ const TvRequestModal = ({
           ? intl.formatMessage(
               is4k ? globalMessages.request4k : globalMessages.request
             )
-          : selectedSeasons.length === 0
+          : selectedSeasonCount === 0
           ? intl.formatMessage(messages.selectseason)
           : intl.formatMessage(
               is4k ? messages.requestseasons4k : messages.requestseasons,
               {
-                seasonCount: selectedSeasons.length,
+                seasonCount: selectedSeasonCount,
               }
             )
       }
@@ -437,12 +450,12 @@ const TvRequestModal = ({
           ? true
           : getAllRequestedSeasons().length >= getAllSeasons().length ||
             (settings.currentSettings.partialRequestsEnabled &&
-              selectedSeasons.length === 0)
+              selectedSeasonCount === 0)
       }
       okButtonType={
         editRequest
           ? settings.currentSettings.partialRequestsEnabled &&
-            selectedSeasons.length === 0
+            selectedSeasonCount === 0
             ? 'danger'
             : hasPermission(Permission.MANAGE_REQUESTS)
             ? 'success'
@@ -568,10 +581,11 @@ const TvRequestModal = ({
                 </thead>
                 <tbody className="divide-y divide-gray-700">
                   {data?.seasons
-                    .filter((season) =>
-                      !settings.currentSettings.partialRequestsEnabled
-                        ? season.episodeCount !== 0 && season.seasonNumber !== 0
-                        : season.episodeCount !== 0
+                    .filter(
+                      (season) =>
+                        season.episodeCount !== 0 &&
+                        (includeSpecialsInRequests ||
+                          season.seasonNumber !== 0)
                     )
                     .map((season) => {
                       const seasonRequest = getSeasonRequest(

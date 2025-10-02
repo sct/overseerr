@@ -5,13 +5,14 @@ import AdvancedRequester from '@app/components/RequestModal/AdvancedRequester';
 import QuotaDisplay from '@app/components/RequestModal/QuotaDisplay';
 import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
+import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import { MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import { Permission } from '@server/lib/permissions';
 import type { MovieDetails } from '@server/models/Movie';
 import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
@@ -61,6 +62,13 @@ const MovieRequestModal = ({
   });
   const intl = useIntl();
   const { user, hasPermission } = useUser();
+  const isAnime = useMemo(
+    () =>
+      !!data?.keywords?.some(
+        (keyword) => keyword.id === ANIME_KEYWORD_ID
+      ),
+    [data?.keywords]
+  );
   const { data: quota } = useSWR<QuotaResponse>(
     user &&
       (!requestOverrides?.user?.id || hasPermission(Permission.MANAGE_USERS))
@@ -287,6 +295,7 @@ const MovieRequestModal = ({
           <AdvancedRequester
             type="movie"
             is4k={is4k}
+            isAnime={isAnime}
             requestUser={editRequest.requestedBy}
             defaultOverrides={{
               folder: editRequest.rootFolder,
@@ -357,6 +366,7 @@ const MovieRequestModal = ({
         <AdvancedRequester
           type="movie"
           is4k={is4k}
+          isAnime={isAnime}
           onChange={(overrides) => {
             setRequestOverrides(overrides);
           }}

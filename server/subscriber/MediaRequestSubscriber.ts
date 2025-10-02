@@ -6,7 +6,6 @@ import type {
 } from '@server/api/servarr/sonarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
 import TheMovieDb from '@server/api/themoviedb';
-import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import {
   MediaRequestStatus,
   MediaStatus,
@@ -16,7 +15,9 @@ import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
 import SeasonRequest from '@server/entity/SeasonRequest';
+import { hasAnimeKeyword } from '@server/lib/anime';
 import notificationManager, { Notification } from '@server/lib/notifications';
+import { selectDefaultRadarrServer } from '@server/lib/radarr';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isEqual, truncate } from 'lodash';
@@ -148,18 +149,21 @@ export class MediaRequestSubscriber
           return;
         }
 
-        let radarrSettings = settings.radarr.find(
-          (radarr) => radarr.isDefault && radarr.is4k === entity.is4k
-        );
+        const tmdb = new TheMovieDb();
+        const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
+
+        const isAnime = hasAnimeKeyword(movie.keywords);
+
+        let radarrSettings =
+          entity.serverId !== null && entity.serverId >= 0
+            ? settings.radarr.find((radarr) => radarr.id === entity.serverId)
+            : undefined;
 
         if (
           entity.serverId !== null &&
           entity.serverId >= 0 &&
-          radarrSettings?.id !== entity.serverId
+          radarrSettings
         ) {
-          radarrSettings = settings.radarr.find(
-            (radarr) => radarr.id === entity.serverId
-          );
           logger.info(
             `Request has an override server: ${radarrSettings?.name}`,
             {
@@ -171,12 +175,19 @@ export class MediaRequestSubscriber
         }
 
         if (!radarrSettings) {
+          radarrSettings = selectDefaultRadarrServer(settings.radarr, {
+            is4k: entity.is4k,
+            isAnime,
+          });
+        }
+
+        if (!radarrSettings) {
           logger.warn(
-            `There is no default ${
-              entity.is4k ? '4K ' : ''
+            `There is no default ${entity.is4k ? '4K ' : ''}${
+              isAnime ? 'anime ' : ''
             }Radarr server configured. Did you set any of your ${
               entity.is4k ? '4K ' : ''
-            }Radarr servers as default?`,
+            }${isAnime ? 'anime ' : ''}Radarr servers as default?`,
             {
               label: 'Media Request',
               requestId: entity.id,
@@ -186,54 +197,25 @@ export class MediaRequestSubscriber
           return;
         }
 
-        let rootFolder = radarrSettings.activeDirectory;
-        let qualityProfile = radarrSettings.activeProfileId;
-        let tags = radarrSettings.tags ? [...radarrSettings.tags] : [];
+        // Use anime settings if anime, otherwise use default
+        const profileId = isAnime
+          ? radarrSettings.activeAnimeProfileId ||
+            radarrSettings.activeProfileId
+          : radarrSettings.activeProfileId;
 
-        if (
-          entity.rootFolder &&
-          entity.rootFolder !== '' &&
-          entity.rootFolder !== radarrSettings.activeDirectory
-        ) {
-          rootFolder = entity.rootFolder;
-          logger.info(`Request has an override root folder: ${rootFolder}`, {
-            label: 'Media Request',
-            requestId: entity.id,
-            mediaId: entity.media.id,
-          });
-        }
+        const rootFolder = isAnime
+          ? radarrSettings.activeAnimeDirectory ||
+            radarrSettings.activeDirectory
+          : radarrSettings.activeDirectory;
 
-        if (
-          entity.profileId &&
-          entity.profileId !== radarrSettings.activeProfileId
-        ) {
-          qualityProfile = entity.profileId;
-          logger.info(
-            `Request has an override quality profile ID: ${qualityProfile}`,
-            {
-              label: 'Media Request',
-              requestId: entity.id,
-              mediaId: entity.media.id,
-            }
-          );
-        }
+        const tags = isAnime
+          ? radarrSettings.animeTags || radarrSettings.tags
+          : radarrSettings.tags;
 
-        if (entity.tags && !isEqual(entity.tags, radarrSettings.tags)) {
-          tags = entity.tags;
-          logger.info(`Request has override tags`, {
-            label: 'Media Request',
-            requestId: entity.id,
-            mediaId: entity.media.id,
-            tagIds: tags,
-          });
-        }
-
-        const tmdb = new TheMovieDb();
         const radarr = new RadarrAPI({
           apiKey: radarrSettings.apiKey,
           url: RadarrAPI.buildUrl(radarrSettings, '/api/v3'),
         });
-        const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
 
         const media = await mediaRepository.findOne({
           where: { id: entity.media.id },
@@ -297,8 +279,8 @@ export class MediaRequestSubscriber
         }
 
         const radarrMovieOptions: RadarrMovieOptions = {
-          profileId: qualityProfile,
-          qualityProfileId: qualityProfile,
+          profileId: profileId,
+          qualityProfileId: profileId,
           rootFolderPath: rootFolder,
           minimumAvailability: radarrSettings.minimumAvailability,
           title: movie.title,
@@ -470,11 +452,7 @@ export class MediaRequestSubscriber
         let seriesType: SonarrSeries['seriesType'] = 'standard';
 
         // Change series type to anime if the anime keyword is present on tmdb
-        if (
-          series.keywords.results.some(
-            (keyword) => keyword.id === ANIME_KEYWORD_ID
-          )
-        ) {
+        if (hasAnimeKeyword(series.keywords)) {
           seriesType = sonarrSettings.animeSeriesType ?? 'anime';
         }
 

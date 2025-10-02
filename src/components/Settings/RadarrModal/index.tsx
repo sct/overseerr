@@ -34,10 +34,13 @@ const messages = defineMessages({
   add: 'Add Server',
   defaultserver: 'Default Server',
   default4kserver: 'Default 4K Server',
+  defaultAnimeServer: 'Default Anime Server',
+  default4kAnimeServer: 'Default 4K Anime Server',
   servername: 'Server Name',
   hostname: 'Hostname or IP Address',
   port: 'Port',
   ssl: 'Use SSL',
+  animeServer: 'Anime Server',
   apiKey: 'API Key',
   baseUrl: 'URL Base',
   syncEnabled: 'Enable Scan',
@@ -120,15 +123,45 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
     apiKey: Yup.string().required(
       intl.formatMessage(messages.validationApiKeyRequired)
     ),
-    rootFolder: Yup.string().required(
-      intl.formatMessage(messages.validationRootFolderRequired)
-    ),
-    activeProfileId: Yup.string().required(
-      intl.formatMessage(messages.validationProfileRequired)
-    ),
-    minimumAvailability: Yup.string().required(
-      intl.formatMessage(messages.validationMinimumAvailabilityRequired)
-    ),
+    isAnime: Yup.boolean(),
+    rootFolder: Yup.string().when('isAnime', {
+      is: true,
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) =>
+        schema.required(
+          intl.formatMessage(messages.validationRootFolderRequired)
+        ),
+    }),
+    activeProfileId: Yup.string().when('isAnime', {
+      is: true,
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) =>
+        schema.required(intl.formatMessage(messages.validationProfileRequired)),
+    }),
+    activeAnimeProfileId: Yup.string().when('isAnime', {
+      is: true,
+      then: (schema) =>
+        schema.required(intl.formatMessage(messages.validationProfileRequired)),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    activeAnimeDirectory: Yup.string().when('isAnime', {
+      is: true,
+      then: (schema) =>
+        schema.required(
+          intl.formatMessage(messages.validationRootFolderRequired)
+        ),
+      otherwise: (schema) => schema.nullable(),
+    }),
+    minimumAvailability: Yup.string().when('isAnime', {
+      is: true,
+      then: (schema) => schema.nullable(),
+      otherwise: (schema) =>
+        schema.required(
+          intl.formatMessage(
+            messages.validationMinimumAvailabilityRequired
+          )
+        ),
+    }),
     externalUrl: Yup.string()
       .url(intl.formatMessage(messages.validationApplicationUrl))
       .test(
@@ -238,17 +271,39 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
           tags: radarr?.tags ?? [],
           isDefault: radarr?.isDefault ?? false,
           is4k: radarr?.is4k ?? false,
+          isAnime: radarr?.isAnime ?? false,
           externalUrl: radarr?.externalUrl,
           syncEnabled: radarr?.syncEnabled ?? false,
           enableSearch: !radarr?.preventSearch,
           tagRequests: radarr?.tagRequests ?? false,
+          activeAnimeProfileId: radarr?.activeAnimeProfileId,
+          activeAnimeDirectory: radarr?.activeAnimeDirectory,
+          animeTags: radarr?.animeTags ?? [],
         }}
         validationSchema={RadarrSettingsSchema}
         onSubmit={async (values) => {
           try {
-            const profileName = testResponse.profiles.find(
-              (profile) => profile.id === Number(values.activeProfileId)
-            )?.name;
+            const resolvedProfileIdValue = values.isAnime
+              ? values.activeAnimeProfileId || values.activeProfileId
+              : values.activeProfileId;
+
+            const resolvedProfileId = resolvedProfileIdValue
+              ? Number(resolvedProfileIdValue)
+              : undefined;
+
+            const resolvedRootFolder = values.isAnime
+              ? values.activeAnimeDirectory || values.rootFolder
+              : values.rootFolder;
+
+            const resolvedTags = values.isAnime
+              ? values.animeTags ?? []
+              : values.tags ?? [];
+
+            const profileName = resolvedProfileId
+              ? testResponse.profiles.find(
+                  (profile) => profile.id === resolvedProfileId
+                )?.name
+              : undefined;
 
             const submission = {
               name: values.name,
@@ -257,17 +312,21 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
               apiKey: values.apiKey,
               useSsl: values.ssl,
               baseUrl: values.baseUrl,
-              activeProfileId: Number(values.activeProfileId),
+              activeProfileId: resolvedProfileId,
               activeProfileName: profileName,
-              activeDirectory: values.rootFolder,
+              activeDirectory: resolvedRootFolder,
               is4k: values.is4k,
-              minimumAvailability: values.minimumAvailability,
-              tags: values.tags,
+              isAnime: values.isAnime,
+              minimumAvailability: values.minimumAvailability || 'released',
+              tags: resolvedTags,
               isDefault: values.isDefault,
               externalUrl: values.externalUrl,
               syncEnabled: values.syncEnabled,
               preventSearch: !values.enableSearch,
               tagRequests: values.tagRequests,
+              activeAnimeProfileId: values.activeAnimeProfileId,
+              activeAnimeDirectory: values.activeAnimeDirectory,
+              animeTags: values.animeTags ?? [],
             };
             if (!radarr) {
               await axios.post('/api/v1/settings/radarr', submission);
@@ -349,7 +408,11 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                 <div className="form-row">
                   <label htmlFor="isDefault" className="checkbox-label">
                     {intl.formatMessage(
-                      values.is4k
+                      values.isAnime
+                        ? values.is4k
+                          ? messages.default4kAnimeServer
+                          : messages.defaultAnimeServer
+                        : values.is4k
                         ? messages.default4kserver
                         : messages.defaultserver
                     )}
@@ -364,6 +427,14 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                   </label>
                   <div className="form-input-area">
                     <Field type="checkbox" id="is4k" name="is4k" />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <label htmlFor="isAnime" className="checkbox-label">
+                    {intl.formatMessage(messages.animeServer)}
+                  </label>
+                  <div className="form-input-area">
+                    <Field type="checkbox" id="isAnime" name="isAnime" />
                   </div>
                 </div>
                 <div className="form-row">
@@ -511,172 +582,186 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                       )}
                   </div>
                 </div>
-                <div className="form-row">
-                  <label htmlFor="activeProfileId" className="text-label">
-                    {intl.formatMessage(messages.qualityprofile)}
-                    <span className="label-required">*</span>
-                  </label>
-                  <div className="form-input-area">
-                    <div className="form-input-field">
-                      <Field
-                        as="select"
-                        id="activeProfileId"
-                        name="activeProfileId"
-                        disabled={!isValidated || isTesting}
-                      >
-                        <option value="">
-                          {isTesting
-                            ? intl.formatMessage(messages.loadingprofiles)
-                            : !isValidated
-                            ? intl.formatMessage(
-                                messages.testFirstQualityProfiles
-                              )
-                            : intl.formatMessage(messages.selectQualityProfile)}
-                        </option>
-                        {testResponse.profiles.length > 0 &&
-                          testResponse.profiles.map((profile) => (
-                            <option
-                              key={`loaded-profile-${profile.id}`}
-                              value={profile.id}
-                            >
-                              {profile.name}
+                {!values.isAnime && (
+                  <>
+                    <div className="form-row">
+                      <label htmlFor="activeProfileId" className="text-label">
+                        {intl.formatMessage(messages.qualityprofile)}
+                        <span className="label-required">*</span>
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            as="select"
+                            id="activeProfileId"
+                            name="activeProfileId"
+                            disabled={!isValidated || isTesting}
+                          >
+                            <option value="">
+                              {isTesting
+                                ? intl.formatMessage(messages.loadingprofiles)
+                                : !isValidated
+                                ? intl.formatMessage(
+                                    messages.testFirstQualityProfiles
+                                  )
+                                : intl.formatMessage(
+                                    messages.selectQualityProfile
+                                  )}
                             </option>
-                          ))}
-                      </Field>
-                    </div>
-                    {errors.activeProfileId &&
-                      touched.activeProfileId &&
-                      typeof errors.activeProfileId === 'string' && (
-                        <div className="error">{errors.activeProfileId}</div>
-                      )}
-                  </div>
-                </div>
-                <div className="form-row">
-                  <label htmlFor="rootFolder" className="text-label">
-                    {intl.formatMessage(messages.rootfolder)}
-                    <span className="label-required">*</span>
-                  </label>
-                  <div className="form-input-area">
-                    <div className="form-input-field">
-                      <Field
-                        as="select"
-                        id="rootFolder"
-                        name="rootFolder"
-                        disabled={!isValidated || isTesting}
-                      >
-                        <option value="">
-                          {isTesting
-                            ? intl.formatMessage(messages.loadingrootfolders)
-                            : !isValidated
-                            ? intl.formatMessage(messages.testFirstRootFolders)
-                            : intl.formatMessage(messages.selectRootFolder)}
-                        </option>
-                        {testResponse.rootFolders.length > 0 &&
-                          testResponse.rootFolders.map((folder) => (
-                            <option
-                              key={`loaded-profile-${folder.id}`}
-                              value={folder.path}
-                            >
-                              {folder.path}
-                            </option>
-                          ))}
-                      </Field>
-                    </div>
-                    {errors.rootFolder &&
-                      touched.rootFolder &&
-                      typeof errors.rootFolder === 'string' && (
-                        <div className="error">{errors.rootFolder}</div>
-                      )}
-                  </div>
-                </div>
-                <div className="form-row">
-                  <label htmlFor="minimumAvailability" className="text-label">
-                    {intl.formatMessage(messages.minimumAvailability)}
-                    <span className="label-required">*</span>
-                  </label>
-                  <div className="form-input-area">
-                    <div className="form-input-field">
-                      <Field
-                        as="select"
-                        id="minimumAvailability"
-                        name="minimumAvailability"
-                      >
-                        <option value="announced">
-                          {intl.formatMessage(messages.announced)}
-                        </option>
-                        <option value="inCinemas">
-                          {intl.formatMessage(messages.inCinemas)}
-                        </option>
-                        <option value="released">
-                          {intl.formatMessage(messages.released)}
-                        </option>
-                      </Field>
-                    </div>
-                    {errors.minimumAvailability &&
-                      touched.minimumAvailability && (
-                        <div className="error">
-                          {errors.minimumAvailability}
+                            {testResponse.profiles.length > 0 &&
+                              testResponse.profiles.map((profile) => (
+                                <option
+                                  key={`loaded-profile-${profile.id}`}
+                                  value={profile.id}
+                                >
+                                  {profile.name}
+                                </option>
+                              ))}
+                          </Field>
                         </div>
-                      )}
-                  </div>
-                </div>
-                <div className="form-row">
-                  <label htmlFor="tags" className="text-label">
-                    {intl.formatMessage(messages.tags)}
-                  </label>
-                  <div className="form-input-area">
-                    <Select<OptionType, true>
-                      options={
-                        isValidated
-                          ? testResponse.tags.map((tag) => ({
-                              label: tag.label,
-                              value: tag.id,
-                            }))
-                          : []
-                      }
-                      isMulti
-                      isDisabled={!isValidated || isTesting}
-                      placeholder={
-                        !isValidated
-                          ? intl.formatMessage(messages.testFirstTags)
-                          : isTesting
-                          ? intl.formatMessage(messages.loadingTags)
-                          : intl.formatMessage(messages.selecttags)
-                      }
-                      className="react-select-container"
-                      classNamePrefix="react-select"
-                      value={
-                        values.tags
-                          .map((tagId) => {
-                            const foundTag = testResponse.tags.find(
-                              (tag) => tag.id === tagId
+                        {errors.activeProfileId &&
+                          touched.activeProfileId &&
+                          typeof errors.activeProfileId === 'string' && (
+                            <div className="error">
+                              {errors.activeProfileId}
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="rootFolder" className="text-label">
+                        {intl.formatMessage(messages.rootfolder)}
+                        <span className="label-required">*</span>
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            as="select"
+                            id="rootFolder"
+                            name="rootFolder"
+                            disabled={!isValidated || isTesting}
+                          >
+                            <option value="">
+                              {isTesting
+                                ? intl.formatMessage(
+                                    messages.loadingrootfolders
+                                  )
+                                : !isValidated
+                                ? intl.formatMessage(
+                                    messages.testFirstRootFolders
+                                  )
+                                : intl.formatMessage(
+                                    messages.selectRootFolder
+                                  )}
+                            </option>
+                            {testResponse.rootFolders.length > 0 &&
+                              testResponse.rootFolders.map((folder) => (
+                                <option
+                                  key={`loaded-profile-${folder.id}`}
+                                  value={folder.path}
+                                >
+                                  {folder.path}
+                                </option>
+                              ))}
+                          </Field>
+                        </div>
+                        {errors.rootFolder &&
+                          touched.rootFolder &&
+                          typeof errors.rootFolder === 'string' && (
+                            <div className="error">{errors.rootFolder}</div>
+                          )}
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="minimumAvailability" className="text-label">
+                        {intl.formatMessage(messages.minimumAvailability)}
+                        <span className="label-required">*</span>
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            as="select"
+                            id="minimumAvailability"
+                            name="minimumAvailability"
+                          >
+                            <option value="announced">
+                              {intl.formatMessage(messages.announced)}
+                            </option>
+                            <option value="inCinemas">
+                              {intl.formatMessage(messages.inCinemas)}
+                            </option>
+                            <option value="released">
+                              {intl.formatMessage(messages.released)}
+                            </option>
+                          </Field>
+                        </div>
+                        {errors.minimumAvailability &&
+                          touched.minimumAvailability && (
+                            <div className="error">
+                              {errors.minimumAvailability}
+                            </div>
+                          )}
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="tags" className="text-label">
+                        {intl.formatMessage(messages.tags)}
+                      </label>
+                      <div className="form-input-area">
+                        <Select<OptionType, true>
+                          options={
+                            isValidated
+                              ? testResponse.tags.map((tag) => ({
+                                  label: tag.label,
+                                  value: tag.id,
+                                }))
+                              : []
+                          }
+                          isMulti
+                          isDisabled={!isValidated || isTesting}
+                          placeholder={
+                            !isValidated
+                              ? intl.formatMessage(messages.testFirstTags)
+                              : isTesting
+                              ? intl.formatMessage(messages.loadingTags)
+                              : intl.formatMessage(messages.selecttags)
+                          }
+                          className="react-select-container"
+                          classNamePrefix="react-select"
+                          value={
+                            values.tags
+                              .map((tagId) => {
+                                const foundTag = testResponse.tags.find(
+                                  (tag) => tag.id === tagId
+                                );
+
+                                if (!foundTag) {
+                                  return undefined;
+                                }
+
+                                return {
+                                  value: foundTag.id,
+                                  label: foundTag.label,
+                                };
+                              })
+                              .filter(
+                                (option) => option !== undefined
+                              ) as OptionType[]
+                          }
+                          onChange={(value) => {
+                            setFieldValue(
+                              'tags',
+                              value.map((option) => option.value)
                             );
-
-                            if (!foundTag) {
-                              return undefined;
-                            }
-
-                            return {
-                              value: foundTag.id,
-                              label: foundTag.label,
-                            };
-                          })
-                          .filter(
-                            (option) => option !== undefined
-                          ) as OptionType[]
-                      }
-                      onChange={(value) => {
-                        setFieldValue(
-                          'tags',
-                          value.map((option) => option.value)
-                        );
-                      }}
-                      noOptionsMessage={() =>
-                        intl.formatMessage(messages.notagoptions)
-                      }
-                    />
-                  </div>
-                </div>
+                          }}
+                          noOptionsMessage={() =>
+                            intl.formatMessage(messages.notagoptions)
+                          }
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
                 <div className="form-row">
                   <label htmlFor="externalUrl" className="text-label">
                     {intl.formatMessage(messages.externalUrl)}
@@ -721,21 +806,141 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                     />
                   </div>
                 </div>
-                <div className="form-row">
-                  <label htmlFor="tagRequests" className="checkbox-label">
-                    {intl.formatMessage(messages.tagRequests)}
-                    <span className="label-tip">
-                      {intl.formatMessage(messages.tagRequestsInfo)}
-                    </span>
-                  </label>
-                  <div className="form-input-area">
-                    <Field
-                      type="checkbox"
-                      id="tagRequests"
-                      name="tagRequests"
-                    />
+                {!values.isAnime && (
+                  <div className="form-row">
+                    <label htmlFor="tagRequests" className="checkbox-label">
+                      {intl.formatMessage(messages.tagRequests)}
+                      <span className="label-tip">
+                        {intl.formatMessage(messages.tagRequestsInfo)}
+                      </span>
+                    </label>
+                    <div className="form-input-area">
+                      <Field
+                        type="checkbox"
+                        id="tagRequests"
+                        name="tagRequests"
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
+                {values.isAnime && (
+                  <>
+                    <div className="form-row">
+                      <label htmlFor="activeAnimeProfileId" className="text-label">
+                        Anime Quality Profile
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            as="select"
+                            id="activeAnimeProfileId"
+                            name="activeAnimeProfileId"
+                            disabled={!isValidated || isTesting}
+                          >
+                            <option value="">
+                              {isTesting
+                                ? 'Loading profiles...'
+                                : !isValidated
+                                ? 'Test connection to load profiles'
+                                : 'Select a quality profile'}
+                            </option>
+                            {testResponse.profiles?.map((profile) => (
+                              <option
+                                key={`anime-profile-${profile.id}`}
+                                value={profile.id}
+                              >
+                                {profile.name}
+                              </option>
+                            ))}
+                          </Field>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="activeAnimeDirectory" className="text-label">
+                        Anime Root Folder
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            as="select"
+                            id="activeAnimeDirectory"
+                            name="activeAnimeDirectory"
+                            disabled={!isValidated || isTesting}
+                          >
+                            <option value="">
+                              {isTesting
+                                ? 'Loading root folders...'
+                                : !isValidated
+                                ? 'Test connection to load root folders'
+                                : 'Select a root folder'}
+                            </option>
+                            {testResponse.rootFolders?.map((folder) => (
+                              <option
+                                key={`anime-folder-${folder.id}`}
+                                value={folder.path}
+                              >
+                                {folder.path}
+                              </option>
+                            ))}
+                          </Field>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="animeTags" className="text-label">
+                        Anime Tags
+                      </label>
+                      <div className="form-input-area">
+                        <Select<OptionType, true>
+                          options={
+                            isValidated
+                              ? testResponse.tags?.map((tag) => ({
+                                  label: tag.label,
+                                  value: tag.id,
+                                }))
+                              : []
+                          }
+                          isMulti
+                          isDisabled={!isValidated}
+                          placeholder={
+                            !isValidated
+                              ? 'Test connection to load tags'
+                              : isTesting
+                              ? 'Loading tags...'
+                              : 'Select tags'
+                          }
+                          isLoading={isTesting}
+                          className="react-select-container"
+                          classNamePrefix="react-select"
+                          value={
+                            isTesting
+                              ? []
+                              : (values.animeTags
+                                  ?.map((tagId) => {
+                                    const foundTag = testResponse.tags?.find(
+                                      (tag) => tag.id === tagId
+                                    );
+                                    if (!foundTag) return undefined;
+                                    return {
+                                      value: foundTag.id,
+                                      label: foundTag.label,
+                                    };
+                                  })
+                                  .filter((option) => option !== undefined) as OptionType[])
+                          }
+                          onChange={(value) => {
+                            setFieldValue(
+                              'animeTags',
+                              value.map((option) => option.value)
+                            );
+                          }}
+                          noOptionsMessage={() => 'No tag options'}
+                        />
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </Modal>
           );

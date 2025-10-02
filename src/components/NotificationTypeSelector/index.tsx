@@ -142,6 +142,10 @@ const NotificationTypeSelector = ({
   const [allowedTypes, setAllowedTypes] = useState(enabledTypes);
 
   const availableTypes = useMemo(() => {
+    const movie4kRequestsEnabled =
+      settings.currentSettings.movie4kEnabled ||
+      settings.currentSettings.movie4kAnimeEnabled;
+
     const allRequestsAutoApproved =
       user &&
       // Has Manage Requests perm, which grants all Auto-Approve perms
@@ -175,7 +179,7 @@ const NotificationTypeSelector = ({
               { type: 'or' }
             )) &&
           // Cannot submit 4K movie requests OR has Auto-Approve perms for 4K movies
-          (!settings.currentSettings.movie4kEnabled ||
+          (!movie4kRequestsEnabled ||
             !hasPermission(
               [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
               { type: 'or' }

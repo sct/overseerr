@@ -8,6 +8,7 @@ import { getRepository } from '@server/datasource';
 import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces';
 import notificationManager, { Notification } from '@server/lib/notifications';
 import { Permission } from '@server/lib/permissions';
+import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { truncate } from 'lodash';
 import {
@@ -33,6 +34,25 @@ export class NoSeasonsAvailableError extends Error {}
 
 type MediaRequestOptions = {
   isAutoRequest?: boolean;
+};
+
+type TmdbSeason = {
+  season_number: number;
+};
+
+export const resolveRequestedSeasonNumbers = (
+  requestSeasons: MediaRequestBody['seasons'],
+  tmdbSeasons: TmdbSeason[],
+  includeSpecialsInRequests: boolean
+): number[] => {
+  const normalizedSeasons =
+    requestSeasons === 'all'
+      ? tmdbSeasons.map((season) => season.season_number)
+      : [...(requestSeasons ?? [])];
+
+  return includeSpecialsInRequests
+    ? normalizedSeasons
+    : normalizedSeasons.filter((seasonNumber) => seasonNumber !== 0);
 };
 
 @Entity()
@@ -235,12 +255,13 @@ export class MediaRequest {
       const tmdbMediaShow = tmdbMedia as Awaited<
         ReturnType<typeof tmdb.getTvShow>
       >;
-      const requestedSeasons =
-        requestBody.seasons === 'all'
-          ? tmdbMediaShow.seasons
-              .filter((season) => season.season_number !== 0)
-              .map((season) => season.season_number)
-          : (requestBody.seasons as number[]);
+      const includeSpecialsInRequests =
+        getSettings().main.includeSpecialsInRequests;
+      const requestedSeasons = resolveRequestedSeasonNumbers(
+        requestBody.seasons,
+        tmdbMediaShow.seasons,
+        includeSpecialsInRequests
+      );
       let existingSeasons: number[] = [];
 
       // We need to check existing requests on this title to make sure we don't double up on seasons that were

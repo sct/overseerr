@@ -60,14 +60,41 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
   } = useSWR<Collection>(`/api/v1/collection/${router.query.collectionId}`, {
     fallbackData: collection,
     revalidateOnMount: true,
-    refreshInterval: refreshIntervalHelper(
-      returnCollectionDownloadItems(collection),
-      15000
-    ),
+    refreshInterval: (currentData) =>
+      refreshIntervalHelper(
+        returnCollectionDownloadItems(currentData ?? collection),
+        15000
+      ),
   });
 
   const { data: genres } =
     useSWR<{ id: number; name: string }[]>(`/api/v1/genres/movie`);
+
+  const animationGenreIds = useMemo(
+    () =>
+      (genres ?? [])
+        .filter((genre) => genre.name === 'Animation')
+        .map((genre) => genre.id),
+    [genres]
+  );
+
+  const isCollectionAnime = useMemo(
+    () =>
+      !!(
+        animationGenreIds.length &&
+        data?.parts.length &&
+        data.parts.every((part) =>
+          (part.genreIds ?? []).some((genreId) =>
+            animationGenreIds.includes(genreId)
+          )
+        )
+      ),
+    [animationGenreIds, data?.parts]
+  );
+
+  const movie4kRequestsEnabled = isCollectionAnime
+    ? settings.currentSettings.movie4kAnimeEnabled
+    : settings.currentSettings.movie4kEnabled;
 
   const [downloadStatus, downloadStatus4k] = useMemo(() => {
     const downloadItems = returnCollectionDownloadItems(data);
@@ -137,7 +164,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
     ).length > 0;
 
   const hasRequestable4k =
-    settings.currentSettings.movie4kEnabled &&
+    movie4kRequestsEnabled &&
     hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE], {
       type: 'or',
     }) &&
@@ -241,11 +268,9 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
               status={collectionStatus}
               downloadItem={downloadStatus}
               title={titles}
-              inProgress={data.parts.some(
-                (part) => (part.mediaInfo?.downloadStatus ?? []).length > 0
-              )}
+              isAnime={isCollectionAnime}
             />
-            {settings.currentSettings.movie4kEnabled &&
+            {movie4kRequestsEnabled &&
               hasPermission(
                 [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
                 {
@@ -257,10 +282,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
                   downloadItem={downloadStatus4k}
                   title={titles4k}
                   is4k
-                  inProgress={data.parts.some(
-                    (part) =>
-                      (part.mediaInfo?.downloadStatus4k ?? []).length > 0
-                  )}
+                  isAnime={isCollectionAnime}
                 />
               )}
           </div>
