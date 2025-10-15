@@ -30,6 +30,7 @@ const messages = defineMessages({
   providetmdbsearch: 'Provide a search query',
   providetmdbstudio: 'Provide TMDB Studio ID',
   providetmdbnetwork: 'Provide TMDB Network ID',
+  providetmdblist: 'Provide a TMDB List ID',
   addsuccess: 'Created new slider and saved discover customization settings.',
   addfail: 'Failed to create new slider.',
   editsuccess: 'Edited slider and saved discover customization settings.',
@@ -225,6 +226,13 @@ const CreateSlider = ({ onCreate, slider }: CreateSliderProps) => {
   };
 
   const options: CreateOption[] = [
+    {
+      type: DiscoverSliderType.TMDB_LIST,
+      title: intl.formatMessage(sliderTitles.tmdblist),
+      dataUrl: '/api/v1/discover/tmdb-list/$value',
+      titlePlaceholderText: intl.formatMessage(messages.slidernameplaceholder),
+      dataPlaceholderText: intl.formatMessage(messages.providetmdblist),
+    },
     {
       type: DiscoverSliderType.TMDB_MOVIE_KEYWORD,
       title: intl.formatMessage(sliderTitles.tmdbmoviekeyword),

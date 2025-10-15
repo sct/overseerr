@@ -10,6 +10,7 @@ import type {
   TmdbKeyword,
   TmdbKeywordSearchResponse,
   TmdbLanguage,
+  TmdbListResponse,
   TmdbMovieDetails,
   TmdbNetwork,
   TmdbPersonCombinedCredits,
@@ -1121,6 +1122,29 @@ class TheMovieDb extends ExternalAPI {
       throw new Error(
         `[TMDB] Failed to fetch TV watch providers: ${e.message}`
       );
+    }
+  }
+
+  public async getList({
+    listId,
+    page = 1,
+    language = 'en-US',
+  }: {
+    listId: string;
+    page?: number;
+    language?: string;
+  }): Promise<TmdbListResponse> {
+    try {
+      const data = await this.get<TmdbListResponse>(`/list/${listId}`, {
+        params: {
+          page,
+          language,
+        },
+      });
+
+      return data;
+    } catch (e) {
+      throw new Error(`[TMDB] Failed to fetch list: ${e.message}`);
     }
   }
 }

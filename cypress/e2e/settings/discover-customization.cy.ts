@@ -160,4 +160,68 @@ describe('Discover Customization', () => {
       .first()
       .should('not.contain', sliderTitle);
   });
+
+  it('can create a TMDB List slider and remove it', () => {
+    cy.visit('/');
+    cy.intercept('/api/v1/settings/discover/*').as('discoverSlider');
+    cy.intercept('/api/v1/discover/tmdb-list/*').as('getTmdbList');
+
+    cy.get('[data-testid=discover-start-editing]').click();
+
+    const sliderTitle = 'Test TMDB List';
+    const listId = '1'; // The Marvel Universe list
+
+    cy.get('#sliderType').select('TMDB List');
+
+    cy.get('#title').type(sliderTitle);
+    cy.get('#data').type(listId);
+
+    cy.wait('@getTmdbList');
+
+    // Confirming we have some results
+    cy.contains('.slider-header', sliderTitle)
+      .next('[data-testid=media-slider]')
+      .find('[data-testid=title-card]');
+
+    cy.get('[data-testid=create-discover-option-form]').submit();
+
+    cy.wait('@discoverSlider');
+    cy.wait('@getDiscoverSliders');
+    cy.wait(1000);
+
+    cy.get('[data-testid=discover-slider-edit-mode]')
+      .first()
+      .should('contain', sliderTitle);
+
+    // Enable it and verify it shows on discover page
+    cy.get('[data-testid=discover-slider-edit-mode]')
+      .first()
+      .find('[role="checkbox"]')
+      .click();
+
+    cy.get('[data-testid=discover-customize-submit').click();
+    cy.wait('@getDiscoverSliders');
+
+    cy.visit('/');
+
+    cy.contains('.slider-header', sliderTitle)
+      .next('[data-testid=media-slider]')
+      .find('[data-testid=title-card]');
+
+    cy.get('[data-testid=discover-start-editing]').click();
+
+    // Delete the slider
+    cy.get('[data-testid=discover-slider-edit-mode]')
+      .first()
+      .find('[data-testid=discover-slider-remove-button]')
+      .click();
+
+    cy.wait('@discoverSlider');
+    cy.wait('@getDiscoverSliders');
+    cy.wait(1000);
+
+    cy.get('[data-testid=discover-slider-edit-mode]')
+      .first()
+      .should('not.contain', sliderTitle);
+  });
 });

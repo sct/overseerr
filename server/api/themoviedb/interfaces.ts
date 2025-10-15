@@ -469,3 +469,55 @@ export interface TmdbWatchProviderRegion {
   english_name: string;
   native_name: string;
 }
+
+export interface TmdbListItem {
+  id: number;
+  media_type: 'movie' | 'tv';
+  adult?: boolean;
+  backdrop_path?: string;
+  genre_ids?: number[];
+  original_language?: string;
+  original_title?: string;
+  overview?: string;
+  popularity?: number;
+  poster_path?: string;
+  release_date?: string;
+  title?: string;
+  video?: boolean;
+  vote_average?: number;
+  vote_count?: number;
+  name?: string;
+  original_name?: string;
+  first_air_date?: string;
+  origin_country?: string[];
+}
+
+export interface TmdbList {
+  id: string;
+  name: string;
+  description: string;
+  favorite_count: number;
+  item_count: number;
+  iso_639_1: string;
+  list_type: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  created_by?: string;
+  items: TmdbListItem[];
+}
+
+export interface TmdbListResponse {
+  id: string;
+  items: TmdbListItem[];
+  name: string;
+  description: string;
+  favorite_count: number;
+  item_count: number;
+  iso_639_1: string;
+  created_by?: string;
+  poster_path?: string;
+  // TMDB List API v4 may include pagination fields
+  page?: number;
+  total_pages?: number;
+  total_results?: number;
+}

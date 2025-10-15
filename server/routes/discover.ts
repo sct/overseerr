@@ -8,6 +8,7 @@ import Media from '@server/entity/Media';
 import { User } from '@server/entity/User';
 import type {
   GenreSliderItem,
+  TmdbListResponse,
   WatchlistResponse,
 } from '@server/interfaces/api/discoverInterfaces';
 import { getSettings } from '@server/lib/settings';
@@ -847,6 +848,66 @@ discoverRoutes.get<Record<string, unknown>, WatchlistResponse>(
         tmdbId: item.tmdbId,
       })),
     });
+  }
+);
+
+discoverRoutes.get<{ listId: string }, TmdbListResponse>(
+  '/tmdb-list/:listId',
+  async (req, res, next) => {
+    const tmdb = createTmdbWithRegionLanguage(req.user);
+
+    try {
+      const data = await tmdb.getList({
+        listId: req.params.listId,
+        page: Number(req.query.page) || 1,
+        language: (req.query.language as string) ?? req.locale,
+      });
+
+      // Extract all media IDs from list items
+      const mediaIds = data.items.map((item) => item.id);
+      const media = await Media.getRelatedMedia(mediaIds);
+
+      // TMDB List API returns different structure than discover endpoints
+      // It uses page/total_pages/total_results for pagination
+      return res.status(200).json({
+        page: data.page || 1,
+        totalPages: data.total_pages || 1,
+        totalResults:
+          data.total_results || data.item_count || data.items.length,
+        list: {
+          id: data.id,
+          name: data.name,
+          description: data.description,
+        },
+        results: data.items.map((item) =>
+          item.media_type === 'movie'
+            ? mapMovieResult(
+                item as any,
+                media.find(
+                  (med) =>
+                    med.tmdbId === item.id && med.mediaType === MediaType.MOVIE
+                )
+              )
+            : mapTvResult(
+                item as any,
+                media.find(
+                  (med) =>
+                    med.tmdbId === item.id && med.mediaType === MediaType.TV
+                )
+              )
+        ),
+      });
+    } catch (e) {
+      logger.debug('Something went wrong retrieving TMDB list', {
+        label: 'API',
+        errorMessage: e.message,
+        listId: req.params.listId,
+      });
+      return next({
+        status: 500,
+        message: 'Unable to retrieve TMDB list.',
+      });
+    }
   }
 );
 

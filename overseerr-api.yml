@@ -5009,6 +5009,58 @@ paths:
                           type: string
                         title:
                           type: string
+  /discover/tmdb-list/{listId}:
+    get:
+      summary: Get TMDB list contents
+      description: Returns items from a TMDB list by list ID
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: listId
+          required: true
+          schema:
+            type: string
+          description: TMDB list ID
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: language
+          schema:
+            type: string
+      responses:
+        '200':
+          description: TMDB list data returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                  totalPages:
+                    type: number
+                  totalResults:
+                    type: number
+                  list:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      name:
+                        type: string
+                      description:
+                        type: string
+                  results:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/MovieResult'
+                        - $ref: '#/components/schemas/TvResult'
   /request:
     get:
       summary: Get all requests
