@@ -1,4 +1,5 @@
 import SonarrAPI from '@server/api/servarr/sonarr';
+import type { SonarrEpisode } from '@server/api/servarr/sonarr';
 import TheMovieDb from '@server/api/themoviedb';
 import {
   MediaRequestStatus,
@@ -73,7 +74,21 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       });
 
       const series = await sonarr.getSeriesById(externalServiceId);
+      const episodes = await sonarr.getEpisodesBySeriesId(
+        series.id ?? externalServiceId
+      );
 
+      const episodesBySeason = new Map<number, SonarrEpisode[]>();
+
+      for (const episode of episodes) {
+        if (!episodesBySeason.has(episode.seasonNumber)) {
+          episodesBySeason.set(episode.seasonNumber, []);
+        }
+
+        episodesBySeason.get(episode.seasonNumber)!.push(episode);
+      }
+
+      const now = Date.now();
       let hasAiredEpisodes = false;
 
       const allCaughtUp = request.seasons.every((seasonRequest) => {
@@ -85,20 +100,51 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
           (season) => season.seasonNumber === seasonRequest.seasonNumber
         );
 
-        if (!sonarrSeason?.statistics) {
+        if (!sonarrSeason) {
           return false;
         }
 
-        const { episodeCount = 0, episodeFileCount = 0 } =
-          sonarrSeason.statistics;
+        const seasonEpisodes =
+          episodesBySeason.get(seasonRequest.seasonNumber) ?? [];
 
-        if (episodeCount === 0) {
-          return true;
+        const relevantEpisodes = seasonEpisodes.filter(
+          (episode) => episode.monitored || episode.hasFile
+        );
+
+        if (relevantEpisodes.length === 0) {
+          return false;
         }
 
-        hasAiredEpisodes = true;
+        let airedEpisodeCount = 0;
+        let downloadedAiredEpisodeCount = 0;
 
-        return episodeFileCount >= episodeCount;
+        for (const episode of relevantEpisodes) {
+          const airDate = episode.airDateUtc
+            ? Date.parse(episode.airDateUtc)
+            : undefined;
+
+          const episodeHasAired =
+            (airDate !== undefined && !Number.isNaN(airDate) && airDate <= now) ||
+            (!episode.airDateUtc && episode.hasFile);
+
+          if (episodeHasAired) {
+            airedEpisodeCount += 1;
+
+            if (episode.hasFile) {
+              downloadedAiredEpisodeCount += 1;
+            }
+          }
+        }
+
+        if (airedEpisodeCount > 0) {
+          hasAiredEpisodes = true;
+        }
+
+        if (airedEpisodeCount === 0) {
+          return false;
+        }
+
+        return downloadedAiredEpisodeCount >= airedEpisodeCount;
       });
 
       if (!hasAiredEpisodes || !allCaughtUp) {

@@ -13,7 +13,7 @@ export interface SonarrSeason {
     percentOfEpisodes: number;
   };
 }
-interface EpisodeResult {
+export interface SonarrEpisode {
   seriesId: number;
   episodeFileId: number;
   seasonNumber: number;
@@ -109,7 +109,7 @@ export interface LanguageProfile {
 class SonarrAPI extends ServarrBase<{
   seriesId: number;
   episodeId: number;
-  episode: EpisodeResult;
+  episode: SonarrEpisode;
 }> {
   constructor({ url, apiKey }: { url: string; apiKey: string }) {
     super({ url, apiKey, apiName: 'Sonarr', cacheName: 'sonarr' });
@@ -132,6 +132,24 @@ class SonarrAPI extends ServarrBase<{
       return response.data;
     } catch (e) {
       throw new Error(`[Sonarr] Failed to retrieve series by ID: ${e.message}`);
+    }
+  }
+
+  public async getEpisodesBySeriesId(
+    seriesId: number
+  ): Promise<SonarrEpisode[]> {
+    try {
+      const response = await this.axios.get<SonarrEpisode[]>(`/episode`, {
+        params: {
+          seriesId,
+        },
+      });
+
+      return response.data;
+    } catch (e) {
+      throw new Error(
+        `[Sonarr] Failed to retrieve episodes by series ID: ${e.message}`
+      );
     }
   }
 
