@@ -18,6 +18,8 @@ import { truncate } from 'lodash';
 import type { EntitySubscriberInterface, UpdateEvent } from 'typeorm';
 import { EventSubscriber } from 'typeorm';
 
+import { getEpisodeAirDate } from './sonarrEpisodeDate';
+
 @EventSubscriber()
 export class MediaSubscriber implements EntitySubscriberInterface<Media> {
   private async updateChildRequestStatus(event: Media, is4k: boolean) {
@@ -119,13 +121,14 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
         let downloadedAiredEpisodeCount = 0;
 
         for (const episode of relevantEpisodes) {
-          const airDate = episode.airDateUtc
-            ? Date.parse(episode.airDateUtc)
-            : undefined;
+          const airDate = getEpisodeAirDate(episode);
+          const rawAirDate = episode.airDateUtc ?? episode.airDate;
+          const hasProvidedAirDate =
+            typeof rawAirDate === 'string' && rawAirDate.trim().length > 0;
 
           const episodeHasAired =
-            (airDate !== undefined && !Number.isNaN(airDate) && airDate <= now) ||
-            (!episode.airDateUtc && episode.hasFile);
+            (airDate !== undefined && airDate <= now) ||
+            (!hasProvidedAirDate && episode.hasFile);
 
           if (episodeHasAired) {
             airedEpisodeCount += 1;
