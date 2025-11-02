@@ -1,6 +1,6 @@
 {
-  "name": "Overseerr",
-  "short_name": "Overseerr",
+  "name": "SK TV",
+  "short_name": "SK TV",
   "start_url": "./",
   "icons": [
     {
@@ -28,8 +28,8 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#1f2937",
-  "background_color": "#1f2937",
+  "theme_color": "#000000",
+  "background_color": "#000000",
   "display": "standalone",
   "shortcuts": [
     {

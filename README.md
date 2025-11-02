@@ -1,26 +1,15 @@
 <p align="center">
-<img src="./public/logo_full.svg" alt="Overseerr" style="margin: 20px 0;">
-</p>
-<p align="center">
-<img src="https://github.com/sct/overseerr/workflows/Overseerr%20Release/badge.svg?branch=master" alt="Overseerr Release" />
-<img src="https://github.com/sct/overseerr/workflows/Overseerr%20CI/badge.svg" alt="Overseerr CI">
-</p>
-<p align="center">
-<a href="https://discord.gg/overseerr"><img src="https://img.shields.io/discord/783137440809746482" alt="Discord"></a>
-<a href="https://hub.docker.com/r/sctx/overseerr"><img src="https://img.shields.io/docker/pulls/sctx/overseerr" alt="Docker pulls"></a>
-<a href="https://hosted.weblate.org/engage/overseerr/"><img src="https://hosted.weblate.org/widgets/overseerr/-/overseerr-frontend/svg-badge.svg" alt="Translation status" /></a>
-<a href="https://github.com/sct/overseerr/blob/develop/LICENSE"><img alt="GitHub" src="https://img.shields.io/github/license/sct/overseerr"></a>
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img alt="All Contributors" src="https://img.shields.io/badge/all_contributors-111-orange.svg"/></a>
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
+<h1 align="center">SK TV</h1>
 </p>
 
-**Overseerr** is a free and open source software application for managing requests for your media library. It integrates with your existing services, such as **[Sonarr](https://sonarr.tv/)**, **[Radarr](https://radarr.video/)**, and **[Plex](https://www.plex.tv/)**!
+**SK TV** is a premium media request platform with an Apple-inspired design, forked from Overseerr. It's a free and open source software application for managing requests for your media library. It integrates with your existing services, such as **[Sonarr](https://sonarr.tv/)**, **[Radarr](https://radarr.video/)**, and **[Plex](https://www.plex.tv/)**!
+
+> **Note:** SK TV is a custom fork of [Overseerr](https://github.com/sct/overseerr) with enhanced design and features.
 
 ## Current Features
 
 - Full Plex integration. Authenticate and manage user access with Plex!
-- Easy integration with your existing services. Currently, Overseerr supports Sonarr and Radarr. More to come!
+- Easy integration with your existing services. Currently, SK TV supports Sonarr and Radarr. More to come!
 - Plex library scan, to keep track of the titles which are already available.
 - Customizable request system, which allows users to request individual seasons or movies in a friendly, easy-to-use interface.
 - Incredibly simple request management UI. Don't dig through the app to simply approve recent requests!

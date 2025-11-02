@@ -284,7 +284,7 @@ class Settings {
       vapidPublic: '',
       main: {
         apiKey: '',
-        applicationTitle: 'Overseerr',
+        applicationTitle: 'SK TV',
         applicationUrl: '',
         csrfProtection: false,
         cacheImages: false,
