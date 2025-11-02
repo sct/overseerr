@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 interface GlassCardProps {
   children: React.ReactNode;
@@ -25,10 +25,20 @@ const GlassCard: React.FC<GlassCardProps> = ({
     ? 'hover:bg-tv-card-hover hover:shadow-tv-lg hover:scale-[1.02] transform transition-all duration-300 cursor-pointer'
     : '';
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (onClick && (e.key === 'Enter' || e.key === ' ')) {
+      e.preventDefault();
+      onClick();
+    }
+  };
+
   return (
     <div
       className={`rounded-tv-lg border border-tv-border shadow-tv ${intensityClasses[intensity]} ${hoverClasses} ${className}`}
       onClick={onClick}
+      onKeyDown={onClick ? handleKeyDown : undefined}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
       style={{
         WebkitBackdropFilter: 'blur(40px)',
       }}
