@@ -100,10 +100,10 @@ const TitleCard = ({
         onCancel={closeModal}
       />
       <div
-        className={`relative transform-gpu cursor-default overflow-hidden rounded-xl bg-gray-800 bg-cover outline-none ring-1 transition duration-300 ${
+        className={`relative transform-gpu cursor-default overflow-hidden rounded-tv-lg bg-tv-surface bg-cover outline-none ring-1 transition-all duration-300 ease-out ${
           showDetail
-            ? 'scale-105 shadow-lg ring-gray-500'
-            : 'scale-100 shadow ring-gray-700'
+            ? 'scale-105 shadow-tv-lg ring-tv-border-hover'
+            : 'scale-100 shadow-tv ring-tv-border'
         }`}
         style={{
           paddingBottom: '150%',
@@ -137,11 +137,15 @@ const TitleCard = ({
           />
           <div className="absolute left-0 right-0 flex items-center justify-between p-2">
             <div
-              className={`pointer-events-none z-40 rounded-full border bg-opacity-80 shadow-md ${
+              className={`pointer-events-none z-40 rounded-full border bg-opacity-90 shadow-md backdrop-blur-glass-light ${
                 mediaType === 'movie' || mediaType === 'collection'
-                  ? 'border-blue-500 bg-blue-600'
-                  : 'border-purple-600 bg-purple-600'
+                  ? 'border-tv-accent/50 bg-tv-accent'
+                  : 'border-purple-500/50 bg-purple-500'
               }`}
+              style={{
+                backdropFilter: 'blur(20px)',
+                WebkitBackdropFilter: 'blur(20px)',
+              }}
             >
               <div className="flex h-4 items-center px-2 py-2 text-center text-xs font-medium uppercase tracking-wider text-white sm:h-5">
                 {mediaType === 'movie'
@@ -171,7 +175,13 @@ const TitleCard = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="absolute inset-0 z-40 flex items-center justify-center rounded-xl bg-gray-800 bg-opacity-75 text-white">
+            <div
+              className="absolute inset-0 z-40 flex items-center justify-center rounded-tv-lg bg-tv-card/95 text-white backdrop-blur-glass-strong"
+              style={{
+                backdropFilter: 'blur(60px)',
+                WebkitBackdropFilter: 'blur(60px)',
+              }}
+            >
               <Spinner className="h-10 w-10" />
             </div>
           </Transition>
@@ -186,7 +196,7 @@ const TitleCard = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="absolute inset-0 overflow-hidden rounded-xl">
+            <div className="absolute inset-0 overflow-hidden rounded-tv-lg">
               <Link
                 href={
                   mediaType === 'movie'
@@ -197,10 +207,12 @@ const TitleCard = ({
                 }
               >
                 <a
-                  className="absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left"
+                  className="absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left backdrop-blur-glass"
                   style={{
                     background:
-                      'linear-gradient(180deg, rgba(45, 55, 72, 0.4) 0%, rgba(45, 55, 72, 0.9) 100%)',
+                      'linear-gradient(180deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0.85) 100%)',
+                    backdropFilter: 'blur(40px)',
+                    WebkitBackdropFilter: 'blur(40px)',
                   }}
                 >
                   <div className="flex h-full w-full items-end">

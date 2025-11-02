@@ -68,7 +68,7 @@ const Login = () => {
   });
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-gray-900 py-14">
+    <div className="relative flex min-h-screen flex-col bg-tv-bg py-14">
       <PageTitle title={intl.formatMessage(messages.signin)} />
       <ImageFader
         backgroundImages={
@@ -82,14 +82,14 @@ const Login = () => {
       </div>
       <div className="relative z-40 mt-10 flex flex-col items-center px-4 sm:mx-auto sm:w-full sm:max-w-md">
         <img src="/logo_stacked.svg" className="mb-10 max-w-full" alt="Logo" />
-        <h2 className="mt-2 text-center text-3xl font-extrabold leading-9 text-gray-100">
+        <h2 className="mt-2 text-center text-3xl font-extrabold leading-9 text-tv-text">
           {intl.formatMessage(messages.signinheader)}
         </h2>
       </div>
       <div className="relative z-50 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div
-          className="bg-gray-800 bg-opacity-50 shadow sm:rounded-lg"
-          style={{ backdropFilter: 'blur(5px)' }}
+          className="bg-tv-card/90 border border-tv-border shadow-tv-lg sm:rounded-tv-xl"
+          style={{ backdropFilter: 'blur(60px)', WebkitBackdropFilter: 'blur(60px)' }}
         >
           <>
             <Transition
@@ -102,13 +102,15 @@ const Login = () => {
               leaveFrom="opacity-100"
               leaveTo="opacity-0"
             >
-              <div className="mb-4 rounded-md bg-red-600 p-4">
+              <div className="mb-4 rounded-tv bg-tv-error/20 border border-tv-error/50 p-4 backdrop-blur-glass"
+                style={{ backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
+              >
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <XCircleIcon className="h-5 w-5 text-red-300" />
+                    <XCircleIcon className="h-5 w-5 text-tv-error" />
                   </div>
                   <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-300">
+                    <h3 className="text-sm font-medium text-tv-error">
                       {error}
                     </h3>
                   </div>
@@ -119,11 +121,11 @@ const Login = () => {
               {({ openIndexes, handleClick, AccordionContent }) => (
                 <>
                   <button
-                    className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 focus:outline-none sm:rounded-t-lg ${
-                      openIndexes.includes(0) && 'text-indigo-500'
+                    className={`w-full cursor-default bg-tv-surface/70 py-3 text-center text-sm font-bold text-tv-text-secondary transition-all duration-200 focus:outline-none sm:rounded-t-tv-xl ${
+                      openIndexes.includes(0) && 'text-tv-accent'
                     } ${
                       settings.currentSettings.localLogin &&
-                      'hover:cursor-pointer hover:bg-gray-700'
+                      'hover:cursor-pointer hover:bg-tv-surface-light'
                     }`}
                     onClick={() => handleClick(0)}
                     disabled={!settings.currentSettings.localLogin}
@@ -141,10 +143,10 @@ const Login = () => {
                   {settings.currentSettings.localLogin && (
                     <div>
                       <button
-                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700 focus:outline-none ${
+                        className={`w-full cursor-default bg-tv-surface/70 py-3 text-center text-sm font-bold text-tv-text-secondary transition-all duration-200 hover:cursor-pointer hover:bg-tv-surface-light focus:outline-none ${
                           openIndexes.includes(1)
-                            ? 'text-indigo-500'
-                            : 'sm:rounded-b-lg'
+                            ? 'text-tv-accent'
+                            : 'sm:rounded-b-tv-xl'
                         }`}
                         onClick={() => handleClick(1)}
                       >
