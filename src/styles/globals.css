@@ -16,12 +16,12 @@
   }
 
   body {
-    @apply bg-gray-900;
+    @apply bg-tv-bg;
     -webkit-overflow-scrolling: touch;
   }
 
   code {
-    @apply rounded-md bg-gray-800 px-2 py-1;
+    @apply rounded-md bg-tv-surface px-2 py-1 text-tv-text-secondary;
   }
 
   input[type='search']::-webkit-search-cancel-button {
@@ -36,10 +36,12 @@
   }
 
   .sidebar {
-    @apply border-r border-gray-700;
+    @apply border-r border-tv-border;
     padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);
-    background: linear-gradient(180deg, rgba(31, 41, 55, 1) 0%, #131928 100%);
+    background: linear-gradient(180deg, rgba(10, 10, 10, 0.95) 0%, rgba(0, 0, 0, 1) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .slideover {
@@ -52,12 +54,15 @@
   }
 
   .plex-button {
-    @apply flex w-full justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-center text-sm font-medium text-white transition duration-150 ease-in-out disabled:opacity-50;
+    @apply flex w-full justify-center rounded-tv border border-transparent px-4 py-2 text-center text-sm font-medium text-white transition-all duration-300 ease-in-out disabled:opacity-50;
     background-color: #cc7b19;
+    box-shadow: 0 4px 14px rgba(204, 123, 25, 0.3);
   }
 
   .plex-button:hover {
     background: #f19a30;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(241, 154, 48, 0.4);
   }
 
   ul.cards-vertical,
@@ -82,7 +87,7 @@
   }
 
   .slider-title {
-    @apply inline-flex items-center text-xl font-bold leading-7 text-gray-300 sm:truncate sm:text-2xl sm:leading-9;
+    @apply inline-flex items-center text-xl font-bold leading-7 text-tv-text sm:truncate sm:text-2xl sm:leading-9;
   }
 
   a.slider-title {
@@ -183,19 +188,21 @@
   }
 
   .media-facts {
-    @apply rounded-lg border border-gray-700 bg-gray-900 text-sm font-bold text-gray-300 shadow;
+    @apply rounded-tv-lg border border-tv-border bg-tv-card text-sm font-bold text-tv-text shadow-tv;
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
   }
 
   .media-fact {
-    @apply flex justify-between border-b border-gray-700 px-4 py-2 last:border-b-0;
+    @apply flex justify-between border-b border-tv-border px-4 py-2 last:border-b-0;
   }
 
   .media-fact-value {
-    @apply ml-2 text-right text-sm font-normal text-gray-400;
+    @apply ml-2 text-right text-sm font-normal text-tv-text-secondary;
   }
 
   .media-ratings {
-    @apply flex items-center justify-center space-x-5 border-b border-gray-700 px-4 py-2 font-medium last:border-b-0;
+    @apply flex items-center justify-center space-x-5 border-b border-tv-border px-4 py-2 font-medium last:border-b-0;
   }
 
   .media-rating {
@@ -207,11 +214,11 @@
   }
 
   .heading {
-    @apply text-2xl font-bold leading-8 text-gray-100;
+    @apply text-2xl font-bold leading-8 text-tv-text;
   }
 
   .description {
-    @apply mt-1 max-w-4xl text-sm leading-5 text-gray-400;
+    @apply mt-1 max-w-4xl text-sm leading-5 text-tv-text-secondary;
   }
 
   img.avatar-sm {
@@ -247,12 +254,12 @@
   }
 
   .actions {
-    @apply mt-8 border-t border-gray-700 pt-5 text-white;
+    @apply mt-8 border-t border-tv-border pt-5 text-white;
   }
 
   label,
   .group-label {
-    @apply mb-1 block text-sm font-bold leading-5 text-gray-400;
+    @apply mb-1 block text-sm font-bold leading-5 text-tv-text-secondary;
   }
 
   label.checkbox-label {
@@ -283,14 +290,23 @@
   }
 
   input[type='checkbox'] {
-    @apply h-6 w-6 rounded-md text-indigo-600 transition duration-150 ease-in-out;
+    @apply h-6 w-6 rounded-md text-tv-accent transition duration-150 ease-in-out;
   }
 
   input[type='text'],
   input[type='password'],
   select,
   textarea {
-    @apply block w-full min-w-0 flex-1 rounded-md border border-gray-500 bg-gray-700 text-white transition duration-150 ease-in-out sm:text-sm sm:leading-5;
+    @apply block w-full min-w-0 flex-1 rounded-tv border border-tv-border bg-tv-surface text-tv-text transition-all duration-200 ease-in-out sm:text-sm sm:leading-5;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
+
+  input[type='text']:focus,
+  input[type='password']:focus,
+  select:focus,
+  textarea:focus {
+    @apply border-tv-accent ring-2 ring-tv-accent ring-opacity-20;
   }
 
   input.rounded-l-only,
@@ -318,7 +334,7 @@
   }
 
   button.input-action {
-    @apply relative -ml-px inline-flex items-center border border-gray-500 bg-indigo-600 bg-opacity-80 px-3 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out last:rounded-r-md hover:bg-opacity-100 active:bg-gray-100 active:text-gray-700 sm:px-3.5;
+    @apply relative -ml-px inline-flex items-center border border-tv-border bg-tv-accent bg-opacity-90 px-3 py-2 text-sm font-medium leading-5 text-white transition-all duration-200 ease-in-out last:rounded-r-md hover:bg-opacity-100 hover:shadow-glow active:scale-95 sm:px-3.5;
   }
 
   .button-md svg,
@@ -340,7 +356,7 @@
   }
 
   .protocol {
-    @apply inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-600 px-3 text-gray-100 sm:text-sm;
+    @apply inline-flex cursor-default items-center rounded-l-md border border-r-0 border-tv-border bg-tv-surface px-3 text-tv-text sm:text-sm;
   }
 
   .error {
@@ -360,55 +376,61 @@
   }
 
   .react-select-container .react-select__control {
-    @apply rounded-md border border-gray-500 bg-gray-700 text-white hover:border-gray-500;
+    @apply rounded-tv border border-tv-border bg-tv-surface text-white hover:border-tv-border-hover;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .react-select-container-dark .react-select__control {
-    @apply border border-gray-700 bg-gray-800;
+    @apply border border-tv-border bg-tv-card;
   }
 
   .react-select-container .react-select__control--is-focused {
-    @apply rounded-md border border-gray-500 bg-gray-700 text-white shadow;
+    @apply rounded-tv border border-tv-accent bg-tv-surface text-white shadow-glow;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
   }
 
   .react-select-container-dark .react-select__control--is-focused {
-    @apply border-gray-600 bg-gray-800;
+    @apply border-tv-accent bg-tv-card;
   }
 
   .react-select-container .react-select__menu {
-    @apply bg-gray-700 text-gray-300;
+    @apply rounded-tv-lg bg-tv-surface text-tv-text shadow-tv-lg;
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
   }
 
   .react-select-container-dark .react-select__menu {
-    @apply bg-gray-800;
+    @apply bg-tv-card;
   }
 
   .react-select-container .react-select__option--is-focused {
-    @apply bg-gray-600 text-white;
+    @apply bg-tv-surface-light text-white;
   }
 
   .react-select-container-dark .react-select__option--is-focused {
-    @apply bg-gray-700;
+    @apply bg-tv-surface-light;
   }
 
   .react-select-container .react-select__indicator-separator {
-    @apply bg-gray-500;
+    @apply bg-tv-border;
   }
 
   .react-select-container .react-select__indicator {
-    @apply text-gray-500;
+    @apply text-tv-text-secondary;
   }
 
   .react-select-container .react-select__placeholder {
-    @apply text-gray-400;
+    @apply text-tv-text-tertiary;
   }
 
   .react-select-container .react-select__multi-value {
-    @apply rounded-md border border-gray-500 bg-gray-800;
+    @apply rounded-tv border border-tv-border bg-tv-surface-light;
   }
 
   .react-select-container .react-select__multi-value__label {
-    @apply text-white;
+    @apply text-tv-text;
   }
 
   .react-select-container .react-select__multi-value__remove {
@@ -429,11 +451,11 @@
   }
 
   .react-select-container .react-select__single-value {
-    @apply text-sm text-gray-100;
+    @apply text-sm text-tv-text;
   }
 
   .react-select-container .react-select__placeholder {
-    @apply text-sm text-gray-500;
+    @apply text-sm text-tv-text-tertiary;
   }
 
   .datepicker-wrapper > button {
@@ -457,7 +479,7 @@
   }
 
   input[type='range']::-webkit-slider-thumb {
-    @apply rounded-full border-0 bg-indigo-500;
+    @apply rounded-full border-0 bg-tv-accent shadow-glow;
     pointer-events: all;
     width: 16px;
     height: 16px;
@@ -465,7 +487,7 @@
   }
 
   input[type='range']::-moz-range-thumb {
-    @apply rounded-full border-0 bg-indigo-500;
+    @apply rounded-full border-0 bg-tv-accent shadow-glow;
     pointer-events: all;
     width: 16px;
     height: 16px;
@@ -510,8 +532,8 @@
     scrollbar-width: none; /* Firefox */
   }
 
-  .text-overseerr {
-    @apply bg-gradient-to-br from-indigo-400 to-purple-400 bg-clip-text text-transparent;
+  .text-sk-tv {
+    @apply bg-gradient-to-br from-tv-accent to-blue-400 bg-clip-text text-transparent;
   }
 
   @media all and (display-mode: browser) {
