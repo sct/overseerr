@@ -73,6 +73,11 @@ export class MediaRequestSubscriber
   }
 
   private async notifyAvailableSeries(entity: MediaRequest) {
+    // Skip notification if user was already notified via catch-up notification
+    if (entity.partialAvailabilityNotified) {
+      return;
+    }
+
     // Find all seasons in the related media entity
     // and see if they are available, then we can check
     // if the request contains the same seasons
