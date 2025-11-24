@@ -157,10 +157,6 @@ export class MediaSubscriber implements EntitySubscriberInterface<Media> {
       const tmdb = new TheMovieDb();
       const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
 
-      if (!tv.in_production && tv.status !== 'Returning Series') {
-        return;
-      }
-
       const requestedSeasonNumbers = request.seasons
         .map((season) => season.seasonNumber)
         .filter((seasonNumber) => seasonNumber !== 0)
