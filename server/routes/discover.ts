@@ -537,26 +537,60 @@ discoverRoutes.get<{ genreId: string }>(
 discoverRoutes.get<{ networkId: string }>(
   '/tv/network/:networkId',
   async (req, res, next) => {
-    const tmdb = new TheMovieDb();
+    const tmdb = createTmdbWithRegionLanguage(req.user);
 
     try {
+      const query = QueryFilterOptions.parse(req.query);
+      const keywords = query.keywords;
       const network = await tmdb.getNetwork(Number(req.params.networkId));
 
       const data = await tmdb.getDiscoverTv({
-        page: Number(req.query.page),
-        language: (req.query.language as string) ?? req.locale,
+        page: Number(query.page) || 1,
+        sortBy: query.sortBy as SortOptions,
+        language: req.locale ?? query.language,
+        genre: query.genre,
         network: Number(req.params.networkId),
+        firstAirDateLte: query.firstAirDateLte
+          ? new Date(query.firstAirDateLte).toISOString().split('T')[0]
+          : undefined,
+        firstAirDateGte: query.firstAirDateGte
+          ? new Date(query.firstAirDateGte).toISOString().split('T')[0]
+          : undefined,
+        originalLanguage: query.language,
+        keywords,
+        withRuntimeGte: query.withRuntimeGte,
+        withRuntimeLte: query.withRuntimeLte,
+        voteAverageGte: query.voteAverageGte,
+        voteAverageLte: query.voteAverageLte,
+        voteCountGte: query.voteCountGte,
+        voteCountLte: query.voteCountLte,
+        watchProviders: query.watchProviders,
+        watchRegion: query.watchRegion,
       });
 
       const media = await Media.getRelatedMedia(
         data.results.map((result) => result.id)
       );
 
+      let keywordData: TmdbKeyword[] = [];
+      if (keywords) {
+        const splitKeywords = keywords.split(',');
+
+        keywordData = await Promise.all(
+          splitKeywords.map(async (keywordId) => {
+            return await tmdb.getKeywordDetails({
+              keywordId: Number(keywordId),
+            });
+          })
+        );
+      }
+
       return res.status(200).json({
         page: data.page,
         totalPages: data.total_pages,
         totalResults: data.total_results,
         network: mapNetwork(network),
+        keywords: keywordData,
         results: data.results.map((result) =>
           mapTvResult(
             result,

@@ -15,7 +15,8 @@ import {
   useBatchUpdateQueryParams,
   useUpdateQueryParams,
 } from '@app/hooks/useUpdateQueryParams';
-import { XCircleIcon } from '@heroicons/react/24/outline';
+import { LockClosedIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import type { TvNetwork } from '@server/models/common';
 import { defineMessages, useIntl } from 'react-intl';
 import Datepicker from 'react-tailwindcss-datepicker-sct';
 
@@ -28,6 +29,7 @@ const messages = defineMessages({
   from: 'From',
   to: 'To',
   studio: 'Studio',
+  network: 'Network',
   genres: 'Genres',
   keywords: 'Keywords',
   originalLanguage: 'Original Language',
@@ -46,6 +48,7 @@ type FilterSlideoverProps = {
   onClose: () => void;
   type: 'movie' | 'tv';
   currentFilters: FilterOptions;
+  lockedNetwork?: TvNetwork;
 };
 
 const FilterSlideover = ({
@@ -53,6 +56,7 @@ const FilterSlideover = ({
   onClose,
   type,
   currentFilters,
+  lockedNetwork,
 }: FilterSlideoverProps) => {
   const intl = useIntl();
   const { currentSettings } = useSettings();
@@ -69,7 +73,7 @@ const FilterSlideover = ({
       show={show}
       title={intl.formatMessage(messages.filters)}
       subText={intl.formatMessage(messages.activefilters, {
-        count: countActiveFilters(currentFilters),
+        count: countActiveFilters(currentFilters) + (lockedNetwork ? 1 : 0),
       })}
       onClose={() => onClose()}
     >
@@ -125,6 +129,17 @@ const FilterSlideover = ({
             </div>
           </div>
         </div>
+        {lockedNetwork && (
+          <>
+            <span className="text-lg font-semibold">
+              {intl.formatMessage(messages.network)}
+            </span>
+            <div className="flex items-center rounded-md border border-gray-600 bg-gray-800 px-3 py-2 text-gray-300">
+              <LockClosedIcon className="mr-2 h-4 w-4 text-gray-500" />
+              <span>{lockedNetwork.name}</span>
+            </div>
+          </>
+        )}
         {type === 'movie' && (
           <>
             <span className="text-lg font-semibold">

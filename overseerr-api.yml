@@ -4756,6 +4756,71 @@ paths:
           schema:
             type: string
             example: en
+        - in: query
+          name: genre
+          schema:
+            type: string
+            example: 18
+        - in: query
+          name: keywords
+          schema:
+            type: string
+            example: 1,2
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            example: popularity.desc
+        - in: query
+          name: firstAirDateGte
+          schema:
+            type: string
+            example: 2022-01-01
+        - in: query
+          name: firstAirDateLte
+          schema:
+            type: string
+            example: 2023-01-01
+        - in: query
+          name: withRuntimeGte
+          schema:
+            type: number
+            example: 60
+        - in: query
+          name: withRuntimeLte
+          schema:
+            type: number
+            example: 120
+        - in: query
+          name: voteAverageGte
+          schema:
+            type: number
+            example: 7
+        - in: query
+          name: voteAverageLte
+          schema:
+            type: number
+            example: 10
+        - in: query
+          name: voteCountGte
+          schema:
+            type: number
+            example: 7
+        - in: query
+          name: voteCountLte
+          schema:
+            type: number
+            example: 10
+        - in: query
+          name: watchRegion
+          schema:
+            type: string
+            example: US
+        - in: query
+          name: watchProviders
+          schema:
+            type: string
+            example: 8|9
       responses:
         '200':
           description: Results
@@ -4775,6 +4840,10 @@ paths:
                     example: 200
                   network:
                     $ref: '#/components/schemas/Network'
+                  keywords:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Keyword'
                   results:
                     type: array
                     items:
