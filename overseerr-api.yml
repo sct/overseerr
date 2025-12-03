@@ -5443,25 +5443,132 @@ paths:
                 properties:
                   title:
                     type: string
-                    example: Mulan
-                  year:
+  /favorites:
+    get:
+      summary: Get the current user's favorite movies and series
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: take
+          schema:
+            type: number
+            example: 20
+            default: 20
+      responses:
+        '200':
+          description: Favorites returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
                     type: number
-                    example: 2020
-                  url:
-                    type: string
-                    example: 'http://www.rottentomatoes.com/m/mulan_2020/'
-                  criticsScore:
+                  totalPages:
                     type: number
-                    example: 85
-                  criticsRating:
-                    type: string
-                    enum: ['Rotten', 'Fresh', 'Certified Fresh']
-                  audienceScore:
+                  totalResults:
                     type: number
-                    example: 65
-                  audienceRating:
-                    type: string
-                    enum: ['Spilled', 'Upright']
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                          example: 1
+                        mediaType:
+                          type: string
+                          enum:
+                            - movie
+                            - tv
+                        title:
+                          type: string
+                          nullable: true
+                        name:
+                          type: string
+                          nullable: true
+                        overview:
+                          type: string
+                        posterPath:
+                          type: string
+                          nullable: true
+                        backdropPath:
+                          type: string
+                          nullable: true
+  /favorites/{mediaType}/{tmdbId}:
+    get:
+      summary: Get favorite status for a specific title
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: mediaType
+          required: true
+          schema:
+            type: string
+            enum: [movie, tv]
+        - in: path
+          name: tmdbId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Favorite status returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  isFavorite:
+                    type: boolean
+    post:
+      summary: Add a title to the current user's favorites
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: mediaType
+          required: true
+          schema:
+            type: string
+            enum: [movie, tv]
+        - in: path
+          name: tmdbId
+          required: true
+          schema:
+            type: number
+      responses:
+        '201':
+          description: Favorite created
+        '200':
+          description: Favorite already existed
+    delete:
+      summary: Remove a title from the current user's favorites
+      tags:
+        - search
+      parameters:
+        - in: path
+          name: mediaType
+          required: true
+          schema:
+            type: string
+            enum: [movie, tv]
+        - in: path
+          name: tmdbId
+          required: true
+          schema:
+            type: number
+      responses:
+        '204':
+          description: Favorite removed
   /movie/{movieId}/ratingscombined:
     get:
       summary: Get RT and IMDB movie ratings combined
