@@ -592,7 +592,6 @@ class Settings {
 
     if (data) {
       this.data = merge(this.data, JSON.parse(data));
-      this.save();
     }
     return this;
   }
