@@ -12,14 +12,8 @@ import {
 } from '@server/models/Search';
 import logger from '@server/logger';
 import { Router } from 'express';
-import { z } from 'zod';
 
 const router = Router();
-
-const FavoriteBodySchema = z.object({
-    tmdbId: z.number(),
-    mediaType: z.enum([MediaType.MOVIE, MediaType.TV]),
-});
 
 router.get<unknown, { page: number; totalPages: number; totalResults: number; results: (MovieResult | TvResult)[] }>(
     '/',
