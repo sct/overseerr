@@ -7,7 +7,7 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from 'typeorm';
-import type { User } from './User';
+import { User } from './User';
 
 @Entity()
 @Unique(['user', 'tmdbId', 'mediaType'])
