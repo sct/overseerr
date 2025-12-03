@@ -1,4 +1,4 @@
-import { MediaType } from '@server/constants/media';
+import type { MediaType } from '@server/constants/media';
 import {
     Column,
     CreateDateColumn,
@@ -7,7 +7,7 @@ import {
     PrimaryGeneratedColumn,
     Unique,
 } from 'typeorm';
-import { User } from './User';
+import type { User } from './User';
 
 @Entity()
 @Unique(['user', 'tmdbId', 'mediaType'])
