@@ -21,6 +21,30 @@ export interface DownloadingItem {
   estimatedCompletionTime: Date;
   title: string;
   episode?: EpisodeNumberResult;
+  // Enhanced queue data from Sonarr/Radarr API
+  customFormatScore?: number;
+  quality?: {
+    quality: {
+      id: number;
+      name: string;
+      source: string;
+      resolution: number;
+    };
+  };
+  customFormats?: {
+    id: number;
+    name: string;
+  }[];
+  languages?: {
+    id: number;
+    name: string;
+  }[];
+  indexer?: string;
+  downloadClient?: string;
+  protocol?: string;
+  outputPath?: string;
+  trackedDownloadStatus?: string;
+  trackedDownloadState?: string;
 }
 
 class DownloadTracker {
@@ -95,6 +119,17 @@ class DownloadTracker {
               status: item.status,
               timeLeft: item.timeleft,
               title: item.title,
+              // Enhanced queue data
+              customFormatScore: item.customFormatScore,
+              quality: item.quality,
+              customFormats: item.customFormats,
+              languages: item.languages,
+              indexer: item.indexer,
+              downloadClient: item.downloadClient,
+              protocol: item.protocol,
+              outputPath: item.outputPath,
+              trackedDownloadStatus: item.trackedDownloadStatus,
+              trackedDownloadState: item.trackedDownloadState,
             }));
 
             if (queueItems.length > 0) {
@@ -102,12 +137,22 @@ class DownloadTracker {
                 `Found ${queueItems.length} item(s) in progress on Radarr server: ${server.name}`,
                 { label: 'Download Tracker' }
               );
+
+              // Debug log each movie ID being tracked
+              queueItems.forEach((item) => {
+                logger.debug(
+                  `Tracking Radarr download: ${item.title} (movieId: ${item.movieId})`,
+                  { label: 'Download Tracker' }
+                );
+              });
             }
-          } catch {
+          } catch (error) {
             logger.error(
               `Unable to get queue from Radarr server: ${server.name}`,
               {
                 label: 'Download Tracker',
+                error: error.message,
+                url: server.hostname + ':' + server.port,
               }
             );
           }
@@ -172,6 +217,17 @@ class DownloadTracker {
               timeLeft: item.timeleft,
               title: item.title,
               episode: item.episode,
+              // Enhanced queue data
+              customFormatScore: item.customFormatScore,
+              quality: item.quality,
+              customFormats: item.customFormats,
+              languages: item.languages,
+              indexer: item.indexer,
+              downloadClient: item.downloadClient,
+              protocol: item.protocol,
+              outputPath: item.outputPath,
+              trackedDownloadStatus: item.trackedDownloadStatus,
+              trackedDownloadState: item.trackedDownloadState,
             }));
 
             if (queueItems.length > 0) {
@@ -180,11 +236,13 @@ class DownloadTracker {
                 { label: 'Download Tracker' }
               );
             }
-          } catch {
+          } catch (error) {
             logger.error(
               `Unable to get queue from Sonarr server: ${server.name}`,
               {
                 label: 'Download Tracker',
+                error: error.message,
+                url: server.hostname + ':' + server.port,
               }
             );
           }

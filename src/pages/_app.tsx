@@ -181,10 +181,20 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
     );
   }
 
+  // Shared fetcher that optionally attaches X-API-Key from localStorage (dev/tests)
+  const swrFetcher = (url: string) => {
+    const headers: Record<string, string> = {};
+    if (typeof window !== 'undefined') {
+      const apiKey = window.localStorage.getItem('overseerr_api_key');
+      if (apiKey) headers['X-API-Key'] = apiKey;
+    }
+    return axios.get(url, { headers }).then((res) => res.data);
+  };
+
   return (
     <SWRConfig
       value={{
-        fetcher: (url) => axios.get(url).then((res) => res.data),
+        fetcher: swrFetcher,
         fallback: {
           '/api/v1/auth/me': user,
         },
@@ -266,16 +276,25 @@ CoreApp.getInitialProps = async (initialProps) => {
     } else {
       try {
         // Attempt to get the user by running a request to the local api
+        const headers: Record<string, string> = {};
+        if (ctx.req && ctx.req.headers.cookie) {
+          headers.cookie = ctx.req.headers.cookie as string;
+          // If an API key cookie is present, forward it as a header for SSR auth
+          const match = /(?:^|; )overseerr_api_key=([^;]+)/.exec(
+            ctx.req.headers.cookie
+          );
+          if (match && match[1]) {
+            headers['X-API-Key'] = decodeURIComponent(match[1]);
+          }
+        }
+        if (process.env.OVERSEERR_API_KEY) {
+          headers['X-API-Key'] = process.env.OVERSEERR_API_KEY as string;
+        }
         const response = await axios.get<User>(
           `http://${process.env.HOST || 'localhost'}:${
             process.env.PORT || 5055
           }/api/v1/auth/me`,
-          {
-            headers:
-              ctx.req && ctx.req.headers.cookie
-                ? { cookie: ctx.req.headers.cookie }
-                : undefined,
-          }
+          { headers }
         );
         user = response.data;
 

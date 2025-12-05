@@ -139,9 +139,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
             </div>
           )}
           <div className="relative -mx-4 overflow-x-hidden px-4 pt-0.5 sm:flex sm:items-center">
-            <div
-              className={`mt-3 truncate text-center text-white sm:mt-0 sm:text-left`}
-            >
+            <div className={`mt-3 truncate text-left text-white sm:mt-0`}>
               {(title || subTitle) && (
                 <div className="flex flex-col space-y-1">
                   {title && (

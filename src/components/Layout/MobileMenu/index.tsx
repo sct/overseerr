@@ -4,6 +4,7 @@ import useClickOutside from '@app/hooks/useClickOutside';
 import { Permission, useUser } from '@app/hooks/useUser';
 import { Transition } from '@headlessui/react';
 import {
+  CalendarDaysIcon,
   ClockIcon,
   CogIcon,
   EllipsisHorizontalIcon,
@@ -14,6 +15,7 @@ import {
   UsersIcon,
 } from '@heroicons/react/24/outline';
 import {
+  CalendarDaysIcon as FilledCalendarDaysIcon,
   ClockIcon as FilledClockIcon,
   CogIcon as FilledCogIcon,
   ExclamationTriangleIcon as FilledExclamationTriangleIcon,
@@ -109,6 +111,13 @@ const MobileMenu = ({
         Permission.VIEW_ISSUES,
       ],
       permissionType: 'or',
+    },
+    {
+      href: '/calendar',
+      content: intl.formatMessage(menuMessages.calendar),
+      svgIcon: <CalendarDaysIcon className="h-6 w-6" />,
+      svgIconSelected: <FilledCalendarDaysIcon className="h-6 w-6" />,
+      activeRegExp: /^\/calendar/,
     },
     {
       href: '/users',

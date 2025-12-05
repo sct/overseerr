@@ -8,9 +8,10 @@ interface AlertProps {
   title?: React.ReactNode;
   type?: 'warning' | 'info' | 'error';
   children?: React.ReactNode;
+  hideIcon?: boolean;
 }
 
-const Alert = ({ title, children, type }: AlertProps) => {
+const Alert = ({ title, children, type, hideIcon }: AlertProps) => {
   let design = {
     bgColor:
       'border border-yellow-500 backdrop-blur bg-yellow-400 bg-opacity-20',
@@ -42,10 +43,20 @@ const Alert = ({ title, children, type }: AlertProps) => {
   return (
     <div className={`mb-4 rounded-md p-4 ${design.bgColor}`}>
       <div className="flex">
-        <div className={`flex-shrink-0 ${design.titleColor}`}>{design.svg}</div>
-        <div className="ml-3">
+        {!hideIcon && (
+          <div className={`flex-shrink-0 ${design.titleColor}`}>
+            {design.svg}
+          </div>
+        )}
+        <div
+          className={`${hideIcon ? '' : 'ml-3'} ${hideIcon ? 'w-full' : ''}`}
+        >
           {title && (
-            <div className={`text-sm font-medium ${design.titleColor}`}>
+            <div
+              className={`text-sm font-medium ${design.titleColor} ${
+                hideIcon ? 'w-full' : ''
+              }`}
+            >
               {title}
             </div>
           )}
