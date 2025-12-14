@@ -249,9 +249,15 @@ export class MediaRequestSubscriber
         }
 
         if (radarrSettings.tagRequests) {
-          let userTag = (await radarr.getTags()).find((v) =>
+          const radarrTags = await radarr.getTags();
+          let userTag = radarrTags.find((v) =>
             v.label.startsWith(entity.requestedBy.id + ' - ')
           );
+          if (!userTag) {
+            userTag = radarrTags.find((v) =>
+              v.label.startsWith(entity.requestedBy.id + '-')
+            );
+          }
           if (!userTag) {
             logger.info(`Requester has no active tag. Creating new`, {
               label: 'Media Request',
@@ -259,11 +265,11 @@ export class MediaRequestSubscriber
               mediaId: entity.media.id,
               userId: entity.requestedBy.id,
               newTag:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
+                entity.requestedBy.id + '-' + entity.requestedBy.displayName,
             });
             userTag = await radarr.createTag({
               label:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
+                entity.requestedBy.id + '-' + entity.requestedBy.displayName,
             });
           }
           if (userTag.id) {
@@ -550,9 +556,15 @@ export class MediaRequestSubscriber
         }
 
         if (sonarrSettings.tagRequests) {
-          let userTag = (await sonarr.getTags()).find((v) =>
+          const sonarrTags = await sonarr.getTags();
+          let userTag = sonarrTags.find((v) =>
             v.label.startsWith(entity.requestedBy.id + ' - ')
           );
+          if (!userTag) {
+            userTag = sonarrTags.find((v) =>
+              v.label.startsWith(entity.requestedBy.id + '-')
+            );
+          }
           if (!userTag) {
             logger.info(`Requester has no active tag. Creating new`, {
               label: 'Media Request',
@@ -560,11 +572,11 @@ export class MediaRequestSubscriber
               mediaId: entity.media.id,
               userId: entity.requestedBy.id,
               newTag:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
+                entity.requestedBy.id + '-' + entity.requestedBy.displayName,
             });
             userTag = await sonarr.createTag({
               label:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
+                entity.requestedBy.id + '-' + entity.requestedBy.displayName,
             });
           }
           if (userTag.id) {
