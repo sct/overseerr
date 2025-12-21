@@ -19,6 +19,7 @@ import SeasonRequest from '@server/entity/SeasonRequest';
 import notificationManager, { Notification } from '@server/lib/notifications';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import { sanitizeDisplayName } from '@server/utils/sanitize';
 import { isEqual, truncate } from 'lodash';
 import type {
   EntityManager,
@@ -250,20 +251,24 @@ export class MediaRequestSubscriber
 
         if (radarrSettings.tagRequests) {
           let userTag = (await radarr.getTags()).find((v) =>
+            v.label.startsWith(entity.requestedBy.id + '-') ||
             v.label.startsWith(entity.requestedBy.id + ' - ')
           );
           if (!userTag) {
+            const sanitizedDisplayName = sanitizeDisplayName(
+              entity.requestedBy.displayName
+            );
+            const tagLabel =
+              entity.requestedBy.id + '-' + sanitizedDisplayName;
             logger.info(`Requester has no active tag. Creating new`, {
               label: 'Media Request',
               requestId: entity.id,
               mediaId: entity.media.id,
               userId: entity.requestedBy.id,
-              newTag:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
+              newTag: tagLabel,
             });
             userTag = await radarr.createTag({
-              label:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
+              label: tagLabel,
             });
           }
           if (userTag.id) {
@@ -551,20 +556,24 @@ export class MediaRequestSubscriber
 
         if (sonarrSettings.tagRequests) {
           let userTag = (await sonarr.getTags()).find((v) =>
+            v.label.startsWith(entity.requestedBy.id + '-') ||
             v.label.startsWith(entity.requestedBy.id + ' - ')
           );
           if (!userTag) {
+            const sanitizedDisplayName = sanitizeDisplayName(
+              entity.requestedBy.displayName
+            );
+            const tagLabel =
+              entity.requestedBy.id + '-' + sanitizedDisplayName;
             logger.info(`Requester has no active tag. Creating new`, {
               label: 'Media Request',
               requestId: entity.id,
               mediaId: entity.media.id,
               userId: entity.requestedBy.id,
-              newTag:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
+              newTag: tagLabel,
             });
             userTag = await sonarr.createTag({
-              label:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
+              label: tagLabel,
             });
           }
           if (userTag.id) {
@@ -678,7 +687,7 @@ export class MediaRequestSubscriber
       // Do not update the status if the item is already partially available or available
       media[entity.is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE &&
       media[entity.is4k ? 'status4k' : 'status'] !==
-        MediaStatus.PARTIALLY_AVAILABLE &&
+      MediaStatus.PARTIALLY_AVAILABLE &&
       media[entity.is4k ? 'status4k' : 'status'] !== MediaStatus.PROCESSING
     ) {
       media[entity.is4k ? 'status4k' : 'status'] = MediaStatus.PROCESSING;
