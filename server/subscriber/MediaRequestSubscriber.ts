@@ -37,7 +37,7 @@ export class MediaRequestSubscriber
   private async notifyAvailableMovie(entity: MediaRequest) {
     if (
       entity.media[entity.is4k ? 'status4k' : 'status'] ===
-      MediaStatus.AVAILABLE
+        MediaStatus.AVAILABLE
     ) {
       const tmdb = new TheMovieDb();
 
