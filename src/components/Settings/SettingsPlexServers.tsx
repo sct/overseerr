@@ -248,6 +248,12 @@ const SettingsPlexServers = ({ onComplete }: SettingsPlexServersProps) => {
       {editPlexModal.open && (
         <PlexServerModal
           plex={editPlexModal.plex}
+          isFirstServer={
+            // First server: no servers exist (adding first), OR editing the primary server (id=0)
+            !plexServers ||
+            plexServers.length === 0 ||
+            editPlexModal.plex?.id === 0
+          }
           onClose={() => setEditPlexModal({ open: false, plex: null })}
           onSave={() => {
             revalidatePlex();

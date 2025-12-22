@@ -279,7 +279,7 @@ class PlexTvAPI extends ExternalAPI {
   public static async checkUserAccessAnyServer(
     userId: number,
     fallbackToken?: string
-  ): Promise<{ hasAccess: boolean; plexServerId?: number }> {
+  ): Promise<{ hasAccess: boolean; plexServerId?: number; plexServerName?: string }> {
     const settings = getSettings();
     const plexServers = settings.plex;
 
@@ -310,6 +310,26 @@ class PlexTvAPI extends ExternalAPI {
 
       try {
         const plexTv = new PlexTvAPI(token);
+
+        // First check if this user IS the server owner
+        // (owners don't appear in getUsers(), they are the token holder)
+        try {
+          const owner = await plexTv.getUser();
+          if (owner && owner.id === userId) {
+            logger.info(
+              `User ${userId} is the owner of server: ${plexServer.name}`,
+              { label: 'Plex.tv API' }
+            );
+            return { hasAccess: true, plexServerId: plexServer.id, plexServerName: plexServer.name };
+          }
+        } catch (ownerError) {
+          logger.debug(
+            `Could not get owner info for ${plexServer.name}: ${ownerError.message}`,
+            { label: 'Plex.tv API' }
+          );
+        }
+
+        // Check shared users
         const usersResponse = await plexTv.getUsers();
         const users = usersResponse.MediaContainer.User;
         const user = users.find((u) => parseInt(u.$.id) === userId);
@@ -324,7 +344,7 @@ class PlexTvAPI extends ExternalAPI {
               `User ${userId} has access via server: ${plexServer.name}`,
               { label: 'Plex.tv API' }
             );
-            return { hasAccess: true, plexServerId: plexServer.id };
+            return { hasAccess: true, plexServerId: plexServer.id, plexServerName: plexServer.name };
           }
         }
       } catch (e) {

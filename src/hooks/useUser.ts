@@ -21,6 +21,7 @@ export interface User {
   updatedAt: Date;
   requestCount: number;
   plexServerId?: number;
+  plexServerName?: string;
   settings?: UserSettings;
 }
 

@@ -119,8 +119,10 @@ authRoutes.post('/plex', async (req, res, next) => {
           user.plexUsername = account.username;
           user.userType = UserType.PLEX;
           // Track which server granted access (if not admin)
+          // Also update if plexServerName is missing (for backwards compatibility)
           if (accessResult.plexServerId !== undefined) {
             user.plexServerId = accessResult.plexServerId;
+            user.plexServerName = accessResult.plexServerName;
           }
 
           await userRepository.save(user);
@@ -160,6 +162,7 @@ authRoutes.post('/plex', async (req, res, next) => {
             avatar: account.thumb,
             userType: UserType.PLEX,
             plexServerId: accessResult.plexServerId,
+            plexServerName: accessResult.plexServerName,
           });
 
           await userRepository.save(user);
@@ -270,6 +273,7 @@ authRoutes.post('/local', async (req, res, next) => {
           user.plexUsername = matchingPlexUser.username;
           user.userType = UserType.PLEX;
           user.plexServerId = matchingPlexUser.plexServerId;
+          user.plexServerName = matchingPlexUser.plexServerName;
 
           await userRepository.save(user);
         }
@@ -307,13 +311,16 @@ authRoutes.post('/local', async (req, res, next) => {
         });
       }
 
-      // Update plexServerId if it changed
-      if (
-        accessResult.plexServerId !== undefined &&
-        user.plexServerId !== accessResult.plexServerId
-      ) {
-        user.plexServerId = accessResult.plexServerId;
-        await userRepository.save(user);
+      // Update plexServerId/plexServerName if changed or missing
+      if (accessResult.plexServerId !== undefined) {
+        const needsUpdate =
+          user.plexServerId !== accessResult.plexServerId ||
+          !user.plexServerName;
+        if (needsUpdate) {
+          user.plexServerId = accessResult.plexServerId;
+          user.plexServerName = accessResult.plexServerName;
+          await userRepository.save(user);
+        }
       }
     }
 

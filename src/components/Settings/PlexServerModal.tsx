@@ -53,16 +53,21 @@ const messages = defineMessages({
   authToken: 'Server Owner Token',
   authTokenTip:
     'Required for servers owned by different Plex accounts. Leave empty to use the admin token.',
+  authTokenTipRequired:
+    'The Plex authentication token for the owner of this server. Required for additional servers.',
   authTokenPlaceholder: 'Plex authentication token (optional)',
+  authTokenPlaceholderRequired: 'Plex authentication token (required)',
+  validationAuthTokenRequired: 'Server Owner Token is required for additional servers',
 });
 
 interface PlexServerModalProps {
   plex: PlexSettings | null;
   onClose: () => void;
   onSave: () => void;
+  isFirstServer?: boolean; // If true, shows server preset dropdown; if false, requires authToken
 }
 
-const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
+const PlexServerModal = ({ onClose, plex, onSave, isFirstServer = true }: PlexServerModalProps) => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
@@ -84,6 +89,11 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
     webAppUrl: Yup.string()
       .nullable()
       .url(intl.formatMessage(messages.validationUrl)),
+    authToken: isFirstServer
+      ? Yup.string().nullable()
+      : Yup.string().required(
+          intl.formatMessage(messages.validationAuthTokenRequired)
+        ),
   });
 
   const availablePresets = useMemo(() => {
@@ -280,80 +290,83 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
             }
           >
             <div className="mb-6">
-              <div className="form-row">
-                <label htmlFor="preset" className="text-label">
-                  {intl.formatMessage(messages.serverpreset)}
-                </label>
-                <div className="form-input-area">
-                  <div className="form-input-field">
-                    <select
-                      id="preset"
-                      name="preset"
-                      disabled={!availableServers || isRefreshingPresets}
-                      className="rounded-l-only"
-                      onChange={async (e) => {
-                        const targPreset =
-                          availablePresets[Number(e.target.value)];
+              {/* Server preset dropdown - only shown for first server */}
+              {isFirstServer && (
+                <div className="form-row">
+                  <label htmlFor="preset" className="text-label">
+                    {intl.formatMessage(messages.serverpreset)}
+                  </label>
+                  <div className="form-input-area">
+                    <div className="form-input-field">
+                      <select
+                        id="preset"
+                        name="preset"
+                        disabled={!availableServers || isRefreshingPresets}
+                        className="rounded-l-only"
+                        onChange={async (e) => {
+                          const targPreset =
+                            availablePresets[Number(e.target.value)];
 
-                        if (targPreset) {
-                          setFieldValue('hostname', targPreset.address);
-                          setFieldValue('port', targPreset.port);
-                          setFieldValue('useSsl', targPreset.ssl);
-                          setFieldValue('name', targPreset.name);
-                        }
-                      }}
-                    >
-                      <option value="manual">
-                        {availableServers || isRefreshingPresets
-                          ? isRefreshingPresets
-                            ? intl.formatMessage(
-                                messages.serverpresetRefreshing
-                              )
-                            : intl.formatMessage(
-                                messages.serverpresetManualMessage
-                              )
-                          : intl.formatMessage(messages.serverpresetLoad)}
-                      </option>
-                      {availablePresets.map((server, index) => (
-                        <option
-                          key={`preset-server-${index}`}
-                          value={index}
-                          disabled={!server.status}
-                        >
-                          {`
-                              ${server.name} (${server.address})
-                              [${
-                                server.local
-                                  ? intl.formatMessage(messages.serverLocal)
-                                  : intl.formatMessage(messages.serverRemote)
-                              }]${
-                            server.ssl
-                              ? ` [${intl.formatMessage(
-                                  messages.serverSecure
-                                )}]`
-                              : ''
+                          if (targPreset) {
+                            setFieldValue('hostname', targPreset.address);
+                            setFieldValue('port', targPreset.port);
+                            setFieldValue('useSsl', targPreset.ssl);
+                            setFieldValue('name', targPreset.name);
                           }
-                              ${server.status ? '' : '(' + server.message + ')'}
-                            `}
+                        }}
+                      >
+                        <option value="manual">
+                          {availableServers || isRefreshingPresets
+                            ? isRefreshingPresets
+                              ? intl.formatMessage(
+                                  messages.serverpresetRefreshing
+                                )
+                              : intl.formatMessage(
+                                  messages.serverpresetManualMessage
+                                )
+                            : intl.formatMessage(messages.serverpresetLoad)}
                         </option>
-                      ))}
-                    </select>
-                    <button
-                      onClick={(e) => {
-                        e.preventDefault();
-                        refreshPresetServers();
-                      }}
-                      className="input-action"
-                      type="button"
-                    >
-                      <ArrowPathIcon
-                        className={isRefreshingPresets ? 'animate-spin' : ''}
-                        style={{ animationDirection: 'reverse' }}
-                      />
-                    </button>
+                        {availablePresets.map((server, index) => (
+                          <option
+                            key={`preset-server-${index}`}
+                            value={index}
+                            disabled={!server.status}
+                          >
+                            {`
+                                ${server.name} (${server.address})
+                                [${
+                                  server.local
+                                    ? intl.formatMessage(messages.serverLocal)
+                                    : intl.formatMessage(messages.serverRemote)
+                                }]${
+                              server.ssl
+                                ? ` [${intl.formatMessage(
+                                    messages.serverSecure
+                                  )}]`
+                                : ''
+                            }
+                                ${server.status ? '' : '(' + server.message + ')'}
+                              `}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          refreshPresetServers();
+                        }}
+                        className="input-action"
+                        type="button"
+                      >
+                        <ArrowPathIcon
+                          className={isRefreshingPresets ? 'animate-spin' : ''}
+                          style={{ animationDirection: 'reverse' }}
+                        />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
               <div className="form-row">
                 <label htmlFor="name" className="text-label">
                   {intl.formatMessage(messages.servername)}
@@ -451,8 +464,13 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
               <div className="form-row">
                 <label htmlFor="authToken" className="text-label">
                   {intl.formatMessage(messages.authToken)}
+                  {!isFirstServer && <span className="label-required">*</span>}
                   <span className="label-tip">
-                    {intl.formatMessage(messages.authTokenTip)}
+                    {intl.formatMessage(
+                      isFirstServer
+                        ? messages.authTokenTip
+                        : messages.authTokenTipRequired
+                    )}
                   </span>
                 </label>
                 <div className="form-input-area">
@@ -462,11 +480,18 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
                       id="authToken"
                       name="authToken"
                       placeholder={intl.formatMessage(
-                        messages.authTokenPlaceholder
+                        isFirstServer
+                          ? messages.authTokenPlaceholder
+                          : messages.authTokenPlaceholderRequired
                       )}
                       autoComplete="off"
                     />
                   </div>
+                  {errors.authToken &&
+                    touched.authToken &&
+                    typeof errors.authToken === 'string' && (
+                      <div className="error">{errors.authToken}</div>
+                    )}
                 </div>
               </div>
             </div>

@@ -127,13 +127,28 @@ const UserList = () => {
     { bg: 'bg-rose-600', border: 'border-rose-500', text: 'text-rose-100' },
   ];
 
-  const getServerInfo = (serverId?: number) => {
-    if (serverId === undefined || !plexServers) return null;
-    const serverIndex = plexServers.findIndex((s) => s.id === serverId);
-    if (serverIndex === -1) return null;
-    const server = plexServers[serverIndex];
-    const colorIndex = serverIndex % serverColors.length;
-    return { name: server.name, color: serverColors[colorIndex] };
+  const getServerInfo = (serverId?: number, cachedName?: string) => {
+    if (serverId === undefined) return null;
+
+    // Try to get color from server index for consistency
+    let colorIndex = 0;
+    let name = cachedName;
+
+    if (plexServers) {
+      const serverIndex = plexServers.findIndex((s) => s.id === serverId);
+      if (serverIndex !== -1) {
+        colorIndex = serverIndex % serverColors.length;
+        // Use cached name if available, otherwise fall back to server list
+        if (!name) {
+          name = plexServers[serverIndex].name;
+        }
+      }
+    }
+
+    // If no name available (old user, no server list), return null
+    if (!name) return null;
+
+    return { name, color: serverColors[colorIndex] };
   };
 
   const [isDeleting, setDeleting] = useState(false);
@@ -742,7 +757,7 @@ const UserList = () => {
               </Table.TD>
               <Table.TD>
                 {(() => {
-                  const serverInfo = getServerInfo(user.plexServerId);
+                  const serverInfo = getServerInfo(user.plexServerId, user.plexServerName);
                   if (!serverInfo) {
                     return <span className="text-sm text-gray-500">—</span>;
                   }

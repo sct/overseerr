@@ -43,22 +43,23 @@ This document describes the implementation of multi-Plex server support in Overs
 
 ### Backend
 
-| File                                                    | Change Type | Description                                                       |
-| ------------------------------------------------------- | ----------- | ----------------------------------------------------------------- |
-| `server/lib/settings.ts`                                | Modified    | Changed `plex` from single object to array, added migration logic |
-| `server/entity/MediaPlexServer.ts`                      | New         | Entity for per-server rating key tracking                         |
-| `server/entity/Media.ts`                                | Modified    | Added relation to MediaPlexServer, updated setPlexUrls()          |
-| `server/migration/1750000000000-AddMediaPlexServer.ts`  | New         | Database migration for new table                                  |
-| `server/api/plexapi.ts`                                 | Modified    | Made plexSettings required, updated syncLibraries()               |
-| `server/api/plextv.ts`                                  | Modified    | Updated checkUserAccess() for multi-server                        |
-| `server/routes/settings/plex.ts`                        | New         | CRUD routes for Plex servers                                      |
-| `server/routes/settings/index.ts`                       | Modified    | Mounted new plex routes, removed old single-server routes         |
-| `server/lib/scanners/plex/index.ts`                     | Modified    | Iterates all servers, tracks per-server status                    |
-| `server/lib/availabilitySync.ts`                        | Modified    | Checks all servers for availability                               |
-| `server/entity/User.ts`                                 | Modified    | Added plexServerId column                                         |
-| `server/migration/1750000000001-AddUserPlexServerId.ts` | New         | Migration to add plexServerId to user table                       |
-| `server/routes/user/index.ts`                           | Modified    | User import with server association                               |
-| `server/routes/auth.ts`                                 | Modified    | Multi-server access check on login                                |
+| File                                                      | Change Type | Description                                                       |
+| --------------------------------------------------------- | ----------- | ----------------------------------------------------------------- |
+| `server/lib/settings.ts`                                  | Modified    | Changed `plex` from single object to array, added migration logic |
+| `server/entity/MediaPlexServer.ts`                        | New         | Entity for per-server rating key tracking                         |
+| `server/entity/Media.ts`                                  | Modified    | Added relation to MediaPlexServer, updated setPlexUrls()          |
+| `server/migration/1750000000000-AddMediaPlexServer.ts`    | New         | Database migration for new table                                  |
+| `server/api/plexapi.ts`                                   | Modified    | Made plexSettings required, updated syncLibraries()               |
+| `server/api/plextv.ts`                                    | Modified    | Updated checkUserAccess() for multi-server                        |
+| `server/routes/settings/plex.ts`                          | New         | CRUD routes for Plex servers                                      |
+| `server/routes/settings/index.ts`                         | Modified    | Mounted new plex routes, removed old single-server routes         |
+| `server/lib/scanners/plex/index.ts`                       | Modified    | Iterates all servers, tracks per-server status                    |
+| `server/lib/availabilitySync.ts`                          | Modified    | Checks all servers for availability                               |
+| `server/entity/User.ts`                                   | Modified    | Added plexServerId and plexServerName columns                     |
+| `server/migration/1750000000001-AddUserPlexServerId.ts`   | New         | Migration to add plexServerId to user table                       |
+| `server/migration/1750000000002-AddUserPlexServerName.ts` | New         | Migration to add plexServerName to user table                     |
+| `server/routes/user/index.ts`                             | Modified    | User import with server association                               |
+| `server/routes/auth.ts`                                   | Modified    | Multi-server access check on login                                |
 
 ### Frontend
 
@@ -368,12 +369,21 @@ export interface PlexSettings {
 
 #### 2. User Entity
 
-Added `plexServerId` to track which server authenticated the user:
+Added `plexServerId` and `plexServerName` to track which server authenticated the user:
 
 ```typescript
 @Column({ nullable: true, select: true })
 public plexServerId?: number; // The Plex server this user was authenticated from
+
+@Column({ nullable: true, select: true })
+public plexServerName?: string; // Name of the Plex server (denormalized for non-admin access)
 ```
+
+The `plexServerName` is denormalized (stored on the user) so that:
+
+1. Non-admin users can see their server name without needing access to the admin-only `/api/v1/settings/plex` endpoint
+2. Reduces API calls when displaying user information
+3. Provides backwards compatibility - old users will have NULL until they next log in
 
 #### 3. Static Access Check Method
 
@@ -383,10 +393,10 @@ public plexServerId?: number; // The Plex server this user was authenticated fro
 public static async checkUserAccessAnyServer(
   userId: number,
   fallbackToken?: string
-): Promise<{ hasAccess: boolean; plexServerId?: number }>
+): Promise<{ hasAccess: boolean; plexServerId?: number; plexServerName?: string }>
 ```
 
-Returns both access status and which server granted access.
+Returns access status, which server granted access, and the server name.
 
 #### 4. Helper: Get All Users from All Servers
 
@@ -398,7 +408,18 @@ Both `/auth/plex` and `/auth/local` now use the new multi-server access check.
 
 #### 6. Server Configuration UI
 
-`PlexServerModal` now includes an optional "Server Owner Token" field.
+`PlexServerModal` behavior varies by server type:
+
+**Primary server (id=0)**:
+
+- Server preset dropdown visible (load servers from Plex.tv)
+- Server Owner Token is optional (uses admin token as fallback)
+
+**Additional servers (id>0)**:
+
+- Server preset dropdown hidden
+- Server Owner Token is **required** with validation
+- Different tip text: "Required for additional servers"
 
 #### 7. User Import Enhancements
 
@@ -429,7 +450,9 @@ The User General Settings page (`src/components/UserProfile/UserSettings/UserGen
 
 - If `authToken` is not set on a server, the admin's token is used as fallback
 - Existing single-server installations continue to work without changes
-- The `plexServerId` on User is nullable - existing users won't have it set
+- `plexServerId` and `plexServerName` on User are nullable - existing users will have NULL
+- On next login, users will automatically get `plexServerId` and `plexServerName` populated
+- UI gracefully handles NULL values by hiding the server badge
 
 ### Security Considerations
 

@@ -545,9 +545,13 @@ router.post(
             existingUser.plexId = plexUser.plexId;
           }
 
-          // Update plexServerId if not set
-          if (!existingUser.plexServerId) {
+          // Update plexServerId/plexServerName if not set or missing
+          if (
+            existingUser.plexServerId === undefined ||
+            !existingUser.plexServerName
+          ) {
             existingUser.plexServerId = plexUser.plexServerId;
+            existingUser.plexServerName = plexUser.plexServerName;
           }
 
           await userRepository.save(existingUser);
@@ -568,6 +572,7 @@ router.post(
             avatar: plexUser.thumb,
             userType: UserType.PLEX,
             plexServerId: plexUser.plexServerId,
+            plexServerName: plexUser.plexServerName,
           });
           await userRepository.save(newUser);
           createdUsers.push(newUser);
