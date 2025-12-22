@@ -18,6 +18,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import Issue from './Issue';
+import MediaPlexServer from './MediaPlexServer';
 import { MediaRequest } from './MediaRequest';
 import Season from './Season';
 
@@ -104,6 +105,12 @@ class Media {
   @OneToMany(() => Issue, (issue) => issue.media, { cascade: true })
   public issues: Issue[];
 
+  @OneToMany(() => MediaPlexServer, (plexServer) => plexServer.media, {
+    cascade: true,
+    eager: true,
+  })
+  public plexServers: MediaPlexServer[];
+
   @CreateDateColumn()
   public createdAt: Date;
 
@@ -160,10 +167,16 @@ class Media {
 
   @AfterLoad()
   public setPlexUrls(): void {
-    const { machineId, webAppUrl } = getSettings().plex;
+    const plexServers = getSettings().plex;
     const { externalUrl: tautulliUrl } = getSettings().tautulli;
 
-    if (this.ratingKey) {
+    // Use the first configured Plex server for URL generation
+    // In multi-server setup, we use the legacy ratingKey columns for backwards compatibility
+    const firstServer = plexServers.length > 0 ? plexServers[0] : null;
+    const machineId = firstServer?.machineId;
+    const webAppUrl = firstServer?.webAppUrl;
+
+    if (this.ratingKey && machineId) {
       this.plexUrl = `${
         webAppUrl ? webAppUrl : 'https://app.plex.tv/desktop'
       }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${
@@ -177,7 +190,7 @@ class Media {
       }
     }
 
-    if (this.ratingKey4k) {
+    if (this.ratingKey4k && machineId) {
       this.plexUrl4k = `${
         webAppUrl ? webAppUrl : 'https://app.plex.tv/desktop'
       }#!/server/${machineId}/details?key=%2Flibrary%2Fmetadata%2F${

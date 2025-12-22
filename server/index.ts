@@ -59,25 +59,36 @@ app
     const settings = getSettings().load();
     restartFlag.initializeSettings(settings.main);
 
-    // Migrate library types
-    if (
-      settings.plex.libraries.length > 1 &&
-      !settings.plex.libraries[0].type
-    ) {
-      const userRepository = getRepository(User);
-      const admin = await userRepository.findOne({
-        select: { id: true, plexToken: true },
-        where: { id: 1 },
-      });
-
-      if (admin) {
-        logger.info('Migrating Plex libraries to include media type', {
-          label: 'Settings',
+    // Migrate library types for each Plex server
+    for (const plexServer of settings.plex) {
+      if (plexServer.libraries.length > 1 && !plexServer.libraries[0].type) {
+        const userRepository = getRepository(User);
+        const admin = await userRepository.findOne({
+          select: { id: true, plexToken: true },
+          where: { id: 1 },
         });
 
-        const plexapi = new PlexAPI({ plexToken: admin.plexToken });
-        await plexapi.syncLibraries();
+        if (admin) {
+          logger.info('Migrating Plex libraries to include media type', {
+            label: 'Settings',
+            plexServer: plexServer.name,
+          });
+
+          const plexapi = new PlexAPI({
+            plexToken: admin.plexToken,
+            plexSettings: plexServer,
+          });
+          const libraries = await plexapi.syncLibraries();
+
+          // Update the server's libraries with the synced data
+          plexServer.libraries = libraries;
+        }
       }
+    }
+
+    // Save settings if any migrations occurred
+    if (settings.plex.length > 0) {
+      getSettings().save();
     }
 
     // Register Notification Agents

@@ -86,6 +86,7 @@ interface PlexMetadataResponse {
 
 class PlexAPI {
   private plexClient: NodePlexAPI;
+  private plexSettings: PlexSettings;
 
   constructor({
     plexToken,
@@ -93,19 +94,16 @@ class PlexAPI {
     timeout,
   }: {
     plexToken?: string;
-    plexSettings?: PlexSettings;
+    plexSettings: PlexSettings;
     timeout?: number;
   }) {
     const settings = getSettings();
-    let settingsPlex: PlexSettings | undefined;
-    plexSettings
-      ? (settingsPlex = plexSettings)
-      : (settingsPlex = getSettings().plex);
+    this.plexSettings = plexSettings;
 
     this.plexClient = new NodePlexAPI({
-      hostname: settingsPlex.ip,
-      port: settingsPlex.port,
-      https: settingsPlex.useSsl,
+      hostname: plexSettings.ip,
+      port: plexSettings.port,
+      https: plexSettings.useSsl,
       timeout: timeout,
       token: plexToken,
       authenticator: {
@@ -131,6 +129,10 @@ class PlexAPI {
     });
   }
 
+  public getPlexSettings(): PlexSettings {
+    return this.plexSettings;
+  }
+
   public async getStatus() {
     return await this.plexClient.query('/');
   }
@@ -143,9 +145,7 @@ class PlexAPI {
     return response.MediaContainer.Directory;
   }
 
-  public async syncLibraries(): Promise<void> {
-    const settings = getSettings();
-
+  public async syncLibraries(): Promise<Library[]> {
     try {
       const libraries = await this.getLibraries();
 
@@ -157,7 +157,7 @@ class PlexAPI {
         // Remove libraries that do not have a metadata agent set (usually personal video libraries)
         .filter((library) => library.agent !== 'com.plexapp.agents.none')
         .map((library) => {
-          const existing = settings.plex.libraries.find(
+          const existing = this.plexSettings.libraries.find(
             (l) => l.id === library.key && l.name === library.title
           );
 
@@ -170,17 +170,15 @@ class PlexAPI {
           };
         });
 
-      settings.plex.libraries = newLibraries;
+      return newLibraries;
     } catch (e) {
       logger.error('Failed to fetch Plex libraries', {
         label: 'Plex API',
         message: e.message,
       });
 
-      settings.plex.libraries = [];
+      return [];
     }
-
-    settings.save();
   }
 
   public async getLibraryContents(

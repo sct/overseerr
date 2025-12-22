@@ -9,17 +9,23 @@ import Media from '@server/entity/Media';
 import MediaRequest from '@server/entity/MediaRequest';
 import type Season from '@server/entity/Season';
 import { User } from '@server/entity/User';
-import type { RadarrSettings, SonarrSettings } from '@server/lib/settings';
+import type {
+  PlexSettings,
+  RadarrSettings,
+  SonarrSettings,
+} from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 
 class AvailabilitySync {
   public running = false;
-  private plexClient: PlexAPI;
+  private plexClients: PlexAPI[] = [];
+  private plexServers: PlexSettings[] = [];
   private plexSeasonsCache: Record<string, PlexMetadata[]>;
   private sonarrSeasonsCache: Record<string, SonarrSeason[]>;
   private radarrServers: RadarrSettings[];
   private sonarrServers: SonarrSettings[];
+  private adminPlexToken: string | undefined;
 
   async run() {
     const settings = getSettings();
@@ -28,6 +34,8 @@ class AvailabilitySync {
     this.sonarrSeasonsCache = {};
     this.radarrServers = settings.radarr.filter((server) => server.syncEnabled);
     this.sonarrServers = settings.sonarr.filter((server) => server.syncEnabled);
+    this.plexServers = settings.plex;
+    this.plexClients = [];
 
     try {
       logger.info(`Starting availability sync...`, {
@@ -41,8 +49,17 @@ class AvailabilitySync {
         where: { id: 1 },
       });
 
-      if (admin) {
-        this.plexClient = new PlexAPI({ plexToken: admin.plexToken });
+      if (admin && admin.plexToken) {
+        this.adminPlexToken = admin.plexToken;
+        // Initialize PlexAPI clients for all configured servers
+        for (const plexServer of this.plexServers) {
+          this.plexClients.push(
+            new PlexAPI({
+              plexToken: admin.plexToken,
+              plexSettings: plexServer,
+            })
+          );
+        }
       } else {
         logger.error('An admin is not configured.');
       }
@@ -562,46 +579,49 @@ class AvailabilitySync {
     let existsInPlex = false;
     let preventSeasonSearch = false;
 
-    // Check each plex instance to see if the media still exists
-    // If found, we will assume the media exists and prevent removal
-    // We can use the cache we built when we fetched the series with mediaExistsInPlex
-    try {
-      let plexMedia: PlexMetadata | undefined;
+    // Check ALL configured Plex servers to see if the media exists
+    // If found on ANY server, we consider it exists
+    for (const plexClient of this.plexClients) {
+      try {
+        let plexMedia: PlexMetadata | undefined;
 
-      if (ratingKey && !is4k) {
-        plexMedia = await this.plexClient?.getMetadata(ratingKey);
+        if (ratingKey && !is4k) {
+          plexMedia = await plexClient.getMetadata(ratingKey);
 
-        if (media.mediaType === 'tv') {
-          this.plexSeasonsCache[ratingKey] =
-            await this.plexClient?.getChildrenMetadata(ratingKey);
-        }
-      }
-
-      if (ratingKey4k && is4k) {
-        plexMedia = await this.plexClient?.getMetadata(ratingKey4k);
-
-        if (media.mediaType === 'tv') {
-          this.plexSeasonsCache[ratingKey4k] =
-            await this.plexClient?.getChildrenMetadata(ratingKey4k);
-        }
-      }
-
-      if (plexMedia) {
-        existsInPlex = true;
-      }
-    } catch (ex) {
-      if (!ex.message.includes('404')) {
-        existsInPlex = true;
-        preventSeasonSearch = true;
-        logger.debug(
-          `Failure retrieving the ${is4k ? '4K' : 'non-4K'} ${
-            media.mediaType === 'tv' ? 'show' : 'movie'
-          } [TMDB ID ${media.tmdbId}] from Plex.`,
-          {
-            errorMessage: ex.message,
-            label: 'Availability Sync',
+          if (media.mediaType === 'tv') {
+            this.plexSeasonsCache[ratingKey] =
+              await plexClient.getChildrenMetadata(ratingKey);
           }
-        );
+        }
+
+        if (ratingKey4k && is4k) {
+          plexMedia = await plexClient.getMetadata(ratingKey4k);
+
+          if (media.mediaType === 'tv') {
+            this.plexSeasonsCache[ratingKey4k] =
+              await plexClient.getChildrenMetadata(ratingKey4k);
+          }
+        }
+
+        if (plexMedia) {
+          existsInPlex = true;
+          break; // Found on this server, no need to check others
+        }
+      } catch (ex) {
+        if (!ex.message.includes('404')) {
+          existsInPlex = true;
+          preventSeasonSearch = true;
+          logger.debug(
+            `Failure retrieving the ${is4k ? '4K' : 'non-4K'} ${
+              media.mediaType === 'tv' ? 'show' : 'movie'
+            } [TMDB ID ${media.tmdbId}] from Plex.`,
+            {
+              errorMessage: ex.message,
+              label: 'Availability Sync',
+            }
+          );
+        }
+        // Continue checking other servers even if one fails with 404
       }
     }
 

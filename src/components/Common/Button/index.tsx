@@ -107,6 +107,7 @@ function Button<P extends ElementTypes = 'button'>(
   } else {
     return (
       <button
+        type="button"
         className={buttonStyle.join(' ')}
         {...(props as React.ComponentProps<'button'>)}
         ref={ref as ForwardedRef<HTMLButtonElement>}

@@ -26,6 +26,7 @@ export interface Language {
 }
 
 export interface PlexSettings {
+  id: number;
   name: string;
   machineId?: string;
   ip: string;
@@ -261,7 +262,7 @@ interface AllSettings {
   vapidPublic: string;
   vapidPrivate: string;
   main: MainSettings;
-  plex: PlexSettings;
+  plex: PlexSettings[];
   tautulli: TautulliSettings;
   radarr: RadarrSettings[];
   sonarr: SonarrSettings[];
@@ -302,13 +303,7 @@ class Settings {
         partialRequestsEnabled: true,
         locale: 'en',
       },
-      plex: {
-        name: '',
-        ip: '',
-        port: 32400,
-        useSsl: false,
-        libraries: [],
-      },
+      plex: [],
       tautulli: {},
       radarr: [],
       sonarr: [],
@@ -450,11 +445,11 @@ class Settings {
     this.data.main = data;
   }
 
-  get plex(): PlexSettings {
+  get plex(): PlexSettings[] {
     return this.data.plex;
   }
 
-  set plex(data: PlexSettings) {
+  set plex(data: PlexSettings[]) {
     this.data.plex = data;
   }
 
@@ -591,7 +586,39 @@ class Settings {
     const data = fs.readFileSync(SETTINGS_PATH, 'utf-8');
 
     if (data) {
-      this.data = merge(this.data, JSON.parse(data));
+      const loadedData = JSON.parse(data);
+
+      // Migrate old single plex object to array format
+      if (loadedData.plex && !Array.isArray(loadedData.plex)) {
+        const oldPlex = loadedData.plex as {
+          name?: string;
+          machineId?: string;
+          ip?: string;
+          port?: number;
+          useSsl?: boolean;
+          libraries?: Library[];
+          webAppUrl?: string;
+        };
+        // Only migrate if the old plex config has an IP (was actually configured)
+        if (oldPlex.ip) {
+          loadedData.plex = [
+            {
+              id: 0,
+              name: oldPlex.name || 'Default Server',
+              machineId: oldPlex.machineId,
+              ip: oldPlex.ip,
+              port: oldPlex.port || 32400,
+              useSsl: oldPlex.useSsl || false,
+              libraries: oldPlex.libraries || [],
+              webAppUrl: oldPlex.webAppUrl,
+            },
+          ];
+        } else {
+          loadedData.plex = [];
+        }
+      }
+
+      this.data = merge(this.data, loadedData);
       this.save();
     }
     return this;

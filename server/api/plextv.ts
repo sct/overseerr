@@ -227,16 +227,15 @@ class PlexTvAPI extends ExternalAPI {
 
   public async checkUserAccess(userId: number): Promise<boolean> {
     const settings = getSettings();
+    const plexServers = settings.plex;
 
     try {
-      if (!settings.plex.machineId) {
-        throw new Error('Plex is not configured!');
+      if (plexServers.length === 0) {
+        throw new Error('No Plex servers configured!');
       }
 
       const usersResponse = await this.getUsers();
-
       const users = usersResponse.MediaContainer.User;
-
       const user = users.find((u) => parseInt(u.$.id) === userId);
 
       if (!user) {
@@ -245,9 +244,22 @@ class PlexTvAPI extends ExternalAPI {
         );
       }
 
-      return !!user.Server?.find(
-        (server) => server.$.machineIdentifier === settings.plex.machineId
-      );
+      // Check if user has access to ANY configured Plex server
+      for (const plexServer of plexServers) {
+        if (!plexServer.machineId) {
+          continue;
+        }
+
+        const hasAccess = user.Server?.some(
+          (server) => server.$.machineIdentifier === plexServer.machineId
+        );
+
+        if (hasAccess) {
+          return true;
+        }
+      }
+
+      return false;
     } catch (e) {
       logger.error(`Error checking user access: ${e.message}`);
       return false;
