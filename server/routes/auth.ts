@@ -52,6 +52,8 @@ authRoutes.post('/plex', async (req, res, next) => {
 
     if (!user && !(await userRepository.count())) {
       // First user - becomes admin
+      // Assign to primary server (id 0) if configured
+      const primaryServer = settings.plex[0];
       user = new User({
         email: account.email,
         plexUsername: account.username,
@@ -60,6 +62,8 @@ authRoutes.post('/plex', async (req, res, next) => {
         permissions: Permission.ADMIN,
         avatar: account.thumb,
         userType: UserType.PLEX,
+        plexServerId: 0,
+        plexServerName: primaryServer?.name,
       });
 
       await userRepository.save(user);
@@ -89,8 +93,14 @@ authRoutes.post('/plex', async (req, res, next) => {
         (account.email === mainUser.email && !mainUser.plexId);
 
       // Use the new multi-server access check with fallback to admin token
+      // For admin, assign to primary server (id 0)
+      const primaryServer = settings.plex[0];
       const accessResult = isAdmin
-        ? { hasAccess: true, plexServerId: undefined }
+        ? {
+            hasAccess: true,
+            plexServerId: 0,
+            plexServerName: primaryServer?.name,
+          }
         : await PlexTvAPI.checkUserAccessAnyServer(
             account.id,
             mainUser.plexToken ?? undefined
