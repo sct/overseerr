@@ -49,13 +49,22 @@ class AvailabilitySync {
         where: { id: 1 },
       });
 
-      if (admin && admin.plexToken) {
+      if (admin) {
         this.adminPlexToken = admin.plexToken;
         // Initialize PlexAPI clients for all configured servers
+        // Use server-specific token if available, fallback to admin token
         for (const plexServer of this.plexServers) {
+          const token = plexServer.authToken || admin.plexToken;
+          if (!token) {
+            logger.warn(
+              `Skipping server ${plexServer.name} in availability sync: no auth token`,
+              { label: 'Availability Sync' }
+            );
+            continue;
+          }
           this.plexClients.push(
             new PlexAPI({
-              plexToken: admin.plexToken,
+              plexToken: token,
               plexSettings: plexServer,
             })
           );

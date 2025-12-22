@@ -42,25 +42,29 @@ plexRoutes.post<undefined, Record<string, unknown>, PlexSettings>(
         where: { id: 1 },
       });
 
+      // Use server-specific token if provided, otherwise fallback to admin token
+      const token = req.body.authToken || admin.plexToken;
+
       logger.debug('Testing Plex connection', {
         label: 'Plex',
         ip: req.body.ip,
         port: req.body.port,
         useSsl: req.body.useSsl,
-        hasToken: !!admin.plexToken,
+        hasToken: !!token,
+        usingServerToken: !!req.body.authToken,
       });
 
-      if (!admin.plexToken) {
-        logger.error('Admin user has no Plex token', { label: 'Plex' });
+      if (!token) {
+        logger.error('No Plex token available for test', { label: 'Plex' });
         return next({
           status: 400,
           message:
-            'Please sign in with Plex first to get an authentication token.',
+            'No authentication token available. Please provide a server owner token or sign in with Plex first.',
         });
       }
 
       const plexClient = new PlexAPI({
-        plexToken: admin.plexToken,
+        plexToken: token,
         plexSettings: req.body,
       });
 
@@ -176,6 +180,113 @@ plexRoutes.get('/devices/servers', async (_req, res, next) => {
   }
 });
 
+// GET /users - Fetch unimported Plex users from all servers
+plexRoutes.get('/users', async (req, res, next) => {
+  const userRepository = getRepository(User);
+  const qb = userRepository.createQueryBuilder('user');
+
+  try {
+    const admin = await userRepository.findOneOrFail({
+      select: { id: true, plexToken: true },
+      where: { id: 1 },
+    });
+
+    // Get users from ALL configured Plex servers (multi-owner support)
+    const allPlexUsers = await PlexTvAPI.getAllUsersFromAllServers(
+      admin.plexToken ?? undefined
+    );
+
+    logger.debug(`Found ${allPlexUsers.length} total users across all Plex servers`, {
+      label: 'Plex',
+    });
+
+    // Dedupe by plexId, keeping the first server encountered
+    const uniquePlexUsers = allPlexUsers.reduce(
+      (acc, user) => {
+        if (!acc.find((u) => u.plexId === user.plexId)) {
+          acc.push(user);
+        }
+        return acc;
+      },
+      [] as typeof allPlexUsers
+    );
+
+    const unimportedPlexUsers: {
+      id: string;
+      title: string;
+      username: string;
+      email: string;
+      thumb: string;
+      plexServerId: number;
+      plexServerName: string;
+    }[] = [];
+
+    if (uniquePlexUsers.length === 0) {
+      logger.debug('No Plex users found on any server', { label: 'Plex' });
+      return res.status(200).json([]);
+    }
+
+    const existingUsers = await qb
+      .where('user.plexId IN (:...plexIds)', {
+        plexIds: uniquePlexUsers.map((plexUser) => plexUser.plexId),
+      })
+      .orWhere('user.email IN (:...plexEmails)', {
+        plexEmails: uniquePlexUsers
+          .map((plexUser) => plexUser.email?.toLowerCase())
+          .filter(Boolean),
+      })
+      .getMany();
+
+    for (const plexUser of uniquePlexUsers) {
+      const alreadyExists = existingUsers.find(
+        (user) =>
+          user.plexId === plexUser.plexId ||
+          (plexUser.email && user.email === plexUser.email.toLowerCase())
+      );
+
+      if (!alreadyExists) {
+        unimportedPlexUsers.push({
+          id: String(plexUser.plexId),
+          title: plexUser.username,
+          username: plexUser.username,
+          email: plexUser.email,
+          thumb: plexUser.thumb,
+          plexServerId: plexUser.plexServerId,
+          plexServerName: plexUser.plexServerName,
+        });
+      }
+    }
+
+    // Count users per server for debugging
+    const serverCounts = unimportedPlexUsers.reduce(
+      (acc, user) => {
+        const serverName = user.plexServerName || 'unknown';
+        acc[serverName] = (acc[serverName] || 0) + 1;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    logger.debug(
+      `Found ${unimportedPlexUsers.length} unimported users (${existingUsers.length} already exist)`,
+      { label: 'Plex', serverCounts }
+    );
+
+    return res
+      .status(200)
+      .json(unimportedPlexUsers.sort((a, b) => a.username.localeCompare(b.username)));
+  } catch (e) {
+    logger.error('Something went wrong getting unimported Plex users', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({
+      status: 500,
+      message: 'Unable to retrieve unimported Plex users.',
+    });
+  }
+});
+
 // ============================================================
 // BASE ROUTES (/ for list and add)
 // ============================================================
@@ -199,8 +310,11 @@ plexRoutes.post('/', async (req, res, next) => {
     const lastItem = settings.plex[settings.plex.length - 1];
     newPlex.id = lastItem ? lastItem.id + 1 : 0;
 
+    // Use server-specific token if provided, otherwise fallback to admin token
+    const token = newPlex.authToken || admin.plexToken;
+
     const plexClient = new PlexAPI({
-      plexToken: admin.plexToken,
+      plexToken: token,
       plexSettings: newPlex,
     });
 
@@ -258,8 +372,11 @@ plexRoutes.put<{ plexId: string }, PlexSettings, PlexSettings>(
         id: Number(req.params.plexId),
       };
 
+      // Use server-specific token if provided, otherwise fallback to admin token
+      const token = updatedPlex.authToken || admin.plexToken;
+
       const plexClient = new PlexAPI({
-        plexToken: admin.plexToken,
+        plexToken: token,
         plexSettings: updatedPlex,
       });
 
@@ -340,8 +457,11 @@ plexRoutes.get<{ plexId: string }>(
         where: { id: 1 },
       });
 
+      // Use server-specific token if available, fallback to admin token
+      const token = plexServer.authToken || admin.plexToken;
+
       const plexClient = new PlexAPI({
-        plexToken: admin.plexToken,
+        plexToken: token,
         plexSettings: plexServer,
       });
 
@@ -381,8 +501,11 @@ plexRoutes.post<{ plexId: string }>(
         where: { id: 1 },
       });
 
+      // Use server-specific token if available, fallback to admin token
+      const token = settings.plex[plexIndex].authToken || admin.plexToken;
+
       const plexClient = new PlexAPI({
-        plexToken: admin.plexToken,
+        plexToken: token,
         plexSettings: settings.plex[plexIndex],
       });
 

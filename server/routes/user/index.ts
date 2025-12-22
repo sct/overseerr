@@ -491,59 +491,105 @@ router.post(
       const userRepository = getRepository(User);
       const body = req.body as { plexIds: string[] } | undefined;
 
-      // taken from auth.ts
       const mainUser = await userRepository.findOneOrFail({
         select: { id: true, plexToken: true },
         where: { id: 1 },
       });
-      const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
-      const plexUsersResponse = await mainPlexTv.getUsers();
+      // Get users from ALL configured Plex servers (multi-owner support)
+      const allPlexUsers = await PlexTvAPI.getAllUsersFromAllServers(
+        mainUser.plexToken ?? undefined
+      );
+
+      logger.debug(`Import: Found ${allPlexUsers.length} users across all Plex servers`, {
+        label: 'User Import',
+      });
+
       const createdUsers: User[] = [];
-      for (const rawUser of plexUsersResponse.MediaContainer.User) {
-        const account = rawUser.$;
+      const updatedUsers: User[] = [];
+      const skippedUsers: string[] = [];
 
-        if (account.email) {
-          const user = await userRepository
-            .createQueryBuilder('user')
-            .where('user.plexId = :id', { id: account.id })
-            .orWhere('user.email = :email', {
-              email: account.email.toLowerCase(),
-            })
-            .getOne();
+      for (const plexUser of allPlexUsers) {
+        // Skip if no email
+        if (!plexUser.email) {
+          logger.debug(`Import: Skipping user ${plexUser.username} - no email`, {
+            label: 'User Import',
+          });
+          skippedUsers.push(`${plexUser.username} (no email)`);
+          continue;
+        }
 
-          if (user) {
-            // Update the user's avatar with their Plex thumbnail, in case it changed
-            user.avatar = account.thumb;
-            user.email = account.email;
-            user.plexUsername = account.username;
+        // Skip if not in the requested list (when importing specific users)
+        if (body?.plexIds && !body.plexIds.includes(String(plexUser.plexId))) {
+          continue;
+        }
 
-            // In case the user was previously a local account
-            if (user.userType === UserType.LOCAL) {
-              user.userType = UserType.PLEX;
-              user.plexId = parseInt(account.id);
-            }
-            await userRepository.save(user);
-          } else if (!body || body.plexIds.includes(account.id)) {
-            if (await mainPlexTv.checkUserAccess(parseInt(account.id))) {
-              const newUser = new User({
-                plexUsername: account.username,
-                email: account.email,
-                permissions: settings.main.defaultPermissions,
-                plexId: parseInt(account.id),
-                plexToken: '',
-                avatar: account.thumb,
-                userType: UserType.PLEX,
-              });
-              await userRepository.save(newUser);
-              createdUsers.push(newUser);
-            }
+        // Check if user already exists
+        const existingUser = await userRepository
+          .createQueryBuilder('user')
+          .where('user.plexId = :id', { id: plexUser.plexId })
+          .orWhere('user.email = :email', {
+            email: plexUser.email.toLowerCase(),
+          })
+          .getOne();
+
+        if (existingUser) {
+          // Update existing user's avatar and info
+          existingUser.avatar = plexUser.thumb;
+          existingUser.email = plexUser.email;
+          existingUser.plexUsername = plexUser.username;
+
+          // In case the user was previously a local account
+          if (existingUser.userType === UserType.LOCAL) {
+            existingUser.userType = UserType.PLEX;
+            existingUser.plexId = plexUser.plexId;
           }
+
+          // Update plexServerId if not set
+          if (!existingUser.plexServerId) {
+            existingUser.plexServerId = plexUser.plexServerId;
+          }
+
+          await userRepository.save(existingUser);
+          updatedUsers.push(existingUser);
+
+          logger.debug(
+            `Import: Updated existing user ${plexUser.username} (${plexUser.email})`,
+            { label: 'User Import' }
+          );
+        } else {
+          // Create new user
+          const newUser = new User({
+            plexUsername: plexUser.username,
+            email: plexUser.email,
+            permissions: settings.main.defaultPermissions,
+            plexId: plexUser.plexId,
+            plexToken: '',
+            avatar: plexUser.thumb,
+            userType: UserType.PLEX,
+            plexServerId: plexUser.plexServerId,
+          });
+          await userRepository.save(newUser);
+          createdUsers.push(newUser);
+
+          logger.debug(
+            `Import: Created new user ${plexUser.username} (${plexUser.email}) from server ${plexUser.plexServerName}`,
+            { label: 'User Import' }
+          );
         }
       }
 
+      logger.info(
+        `Import complete: ${createdUsers.length} created, ${updatedUsers.length} updated, ${skippedUsers.length} skipped`,
+        { label: 'User Import' }
+      );
+
       return res.status(201).json(User.filterMany(createdUsers));
     } catch (e) {
+      logger.error('Failed to import users from Plex', {
+        label: 'User Import',
+        errorMessage: e.message,
+      });
       next({ status: 500, message: e.message });
     }
   }

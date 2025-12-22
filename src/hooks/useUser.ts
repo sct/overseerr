@@ -20,6 +20,7 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   requestCount: number;
+  plexServerId?: number;
   settings?: UserSettings;
 }
 

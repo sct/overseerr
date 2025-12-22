@@ -50,6 +50,10 @@ const messages = defineMessages({
   testConnection: 'Test Connection',
   testing: 'Testing…',
   validationUrl: 'You must provide a valid URL',
+  authToken: 'Server Owner Token',
+  authTokenTip:
+    'Required for servers owned by different Plex accounts. Leave empty to use the admin token.',
+  authTokenPlaceholder: 'Plex authentication token (optional)',
 });
 
 interface PlexServerModalProps {
@@ -146,6 +150,7 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
     hostname: string;
     port: number;
     useSsl: boolean;
+    authToken?: string;
   }) => {
     setIsTesting(true);
     try {
@@ -153,6 +158,7 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
         ip: values.hostname,
         port: Number(values.port),
         useSsl: values.useSsl,
+        authToken: values.authToken || undefined,
         id: -1,
         name: '',
         libraries: [],
@@ -191,6 +197,7 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
         port: plex?.port ?? 32400,
         useSsl: plex?.useSsl ?? false,
         webAppUrl: plex?.webAppUrl ?? '',
+        authToken: plex?.authToken ?? '',
       }}
       validationSchema={PlexSettingsSchema}
       onSubmit={async (values) => {
@@ -201,6 +208,7 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
             useSsl: values.useSsl,
             name: values.name,
             webAppUrl: values.webAppUrl || undefined,
+            authToken: values.authToken || undefined,
             libraries: plex?.libraries ?? [],
           };
 
@@ -259,6 +267,7 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
                 hostname: values.hostname,
                 port: values.port,
                 useSsl: values.useSsl,
+                authToken: values.authToken,
               })
             }
             secondaryDisabled={isTesting || !isValid}
@@ -437,6 +446,27 @@ const PlexServerModal = ({ onClose, plex, onSave }: PlexServerModalProps) => {
                     typeof errors.webAppUrl === 'string' && (
                       <div className="error">{errors.webAppUrl}</div>
                     )}
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="authToken" className="text-label">
+                  {intl.formatMessage(messages.authToken)}
+                  <span className="label-tip">
+                    {intl.formatMessage(messages.authTokenTip)}
+                  </span>
+                </label>
+                <div className="form-input-area">
+                  <div className="form-input-field">
+                    <Field
+                      type="password"
+                      id="authToken"
+                      name="authToken"
+                      placeholder={intl.formatMessage(
+                        messages.authTokenPlaceholder
+                      )}
+                      autoComplete="off"
+                    />
+                  </div>
                 </div>
               </div>
             </div>

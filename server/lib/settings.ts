@@ -34,6 +34,7 @@ export interface PlexSettings {
   useSsl?: boolean;
   libraries: Library[];
   webAppUrl?: string;
+  authToken?: string; // Server owner's Plex token for multi-owner support
 }
 
 export interface TautulliSettings {

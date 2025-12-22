@@ -289,7 +289,7 @@ const SettingsPlexServers = ({ onComplete }: SettingsPlexServersProps) => {
               </p>
             </div>
           )}
-          <ul className="grid max-w-6xl grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+          <ul className="grid max-w-6xl grid-cols-1 items-start gap-6 lg:grid-cols-2 xl:grid-cols-3">
             {plexServers.map((plex) => (
               <PlexServerInstance
                 key={`plex-config-${plex.id}`}

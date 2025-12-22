@@ -30,6 +30,7 @@ const messages = defineMessages({
   accounttype: 'Account Type',
   plexuser: 'Plex User',
   localuser: 'Local User',
+  plexserver: 'Plex Server',
   role: 'Role',
   owner: 'Owner',
   admin: 'Admin',
@@ -80,6 +81,32 @@ const UserGeneralSettings = () => {
   } = useSWR<UserSettingsGeneralResponse>(
     user ? `/api/v1/user/${user?.id}/settings/main` : null
   );
+
+  // Fetch Plex servers to map plexServerId to server names
+  const { data: plexServers } = useSWR<Array<{ id: number; name: string }>>(
+    '/api/v1/settings/plex'
+  );
+
+  // Color palette for server badges
+  const serverColors = [
+    { bg: 'bg-purple-600', border: 'border-purple-500', text: 'text-purple-100' },
+    { bg: 'bg-cyan-600', border: 'border-cyan-500', text: 'text-cyan-100' },
+    { bg: 'bg-pink-600', border: 'border-pink-500', text: 'text-pink-100' },
+    { bg: 'bg-teal-600', border: 'border-teal-500', text: 'text-teal-100' },
+    { bg: 'bg-orange-600', border: 'border-orange-500', text: 'text-orange-100' },
+    { bg: 'bg-blue-600', border: 'border-blue-500', text: 'text-blue-100' },
+    { bg: 'bg-emerald-600', border: 'border-emerald-500', text: 'text-emerald-100' },
+    { bg: 'bg-rose-600', border: 'border-rose-500', text: 'text-rose-100' },
+  ];
+
+  const getServerInfo = (serverId?: number) => {
+    if (serverId === undefined || !plexServers) return null;
+    const serverIndex = plexServers.findIndex((s) => s.id === serverId);
+    if (serverIndex === -1) return null;
+    const server = plexServers[serverIndex];
+    const colorIndex = serverIndex % serverColors.length;
+    return { name: server.name, color: serverColors[colorIndex] };
+  };
 
   const UserGeneralSettingsSchema = Yup.object().shape({
     discordId: Yup.string()
@@ -202,6 +229,32 @@ const UserGeneralSettings = () => {
                   </div>
                 </div>
               </div>
+              {user?.userType === UserType.PLEX && (
+                <div className="form-row">
+                  <label className="text-label">
+                    {intl.formatMessage(messages.plexserver)}
+                  </label>
+                  <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                    <div className="flex max-w-lg items-center">
+                      {(() => {
+                        const serverInfo = getServerInfo(user?.plexServerId);
+                        if (!serverInfo) {
+                          return (
+                            <span className="text-sm text-gray-500">—</span>
+                          );
+                        }
+                        return (
+                          <span
+                            className={`inline-flex rounded-full border px-2 text-xs font-semibold leading-5 ${serverInfo.color.bg} bg-opacity-80 ${serverInfo.color.border} ${serverInfo.color.text}`}
+                          >
+                            {serverInfo.name}
+                          </span>
+                        );
+                      })()}
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="form-row">
                 <label className="text-label">
                   {intl.formatMessage(messages.role)}

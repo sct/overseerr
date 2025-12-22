@@ -74,8 +74,10 @@ app
             plexServer: plexServer.name,
           });
 
+          // Use server-specific token if available, fallback to admin token
+          const token = plexServer.authToken || admin.plexToken;
           const plexapi = new PlexAPI({
-            plexToken: admin.plexToken,
+            plexToken: token,
             plexSettings: plexServer,
           });
           const libraries = await plexapi.syncLibraries();

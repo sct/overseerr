@@ -84,8 +84,19 @@ class PlexScanner
         this.currentServer = plexServer;
         this.log(`Scanning Plex server: ${plexServer.name}`, 'info');
 
+        // Use server-specific token if available, fallback to admin token
+        const token = plexServer.authToken || admin.plexToken;
+
+        if (!token) {
+          this.log(
+            `Skipping server ${plexServer.name}: no auth token available`,
+            'warn'
+          );
+          continue;
+        }
+
         this.plexClient = new PlexAPI({
-          plexToken: admin.plexToken,
+          plexToken: token,
           plexSettings: plexServer,
         });
 

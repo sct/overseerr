@@ -1,4 +1,3 @@
-import PlexTvAPI from '@server/api/plextv';
 import TautulliAPI from '@server/api/tautulli';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
@@ -120,68 +119,6 @@ settingsRoutes.post('/tautulli', async (req, res, next) => {
   return res.status(200).json(settings.tautulli);
 });
 
-settingsRoutes.get(
-  '/plex/users',
-  isAuthenticated(Permission.MANAGE_USERS),
-  async (req, res, next) => {
-    const userRepository = getRepository(User);
-    const qb = userRepository.createQueryBuilder('user');
-
-    try {
-      const admin = await userRepository.findOneOrFail({
-        select: { id: true, plexToken: true },
-        where: { id: 1 },
-      });
-      const plexApi = new PlexTvAPI(admin.plexToken ?? '');
-      const plexUsers = (await plexApi.getUsers()).MediaContainer.User.map(
-        (user) => user.$
-      ).filter((user) => user.email);
-
-      const unimportedPlexUsers: {
-        id: string;
-        title: string;
-        username: string;
-        email: string;
-        thumb: string;
-      }[] = [];
-
-      const existingUsers = await qb
-        .where('user.plexId IN (:...plexIds)', {
-          plexIds: plexUsers.map((plexUser) => plexUser.id),
-        })
-        .orWhere('user.email IN (:...plexEmails)', {
-          plexEmails: plexUsers.map((plexUser) => plexUser.email.toLowerCase()),
-        })
-        .getMany();
-
-      await Promise.all(
-        plexUsers.map(async (plexUser) => {
-          if (
-            !existingUsers.find(
-              (user) =>
-                user.plexId === parseInt(plexUser.id) ||
-                user.email === plexUser.email.toLowerCase()
-            ) &&
-            (await plexApi.checkUserAccess(parseInt(plexUser.id)))
-          ) {
-            unimportedPlexUsers.push(plexUser);
-          }
-        })
-      );
-
-      return res.status(200).json(sortBy(unimportedPlexUsers, 'username'));
-    } catch (e) {
-      logger.error('Something went wrong getting unimported Plex users', {
-        label: 'API',
-        errorMessage: e.message,
-      });
-      next({
-        status: 500,
-        message: 'Unable to retrieve unimported Plex users.',
-      });
-    }
-  }
-);
 
 settingsRoutes.get(
   '/logs',

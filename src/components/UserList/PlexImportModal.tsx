@@ -19,10 +19,23 @@ const messages = defineMessages({
   importedfromplex:
     '<strong>{userCount}</strong> Plex {userCount, plural, one {user} other {users}} imported successfully!',
   user: 'User',
+  server: 'Server',
   nouserstoimport: 'There are no Plex users to import.',
   newplexsigninenabled:
     'The <strong>Enable New Plex Sign-In</strong> setting is currently enabled. Plex users with library access do not need to be imported in order to sign in.',
 });
+
+// Color palette for server badges
+const serverColors = [
+  { bg: 'bg-purple-600', border: 'border-purple-500', text: 'text-purple-100' },
+  { bg: 'bg-cyan-600', border: 'border-cyan-500', text: 'text-cyan-100' },
+  { bg: 'bg-pink-600', border: 'border-pink-500', text: 'text-pink-100' },
+  { bg: 'bg-teal-600', border: 'border-teal-500', text: 'text-teal-100' },
+  { bg: 'bg-orange-600', border: 'border-orange-500', text: 'text-orange-100' },
+  { bg: 'bg-blue-600', border: 'border-blue-500', text: 'text-blue-100' },
+  { bg: 'bg-emerald-600', border: 'border-emerald-500', text: 'text-emerald-100' },
+  { bg: 'bg-rose-600', border: 'border-rose-500', text: 'text-rose-100' },
+];
 
 const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
   const intl = useIntl();
@@ -37,10 +50,26 @@ const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
       username: string;
       email: string;
       thumb: string;
+      plexServerId?: number;
+      plexServerName?: string;
     }[]
   >(`/api/v1/settings/plex/users`, {
     revalidateOnMount: true,
   });
+
+  // Build a map of server IDs to color indices
+  const serverColorMap = new Map<number, number>();
+  data?.forEach((user) => {
+    if (user.plexServerId !== undefined && !serverColorMap.has(user.plexServerId)) {
+      serverColorMap.set(user.plexServerId, serverColorMap.size);
+    }
+  });
+
+  const getServerColor = (serverId?: number) => {
+    if (serverId === undefined) return null;
+    const colorIndex = serverColorMap.get(serverId) ?? 0;
+    return serverColors[colorIndex % serverColors.length];
+  };
 
   const importUsers = async () => {
     setImporting(true);
@@ -162,6 +191,9 @@ const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
                         <th className="bg-gray-500 px-1 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
                           {intl.formatMessage(messages.user)}
                         </th>
+                        <th className="bg-gray-500 px-1 py-3 text-left text-xs font-medium uppercase leading-4 tracking-wider text-gray-200 md:px-6">
+                          {intl.formatMessage(messages.server)}
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-700 bg-gray-600">
@@ -218,6 +250,25 @@ const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
                                   )}
                               </div>
                             </div>
+                          </td>
+                          <td className="whitespace-nowrap px-1 py-4 text-sm font-medium leading-5 text-gray-100 md:px-6">
+                            {(() => {
+                              const color = getServerColor(user.plexServerId);
+                              if (!color || !user.plexServerName) {
+                                return (
+                                  <span className="text-sm text-gray-500">
+                                    —
+                                  </span>
+                                );
+                              }
+                              return (
+                                <span
+                                  className={`inline-flex rounded-full border px-2 text-xs font-semibold leading-5 ${color.bg} bg-opacity-80 ${color.border} ${color.text}`}
+                                >
+                                  {user.plexServerName}
+                                </span>
+                              );
+                            })()}
                           </td>
                         </tr>
                       ))}

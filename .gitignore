@@ -54,6 +54,9 @@ config/db/db.sqlite3-journal
 # VS Code
 .vscode/launch.json
 
+# Cursor
+.cursor/
+
 # Cypress
 cypress.env.json
 cypress/videos
