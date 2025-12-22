@@ -196,20 +196,20 @@ plexRoutes.get('/users', async (req, res, next) => {
       admin.plexToken ?? undefined
     );
 
-    logger.debug(`Found ${allPlexUsers.length} total users across all Plex servers`, {
-      label: 'Plex',
-    });
+    logger.debug(
+      `Found ${allPlexUsers.length} total users across all Plex servers`,
+      {
+        label: 'Plex',
+      }
+    );
 
     // Dedupe by plexId, keeping the first server encountered
-    const uniquePlexUsers = allPlexUsers.reduce(
-      (acc, user) => {
-        if (!acc.find((u) => u.plexId === user.plexId)) {
-          acc.push(user);
-        }
-        return acc;
-      },
-      [] as typeof allPlexUsers
-    );
+    const uniquePlexUsers = allPlexUsers.reduce((acc, user) => {
+      if (!acc.find((u) => u.plexId === user.plexId)) {
+        acc.push(user);
+      }
+      return acc;
+    }, [] as typeof allPlexUsers);
 
     const unimportedPlexUsers: {
       id: string;
@@ -258,14 +258,11 @@ plexRoutes.get('/users', async (req, res, next) => {
     }
 
     // Count users per server for debugging
-    const serverCounts = unimportedPlexUsers.reduce(
-      (acc, user) => {
-        const serverName = user.plexServerName || 'unknown';
-        acc[serverName] = (acc[serverName] || 0) + 1;
-        return acc;
-      },
-      {} as Record<string, number>
-    );
+    const serverCounts = unimportedPlexUsers.reduce((acc, user) => {
+      const serverName = user.plexServerName || 'unknown';
+      acc[serverName] = (acc[serverName] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
     logger.debug(
       `Found ${unimportedPlexUsers.length} unimported users (${existingUsers.length} already exist)`,
@@ -274,7 +271,9 @@ plexRoutes.get('/users', async (req, res, next) => {
 
     return res
       .status(200)
-      .json(unimportedPlexUsers.sort((a, b) => a.username.localeCompare(b.username)));
+      .json(
+        unimportedPlexUsers.sort((a, b) => a.username.localeCompare(b.username))
+      );
   } catch (e) {
     logger.error('Something went wrong getting unimported Plex users', {
       label: 'API',

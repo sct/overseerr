@@ -279,7 +279,11 @@ class PlexTvAPI extends ExternalAPI {
   public static async checkUserAccessAnyServer(
     userId: number,
     fallbackToken?: string
-  ): Promise<{ hasAccess: boolean; plexServerId?: number; plexServerName?: string }> {
+  ): Promise<{
+    hasAccess: boolean;
+    plexServerId?: number;
+    plexServerName?: string;
+  }> {
     const settings = getSettings();
     const plexServers = settings.plex;
 
@@ -320,7 +324,11 @@ class PlexTvAPI extends ExternalAPI {
               `User ${userId} is the owner of server: ${plexServer.name}`,
               { label: 'Plex.tv API' }
             );
-            return { hasAccess: true, plexServerId: plexServer.id, plexServerName: plexServer.name };
+            return {
+              hasAccess: true,
+              plexServerId: plexServer.id,
+              plexServerName: plexServer.name,
+            };
           }
         } catch (ownerError) {
           logger.debug(
@@ -344,7 +352,11 @@ class PlexTvAPI extends ExternalAPI {
               `User ${userId} has access via server: ${plexServer.name}`,
               { label: 'Plex.tv API' }
             );
-            return { hasAccess: true, plexServerId: plexServer.id, plexServerName: plexServer.name };
+            return {
+              hasAccess: true,
+              plexServerId: plexServer.id,
+              plexServerName: plexServer.name,
+            };
           }
         }
       } catch (e) {
@@ -356,9 +368,12 @@ class PlexTvAPI extends ExternalAPI {
       }
     }
 
-    logger.debug(`User ${userId} does not have access to any configured server`, {
-      label: 'Plex.tv API',
-    });
+    logger.debug(
+      `User ${userId} does not have access to any configured server`,
+      {
+        label: 'Plex.tv API',
+      }
+    );
     return { hasAccess: false };
   }
 
@@ -369,41 +384,47 @@ class PlexTvAPI extends ExternalAPI {
   public static async getAllUsersFromAllServers(
     fallbackToken?: string
   ): Promise<
-    Array<{
+    {
       plexId: number;
       username: string;
       email: string;
       thumb: string;
       plexServerId: number;
       plexServerName: string;
-    }>
+    }[]
   > {
     const settings = getSettings();
     const plexServers = settings.plex;
-    const allUsers: Array<{
+    const allUsers: {
       plexId: number;
       username: string;
       email: string;
       thumb: string;
       plexServerId: number;
       plexServerName: string;
-    }> = [];
+    }[] = [];
 
     for (const plexServer of plexServers) {
       const token = plexServer.authToken || fallbackToken;
 
-      logger.debug(`Processing server ${plexServer.name} (id: ${plexServer.id})`, {
-        label: 'Plex.tv API',
-        hasToken: !!token,
-        hasAuthToken: !!plexServer.authToken,
-        hasMachineId: !!plexServer.machineId,
-        machineId: plexServer.machineId,
-      });
+      logger.debug(
+        `Processing server ${plexServer.name} (id: ${plexServer.id})`,
+        {
+          label: 'Plex.tv API',
+          hasToken: !!token,
+          hasAuthToken: !!plexServer.authToken,
+          hasMachineId: !!plexServer.machineId,
+          machineId: plexServer.machineId,
+        }
+      );
 
       if (!token || !plexServer.machineId) {
-        logger.debug(`Skipping server ${plexServer.name}: missing token or machineId`, {
-          label: 'Plex.tv API',
-        });
+        logger.debug(
+          `Skipping server ${plexServer.name}: missing token or machineId`,
+          {
+            label: 'Plex.tv API',
+          }
+        );
         continue;
       }
 
@@ -422,14 +443,20 @@ class PlexTvAPI extends ExternalAPI {
               plexServerId: plexServer.id,
               plexServerName: plexServer.name,
             });
-            logger.debug(`Added server owner ${owner.username} for ${plexServer.name}`, {
-              label: 'Plex.tv API',
-            });
+            logger.debug(
+              `Added server owner ${owner.username} for ${plexServer.name}`,
+              {
+                label: 'Plex.tv API',
+              }
+            );
           }
         } catch (ownerError) {
-          logger.warn(`Failed to get owner info for ${plexServer.name}: ${ownerError.message}`, {
-            label: 'Plex.tv API',
-          });
+          logger.warn(
+            `Failed to get owner info for ${plexServer.name}: ${ownerError.message}`,
+            {
+              label: 'Plex.tv API',
+            }
+          );
         }
 
         // Get shared users
@@ -454,10 +481,14 @@ class PlexTvAPI extends ExternalAPI {
           }
         }
 
-        logger.debug(`Found ${usersFoundOnThisServer} shared users with access to ${plexServer.name}`, {
-          label: 'Plex.tv API',
-          totalUsersInResponse: usersResponse.MediaContainer.User?.length ?? 0,
-        });
+        logger.debug(
+          `Found ${usersFoundOnThisServer} shared users with access to ${plexServer.name}`,
+          {
+            label: 'Plex.tv API',
+            totalUsersInResponse:
+              usersResponse.MediaContainer.User?.length ?? 0,
+          }
+        );
       } catch (e) {
         logger.warn(
           `Failed to fetch users from server ${plexServer.name}: ${e.message}`,

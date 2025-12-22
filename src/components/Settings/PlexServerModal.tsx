@@ -57,7 +57,8 @@ const messages = defineMessages({
     'The Plex authentication token for the owner of this server. Required for additional servers.',
   authTokenPlaceholder: 'Plex authentication token (optional)',
   authTokenPlaceholderRequired: 'Plex authentication token (required)',
-  validationAuthTokenRequired: 'Server Owner Token is required for additional servers',
+  validationAuthTokenRequired:
+    'Server Owner Token is required for additional servers',
 });
 
 interface PlexServerModalProps {
@@ -67,7 +68,12 @@ interface PlexServerModalProps {
   isFirstServer?: boolean; // If true, shows server preset dropdown; if false, requires authToken
 }
 
-const PlexServerModal = ({ onClose, plex, onSave, isFirstServer = true }: PlexServerModalProps) => {
+const PlexServerModal = ({
+  onClose,
+  plex,
+  onSave,
+  isFirstServer = true,
+}: PlexServerModalProps) => {
   const intl = useIntl();
   const { addToast, removeToast } = useToasts();
   const [isTesting, setIsTesting] = useState(false);
@@ -333,20 +339,20 @@ const PlexServerModal = ({ onClose, plex, onSave, isFirstServer = true }: PlexSe
                             disabled={!server.status}
                           >
                             {`
-                                ${server.name} (${server.address})
-                                [${
-                                  server.local
-                                    ? intl.formatMessage(messages.serverLocal)
-                                    : intl.formatMessage(messages.serverRemote)
-                                }]${
+                              ${server.name} (${server.address})
+                              [${
+                                server.local
+                                  ? intl.formatMessage(messages.serverLocal)
+                                  : intl.formatMessage(messages.serverRemote)
+                              }]${
                               server.ssl
                                 ? ` [${intl.formatMessage(
                                     messages.serverSecure
                                   )}]`
                                 : ''
                             }
-                                ${server.status ? '' : '(' + server.message + ')'}
-                              `}
+                              ${server.status ? '' : '(' + server.message + ')'}
+                            `}
                           </option>
                         ))}
                       </select>

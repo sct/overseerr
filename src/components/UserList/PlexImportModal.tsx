@@ -33,7 +33,11 @@ const serverColors = [
   { bg: 'bg-teal-600', border: 'border-teal-500', text: 'text-teal-100' },
   { bg: 'bg-orange-600', border: 'border-orange-500', text: 'text-orange-100' },
   { bg: 'bg-blue-600', border: 'border-blue-500', text: 'text-blue-100' },
-  { bg: 'bg-emerald-600', border: 'border-emerald-500', text: 'text-emerald-100' },
+  {
+    bg: 'bg-emerald-600',
+    border: 'border-emerald-500',
+    text: 'text-emerald-100',
+  },
   { bg: 'bg-rose-600', border: 'border-rose-500', text: 'text-rose-100' },
 ];
 
@@ -60,7 +64,10 @@ const PlexImportModal = ({ onCancel, onComplete }: PlexImportProps) => {
   // Build a map of server IDs to color indices
   const serverColorMap = new Map<number, number>();
   data?.forEach((user) => {
-    if (user.plexServerId !== undefined && !serverColorMap.has(user.plexServerId)) {
+    if (
+      user.plexServerId !== undefined &&
+      !serverColorMap.has(user.plexServerId)
+    ) {
       serverColorMap.set(user.plexServerId, serverColorMap.size);
     }
   });

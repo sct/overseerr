@@ -111,19 +111,31 @@ const UserList = () => {
   );
 
   // Fetch Plex servers to map plexServerId to server names
-  const { data: plexServers } = useSWR<
-    Array<{ id: number; name: string }>
-  >('/api/v1/settings/plex');
+  const { data: plexServers } = useSWR<{ id: number; name: string }[]>(
+    '/api/v1/settings/plex'
+  );
 
   // Color palette for server badges - distinct colors that work well on dark background
   const serverColors = [
-    { bg: 'bg-purple-600', border: 'border-purple-500', text: 'text-purple-100' },
+    {
+      bg: 'bg-purple-600',
+      border: 'border-purple-500',
+      text: 'text-purple-100',
+    },
     { bg: 'bg-cyan-600', border: 'border-cyan-500', text: 'text-cyan-100' },
     { bg: 'bg-pink-600', border: 'border-pink-500', text: 'text-pink-100' },
     { bg: 'bg-teal-600', border: 'border-teal-500', text: 'text-teal-100' },
-    { bg: 'bg-orange-600', border: 'border-orange-500', text: 'text-orange-100' },
+    {
+      bg: 'bg-orange-600',
+      border: 'border-orange-500',
+      text: 'text-orange-100',
+    },
     { bg: 'bg-blue-600', border: 'border-blue-500', text: 'text-blue-100' },
-    { bg: 'bg-emerald-600', border: 'border-emerald-500', text: 'text-emerald-100' },
+    {
+      bg: 'bg-emerald-600',
+      border: 'border-emerald-500',
+      text: 'text-emerald-100',
+    },
     { bg: 'bg-rose-600', border: 'border-rose-500', text: 'text-rose-100' },
   ];
 
@@ -757,7 +769,10 @@ const UserList = () => {
               </Table.TD>
               <Table.TD>
                 {(() => {
-                  const serverInfo = getServerInfo(user.plexServerId, user.plexServerName);
+                  const serverInfo = getServerInfo(
+                    user.plexServerId,
+                    user.plexServerName
+                  );
                   if (!serverInfo) {
                     return <span className="text-sm text-gray-500">—</span>;
                   }

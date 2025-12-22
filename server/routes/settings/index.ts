@@ -2,7 +2,7 @@ import TautulliAPI from '@server/api/tautulli';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
-import { User } from '@server/entity/User';
+import type { User } from '@server/entity/User';
 import type {
   LogMessage,
   LogsResultsResponse,
@@ -23,7 +23,7 @@ import { getAppVersion } from '@server/utils/appVersion';
 import { Router } from 'express';
 import rateLimit from 'express-rate-limit';
 import fs from 'fs';
-import { escapeRegExp, merge, omit, set, sortBy } from 'lodash';
+import { escapeRegExp, merge, omit, set } from 'lodash';
 import { rescheduleJob } from 'node-schedule';
 import path from 'path';
 import semver from 'semver';
@@ -118,7 +118,6 @@ settingsRoutes.post('/tautulli', async (req, res, next) => {
 
   return res.status(200).json(settings.tautulli);
 });
-
 
 settingsRoutes.get(
   '/logs',

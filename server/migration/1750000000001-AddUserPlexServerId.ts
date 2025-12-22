@@ -13,4 +13,3 @@ export class AddUserPlexServerId1750000000001 implements MigrationInterface {
     await queryRunner.query(`ALTER TABLE "user" DROP COLUMN "plexServerId"`);
   }
 }
-

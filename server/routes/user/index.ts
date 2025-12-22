@@ -501,9 +501,12 @@ router.post(
         mainUser.plexToken ?? undefined
       );
 
-      logger.debug(`Import: Found ${allPlexUsers.length} users across all Plex servers`, {
-        label: 'User Import',
-      });
+      logger.debug(
+        `Import: Found ${allPlexUsers.length} users across all Plex servers`,
+        {
+          label: 'User Import',
+        }
+      );
 
       const createdUsers: User[] = [];
       const updatedUsers: User[] = [];
@@ -512,9 +515,12 @@ router.post(
       for (const plexUser of allPlexUsers) {
         // Skip if no email
         if (!plexUser.email) {
-          logger.debug(`Import: Skipping user ${plexUser.username} - no email`, {
-            label: 'User Import',
-          });
+          logger.debug(
+            `Import: Skipping user ${plexUser.username} - no email`,
+            {
+              label: 'User Import',
+            }
+          );
           skippedUsers.push(`${plexUser.username} (no email)`);
           continue;
         }
