@@ -732,7 +732,7 @@ class TheMovieDb extends ExternalAPI {
 
       return data;
     } catch (e) {
-      throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
+      throw new Error(`[TMDB] Failed to fetch trending TV shows: ${e.message}`);
     }
   };
 
