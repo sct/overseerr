@@ -78,13 +78,17 @@ const RegionSelector = ({
     }
   }, [value, regions, allRegion]);
 
-  const handleChange = (regions: Region[]) => {
-    const isAllSelected = regions.find((r) => r.iso_3166_1 === 'all');
-    const isDefaultSelected = regions.find((r) => r.iso_3166_1 === 'default');
+  const handleChange = (selectedRegionsList: Region[]) => {
+    const isAllSelected = selectedRegionsList.find(
+      (r) => r.iso_3166_1 === 'all'
+    );
+    const isDefaultSelected = selectedRegionsList.find(
+      (r) => r.iso_3166_1 === 'default'
+    );
 
     // If "All" is selected and it wasn't before, clear others
     // If others are selected and "All" was selected, remove "All"
-    let newSelection = regions;
+    let newSelection = selectedRegionsList;
 
     if (isDefaultSelected) {
       // If Default is selected, clear everything else (including All)
