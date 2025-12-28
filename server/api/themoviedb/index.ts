@@ -488,7 +488,7 @@ class TheMovieDb extends ExternalAPI {
           page,
           include_adult: includeAdult,
           language,
-          region: this.region,
+          region: this.region?.includes('|') ? undefined : this.region,
           with_original_language:
             originalLanguage && originalLanguage !== 'all'
               ? originalLanguage
@@ -516,6 +516,9 @@ class TheMovieDb extends ExternalAPI {
           'vote_count.lte': voteCountLte,
           watch_region: watchRegion,
           with_watch_providers: watchProviders,
+          with_origin_country: this.region?.includes('|')
+            ? this.region
+            : undefined,
         },
       });
 
@@ -561,7 +564,7 @@ class TheMovieDb extends ExternalAPI {
           sort_by: sortBy,
           page,
           language,
-          region: this.region,
+          region: this.region?.includes('|') ? undefined : this.region,
           // Set our release date values, but check if one is set and not the other,
           // so we can force a past date or a future date. TMDB Requires both values if one is set!
           'first_air_date.gte':
@@ -590,6 +593,9 @@ class TheMovieDb extends ExternalAPI {
           'vote_count.lte': voteCountLte,
           with_watch_providers: watchProviders,
           watch_region: watchRegion,
+          with_origin_country: this.region?.includes('|')
+            ? this.region
+            : undefined,
         },
       });
 
@@ -597,6 +603,30 @@ class TheMovieDb extends ExternalAPI {
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch discover TV: ${e.message}`);
     }
+  };
+
+  private filterByOriginCountry = <T>(results: T[]): T[] => {
+    if (this.region?.includes('|')) {
+      const targetRegions = this.region.split('|');
+      return results.filter((item) => {
+        const itemWithCountry = item as unknown as {
+          origin_country?: string[];
+        };
+
+        if (
+          itemWithCountry.origin_country &&
+          itemWithCountry.origin_country.length > 0
+        ) {
+          return itemWithCountry.origin_country.some((country) =>
+            targetRegions.includes(country)
+          );
+        }
+
+        // Retain items without origin_country (e.g. Movies) to avoid over-filtering.
+        return true;
+      });
+    }
+    return results;
   };
 
   public getUpcomingMovies = async ({
@@ -613,11 +643,13 @@ class TheMovieDb extends ExternalAPI {
           params: {
             page,
             language,
-            region: this.region,
+            region: this.region?.includes('|') ? undefined : this.region,
             originalLanguage: this.originalLanguage,
           },
         }
       );
+
+      data.results = this.filterByOriginCountry(data.results);
 
       return data;
     } catch (e) {
@@ -641,10 +673,12 @@ class TheMovieDb extends ExternalAPI {
           params: {
             page,
             language,
-            region: this.region,
+            region: this.region?.includes('|') ? undefined : this.region,
           },
         }
       );
+
+      data.results = this.filterByOriginCountry(data.results);
 
       return data;
     } catch (e) {
@@ -669,6 +703,8 @@ class TheMovieDb extends ExternalAPI {
         }
       );
 
+      data.results = this.filterByOriginCountry(data.results);
+
       return data;
     } catch (e) {
       throw new Error(`[TMDB] Failed to fetch all trending: ${e.message}`);
@@ -691,6 +727,8 @@ class TheMovieDb extends ExternalAPI {
           },
         }
       );
+
+      data.results = this.filterByOriginCountry(data.results);
 
       return data;
     } catch (e) {

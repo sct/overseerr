@@ -36,7 +36,7 @@ const RegionSelector = ({
   const { data: regions } = useSWR<Region[]>(
     watchProviders ? '/api/v1/watchproviders/regions' : '/api/v1/regions'
   );
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
+  const [selectedRegions, setSelectedRegions] = useState<Region[]>([]);
 
   const allRegion: Region = useMemo(
     () => ({
@@ -47,7 +47,7 @@ const RegionSelector = ({
   );
 
   const sortedRegions = useMemo(() => {
-    regions?.forEach((region) => {
+    regions?.forEach((region: Region) => {
       region.name =
         intl.formatDisplayName(region.iso_3166_1, {
           type: 'region',
@@ -59,65 +59,116 @@ const RegionSelector = ({
   }, [intl, regions]);
 
   const regionName = (regionCode: string) =>
-    sortedRegions?.find((region) => region.iso_3166_1 === regionCode)?.name ??
-    regionCode;
+    sortedRegions?.find((region: Region) => region.iso_3166_1 === regionCode)
+      ?.name ?? regionCode;
 
   useEffect(() => {
     if (regions && value) {
       if (value === 'all') {
-        setSelectedRegion(allRegion);
+        setSelectedRegions([allRegion]);
       } else {
-        const matchedRegion = regions.find(
-          (region) => region.iso_3166_1 === value
+        const values = value.split('|');
+        const matchedRegions = regions.filter((region: Region) =>
+          values.includes(region.iso_3166_1)
         );
-        setSelectedRegion(matchedRegion ?? null);
+        setSelectedRegions(matchedRegions.length > 0 ? matchedRegions : []);
       }
+    } else {
+      setSelectedRegions([]);
     }
   }, [value, regions, allRegion]);
 
-  useEffect(() => {
-    if (onChange && regions) {
-      if (selectedRegion) {
-        onChange(name, selectedRegion.iso_3166_1);
+  const handleChange = (regions: Region[]) => {
+    const isAllSelected = regions.find((r) => r.iso_3166_1 === 'all');
+    const isDefaultSelected = regions.find((r) => r.iso_3166_1 === 'default');
+
+    // If "All" is selected and it wasn't before, clear others
+    // If others are selected and "All" was selected, remove "All"
+    let newSelection = regions;
+
+    if (isDefaultSelected) {
+      // If Default is selected, clear everything else (including All)
+      newSelection = [];
+    } else if (isAllSelected) {
+      if (selectedRegions.some((r: Region) => r.iso_3166_1 === 'all')) {
+        // All was already selected, so we are unselecting something else or selecting more specific things
+        // If we are selecting something else, we should remove 'all'
+        if (regions.length > 1) {
+          newSelection = regions.filter((r) => r.iso_3166_1 !== 'all');
+        }
+      } else {
+        // All was just selected, clear everything else
+        newSelection = [allRegion];
+      }
+    }
+
+    setSelectedRegions(newSelection);
+
+    if (onChange) {
+      if (newSelection.length > 0) {
+        if (newSelection.some((r) => r.iso_3166_1 === 'all')) {
+          onChange(name, 'all');
+        } else {
+          onChange(name, newSelection.map((r) => r.iso_3166_1).join('|'));
+        }
       } else {
         onChange(name, '');
       }
     }
-  }, [onChange, selectedRegion, name, regions]);
+  };
 
   return (
     <div className="z-40 w-full">
-      <Listbox as="div" value={selectedRegion} onChange={setSelectedRegion}>
+      <Listbox
+        as="div"
+        value={selectedRegions}
+        onChange={handleChange}
+        multiple
+      >
         {({ open }) => (
           <div className="relative">
             <span className="inline-block w-full rounded-md shadow-sm">
               <Listbox.Button className="focus:shadow-outline-blue relative flex w-full cursor-default items-center rounded-md border border-gray-500 bg-gray-700 py-2 pl-3 pr-10 text-left text-white transition duration-150 ease-in-out focus:border-blue-300 focus:outline-none sm:text-sm sm:leading-5">
-                {((selectedRegion && hasFlag(selectedRegion?.iso_3166_1)) ||
-                  (isUserSetting &&
-                    !selectedRegion &&
-                    currentSettings.region &&
-                    hasFlag(currentSettings.region))) && (
-                  <span className="mr-2 h-4 overflow-hidden text-base leading-4">
-                    <span
-                      className={`flag:${
-                        selectedRegion
-                          ? selectedRegion.iso_3166_1
-                          : currentSettings.region
-                      }`}
-                    />
+                {selectedRegions.length > 0 &&
+                selectedRegions[0].iso_3166_1 !== 'all' ? (
+                  <span className="block truncate">
+                    {selectedRegions.length === 1
+                      ? regionName(selectedRegions[0].iso_3166_1)
+                      : `${selectedRegions.length} Regions Selected`}
+                  </span>
+                ) : (
+                  <span className="block truncate">
+                    {isUserSetting && selectedRegions.length === 0
+                      ? intl.formatMessage(messages.regionServerDefault, {
+                          region: currentSettings.region
+                            ? regionName(currentSettings.region)
+                            : intl.formatMessage(messages.regionDefault),
+                        })
+                      : intl.formatMessage(messages.regionDefault)}
                   </span>
                 )}
-                <span className="block truncate">
-                  {selectedRegion && selectedRegion.iso_3166_1 !== 'all'
-                    ? regionName(selectedRegion.iso_3166_1)
-                    : isUserSetting && selectedRegion?.iso_3166_1 !== 'all'
-                    ? intl.formatMessage(messages.regionServerDefault, {
-                        region: currentSettings.region
-                          ? regionName(currentSettings.region)
-                          : intl.formatMessage(messages.regionDefault),
-                      })
-                    : intl.formatMessage(messages.regionDefault)}
-                </span>
+                {selectedRegions.length > 0 &&
+                  selectedRegions[0].iso_3166_1 !== 'all' && (
+                    <div className="ml-2 flex items-center space-x-1">
+                      {selectedRegions.slice(0, 3).map(
+                        (region) =>
+                          hasFlag(region.iso_3166_1) && (
+                            <span
+                              key={region.iso_3166_1}
+                              className="h-4 overflow-hidden text-base leading-4"
+                            >
+                              <span className={`flag:${region.iso_3166_1}`} />
+                            </span>
+                          )
+                      )}
+                      {selectedRegions.length > 3 && (
+                        <span className="text-xs text-gray-400">
+                          +{selectedRegions.length - 3}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-gray-500">
                   <ChevronDownIcon className="h-5 w-5" />
                 </span>
@@ -136,8 +187,10 @@ const RegionSelector = ({
                 className="shadow-xs max-h-60 overflow-auto rounded-md py-1 text-base leading-6 focus:outline-none sm:text-sm sm:leading-5"
               >
                 {isUserSetting && (
-                  <Listbox.Option value={null}>
-                    {({ selected, active }) => (
+                  <Listbox.Option
+                    value={{ iso_3166_1: 'default', english_name: 'Default' }}
+                  >
+                    {({ active }: { active: boolean }) => (
                       <div
                         className={`${
                           active ? 'bg-indigo-600 text-white' : 'text-gray-300'
@@ -154,7 +207,9 @@ const RegionSelector = ({
                         </span>
                         <span
                           className={`${
-                            selected ? 'font-semibold' : 'font-normal'
+                            selectedRegions.length === 0
+                              ? 'font-semibold'
+                              : 'font-normal'
                           } block truncate`}
                         >
                           {intl.formatMessage(messages.regionServerDefault, {
@@ -163,7 +218,7 @@ const RegionSelector = ({
                               : intl.formatMessage(messages.regionDefault),
                           })}
                         </span>
-                        {selected && (
+                        {selectedRegions.length === 0 && (
                           <span
                             className={`${
                               active ? 'text-white' : 'text-indigo-600'
@@ -177,8 +232,8 @@ const RegionSelector = ({
                   </Listbox.Option>
                 )}
                 {!disableAll && (
-                  <Listbox.Option value={isUserSetting ? allRegion : null}>
-                    {({ selected, active }) => (
+                  <Listbox.Option value={allRegion}>
+                    {({ active }: { active: boolean }) => (
                       <div
                         className={`${
                           active ? 'bg-indigo-600 text-white' : 'text-gray-300'
@@ -186,12 +241,14 @@ const RegionSelector = ({
                       >
                         <span
                           className={`${
-                            selected ? 'font-semibold' : 'font-normal'
+                            selectedResources(selectedRegions, 'all')
+                              ? 'font-semibold'
+                              : 'font-normal'
                           } block truncate pl-8`}
                         >
                           {intl.formatMessage(messages.regionDefault)}
                         </span>
-                        {selected && (
+                        {selectedResources(selectedRegions, 'all') && (
                           <span
                             className={`${
                               active ? 'text-white' : 'text-indigo-600'
@@ -204,9 +261,9 @@ const RegionSelector = ({
                     )}
                   </Listbox.Option>
                 )}
-                {sortedRegions?.map((region) => (
+                {sortedRegions?.map((region: Region) => (
                   <Listbox.Option key={region.iso_3166_1} value={region}>
-                    {({ selected, active }) => (
+                    {({ active }: { active: boolean }) => (
                       <div
                         className={`${
                           active ? 'bg-indigo-600 text-white' : 'text-gray-300'
@@ -223,12 +280,20 @@ const RegionSelector = ({
                         </span>
                         <span
                           className={`${
-                            selected ? 'font-semibold' : 'font-normal'
+                            selectedResources(
+                              selectedRegions,
+                              region.iso_3166_1
+                            )
+                              ? 'font-semibold'
+                              : 'font-normal'
                           } block truncate`}
                         >
                           {regionName(region.iso_3166_1)}
                         </span>
-                        {selected && (
+                        {selectedResources(
+                          selectedRegions,
+                          region.iso_3166_1
+                        ) && (
                           <span
                             className={`${
                               active ? 'text-white' : 'text-indigo-600'
@@ -248,6 +313,10 @@ const RegionSelector = ({
       </Listbox>
     </div>
   );
+};
+
+const selectedResources = (selectedRegions: Region[], key: string) => {
+  return selectedRegions.some((r) => r.iso_3166_1 === key);
 };
 
 export default RegionSelector;
