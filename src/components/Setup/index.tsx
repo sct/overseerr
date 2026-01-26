@@ -26,6 +26,9 @@ const messages = defineMessages({
   tip: 'Tip',
   scanbackground:
     'Scanning will run in the background. You can continue the setup process in the meantime.',
+  skipSetup: 'Skip Setup',
+  skipSetupDescription:
+    'Skip the setup process and go to the dashboard. You can configure settings later from the dashboard.',
 });
 
 const Setup = () => {
@@ -51,6 +54,27 @@ const Setup = () => {
     }
   };
 
+  const skipSetup = async () => {
+    setIsUpdating(true);
+    try {
+      const response = await axios.post<{ initialized: boolean }>(
+        '/api/v1/settings/initialize'
+      );
+
+      if (response.data.initialized) {
+        await axios.post('/api/v1/settings/main', { locale });
+        mutate('/api/v1/settings/public');
+
+        router.push('/');
+      }
+    } catch (e) {
+      // If initialize fails, try to continue anyway
+      router.push('/');
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const { data: backdrops } = useSWR<string[]>('/api/v1/backdrops', {
     refreshInterval: 0,
     refreshWhenHidden: false,
@@ -71,6 +95,16 @@ const Setup = () => {
         <LanguagePicker />
       </div>
       <div className="relative z-40 px-4 sm:mx-auto sm:w-full sm:max-w-4xl">
+        <div className="mb-4 flex justify-end">
+          <Button
+            buttonType="ghost"
+            onClick={skipSetup}
+            disabled={isUpdating}
+            className="text-gray-400 hover:text-white"
+          >
+            {intl.formatMessage(messages.skipSetup)}
+          </Button>
+        </div>
         <img
           src="/logo_stacked.svg"
           className="mb-10 max-w-full sm:mx-auto sm:max-w-md"

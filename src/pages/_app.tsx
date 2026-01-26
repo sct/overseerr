@@ -1,3 +1,4 @@
+import ErrorBoundary from '@app/components/ErrorBoundary';
 import Layout from '@app/components/Layout';
 import LoadingBar from '@app/components/LoadingBar';
 import PWAHeader from '@app/components/PWAHeader';
@@ -212,7 +213,9 @@ const CoreApp: Omit<NextAppComponentType, 'origGetInitialProps'> = ({
                 </Head>
                 <StatusChecker />
                 <ServiceWorkerSetup />
-                <UserContext initialUser={user}>{component}</UserContext>
+                <ErrorBoundary>
+                  <UserContext initialUser={user}>{component}</UserContext>
+                </ErrorBoundary>
               </ToastProvider>
             </InteractionProvider>
           </SettingsProvider>
@@ -255,8 +258,9 @@ CoreApp.getInitialProps = async (initialProps) => {
     currentSettings = response.data;
 
     const initialized = response.data.initialized;
+    const skipSetup = process.env.SKIP_SETUP === 'true' || ctx.query.skipSetup === 'true';
 
-    if (!initialized) {
+    if (!initialized && !skipSetup) {
       if (!router.pathname.match(/(setup|login\/plex)/)) {
         ctx.res.writeHead(307, {
           Location: '/setup',
@@ -289,7 +293,9 @@ CoreApp.getInitialProps = async (initialProps) => {
         // If there is no user, and ctx.res is set (to check if we are on the server side)
         // _AND_ we are not already on the login or setup route, redirect to /login with a 307
         // before anything actually renders
-        if (!router.pathname.match(/(login|setup|resetpassword)/)) {
+        // Allow skipping login if SKIP_SETUP is enabled (for testing)
+        const skipSetup = process.env.SKIP_SETUP === 'true' || ctx.query.skipSetup === 'true';
+        if (!router.pathname.match(/(login|setup|resetpassword)/) && !skipSetup) {
           ctx.res.writeHead(307, {
             Location: '/login',
           });

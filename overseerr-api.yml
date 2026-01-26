@@ -2973,6 +2973,217 @@ paths:
                     timestamp:
                       type: string
                       example: '2020-12-15T16:20:00.069Z'
+  /settings/audit:
+    get:
+      summary: Returns audit logs
+      description: Returns a paginated list of audit log entries
+      tags:
+        - settings
+      parameters:
+        - in: query
+          name: take
+          schema:
+            type: number
+            nullable: true
+            example: 25
+        - in: query
+          name: skip
+          schema:
+            type: number
+            nullable: true
+            example: 0
+        - in: query
+          name: search
+          schema:
+            type: string
+            nullable: true
+            example: request.bulk
+      responses:
+        '200':
+          description: Audit log results returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pageInfo:
+                    $ref: '#/components/schemas/PageInfo'
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        action:
+                          type: string
+                        entityType:
+                          type: string
+                          nullable: true
+                        entityId:
+                          type: string
+                          nullable: true
+                        ip:
+                          type: string
+                          nullable: true
+                        createdAt:
+                          type: string
+                        user:
+                          type: object
+                          nullable: true
+                          properties:
+                            id:
+                              type: number
+                            displayName:
+                              type: string
+                            avatar:
+                              type: string
+  /settings/api-keys:
+    get:
+      summary: List API keys
+      description: Returns configured API keys (without the secret)
+      tags:
+        - settings
+      responses:
+        '200':
+          description: API keys returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    name:
+                      type: string
+                    last4:
+                      type: string
+                    permissions:
+                      type: number
+                    isActive:
+                      type: boolean
+                    createdAt:
+                      type: string
+                    lastUsedAt:
+                      type: string
+                      nullable: true
+                    userId:
+                      type: number
+    post:
+      summary: Create API key
+      description: Creates a new API key and returns the secret once
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                permissions:
+                  type: number
+                userId:
+                  type: number
+                  nullable: true
+              required:
+                - name
+                - permissions
+      responses:
+        '201':
+          description: API key created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  name:
+                    type: string
+                  last4:
+                    type: string
+                  permissions:
+                    type: number
+                  isActive:
+                    type: boolean
+                  createdAt:
+                    type: string
+                  lastUsedAt:
+                    type: string
+                    nullable: true
+                  userId:
+                    type: number
+                  apiKey:
+                    type: string
+  /settings/api-keys/{keyId}:
+    put:
+      summary: Update API key
+      description: Updates API key metadata and status
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: keyId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                permissions:
+                  type: number
+                isActive:
+                  type: boolean
+      responses:
+        '200':
+          description: API key updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                  name:
+                    type: string
+                  last4:
+                    type: string
+                  permissions:
+                    type: number
+                  isActive:
+                    type: boolean
+                  createdAt:
+                    type: string
+                  lastUsedAt:
+                    type: string
+                    nullable: true
+                  userId:
+                    type: number
+    delete:
+      summary: Delete API key
+      description: Deletes an API key
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: keyId
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: API key deleted
   /settings/notifications/email:
     get:
       summary: Get email notification settings
@@ -5585,6 +5796,90 @@ paths:
                     type: number
                   available:
                     type: number
+  /request/bulk:
+    post:
+      summary: Bulk update or delete requests
+      description: |
+        Bulk approves, declines, or deletes requests.
+
+        Requires the `MANAGE_REQUESTS` permission or `ADMIN`.
+      tags:
+        - request
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requestIds:
+                  type: array
+                  items:
+                    type: number
+                action:
+                  type: string
+                  enum: [approve, decline, delete]
+              required:
+                - requestIds
+                - action
+      responses:
+        '200':
+          description: Bulk action result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  updated:
+                    type: number
+                  deleted:
+                    type: number
+  /request/export:
+    get:
+      summary: Export requests to CSV
+      description: |
+        Exports requests as a CSV file.
+
+        Requires the `MANAGE_REQUESTS` permission or `ADMIN`.
+      tags:
+        - request
+      parameters:
+        - in: query
+          name: filter
+          schema:
+            type: string
+            nullable: true
+            enum:
+              [
+                all,
+                approved,
+                available,
+                pending,
+                processing,
+                unavailable,
+                failed,
+                deleted,
+                completed,
+              ]
+        - in: query
+          name: sort
+          schema:
+            type: string
+            enum: [added, modified]
+            default: added
+        - in: query
+          name: requestedBy
+          schema:
+            type: number
+            nullable: true
+            example: 1
+      responses:
+        '200':
+          description: CSV export
+          content:
+            text/csv:
+              schema:
+                type: string
   /request/{requestId}:
     get:
       summary: Get MediaRequest

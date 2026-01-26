@@ -34,6 +34,10 @@ searchRoutes.get('/', async (req, res, next) => {
   }
   
   const searchProvider = findSearchProvider(sanitizedQuery.toLowerCase());
+  const year = req.query.year ? Number(req.query.year) : undefined;
+  const genre = req.query.genre ? Number(req.query.genre) : undefined;
+  const mediaType = req.query.mediaType as 'movie' | 'tv' | undefined;
+  const status = req.query.status as string | undefined;
   let tmdbResults: TmdbSearchMultiResponse;
   let musicResults: Results[] = [];
 
@@ -51,82 +55,109 @@ searchRoutes.get('/', async (req, res, next) => {
       const tmdb = new TheMovieDb();
 
       const page = toPositiveInteger(
-      typeof req.query.page === 'string' ? req.query.page : undefined
-    ) ?? 1;
+        typeof req.query.page === 'string' ? req.query.page : undefined
+      ) ?? 1;
 
-      tmdbResults = await tmdb.searchMulti({
-        query: sanitizedQuery,
-        page,
-        language: (req.query.language as string) ?? req.locale,
-      });
-
-      // Also search MusicBrainz in parallel
-      try {
-        const musicBrainz = new MusicBrainzAPI();
-        const limit = 10; // Limit music results per page
-        const offset = (page - 1) * limit;
-
-        const [artistSearch, albumSearch] = await Promise.allSettled([
-          musicBrainz.searchArtists(sanitizedQuery, limit, offset),
-          musicBrainz.searchReleaseGroups(sanitizedQuery, limit, offset),
-        ]);
-
-        const musicBrainzIds: string[] = [];
-        
-        if (artistSearch.status === 'fulfilled' && artistSearch.value['artist-list']) {
-          musicBrainzIds.push(...artistSearch.value['artist-list'].map((a) => a.id));
-        }
-        
-        if (albumSearch.status === 'fulfilled' && albumSearch.value['release-group-list']) {
-          musicBrainzIds.push(...albumSearch.value['release-group-list'].map((rg) => rg.id));
-        }
-
-        const mediaRepository = getRepository(Media);
-        const media = musicBrainzIds.length
-          ? await mediaRepository.find({
-              where: musicBrainzIds.map((mbid) => ({
-                musicBrainzId: mbid,
-                mediaType: In([MediaType.ARTIST, MediaType.ALBUM, MediaType.MUSIC]),
-              })),
-            })
-          : [];
-
-        if (artistSearch.status === 'fulfilled' && artistSearch.value['artist-list']) {
-          musicResults.push(
-            ...artistSearch.value['artist-list'].map((artist) =>
-              mapArtistResult(
-                artist,
-                media.find(
-                  (m) =>
-                    m.musicBrainzId === artist.id &&
-                    (m.mediaType === MediaType.ARTIST || m.mediaType === MediaType.MUSIC)
-                )
-              )
-            )
-          );
-        }
-
-        if (albumSearch.status === 'fulfilled' && albumSearch.value['release-group-list']) {
-          musicResults.push(
-            ...albumSearch.value['release-group-list'].map((album) =>
-              mapAlbumResult(
-                album,
-                media.find(
-                  (m) =>
-                    m.musicBrainzId === album.id &&
-                    (m.mediaType === MediaType.ALBUM || m.mediaType === MediaType.MUSIC)
-                )
-              )
-            )
-          );
-        }
-      } catch (musicError) {
-        // Log but don't fail the entire search if music search fails
-        logger.debug('MusicBrainz search failed', {
-          label: 'API',
-          errorMessage: musicError.message,
+      // Use type-specific search if filters are applied
+      if (mediaType === 'movie' && (year || genre)) {
+        const movieResults = await tmdb.searchMovies({
           query: sanitizedQuery,
+          page,
+          language: (req.query.language as string) ?? req.locale,
+          year,
         });
+        tmdbResults = {
+          ...movieResults,
+          results: movieResults.results.map((r) => ({ ...r, media_type: 'movie' })),
+        } as TmdbSearchMultiResponse;
+      } else if (mediaType === 'tv' && (year || genre)) {
+        const tvResults = await tmdb.searchTvShows({
+          query: sanitizedQuery,
+          page,
+          language: (req.query.language as string) ?? req.locale,
+          year,
+        });
+        tmdbResults = {
+          ...tvResults,
+          results: tvResults.results.map((r) => ({ ...r, media_type: 'tv' })),
+        } as TmdbSearchMultiResponse;
+      } else {
+        tmdbResults = await tmdb.searchMulti({
+          query: sanitizedQuery,
+          page,
+          language: (req.query.language as string) ?? req.locale,
+        });
+      }
+
+      // Also search MusicBrainz in parallel (only if not filtering by mediaType)
+      if (!mediaType) {
+        try {
+          const musicBrainz = new MusicBrainzAPI();
+          const limit = 10; // Limit music results per page
+          const offset = (page - 1) * limit;
+
+          const [artistSearch, albumSearch] = await Promise.allSettled([
+            musicBrainz.searchArtists(sanitizedQuery, limit, offset),
+            musicBrainz.searchReleaseGroups(sanitizedQuery, limit, offset),
+          ]);
+
+          const musicBrainzIds: string[] = [];
+          
+          if (artistSearch.status === 'fulfilled' && artistSearch.value['artist-list']) {
+            musicBrainzIds.push(...artistSearch.value['artist-list'].map((a) => a.id));
+          }
+          
+          if (albumSearch.status === 'fulfilled' && albumSearch.value['release-group-list']) {
+            musicBrainzIds.push(...albumSearch.value['release-group-list'].map((rg) => rg.id));
+          }
+
+          const mediaRepository = getRepository(Media);
+          const media = musicBrainzIds.length
+            ? await mediaRepository.find({
+                where: musicBrainzIds.map((mbid) => ({
+                  musicBrainzId: mbid,
+                  mediaType: In([MediaType.ARTIST, MediaType.ALBUM, MediaType.MUSIC]),
+                })),
+              })
+            : [];
+
+          if (artistSearch.status === 'fulfilled' && artistSearch.value['artist-list']) {
+            musicResults.push(
+              ...artistSearch.value['artist-list'].map((artist) =>
+                mapArtistResult(
+                  artist,
+                  media.find(
+                    (m) =>
+                      m.musicBrainzId === artist.id &&
+                      (m.mediaType === MediaType.ARTIST || m.mediaType === MediaType.MUSIC)
+                  )
+                )
+              )
+            );
+          }
+
+          if (albumSearch.status === 'fulfilled' && albumSearch.value['release-group-list']) {
+            musicResults.push(
+              ...albumSearch.value['release-group-list'].map((album) =>
+                mapAlbumResult(
+                  album,
+                  media.find(
+                    (m) =>
+                      m.musicBrainzId === album.id &&
+                      (m.mediaType === MediaType.ALBUM || m.mediaType === MediaType.MUSIC)
+                  )
+                )
+              )
+            );
+          }
+        } catch (musicError) {
+          // Log but don't fail the entire search if music search fails
+          logger.debug('MusicBrainz search failed', {
+            label: 'API',
+            errorMessage: musicError.message,
+            query: sanitizedQuery,
+          });
+        }
       }
     }
 
@@ -134,15 +165,52 @@ searchRoutes.get('/', async (req, res, next) => {
       tmdbResults.results.map((result) => result.id)
     );
 
-    const tmdbMappedResults = mapSearchResults(tmdbResults.results, media);
+    let mappedResults = mapSearchResults(tmdbResults.results, media);
     
     // Combine TMDB and MusicBrainz results
-    const allResults = [...tmdbMappedResults, ...musicResults];
+    const allResults = [...mappedResults, ...musicResults];
+
+    // Filter by genre if specified
+    if (genre) {
+      const filteredResults = allResults.filter((result) => {
+        if (
+          (result.mediaType === 'movie' || result.mediaType === 'tv') &&
+          'genreIds' in result &&
+          Array.isArray(result.genreIds)
+        ) {
+          return result.genreIds.includes(genre);
+        }
+        return false;
+      });
+      // Only apply genre filter to movie/TV results, keep music results
+      const musicOnlyResults = allResults.filter(
+        (result) => result.mediaType === 'artist' || result.mediaType === 'album'
+      );
+      allResults.splice(0, allResults.length, ...filteredResults, ...musicOnlyResults);
+    }
+
+    // Filter by availability status if specified
+    if (status) {
+      const filteredResults = allResults.filter((result) => {
+        if (
+          (result.mediaType === 'movie' || result.mediaType === 'tv') &&
+          result.mediaInfo
+        ) {
+          return result.mediaInfo.status === Number(status);
+        }
+        // For music, include if status is '0' (unknown/unavailable) or if no status filter
+        if (result.mediaType === 'artist' || result.mediaType === 'album') {
+          return status === '0' || !result.mediaInfo || result.mediaInfo.status === Number(status);
+        }
+        return status === '0'; // Unknown/unavailable
+      });
+      allResults.splice(0, allResults.length, ...filteredResults);
+    }
 
     return res.status(200).json({
       page: tmdbResults.page,
       totalPages: tmdbResults.total_pages,
-      totalResults: tmdbResults.total_results + musicResults.length,
+      totalResults: allResults.length,
       results: allResults,
     });
   } catch (e) {

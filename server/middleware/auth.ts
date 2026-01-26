@@ -1,16 +1,21 @@
 import { getRepository } from '@server/datasource';
+import { ApiKey } from '@server/entity/ApiKey';
 import { User } from '@server/entity/User';
 import type {
   Permission,
   PermissionCheckOptions,
 } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
+import { createHash } from 'crypto';
 
 export const checkUser: Middleware = async (req, _res, next) => {
   const settings = getSettings();
   let user: User | undefined | null;
 
-  if (req.header('X-API-Key') === settings.main.apiKey) {
+  const apiKeyHeader = req.header('X-API-Key');
+
+  // Legacy single API key behavior (kept for backward compatibility)
+  if (apiKeyHeader && apiKeyHeader === settings.main.apiKey) {
     const userRepository = getRepository(User);
 
     let userId = 1; // Work on original administrator account
@@ -21,6 +26,27 @@ export const checkUser: Middleware = async (req, _res, next) => {
     }
 
     user = await userRepository.findOne({ where: { id: userId } });
+  } else if (apiKeyHeader) {
+    // New multi-key support (scoped permissions)
+    const apiKeyRepository = getRepository(ApiKey);
+    const hash = createHash('sha256').update(apiKeyHeader).digest('hex');
+    const apiKey = await apiKeyRepository.findOne({
+      where: { keyHash: hash, isActive: true },
+      relations: { user: true },
+    });
+
+    if (apiKey?.user) {
+      // Restrict permissions to the key's allowed scope
+      apiKey.user.permissions = apiKey.user.permissions & apiKey.permissions;
+      user = apiKey.user;
+
+      const now = Date.now();
+      const lastUsed = apiKey.lastUsedAt ? apiKey.lastUsedAt.getTime() : 0;
+      if (!apiKey.lastUsedAt || now - lastUsed > 5 * 60 * 1000) {
+        apiKey.lastUsedAt = new Date();
+        apiKeyRepository.save(apiKey);
+      }
+    }
   } else if (req.session?.userId) {
     const userRepository = getRepository(User);
 

@@ -90,6 +90,15 @@ interface Quota {
   quotaDays?: number;
 }
 
+export interface RedisSettings {
+  enabled: boolean;
+  host: string;
+  port: number;
+  password?: string;
+  db: number;
+  keyPrefix: string;
+}
+
 export interface MainSettings {
   apiKey: string;
   applicationTitle: string;
@@ -110,6 +119,7 @@ export interface MainSettings {
   trustProxy: boolean;
   partialRequestsEnabled: boolean;
   locale: string;
+  redis: RedisSettings;
 }
 
 interface PublicSettings {
@@ -310,6 +320,13 @@ class Settings {
         trustProxy: false,
         partialRequestsEnabled: true,
         locale: 'en',
+        redis: {
+          enabled: false,
+          host: 'localhost',
+          port: 6379,
+          db: 0,
+          keyPrefix: 'overseerr:',
+        },
       },
       plex: {
         name: '',
