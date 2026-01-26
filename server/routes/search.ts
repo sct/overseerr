@@ -11,6 +11,10 @@ const searchRoutes = Router();
 searchRoutes.get('/', async (req, res, next) => {
   const queryString = req.query.query as string;
   const searchProvider = findSearchProvider(queryString.toLowerCase());
+  const year = req.query.year ? Number(req.query.year) : undefined;
+  const genre = req.query.genre ? Number(req.query.genre) : undefined;
+  const mediaType = req.query.mediaType as 'movie' | 'tv' | undefined;
+  const status = req.query.status as string | undefined;
   let results: TmdbSearchMultiResponse;
 
   try {
@@ -26,22 +30,76 @@ searchRoutes.get('/', async (req, res, next) => {
     } else {
       const tmdb = new TheMovieDb();
 
-      results = await tmdb.searchMulti({
-        query: queryString,
-        page: Number(req.query.page),
-        language: (req.query.language as string) ?? req.locale,
-      });
+      // Use type-specific search if filters are applied
+      if (mediaType === 'movie' && (year || genre)) {
+        const movieResults = await tmdb.searchMovies({
+          query: queryString,
+          page: Number(req.query.page) || 1,
+          language: (req.query.language as string) ?? req.locale,
+          year,
+        });
+        results = {
+          ...movieResults,
+          results: movieResults.results.map((r) => ({ ...r, media_type: 'movie' })),
+        } as TmdbSearchMultiResponse;
+      } else if (mediaType === 'tv' && (year || genre)) {
+        const tvResults = await tmdb.searchTvShows({
+          query: queryString,
+          page: Number(req.query.page) || 1,
+          language: (req.query.language as string) ?? req.locale,
+          year,
+        });
+        results = {
+          ...tvResults,
+          results: tvResults.results.map((r) => ({ ...r, media_type: 'tv' })),
+        } as TmdbSearchMultiResponse;
+      } else {
+        results = await tmdb.searchMulti({
+          query: queryString,
+          page: Number(req.query.page) || 1,
+          language: (req.query.language as string) ?? req.locale,
+        });
+      }
     }
 
     const media = await Media.getRelatedMedia(
       results.results.map((result) => result.id)
     );
 
+    let mappedResults = mapSearchResults(results.results, media);
+
+    // Filter by genre if specified
+    if (genre) {
+      mappedResults = mappedResults.filter((result) => {
+        if (
+          (result.mediaType === 'movie' || result.mediaType === 'tv') &&
+          'genreIds' in result &&
+          Array.isArray(result.genreIds)
+        ) {
+          return result.genreIds.includes(genre);
+        }
+        return false;
+      });
+    }
+
+    // Filter by availability status if specified
+    if (status) {
+      mappedResults = mappedResults.filter((result) => {
+        if (
+          (result.mediaType === 'movie' || result.mediaType === 'tv') &&
+          result.mediaInfo
+        ) {
+          return result.mediaInfo.status === Number(status);
+        }
+        return status === '0'; // Unknown/unavailable
+      });
+    }
+
     return res.status(200).json({
       page: results.page,
       totalPages: results.total_pages,
-      totalResults: results.total_results,
-      results: mapSearchResults(results.results, media),
+      totalResults: mappedResults.length,
+      results: mappedResults,
     });
   } catch (e) {
     logger.debug('Something went wrong retrieving search results', {

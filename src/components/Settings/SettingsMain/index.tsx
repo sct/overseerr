@@ -47,6 +47,14 @@ const messages = defineMessages({
   cacheImages: 'Enable Image Caching',
   cacheImagesTip:
     'Cache externally sourced images (requires a significant amount of disk space)',
+  redisEnabled: 'Enable Redis Cache',
+  redisEnabledTip:
+    'Use Redis for distributed caching (requires Redis server). Falls back to in-memory cache if unavailable.',
+  redisHost: 'Redis Host',
+  redisPort: 'Redis Port',
+  redisPassword: 'Redis Password',
+  redisDb: 'Redis Database',
+  redisKeyPrefix: 'Redis Key Prefix',
   trustProxy: 'Enable Proxy Support',
   trustProxyTip:
     'Allow Overseerr to correctly register client IP addresses behind a proxy',
@@ -134,6 +142,12 @@ const SettingsMain = () => {
             partialRequestsEnabled: data?.partialRequestsEnabled,
             trustProxy: data?.trustProxy,
             cacheImages: data?.cacheImages,
+            redisEnabled: data?.redis?.enabled ?? false,
+            redisHost: data?.redis?.host ?? 'localhost',
+            redisPort: data?.redis?.port ?? 6379,
+            redisPassword: data?.redis?.password ?? '',
+            redisDb: data?.redis?.db ?? 0,
+            redisKeyPrefix: data?.redis?.keyPrefix ?? 'overseerr:',
           }}
           enableReinitialize
           validationSchema={MainSettingsSchema}
@@ -150,6 +164,14 @@ const SettingsMain = () => {
                 partialRequestsEnabled: values.partialRequestsEnabled,
                 trustProxy: values.trustProxy,
                 cacheImages: values.cacheImages,
+                redis: {
+                  enabled: values.redisEnabled,
+                  host: values.redisHost,
+                  port: values.redisPort,
+                  password: values.redisPassword || undefined,
+                  db: values.redisDb,
+                  keyPrefix: values.redisKeyPrefix,
+                },
               });
               mutate('/api/v1/settings/public');
               mutate('/api/v1/status');
@@ -329,6 +351,110 @@ const SettingsMain = () => {
                     />
                   </div>
                 </div>
+                <div className="form-row">
+                  <label htmlFor="redisEnabled" className="checkbox-label">
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.redisEnabled)}
+                    </span>
+                    <SettingsBadge badgeType="advanced" className="mr-2" />
+                    <SettingsBadge badgeType="restartRequired" />
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.redisEnabledTip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="redisEnabled"
+                      name="redisEnabled"
+                      onChange={() => {
+                        setFieldValue('redisEnabled', !values.redisEnabled);
+                      }}
+                    />
+                  </div>
+                </div>
+                {values.redisEnabled && (
+                  <>
+                    <div className="form-row">
+                      <label htmlFor="redisHost" className="text-label">
+                        {intl.formatMessage(messages.redisHost)}
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            id="redisHost"
+                            name="redisHost"
+                            type="text"
+                            placeholder="localhost"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="redisPort" className="text-label">
+                        {intl.formatMessage(messages.redisPort)}
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            id="redisPort"
+                            name="redisPort"
+                            type="number"
+                            placeholder="6379"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="redisPassword" className="text-label">
+                        {intl.formatMessage(messages.redisPassword)}
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <SensitiveInput
+                            id="redisPassword"
+                            name="redisPassword"
+                            type="password"
+                            value={values.redisPassword}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                              setFieldValue('redisPassword', e.target.value)
+                            }
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="redisDb" className="text-label">
+                        {intl.formatMessage(messages.redisDb)}
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            id="redisDb"
+                            name="redisDb"
+                            type="number"
+                            placeholder="0"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="form-row">
+                      <label htmlFor="redisKeyPrefix" className="text-label">
+                        {intl.formatMessage(messages.redisKeyPrefix)}
+                      </label>
+                      <div className="form-input-area">
+                        <div className="form-input-field">
+                          <Field
+                            id="redisKeyPrefix"
+                            name="redisKeyPrefix"
+                            type="text"
+                            placeholder="overseerr:"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
                 <div className="form-row">
                   <label htmlFor="locale" className="text-label">
                     {intl.formatMessage(messages.locale)}

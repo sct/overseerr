@@ -33,9 +33,15 @@ const ListView = ({
   useVerticalScroll(onScrollBottom, !isLoading && !isEmpty && !isReachingEnd);
   return (
     <>
-      {isEmpty && (
-        <div className="mt-64 w-full text-center text-2xl text-gray-400">
-          {intl.formatMessage(globalMessages.noresults)}
+      {isEmpty && !isLoading && (
+        <div className="mt-32 flex w-full flex-col items-center justify-center text-center">
+          <div className="mb-4 text-6xl text-gray-600">🔍</div>
+          <div className="mb-2 text-2xl font-semibold text-gray-300">
+            {intl.formatMessage(globalMessages.noresults)}
+          </div>
+          <div className="max-w-md text-sm text-gray-400">
+            Try adjusting your search terms or filters to find what you're looking for.
+          </div>
         </div>
       )}
       <ul className="cards-vertical">

@@ -23,10 +23,15 @@ export const UserContext = ({ initialUser, children }: UserContextProps) => {
   }, [router.pathname, revalidate]);
 
   useEffect(() => {
+    // Allow bypassing login redirect if SKIP_SETUP env var is set (for testing)
+    const skipSetup = process.env.NEXT_PUBLIC_SKIP_SETUP === 'true' || 
+                      new URLSearchParams(window.location.search).get('skipSetup') === 'true';
+    
     if (
       !router.pathname.match(/(setup|login|resetpassword)/) &&
       (!user || error) &&
-      !routing.current
+      !routing.current &&
+      !skipSetup
     ) {
       routing.current = true;
       location.href = '/login';

@@ -1,10 +1,14 @@
 import Button from '@app/components/Common/Button';
+import ConfirmButton from '@app/components/Common/ConfirmButton';
 import Header from '@app/components/Common/Header';
+import KeyboardShortcuts from '@app/components/KeyboardShortcuts';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
+import { RequestItemSkeleton } from '@app/components/Common/LoadingSkeleton';
 import PageTitle from '@app/components/Common/PageTitle';
 import RequestItem from '@app/components/RequestList/RequestItem';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
-import { useUser } from '@app/hooks/useUser';
+import { Permission, useUser } from '@app/hooks/useUser';
+import useKeyboardShortcuts from '@app/hooks/useKeyboardShortcuts';
 import globalMessages from '@app/i18n/globalMessages';
 import {
   BarsArrowDownIcon,
@@ -13,17 +17,28 @@ import {
   FunnelIcon,
 } from '@heroicons/react/24/solid';
 import type { RequestResultsResponse } from '@server/interfaces/api/requestInterfaces';
+import axios from 'axios';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import useSWR from 'swr';
+import { useToasts } from 'react-toast-notifications';
+import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   requests: 'Requests',
   showallrequests: 'Show All Requests',
   sortAdded: 'Most Recent',
   sortModified: 'Last Modified',
+  selected: '{count, plural, one {# selected} other {# selected}}',
+  clearSelection: 'Clear',
+  bulkApprove: 'Approve',
+  bulkDecline: 'Decline',
+  bulkDelete: 'Delete',
+  bulkDeleteConfirm: 'Confirm Delete',
+  exportCsv: 'Export CSV',
+  exportFailed: 'Something went wrong while exporting requests.',
+  bulkActionFailed: 'Something went wrong while processing bulk actions.',
 });
 
 enum Filter {
@@ -43,13 +58,17 @@ type Sort = 'added' | 'modified';
 const RequestList = () => {
   const router = useRouter();
   const intl = useIntl();
+  const { addToast } = useToasts();
   const { user } = useUser({
     id: Number(router.query.userId),
   });
-  const { user: currentUser } = useUser();
+  const { user: currentUser, hasPermission } = useUser();
   const [currentFilter, setCurrentFilter] = useState<Filter>(Filter.PENDING);
   const [currentSort, setCurrentSort] = useState<Sort>('added');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
+  const [selectedRequestIds, setSelectedRequestIds] = useState<number[]>([]);
+  const [isBulkProcessing, setIsBulkProcessing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const page = router.query.page ? Number(router.query.page) : 1;
   const pageIndex = page - 1;
@@ -58,6 +77,7 @@ const RequestList = () => {
   const {
     data,
     error,
+    isLoading,
     mutate: revalidate,
   } = useSWR<RequestResultsResponse>(
     `/api/v1/request?take=${currentPageSize}&skip=${
@@ -111,6 +131,144 @@ const RequestList = () => {
 
   const hasNextPage = data.pageInfo.pages > pageIndex + 1;
   const hasPrevPage = pageIndex > 0;
+  const canManageRequests = hasPermission(Permission.MANAGE_REQUESTS);
+
+  const allSelectedOnPage =
+    data.results.length > 0 &&
+    data.results.every((r) => selectedRequestIds.includes(r.id));
+
+  const setAllOnPageSelected = (selected: boolean) => {
+    if (!selected) {
+      setSelectedRequestIds([]);
+      return;
+    }
+
+    setSelectedRequestIds(data.results.map((r) => r.id));
+  };
+
+  const updateSelected = (requestId: number, selected: boolean) => {
+    setSelectedRequestIds((prev) => {
+      if (selected) {
+        return prev.includes(requestId) ? prev : [...prev, requestId];
+      }
+      return prev.filter((id) => id !== requestId);
+    });
+  };
+
+  const runBulkAction = async (action: 'approve' | 'decline' | 'delete') => {
+    if (!selectedRequestIds.length) return;
+
+    setIsBulkProcessing(true);
+    try {
+      await axios.post('/api/v1/request/bulk', {
+        action,
+        requestIds: selectedRequestIds,
+      });
+
+      setSelectedRequestIds([]);
+      await revalidate();
+      mutate('/api/v1/request/count');
+    } catch (_e) {
+      addToast(intl.formatMessage(messages.bulkActionFailed), {
+        autoDismiss: true,
+        appearance: 'error',
+      });
+    } finally {
+      setIsBulkProcessing(false);
+    }
+  };
+
+  const exportCsv = async () => {
+    setIsExporting(true);
+    try {
+      const params = new URLSearchParams();
+      params.set('filter', currentFilter);
+      params.set('sort', currentSort);
+
+      const requestedByParam = router.pathname.startsWith('/profile')
+        ? currentUser?.id
+        : router.query.userId
+        ? Number(router.query.userId)
+        : undefined;
+
+      if (requestedByParam) {
+        params.set('requestedBy', requestedByParam.toString());
+      }
+
+      const response = await axios.get(`/api/v1/request/export?${params}`, {
+        responseType: 'blob',
+      });
+
+      const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `requests-export-${Date.now()}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (_e) {
+      addToast(intl.formatMessage(messages.exportFailed), {
+        autoDismiss: true,
+        appearance: 'error',
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  // Clear selection when the list context changes (filter/sort/page/user)
+  useEffect(() => {
+    setSelectedRequestIds([]);
+  }, [currentFilter, currentSort, currentPageSize, page, router.query.userId]);
+
+  // Keyboard shortcuts for bulk actions
+  useKeyboardShortcuts(
+    [
+      {
+        key: 'a',
+        ctrl: true,
+        action: () => {
+          if (canManageRequests && selectedRequestIds.length > 0) {
+            runBulkAction('approve');
+          }
+        },
+        description: 'Approve selected requests',
+      },
+      {
+        key: 'd',
+        ctrl: true,
+        action: () => {
+          if (canManageRequests && selectedRequestIds.length > 0) {
+            runBulkAction('decline');
+          }
+        },
+        description: 'Decline selected requests',
+      },
+      {
+        key: 'Delete',
+        ctrl: true,
+        action: () => {
+          if (canManageRequests && selectedRequestIds.length > 0) {
+            runBulkAction('delete');
+          }
+        },
+        description: 'Delete selected requests',
+      },
+      {
+        key: '/',
+        action: () => {
+          const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+          if (searchInput) {
+            searchInput.focus();
+          }
+        },
+        description: 'Focus search',
+      },
+    ],
+    canManageRequests
+  );
 
   return (
     <>
@@ -214,35 +372,129 @@ const RequestList = () => {
               </option>
             </select>
           </div>
-        </div>
-      </div>
-      {data.results.map((request) => {
-        return (
-          <div className="py-2" key={`request-list-${request.id}`}>
-            <RequestItem
-              request={request}
-              revalidateList={() => revalidate()}
-            />
-          </div>
-        );
-      })}
-
-      {data.results.length === 0 && (
-        <div className="flex w-full flex-col items-center justify-center py-24 text-white">
-          <span className="text-2xl text-gray-400">
-            {intl.formatMessage(globalMessages.noresults)}
-          </span>
-          {currentFilter !== Filter.ALL && (
-            <div className="mt-4">
+          {canManageRequests && (
+            <div className="flex flex-grow sm:ml-2 lg:flex-grow-0">
               <Button
                 buttonType="primary"
-                onClick={() => setCurrentFilter(Filter.ALL)}
+                className="w-full"
+                disabled={isExporting}
+                onClick={() => exportCsv()}
               >
-                {intl.formatMessage(messages.showallrequests)}
+                {intl.formatMessage(messages.exportCsv)}
               </Button>
             </div>
           )}
         </div>
+      </div>
+
+      {canManageRequests && data.results.length > 0 && (
+        <div className="mb-3 flex flex-col justify-between gap-3 rounded-md bg-gray-800/50 p-3 text-gray-100 ring-1 ring-gray-700 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              className="h-4 w-4 cursor-pointer rounded border-gray-500 bg-gray-900 text-indigo-500 focus:ring-indigo-500"
+              checked={allSelectedOnPage}
+              onChange={(e) => setAllOnPageSelected(e.target.checked)}
+              aria-label="Select all requests on this page"
+            />
+            <span className="text-sm text-gray-300">
+              {intl.formatMessage(messages.selected, {
+                count: selectedRequestIds.length,
+              })}
+            </span>
+            {selectedRequestIds.length > 0 && (
+              <Button
+                onClick={() => setSelectedRequestIds([])}
+                disabled={isBulkProcessing}
+              >
+                {intl.formatMessage(messages.clearSelection)}
+              </Button>
+            )}
+          </div>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button
+              buttonType="success"
+              disabled={!selectedRequestIds.length || isBulkProcessing}
+              onClick={() => runBulkAction('approve')}
+            >
+              {intl.formatMessage(messages.bulkApprove)}
+            </Button>
+            <Button
+              buttonType="danger"
+              disabled={!selectedRequestIds.length || isBulkProcessing}
+              onClick={() => runBulkAction('decline')}
+            >
+              {intl.formatMessage(messages.bulkDecline)}
+            </Button>
+            {isBulkProcessing || !selectedRequestIds.length ? (
+              <Button buttonType="danger" disabled>
+                {intl.formatMessage(messages.bulkDelete)}
+              </Button>
+            ) : (
+              <ConfirmButton
+                className="w-full sm:w-auto"
+                onClick={() => runBulkAction('delete')}
+                confirmText={intl.formatMessage(messages.bulkDeleteConfirm)}
+              >
+                {intl.formatMessage(messages.bulkDelete)}
+              </ConfirmButton>
+            )}
+          </div>
+        </div>
+      )}
+
+      {isLoading && !data ? (
+        <div className="space-y-2">
+          {[...Array(5)].map((_, i) => (
+            <div className="py-2" key={`skeleton-${i}`}>
+              <RequestItemSkeleton />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <>
+          {data.results.map((request) => {
+            return (
+              <div className="py-2" key={`request-list-${request.id}`}>
+                <RequestItem
+                  request={request}
+                  revalidateList={() => revalidate()}
+                  showSelection={canManageRequests}
+                  selected={selectedRequestIds.includes(request.id)}
+                  onSelectedChange={(selected) =>
+                    updateSelected(request.id, selected)
+                  }
+                />
+              </div>
+            );
+          })}
+
+          {data.results.length === 0 && !isLoading && (
+            <div className="flex w-full flex-col items-center justify-center py-24 text-white">
+              <div className="mb-4 text-6xl text-gray-600">📋</div>
+              <span className="mb-2 text-2xl font-semibold text-gray-300">
+                {intl.formatMessage(globalMessages.noresults)}
+              </span>
+              <span className="mb-4 max-w-md text-center text-sm text-gray-400">
+                {currentFilter === Filter.PENDING
+                  ? 'No pending requests at the moment. All clear!'
+                  : currentFilter === Filter.APPROVED
+                  ? 'No approved requests found.'
+                  : 'No requests match your current filters.'}
+              </span>
+              {currentFilter !== Filter.ALL && (
+                <div className="mt-4">
+                  <Button
+                    buttonType="primary"
+                    onClick={() => setCurrentFilter(Filter.ALL)}
+                  >
+                    {intl.formatMessage(messages.showallrequests)}
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
+        </>
       )}
       <div className="actions">
         <nav
@@ -314,6 +566,29 @@ const RequestList = () => {
           </div>
         </nav>
       </div>
+
+      {canManageRequests && (
+        <KeyboardShortcuts
+          shortcuts={[
+            {
+              keys: ['Ctrl', 'A'],
+              description: intl.formatMessage(messages.bulkApprove),
+            },
+            {
+              keys: ['Ctrl', 'D'],
+              description: intl.formatMessage(messages.bulkDecline),
+            },
+            {
+              keys: ['Ctrl', 'Delete'],
+              description: intl.formatMessage(messages.bulkDelete),
+            },
+            {
+              keys: ['/'],
+              description: 'Focus search',
+            },
+          ]}
+        />
+      )}
     </>
   );
 };

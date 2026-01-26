@@ -274,9 +274,18 @@ const RequestItemError = ({
 interface RequestItemProps {
   request: MediaRequest;
   revalidateList: () => void;
+  showSelection?: boolean;
+  selected?: boolean;
+  onSelectedChange?: (selected: boolean) => void;
 }
 
-const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
+const RequestItem = ({
+  request,
+  revalidateList,
+  showSelection,
+  selected,
+  onSelectedChange,
+}: RequestItemProps) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });
@@ -379,6 +388,20 @@ const RequestItem = ({ request, revalidateList }: RequestItemProps) => {
         }}
       />
       <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
+        {showSelection && (
+          <div
+            className="absolute left-3 top-3 z-20"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <input
+              type="checkbox"
+              className="h-4 w-4 cursor-pointer rounded border-gray-500 bg-gray-900 text-indigo-500 focus:ring-indigo-500"
+              checked={!!selected}
+              onChange={(e) => onSelectedChange?.(e.target.checked)}
+              aria-label="Select request"
+            />
+          </div>
+        )}
         {title.backdropPath && (
           <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
             <CachedImage

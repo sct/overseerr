@@ -18,12 +18,24 @@ import type {
   MediaRequestBody,
   RequestResultsResponse,
 } from '@server/interfaces/api/requestInterfaces';
+import { createAuditLog } from '@server/lib/auditLog';
 import { Permission } from '@server/lib/permissions';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
+import { In } from 'typeorm';
 
 const requestRoutes = Router();
+
+interface BulkRequestBody {
+  requestIds: number[];
+  action: 'approve' | 'decline' | 'delete';
+}
+
+interface BulkRequestResponse {
+  updated: number;
+  deleted: number;
+}
 
 requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
   '/',
@@ -283,6 +295,229 @@ requestRoutes.get('/count', async (_req, res, next) => {
   }
 });
 
+requestRoutes.get(
+  '/export',
+  isAuthenticated(Permission.MANAGE_REQUESTS),
+  async (req, res, next) => {
+    try {
+      const requestedBy = req.query.requestedBy
+        ? Number(req.query.requestedBy)
+        : null;
+
+      let statusFilter: MediaRequestStatus[];
+      switch (req.query.filter) {
+        case 'approved':
+        case 'processing':
+          statusFilter = [MediaRequestStatus.APPROVED];
+          break;
+        case 'pending':
+          statusFilter = [MediaRequestStatus.PENDING];
+          break;
+        case 'unavailable':
+          statusFilter = [MediaRequestStatus.PENDING, MediaRequestStatus.APPROVED];
+          break;
+        case 'failed':
+          statusFilter = [MediaRequestStatus.FAILED];
+          break;
+        case 'completed':
+        case 'available':
+        case 'deleted':
+          statusFilter = [MediaRequestStatus.COMPLETED];
+          break;
+        default:
+          statusFilter = [
+            MediaRequestStatus.PENDING,
+            MediaRequestStatus.APPROVED,
+            MediaRequestStatus.DECLINED,
+            MediaRequestStatus.FAILED,
+            MediaRequestStatus.COMPLETED,
+          ];
+      }
+
+      let mediaStatusFilter: MediaStatus[];
+      switch (req.query.filter) {
+        case 'available':
+          mediaStatusFilter = [MediaStatus.AVAILABLE];
+          break;
+        case 'processing':
+        case 'unavailable':
+          mediaStatusFilter = [
+            MediaStatus.UNKNOWN,
+            MediaStatus.PENDING,
+            MediaStatus.PROCESSING,
+            MediaStatus.PARTIALLY_AVAILABLE,
+          ];
+          break;
+        case 'deleted':
+          mediaStatusFilter = [MediaStatus.DELETED];
+          break;
+        default:
+          mediaStatusFilter = [
+            MediaStatus.UNKNOWN,
+            MediaStatus.PENDING,
+            MediaStatus.PROCESSING,
+            MediaStatus.PARTIALLY_AVAILABLE,
+            MediaStatus.AVAILABLE,
+            MediaStatus.DELETED,
+          ];
+      }
+
+      let sortFilter: string;
+      switch (req.query.sort) {
+        case 'modified':
+          sortFilter = 'request.updatedAt';
+          break;
+        default:
+          sortFilter = 'request.id';
+      }
+
+      let query = getRepository(MediaRequest)
+        .createQueryBuilder('request')
+        .leftJoinAndSelect('request.media', 'media')
+        .leftJoinAndSelect('request.seasons', 'seasons')
+        .leftJoinAndSelect('request.modifiedBy', 'modifiedBy')
+        .leftJoinAndSelect('request.requestedBy', 'requestedBy')
+        .where('request.status IN (:...requestStatus)', {
+          requestStatus: statusFilter,
+        })
+        .andWhere(
+          '((request.is4k = 0 AND media.status IN (:...mediaStatus)) OR (request.is4k = 1 AND media.status4k IN (:...mediaStatus)))',
+          {
+            mediaStatus: mediaStatusFilter,
+          }
+        )
+        .orderBy(sortFilter, 'DESC');
+
+      if (requestedBy) {
+        query = query.andWhere('requestedBy.id = :id', { id: requestedBy });
+      }
+
+      const requests = await query.getMany();
+
+      const csvEscape = (value: unknown): string => {
+        const str = value === null || value === undefined ? '' : String(value);
+        if (/[",\n]/.test(str)) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      };
+
+      const header = [
+        'id',
+        'type',
+        'requestedBy',
+        'modifiedBy',
+        'requestStatus',
+        'is4k',
+        'tmdbId',
+        'mediaStatus',
+        'createdAt',
+        'updatedAt',
+      ];
+
+      const rows = requests.map((r) => {
+        const mediaStatus = r.is4k ? r.media.status4k : r.media.status;
+        return [
+          r.id,
+          r.type,
+          r.requestedBy?.displayName ?? '',
+          r.modifiedBy?.displayName ?? '',
+          // TS enums have reverse mappings
+          (MediaRequestStatus as any)[r.status] ?? r.status,
+          r.is4k,
+          r.media.tmdbId,
+          (MediaStatus as any)[mediaStatus] ?? mediaStatus,
+          r.createdAt ? new Date(r.createdAt).toISOString() : '',
+          r.updatedAt ? new Date(r.updatedAt).toISOString() : '',
+        ].map(csvEscape);
+      });
+
+      const csv = [header.map(csvEscape), ...rows].map((r) => r.join(',')).join('\n');
+
+      res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+      res.setHeader(
+        'Content-Disposition',
+        `attachment; filename="requests-export-${Date.now()}.csv"`
+      );
+
+      return res.status(200).send(csv);
+    } catch (e) {
+      logger.error('Error exporting requests', {
+        label: 'Media Request',
+        message: e.message,
+      });
+      return next({ status: 500, message: 'Unable to export requests.' });
+    }
+  }
+);
+
+requestRoutes.post<never, BulkRequestResponse, BulkRequestBody>(
+  '/bulk',
+  isAuthenticated(Permission.MANAGE_REQUESTS),
+  async (req, res, next) => {
+    const requestRepository = getRepository(MediaRequest);
+
+    try {
+      const requestIds = (req.body.requestIds ?? []).filter(
+        (id): id is number => typeof id === 'number' && Number.isFinite(id)
+      );
+
+      if (!requestIds.length) {
+        return next({ status: 400, message: 'No request IDs provided.' });
+      }
+
+      const requests = await requestRepository.find({
+        where: { id: In(requestIds) },
+        relations: { requestedBy: true, modifiedBy: true, seasons: true, media: true },
+      });
+
+      if (!requests.length) {
+        return next({ status: 404, message: 'No matching requests found.' });
+      }
+
+      let updated = 0;
+      let deleted = 0;
+
+      if (req.body.action === 'delete') {
+        await requestRepository.remove(requests);
+        deleted = requests.length;
+      } else {
+        const newStatus =
+          req.body.action === 'approve'
+            ? MediaRequestStatus.APPROVED
+            : MediaRequestStatus.DECLINED;
+
+        for (const request of requests) {
+          request.status = newStatus;
+          request.modifiedBy = req.user;
+          await requestRepository.save(request);
+          updated++;
+        }
+      }
+
+      await createAuditLog({
+        user: req.user,
+        ip: req.ip,
+        action: `request.bulk.${req.body.action}`,
+        entityType: 'MediaRequest',
+        meta: {
+          requestIds,
+          updated,
+          deleted,
+        },
+      });
+
+      return res.status(200).json({ updated, deleted });
+    } catch (e) {
+      logger.error('Error processing bulk request action', {
+        label: 'Media Request',
+        message: e.message,
+      });
+      return next({ status: 500, message: 'Unable to process bulk request action.' });
+    }
+  }
+);
+
 requestRoutes.get('/:requestId', async (req, res, next) => {
   const requestRepository = getRepository(MediaRequest);
 
@@ -478,6 +713,17 @@ requestRoutes.delete('/:requestId', async (req, res, next) => {
 
     await requestRepository.remove(request);
 
+    await createAuditLog({
+      user: req.user,
+      ip: req.ip,
+      action: 'request.delete',
+      entityType: 'MediaRequest',
+      entityId: request.id,
+      meta: {
+        requestId: request.id,
+      },
+    });
+
     return res.status(204).send();
   } catch (e) {
     logger.error('Something went wrong deleting a request.', {
@@ -549,6 +795,18 @@ requestRoutes.post<{
       request.status = newStatus;
       request.modifiedBy = req.user;
       await requestRepository.save(request);
+
+      await createAuditLog({
+        user: req.user,
+        ip: req.ip,
+        action: 'request.status.update',
+        entityType: 'MediaRequest',
+        entityId: request.id,
+        meta: {
+          requestId: request.id,
+          status: req.params.status,
+        },
+      });
 
       return res.status(200).json(request);
     } catch (e) {

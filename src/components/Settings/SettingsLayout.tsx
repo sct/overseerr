@@ -10,7 +10,9 @@ const messages = defineMessages({
   menuPlexSettings: 'Plex',
   menuServices: 'Services',
   menuNotifications: 'Notifications',
+  menuApiKeys: 'API Keys',
   menuLogs: 'Logs',
+  menuAudit: 'Audit Log',
   menuJobs: 'Jobs & Cache',
   menuAbout: 'About',
 });
@@ -49,9 +51,19 @@ const SettingsLayout = ({ children }: SettingsLayoutProps) => {
       regex: /^\/settings\/notifications/,
     },
     {
+      text: intl.formatMessage(messages.menuApiKeys),
+      route: '/settings/api-keys',
+      regex: /^\/settings\/api-keys/,
+    },
+    {
       text: intl.formatMessage(messages.menuLogs),
       route: '/settings/logs',
       regex: /^\/settings\/logs/,
+    },
+    {
+      text: intl.formatMessage(messages.menuAudit),
+      route: '/settings/audit',
+      regex: /^\/settings\/audit/,
     },
     {
       text: intl.formatMessage(messages.menuJobs),

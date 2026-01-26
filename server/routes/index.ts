@@ -20,7 +20,9 @@ import { appDataPath, appDataStatus } from '@server/utils/appDataVolume';
 import { getAppVersion, getCommitTag } from '@server/utils/appVersion';
 import restartFlag from '@server/utils/restartFlag';
 import { isPerson } from '@server/utils/typeHelpers';
+import type { Request } from 'express';
 import { Router } from 'express';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './auth';
 import collectionRoutes from './collection';
 import discoverRoutes, { createTmdbWithRegionLanguage } from './discover';
@@ -39,7 +41,44 @@ const router = Router();
 
 router.use(checkUser);
 
-router.get<unknown, StatusResponse>('/status', async (req, res) => {
+const rateLimitKey = (req: Request): string => {
+  const userId = req.user?.id;
+  if (userId) return `user:${userId}`;
+  const ip = (req.ip ?? '').trim();
+  return ip ? `ip:${ip}` : 'ip:unknown';
+};
+
+// Global limiter for the API (skips /auth which has its own stricter limiter)
+const apiLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 600,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: rateLimitKey,
+  skip: (req) => req.path.startsWith('/auth'),
+});
+
+// Stricter limiter for auth-related endpoints to reduce brute-force attempts
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: rateLimitKey,
+});
+
+// Search can be expensive; keep it slightly tighter than the general API
+const searchLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: rateLimitKey,
+});
+
+router.use(apiLimiter);
+
+router.get<unknown, StatusResponse>('/status', async (_req, res) => {
   const githubApi = new GithubAPI();
 
   const currentVersion = getAppVersion();
@@ -139,7 +178,7 @@ router.get(
   }
 );
 router.use('/settings', isAuthenticated(Permission.ADMIN), settingsRoutes);
-router.use('/search', isAuthenticated(), searchRoutes);
+router.use('/search', isAuthenticated(), searchLimiter, searchRoutes);
 router.use('/discover', isAuthenticated(), discoverRoutes);
 router.use('/request', isAuthenticated(), requestRoutes);
 router.use('/movie', isAuthenticated(), movieRoutes);
@@ -150,7 +189,7 @@ router.use('/collection', isAuthenticated(), collectionRoutes);
 router.use('/service', isAuthenticated(), serviceRoutes);
 router.use('/issue', isAuthenticated(), issueRoutes);
 router.use('/issueComment', isAuthenticated(), issueCommentRoutes);
-router.use('/auth', authRoutes);
+router.use('/auth', authLimiter, authRoutes);
 
 router.get('/regions', isAuthenticated(), async (req, res, next) => {
   const tmdb = new TheMovieDb();

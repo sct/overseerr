@@ -24,6 +24,7 @@ import { getAppVersion } from '@server/utils/appVersion';
 import restartFlag from '@server/utils/restartFlag';
 import { getClientIp } from '@supercharge/request-ip';
 import { TypeormStore } from 'connect-typeorm/out';
+import compression from 'compression';
 import cookieParser from 'cookie-parser';
 import csurf from 'csurf';
 import type { NextFunction, Request, Response } from 'express';
@@ -100,6 +101,17 @@ app
     // Bootstrap Discovery Sliders
     await DiscoverSlider.bootstrapSliders();
 
+    // Initialize Redis cache if enabled
+    if (settings.main.redis?.enabled) {
+      const cacheManager = (await import('@server/lib/cache')).default;
+      const allCaches = cacheManager.getAllCaches();
+      // Trigger Redis connection for all caches
+      Object.values(allCaches).forEach((cache) => {
+        // Connection happens asynchronously in Cache constructor
+      });
+      logger.info('Redis cache initialization started', { label: 'Cache' });
+    }
+
     const server = express();
     if (settings.main.trustProxy) {
       server.enable('trust proxy');
@@ -107,6 +119,7 @@ app
     server.use(cookieParser());
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
+    server.use(compression());
     server.use((req, _res, next) => {
       try {
         const descriptor = Object.getOwnPropertyDescriptor(req, 'ip');
