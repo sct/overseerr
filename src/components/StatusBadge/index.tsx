@@ -26,7 +26,8 @@ interface StatusBadgeProps {
   plexUrl?: string;
   serviceUrl?: string;
   tmdbId?: number;
-  mediaType?: 'movie' | 'tv';
+  mbid?: string; // MusicBrainz ID for music types
+  mediaType?: 'movie' | 'tv' | 'artist' | 'album';
   title?: string | string[];
 }
 
@@ -38,6 +39,7 @@ const StatusBadge = ({
   plexUrl,
   serviceUrl,
   tmdbId,
+  mbid,
   mediaType,
   title,
 }: StatusBadgeProps) => {
@@ -81,17 +83,31 @@ const StatusBadge = ({
     mediaLink = plexUrl;
     mediaLinkDescription = intl.formatMessage(messages.playonplex);
   } else if (hasPermission(Permission.MANAGE_REQUESTS)) {
-    if (mediaType && tmdbId) {
-      mediaLink = `/${mediaType}/${tmdbId}?manage=1`;
-      mediaLinkDescription = intl.formatMessage(messages.managemedia, {
-        mediaType: intl.formatMessage(
-          mediaType === 'movie' ? globalMessages.movie : globalMessages.tvshow
-        ),
-      });
+    if (mediaType && (tmdbId || mbid)) {
+      if (mediaType === 'artist' || mediaType === 'album') {
+        mediaLink = `/${mediaType}/${mbid}?manage=1`;
+        mediaLinkDescription = intl.formatMessage(messages.managemedia, {
+          mediaType: intl.formatMessage(
+            mediaType === 'artist' ? globalMessages.artist : globalMessages.album
+          ),
+        });
+      } else {
+        mediaLink = `/${mediaType}/${tmdbId}?manage=1`;
+        mediaLinkDescription = intl.formatMessage(messages.managemedia, {
+          mediaType: intl.formatMessage(
+            mediaType === 'movie' ? globalMessages.movie : globalMessages.tvshow
+          ),
+        });
+      }
     } else if (hasPermission(Permission.ADMIN) && serviceUrl) {
       mediaLink = serviceUrl;
       mediaLinkDescription = intl.formatMessage(messages.openinarr, {
-        arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+        arr:
+          mediaType === 'movie'
+            ? 'Radarr'
+            : mediaType === 'tv'
+            ? 'Sonarr'
+            : 'Lidarr',
       });
     }
   }

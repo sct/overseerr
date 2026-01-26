@@ -27,6 +27,7 @@ const messages = defineMessages({
   advancedoptions: 'Advanced',
   destinationserver: 'Destination Server',
   qualityprofile: 'Quality Profile',
+  metadataprofile: 'Metadata Profile',
   rootfolder: 'Root Folder',
   animenote: '* This series is an anime.',
   default: '{name} (Default)',
@@ -44,13 +45,15 @@ export type RequestOverrides = {
   folder?: string;
   tags?: number[];
   language?: number;
+  metadataProfile?: number;
   user?: User;
 };
 
 interface AdvancedRequesterProps {
-  type: 'movie' | 'tv';
-  is4k: boolean;
+  type: 'movie' | 'tv' | 'music';
+  is4k?: boolean;
   isAnime?: boolean;
+  metadataProfile?: number;
   defaultOverrides?: RequestOverrides;
   requestUser?: User;
   onChange: (overrides: RequestOverrides) => void;
@@ -60,14 +63,17 @@ const AdvancedRequester = ({
   type,
   is4k = false,
   isAnime = false,
+  metadataProfile,
   defaultOverrides,
   requestUser,
   onChange,
 }: AdvancedRequesterProps) => {
   const intl = useIntl();
   const { user: currentUser, hasPermission: currentHasPermission } = useUser();
+  const serviceType =
+    type === 'movie' ? 'radarr' : type === 'tv' ? 'sonarr' : 'lidarr';
   const { data, error } = useSWR<ServiceCommonServer[]>(
-    `/api/v1/service/${type === 'movie' ? 'radarr' : 'sonarr'}`,
+    `/api/v1/service/${serviceType}`,
     {
       refreshInterval: 0,
       refreshWhenHidden: false,
@@ -82,6 +88,9 @@ const AdvancedRequester = ({
   );
   const [selectedProfile, setSelectedProfile] = useState<number>(
     defaultOverrides?.profile ?? -1
+  );
+  const [selectedMetadataProfile, setSelectedMetadataProfile] = useState<number>(
+    defaultOverrides?.metadataProfile ?? -1
   );
   const [selectedFolder, setSelectedFolder] = useState<string>(
     defaultOverrides?.folder ?? ''
@@ -98,9 +107,7 @@ const AdvancedRequester = ({
   const { data: serverData, isValidating } =
     useSWR<ServiceCommonServerWithDetails>(
       selectedServer !== null
-        ? `/api/v1/service/${
-            type === 'movie' ? 'radarr' : 'sonarr'
-          }/${selectedServer}`
+        ? `/api/v1/service/${serviceType}/${selectedServer}`
         : null,
       {
         refreshInterval: 0,
@@ -122,7 +129,9 @@ const AdvancedRequester = ({
     () =>
       userData?.results.filter((user) =>
         hasPermission(
-          is4k
+          type === 'music'
+            ? [Permission.REQUEST]
+            : is4k
             ? [
                 Permission.REQUEST_4K,
                 type === 'movie'
@@ -139,7 +148,7 @@ const AdvancedRequester = ({
           { type: 'or' }
         )
       ),
-    [userData?.results]
+    [userData?.results, type, is4k]
   );
 
   useEffect(() => {
@@ -152,7 +161,7 @@ const AdvancedRequester = ({
 
   useEffect(() => {
     let defaultServer = data?.find(
-      (server) => server.isDefault && is4k === server.is4k
+      (server) => server.isDefault && (type === 'music' || is4k === server.is4k)
     );
 
     if (!defaultServer && (data ?? []).length > 0) {
@@ -166,7 +175,7 @@ const AdvancedRequester = ({
     ) {
       setSelectedServer(defaultServer.id);
     }
-  }, [data]);
+  }, [data, type, is4k]);
 
   useEffect(() => {
     if (serverData) {
@@ -195,6 +204,11 @@ const AdvancedRequester = ({
         ? serverData.server.activeAnimeTags
         : serverData.server.activeTags;
 
+      const defaultMetadataProfile = serverData.metadataProfiles?.find(
+        (profile) =>
+          profile.id === serverData.server.activeMetadataProfileId
+      );
+
       const applyOverrides =
         defaultOverrides &&
         ((defaultOverrides.server === null && serverData.server.isDefault) ||
@@ -206,6 +220,14 @@ const AdvancedRequester = ({
         (!applyOverrides || defaultOverrides.profile === null)
       ) {
         setSelectedProfile(defaultProfile.id);
+      }
+
+      if (
+        defaultMetadataProfile &&
+        defaultMetadataProfile.id !== selectedMetadataProfile &&
+        (!applyOverrides || defaultOverrides.metadataProfile === null)
+      ) {
+        setSelectedMetadataProfile(defaultMetadataProfile.id);
       }
 
       if (
@@ -243,6 +265,10 @@ const AdvancedRequester = ({
       setSelectedProfile(defaultOverrides.profile);
     }
 
+    if (defaultOverrides && defaultOverrides.metadataProfile != null) {
+      setSelectedMetadataProfile(defaultOverrides.metadataProfile);
+    }
+
     if (defaultOverrides && defaultOverrides.folder) {
       setSelectedFolder(defaultOverrides.folder);
     }
@@ -267,6 +293,7 @@ const AdvancedRequester = ({
       onChange({
         folder: selectedFolder !== '' ? selectedFolder : undefined,
         profile: selectedProfile !== -1 ? selectedProfile : undefined,
+        metadataProfile: selectedMetadataProfile !== -1 ? selectedMetadataProfile : undefined,
         server: selectedServer ?? undefined,
         user: selectedUser ?? undefined,
         language: selectedLanguage !== -1 ? selectedLanguage : undefined,
@@ -277,6 +304,7 @@ const AdvancedRequester = ({
     selectedFolder,
     selectedServer,
     selectedProfile,
+    selectedMetadataProfile,
     selectedUser,
     selectedLanguage,
     selectedTags,
@@ -293,11 +321,12 @@ const AdvancedRequester = ({
   if (
     (!data ||
       selectedServer === null ||
-      (data.filter((server) => server.is4k === is4k).length < 2 &&
+      (data.filter((server) => type === 'music' || server.is4k === is4k).length < 2 &&
         (!serverData ||
           (serverData.profiles.length < 2 &&
             serverData.rootFolders.length < 2 &&
             (serverData.languageProfiles ?? []).length < 2 &&
+            (type === 'music' ? (serverData.metadataProfiles ?? []).length < 2 : true) &&
             !serverData.tags?.length)))) &&
     (!selectedUser || (filteredUserData ?? []).length < 2)
   ) {
@@ -310,9 +339,9 @@ const AdvancedRequester = ({
         {intl.formatMessage(messages.advancedoptions)}
       </div>
       <div className="rounded-md">
-        {!!data && selectedServer !== null && (
+            {!!data && selectedServer !== null && (
           <div className="flex flex-col md:flex-row">
-            {data.filter((server) => server.is4k === is4k).length > 1 && (
+            {data.filter((server) => type === 'music' || server.is4k === is4k).length > 1 && (
               <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
                 <label htmlFor="server">
                   {intl.formatMessage(messages.destinationserver)}
@@ -326,7 +355,7 @@ const AdvancedRequester = ({
                   className="border-gray-700 bg-gray-800"
                 >
                   {data
-                    .filter((server) => server.is4k === is4k)
+                    .filter((server) => type === 'music' || server.is4k === is4k)
                     .map((server) => (
                       <option
                         key={`server-list-${server.id}`}
@@ -386,6 +415,49 @@ const AdvancedRequester = ({
                 </select>
               </div>
             )}
+            {type === 'music' &&
+              (isValidating ||
+                !serverData ||
+                (serverData.metadataProfiles ?? []).length > 1) && (
+                <div className="mb-3 w-full flex-shrink-0 flex-grow last:pr-0 md:w-1/4 md:pr-4">
+                  <label htmlFor="metadataProfile">
+                    {intl.formatMessage(messages.metadataprofile)}
+                  </label>
+                  <select
+                    id="metadataProfile"
+                    name="metadataProfile"
+                    value={selectedMetadataProfile}
+                    onChange={(e) =>
+                      setSelectedMetadataProfile(parseInt(e.target.value))
+                    }
+                    onBlur={(e) =>
+                      setSelectedMetadataProfile(parseInt(e.target.value))
+                    }
+                    className="border-gray-700 bg-gray-800"
+                    disabled={isValidating || !serverData}
+                  >
+                    {(isValidating || !serverData) && (
+                      <option value="">
+                        {intl.formatMessage(globalMessages.loading)}
+                      </option>
+                    )}
+                    {!isValidating &&
+                      serverData &&
+                      serverData.metadataProfiles?.map((profile) => (
+                        <option
+                          key={`metadata-profile-list${profile.id}`}
+                          value={profile.id}
+                        >
+                          {serverData.server.activeMetadataProfileId === profile.id
+                            ? intl.formatMessage(messages.default, {
+                                name: profile.name,
+                              })
+                            : profile.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+              )}
             {(isValidating ||
               !serverData ||
               serverData.rootFolders.length > 1) && (

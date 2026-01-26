@@ -10,7 +10,7 @@ import type {
 import { MediaType as MainMediaType } from '@server/constants/media';
 import type Media from '@server/entity/Media';
 
-export type MediaType = 'tv' | 'movie' | 'person' | 'collection';
+export type MediaType = 'tv' | 'movie' | 'person' | 'collection' | 'artist' | 'album';
 
 interface SearchResult {
   id: number;
@@ -56,6 +56,39 @@ export interface CollectionResult {
   originalLanguage: string;
 }
 
+export interface ArtistResult {
+  id: string; // MusicBrainz ID
+  mediaType: 'artist';
+  name: string;
+  sortName?: string;
+  disambiguation?: string;
+  country?: string;
+  type?: string;
+  area?: {
+    id: string;
+    name: string;
+  };
+  mediaInfo?: Media;
+}
+
+export interface AlbumResult {
+  id: string; // MusicBrainz ID
+  mediaType: 'album';
+  title: string;
+  primaryType?: string;
+  secondaryTypes?: string[];
+  firstReleaseDate?: string;
+  disambiguation?: string;
+  artistCredit?: Array<{
+    artist: {
+      id: string;
+      name: string;
+    };
+    name?: string;
+  }>;
+  mediaInfo?: Media;
+}
+
 export interface PersonResult {
   id: number;
   name: string;
@@ -66,7 +99,7 @@ export interface PersonResult {
   knownFor: (MovieResult | TvResult)[];
 }
 
-export type Results = MovieResult | TvResult | PersonResult | CollectionResult;
+export type Results = MovieResult | TvResult | PersonResult | CollectionResult | ArtistResult | AlbumResult;
 
 export const mapMovieResult = (
   movieResult: TmdbMovieResult,
@@ -227,4 +260,53 @@ export const mapPersonDetailsToResult = (
   adult: personDetails.adult,
   profile_path: personDetails.profile_path,
   known_for: [],
+});
+
+export const mapArtistResult = (
+  artist: {
+    id: string;
+    name: string;
+    'sort-name'?: string;
+    disambiguation?: string;
+    country?: string;
+    type?: string;
+    area?: { id: string; name: string };
+  },
+  media?: Media
+): ArtistResult => ({
+  id: artist.id,
+  mediaType: 'artist',
+  name: artist.name,
+  sortName: artist['sort-name'],
+  disambiguation: artist.disambiguation,
+  country: artist.country,
+  type: artist.type,
+  area: artist.area,
+  mediaInfo: media,
+});
+
+export const mapAlbumResult = (
+  album: {
+    id: string;
+    title: string;
+    'primary-type'?: string;
+    'secondary-types'?: string[];
+    'first-release-date'?: string;
+    disambiguation?: string;
+    'artist-credit'?: Array<{
+      artist: { id: string; name: string };
+      name?: string;
+    }>;
+  },
+  media?: Media
+): AlbumResult => ({
+  id: album.id,
+  mediaType: 'album',
+  title: album.title,
+  primaryType: album['primary-type'],
+  secondaryTypes: album['secondary-types'],
+  firstReleaseDate: album['first-release-date'],
+  disambiguation: album.disambiguation,
+  artistCredit: album['artist-credit'],
+  mediaInfo: media,
 });

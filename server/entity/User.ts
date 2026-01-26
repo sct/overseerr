@@ -17,6 +17,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  In,
   Not,
   OneToMany,
   OneToOne,
@@ -102,6 +103,12 @@ export class User {
 
   @Column({ nullable: true })
   public tvQuotaDays?: number;
+
+  @Column({ nullable: true })
+  public musicQuotaLimit?: number;
+
+  @Column({ nullable: true })
+  public musicQuotaDays?: number;
 
   @OneToOne(() => UserSettings, (settings) => settings.user, {
     cascade: true,
@@ -306,6 +313,29 @@ export class User {
         ).reduce((sum: number, req: MediaRequest) => sum + req.seasonCount, 0)
       : 0;
 
+    const musicQuotaLimit = !canBypass
+      ? this.musicQuotaLimit ?? defaultQuotas.music.quotaLimit
+      : 0;
+    const musicQuotaDays =
+      this.musicQuotaDays ?? defaultQuotas.music.quotaDays;
+
+    // Count music requests made during quota period
+    const musicDate = new Date();
+    if (musicQuotaDays) {
+      musicDate.setDate(musicDate.getDate() - musicQuotaDays);
+    }
+
+    const musicQuotaUsed = musicQuotaLimit
+      ? await requestRepository.count({
+          where: {
+            requestedBy: { id: this.id },
+            createdAt: AfterDate(musicDate),
+            type: In([MediaType.MUSIC, MediaType.ARTIST, MediaType.ALBUM]),
+            status: Not(MediaRequestStatus.DECLINED),
+          },
+        })
+      : 0;
+
     return {
       movie: {
         days: movieQuotaDays,
@@ -326,8 +356,20 @@ export class User {
         remaining: tvQuotaLimit
           ? Math.max(0, tvQuotaLimit - tvQuotaUsed)
           : undefined,
+      restricted:
+        tvQuotaLimit && tvQuotaLimit - tvQuotaUsed <= 0 ? true : false,
+      },
+      music: {
+        days: musicQuotaDays,
+        limit: musicQuotaLimit,
+        used: musicQuotaUsed,
+        remaining: musicQuotaLimit
+          ? Math.max(0, musicQuotaLimit - musicQuotaUsed)
+          : undefined,
         restricted:
-          tvQuotaLimit && tvQuotaLimit - tvQuotaUsed <= 0 ? true : false,
+          musicQuotaLimit && musicQuotaLimit - musicQuotaUsed <= 0
+            ? true
+            : false,
       },
     };
   }

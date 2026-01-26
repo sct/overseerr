@@ -44,9 +44,10 @@ interface ButtonOption {
 }
 
 interface RequestButtonProps {
-  mediaType: 'movie' | 'tv';
+  mediaType: 'movie' | 'tv' | 'artist' | 'album';
   onUpdate: () => void;
-  tmdbId: number;
+  tmdbId?: number;
+  mbid?: string; // MusicBrainz ID for music types
   media?: Media;
   isShowComplete?: boolean;
   is4kShowComplete?: boolean;
@@ -54,6 +55,7 @@ interface RequestButtonProps {
 
 const RequestButton = ({
   tmdbId,
+  mbid,
   onUpdate,
   media,
   mediaType,
@@ -144,7 +146,7 @@ const RequestButton = ({
     if (
       activeRequest &&
       hasPermission(Permission.MANAGE_REQUESTS) &&
-      mediaType === 'movie'
+      (mediaType === 'movie' || mediaType === 'artist' || mediaType === 'album')
     ) {
       buttons.push(
         {
@@ -214,7 +216,7 @@ const RequestButton = ({
     if (
       active4kRequest &&
       hasPermission(Permission.MANAGE_REQUESTS) &&
-      mediaType === 'movie'
+      (mediaType === 'movie' || mediaType === 'artist' || mediaType === 'album')
     ) {
       buttons.push(
         {
@@ -275,7 +277,9 @@ const RequestButton = ({
         Permission.REQUEST,
         mediaType === 'movie'
           ? Permission.REQUEST_MOVIE
-          : Permission.REQUEST_TV,
+          : mediaType === 'tv'
+          ? Permission.REQUEST_TV
+          : Permission.REQUEST, // Music uses general REQUEST permission
       ],
       { type: 'or' }
     )
@@ -309,8 +313,9 @@ const RequestButton = ({
     });
   }
 
-  // 4K request button
+  // 4K request button (not applicable for music)
   if (
+    (mediaType === 'movie' || mediaType === 'tv') &&
     (!media ||
       media.status4k === MediaStatus.UNKNOWN ||
       (media.status4k === MediaStatus.DELETED && !active4kRequest)) &&
@@ -366,6 +371,7 @@ const RequestButton = ({
     <>
       <RequestModal
         tmdbId={tmdbId}
+        mbid={mbid}
         show={showRequestModal}
         type={mediaType}
         editRequest={editRequest ? activeRequest : undefined}
@@ -377,6 +383,7 @@ const RequestButton = ({
       />
       <RequestModal
         tmdbId={tmdbId}
+        mbid={mbid}
         show={showRequest4kModal}
         type={mediaType}
         editRequest={editRequest ? active4kRequest : undefined}

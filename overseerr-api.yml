@@ -26,6 +26,8 @@ tags:
     description: Endpoints related to retrieving movies and their details.
   - name: tv
     description: Endpoints related to retrieving TV series and their details.
+  - name: music
+    description: Endpoints related to retrieving music artists, albums, and their details.
   - name: other
     description: Endpoints related to other TMDB data
   - name: person
@@ -466,6 +468,78 @@ components:
         - is4k
         - enableSeasonFolders
         - isDefault
+    LidarrSettings:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 0
+          readOnly: true
+        name:
+          type: string
+          example: 'Lidarr Main'
+        hostname:
+          type: string
+          example: '127.0.0.1'
+        port:
+          type: number
+          example: 8686
+        apiKey:
+          type: string
+          example: 'exampleapikey'
+        useSsl:
+          type: boolean
+          example: false
+        baseUrl:
+          type: string
+        activeProfileId:
+          type: number
+          example: 1
+        activeProfileName:
+          type: string
+          example: Lossless
+        activeDirectory:
+          type: string
+          example: '/music'
+        activeMetadataProfileId:
+          type: number
+          example: 1
+        activeMetadataProfileName:
+          type: string
+          example: Standard
+        tags:
+          type: array
+          items:
+            type: number
+        is4k:
+          type: boolean
+          example: false
+        isDefault:
+          type: boolean
+          example: false
+        externalUrl:
+          type: string
+          example: http://lidarr.example.com
+        syncEnabled:
+          type: boolean
+          example: false
+        preventSearch:
+          type: boolean
+          example: false
+        tagRequests:
+          type: boolean
+          example: false
+      required:
+        - name
+        - hostname
+        - port
+        - apiKey
+        - useSsl
+        - activeProfileId
+        - activeProfileName
+        - activeDirectory
+        - is4k
+        - isDefault
     ServarrTag:
       type: object
       properties:
@@ -571,6 +645,74 @@ components:
             type: string
         firstAirDate:
           type: string
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
+    ArtistResult:
+      type: object
+      required:
+        - id
+        - mediaType
+        - name
+      properties:
+        id:
+          type: string
+          example: '5b11f4ce-a62d-471e-81fc-a69a8278c7da'
+        mediaType:
+          type: string
+          example: 'artist'
+        name:
+          type: string
+          example: 'The Beatles'
+        sortName:
+          type: string
+          example: 'Beatles, The'
+        disambiguation:
+          type: string
+          nullable: true
+        country:
+          type: string
+          nullable: true
+        type:
+          type: string
+          nullable: true
+        area:
+          type: string
+          nullable: true
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
+    AlbumResult:
+      type: object
+      required:
+        - id
+        - mediaType
+        - title
+      properties:
+        id:
+          type: string
+          example: '1b022e01-4da6-387b-8658-8678046e4cef'
+        mediaType:
+          type: string
+          example: 'album'
+        title:
+          type: string
+          example: 'Abbey Road'
+        primaryType:
+          type: string
+          example: 'Album'
+        secondaryTypes:
+          type: array
+          items:
+            type: string
+        firstReleaseDate:
+          type: string
+          nullable: true
+        disambiguation:
+          type: string
+          nullable: true
+        artistCredit:
+          type: array
+          items:
+            type: object
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
     PersonResult:
@@ -2408,6 +2550,201 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SonarrSettings'
+  /settings/lidarr:
+    get:
+      summary: Get Lidarr settings
+      description: Returns all Lidarr settings in a JSON array.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: 'Values were returned'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/LidarrSettings'
+    post:
+      summary: Create Lidarr instance
+      description: Creates a new Lidarr instance from the request body.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LidarrSettings'
+      responses:
+        '201':
+          description: 'New Lidarr instance created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LidarrSettings'
+  /settings/lidarr/test:
+    post:
+      summary: Test Lidarr configuration
+      description: Tests if the Lidarr configuration is valid. Returns profiles, metadata profiles, and root folders on success.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hostname:
+                  type: string
+                  example: '127.0.0.1'
+                port:
+                  type: number
+                  example: 8686
+                apiKey:
+                  type: string
+                  example: yourapikey
+                useSsl:
+                  type: boolean
+                  example: false
+                baseUrl:
+                  type: string
+              required:
+                - hostname
+                - port
+                - apiKey
+                - useSsl
+      responses:
+        '200':
+          description: Successfully connected to Lidarr instance
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profiles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ServiceProfile'
+                  metadataProfiles:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        name:
+                          type: string
+                  rootFolders:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: number
+                        path:
+                          type: string
+                  tags:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ServarrTag'
+                  urlBase:
+                    type: string
+  /settings/lidarr/{lidarrId}:
+    put:
+      summary: Update Lidarr instance
+      description: Updates an existing Lidarr instance with the provided values.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: lidarrId
+          required: true
+          schema:
+            type: integer
+          description: Lidarr instance ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LidarrSettings'
+      responses:
+        '200':
+          description: 'Lidarr instance updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LidarrSettings'
+    delete:
+      summary: Delete Lidarr instance
+      description: Deletes an existing Lidarr instance based on the lidarrId parameter.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: lidarrId
+          required: true
+          schema:
+            type: integer
+          description: Lidarr instance ID
+      responses:
+        '200':
+          description: 'Lidarr instance deleted'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LidarrSettings'
+  /settings/lidarr/{lidarrId}/profiles:
+    get:
+      summary: Get available Lidarr profiles
+      description: Returns a list of profiles available on the Lidarr server instance in a JSON array.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: lidarrId
+          required: true
+          schema:
+            type: integer
+          description: Lidarr instance ID
+      responses:
+        '200':
+          description: Returned list of profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ServiceProfile'
+  /settings/lidarr/{lidarrId}/metadataprofiles:
+    get:
+      summary: Get available Lidarr metadata profiles
+      description: Returns a list of metadata profiles available on the Lidarr server instance in a JSON array.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: lidarrId
+          required: true
+          schema:
+            type: integer
+          description: Lidarr instance ID
+      responses:
+        '200':
+          description: Returned list of metadata profiles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                    name:
+                      type: string
   /settings/public:
     get:
       summary: Get public settings
@@ -5009,6 +5346,86 @@ paths:
                           type: string
                         title:
                           type: string
+  /discover/artists:
+    get:
+      summary: Discover artists
+      description: Returns a list of artists from MusicBrainz in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: query
+          schema:
+            type: string
+            example: 'The Beatles'
+            default: '*'
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 1
+                  totalResults:
+                    type: number
+                    example: 25
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ArtistResult'
+  /discover/albums:
+    get:
+      summary: Discover albums
+      description: Returns a list of albums (release groups) from MusicBrainz in a JSON object.
+      tags:
+        - search
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: query
+          schema:
+            type: string
+            example: 'Abbey Road'
+            default: '*'
+      responses:
+        '200':
+          description: Results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 1
+                  totalResults:
+                    type: number
+                    example: 25
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AlbumResult'
   /request:
     get:
       summary: Get all requests
@@ -5091,11 +5508,14 @@ paths:
               properties:
                 mediaType:
                   type: string
-                  enum: [movie, tv]
+                  enum: [movie, tv, artist, album]
                   example: movie
                 mediaId:
                   type: number
                   example: 123
+                musicBrainzId:
+                  type: string
+                  example: '5b11f4ce-a62d-471e-81fc-a69a8278c7da'
                 tvdbId:
                   type: number
                   example: 123
@@ -5114,6 +5534,8 @@ paths:
                   type: number
                 profileId:
                   type: number
+                metadataProfileId:
+                  type: number
                 rootFolder:
                   type: string
                 languageProfileId:
@@ -5123,7 +5545,6 @@ paths:
                   nullable: true
               required:
                 - mediaType
-                - mediaId
       responses:
         '201':
           description: Succesfully created the request
@@ -5151,6 +5572,8 @@ paths:
                   movie:
                     type: number
                   tv:
+                    type: number
+                  music:
                     type: number
                   pending:
                     type: number
@@ -5205,7 +5628,7 @@ paths:
               properties:
                 mediaType:
                   type: string
-                  enum: [movie, tv]
+                  enum: [movie, tv, artist, album]
                 seasons:
                   type: array
                   items:
@@ -5217,6 +5640,8 @@ paths:
                 serverId:
                   type: number
                 profileId:
+                  type: number
+                metadataProfileId:
                   type: number
                 rootFolder:
                   type: string
@@ -5701,6 +6126,161 @@ paths:
                   criticsRating:
                     type: string
                     enum: ['Rotten', 'Fresh']
+  /music/artist/{mbid}:
+    get:
+      summary: Get artist details
+      description: Returns full artist details from MusicBrainz in a JSON object.
+      tags:
+        - music
+      parameters:
+        - in: path
+          name: mbid
+          required: true
+          schema:
+            type: string
+            example: '5b11f4ce-a62d-471e-81fc-a69a8278c7da'
+      responses:
+        '200':
+          description: Artist details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: '5b11f4ce-a62d-471e-81fc-a69a8278c7da'
+                  name:
+                    type: string
+                    example: 'The Beatles'
+                  sortName:
+                    type: string
+                    example: 'Beatles, The'
+                  disambiguation:
+                    type: string
+                    nullable: true
+                  country:
+                    type: string
+                    nullable: true
+                  type:
+                    type: string
+                    nullable: true
+                  area:
+                    type: string
+                    nullable: true
+                  lifeSpan:
+                    type: object
+                    nullable: true
+                  tags:
+                    type: array
+                    items:
+                      type: object
+                  releaseGroups:
+                    type: array
+                    items:
+                      type: object
+                  mediaInfo:
+                    $ref: '#/components/schemas/MediaInfo'
+  /music/artist/{mbid}/albums:
+    get:
+      summary: Get artist albums
+      description: Returns a list of albums (release groups) for a specific artist from MusicBrainz in a JSON object.
+      tags:
+        - music
+      parameters:
+        - in: path
+          name: mbid
+          required: true
+          schema:
+            type: string
+            example: '5b11f4ce-a62d-471e-81fc-a69a8278c7da'
+        - in: query
+          name: page
+          schema:
+            type: number
+            example: 1
+            default: 1
+        - in: query
+          name: limit
+          schema:
+            type: number
+            example: 25
+            default: 25
+      responses:
+        '200':
+          description: List of albums
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  page:
+                    type: number
+                    example: 1
+                  totalPages:
+                    type: number
+                    example: 1
+                  totalResults:
+                    type: number
+                    example: 25
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AlbumResult'
+  /music/album/{mbid}:
+    get:
+      summary: Get album details
+      description: Returns full album (release group) details from MusicBrainz in a JSON object.
+      tags:
+        - music
+      parameters:
+        - in: path
+          name: mbid
+          required: true
+          schema:
+            type: string
+            example: '1b022e01-4da6-387b-8658-8678046e4cef'
+      responses:
+        '200':
+          description: Album details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: '1b022e01-4da6-387b-8658-8678046e4cef'
+                  title:
+                    type: string
+                    example: 'Abbey Road'
+                  primaryType:
+                    type: string
+                    example: 'Album'
+                  secondaryTypes:
+                    type: array
+                    items:
+                      type: string
+                  firstReleaseDate:
+                    type: string
+                    nullable: true
+                  disambiguation:
+                    type: string
+                    nullable: true
+                  artistCredit:
+                    type: array
+                    items:
+                      type: object
+                  releases:
+                    type: array
+                    items:
+                      type: object
+                  tags:
+                    type: array
+                    items:
+                      type: object
+                  mediaInfo:
+                    $ref: '#/components/schemas/MediaInfo'
   /person/{personId}:
     get:
       summary: Get person details

@@ -88,6 +88,10 @@ export const sliderTitles = defineMessages({
   tmdbsearch: 'TMDB Search',
   tmdbmoviestreamingservices: 'TMDB Movie Streaming Services',
   tmdbtvstreamingservices: 'TMDB TV Streaming Services',
+  popularartists: 'Popular Artists',
+  popularalbums: 'Popular Albums',
+  upcomingalbums: 'Upcoming Albums',
+  musictags: 'Music Tags',
 });
 
 export const QueryFilterOptions = z.object({

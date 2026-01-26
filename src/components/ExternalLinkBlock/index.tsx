@@ -8,12 +8,14 @@ import useLocale from '@app/hooks/useLocale';
 import { MediaType } from '@server/constants/media';
 
 interface ExternalLinkBlockProps {
-  mediaType: 'movie' | 'tv';
+  mediaType: 'movie' | 'tv' | 'artist' | 'album';
   tmdbId?: number;
   tvdbId?: number;
   imdbId?: string;
   rtUrl?: string;
   plexUrl?: string;
+  mbid?: string; // MusicBrainz ID for music types
+  serviceUrl?: string; // Lidarr URL for music types
 }
 
 const ExternalLinkBlock = ({
@@ -23,6 +25,8 @@ const ExternalLinkBlock = ({
   imdbId,
   rtUrl,
   plexUrl,
+  mbid,
+  serviceUrl,
 }: ExternalLinkBlockProps) => {
   const { locale } = useLocale();
 
@@ -38,7 +42,43 @@ const ExternalLinkBlock = ({
           <PlexLogo />
         </a>
       )}
-      {tmdbId && (
+      {serviceUrl && (mediaType === 'artist' || mediaType === 'album') && (
+        <a
+          href={serviceUrl}
+          className="w-8 opacity-50 transition duration-300 hover:opacity-100"
+          target="_blank"
+          rel="noreferrer"
+          title="Open in Lidarr"
+        >
+          <svg
+            className="w-8 h-8"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+          </svg>
+        </a>
+      )}
+      {mbid && (mediaType === 'artist' || mediaType === 'album') && (
+        <a
+          href={`https://musicbrainz.org/${mediaType === 'artist' ? 'artist' : 'release-group'}/${mbid}`}
+          className="w-8 opacity-50 transition duration-300 hover:opacity-100"
+          target="_blank"
+          rel="noreferrer"
+          title="Open in MusicBrainz"
+        >
+          <svg
+            className="w-8 h-8"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+          </svg>
+        </a>
+      )}
+      {tmdbId && mediaType !== 'artist' && mediaType !== 'album' && (
         <a
           href={`https://www.themoviedb.org/${mediaType}/${tmdbId}?language=${locale}`}
           className="w-8 opacity-50 transition duration-300 hover:opacity-100"
@@ -78,7 +118,7 @@ const ExternalLinkBlock = ({
           <RTLogo />
         </a>
       )}
-      {tmdbId && (
+      {tmdbId && mediaType !== 'artist' && mediaType !== 'album' && (
         <a
           href={`https://trakt.tv/search/tmdb/${tmdbId}?id_type=${
             mediaType === 'movie' ? 'movie' : 'show'

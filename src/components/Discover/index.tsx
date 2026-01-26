@@ -282,6 +282,46 @@ const Discover = () => {
           case DiscoverSliderType.NETWORKS:
             sliderComponent = <NetworkSlider />;
             break;
+          case DiscoverSliderType.POPULAR_ARTISTS:
+            sliderComponent = (
+              <MediaSlider
+                sliderKey="popular-artists"
+                title={intl.formatMessage(sliderTitles.popularartists)}
+                url="/api/v1/discover/artists/popular"
+                linkUrl="/discover/artists"
+              />
+            );
+            break;
+          case DiscoverSliderType.POPULAR_ALBUMS:
+            sliderComponent = (
+              <MediaSlider
+                sliderKey="popular-albums"
+                title={intl.formatMessage(sliderTitles.popularalbums)}
+                url="/api/v1/discover/albums/popular"
+                linkUrl="/discover/albums"
+              />
+            );
+            break;
+          case DiscoverSliderType.UPCOMING_ALBUMS:
+            sliderComponent = (
+              <MediaSlider
+                sliderKey="upcoming-albums"
+                title={intl.formatMessage(sliderTitles.upcomingalbums)}
+                url="/api/v1/discover/albums/upcoming"
+                linkUrl="/discover/albums/upcoming"
+              />
+            );
+            break;
+          case DiscoverSliderType.MUSIC_TAGS:
+            sliderComponent = (
+              <MediaSlider
+                sliderKey={`music-tag-${slider.data || 'all'}`}
+                title={slider.title || intl.formatMessage(sliderTitles.musictags)}
+                url={slider.data ? `/api/v1/discover/albums/tag/${slider.data}` : '/api/v1/discover/albums'}
+                linkUrl={slider.data ? `/discover/albums/tag/${slider.data}` : '/discover/albums'}
+              />
+            );
+            break;
           case DiscoverSliderType.TMDB_MOVIE_KEYWORD:
             sliderComponent = (
               <MediaSlider

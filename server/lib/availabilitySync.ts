@@ -3,13 +3,14 @@ import PlexAPI from '@server/api/plexapi';
 import RadarrAPI, { type RadarrMovie } from '@server/api/servarr/radarr';
 import type { SonarrSeason, SonarrSeries } from '@server/api/servarr/sonarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
-import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import LidarrAPI, { type LidarrArtist, type LidarrAlbum } from '@server/api/servarr/lidarr';
+import { MediaRequestStatus, MediaStatus, MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import MediaRequest from '@server/entity/MediaRequest';
 import type Season from '@server/entity/Season';
 import { User } from '@server/entity/User';
-import type { RadarrSettings, SonarrSettings } from '@server/lib/settings';
+import type { RadarrSettings, SonarrSettings, LidarrSettings } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 
@@ -20,6 +21,7 @@ class AvailabilitySync {
   private sonarrSeasonsCache: Record<string, SonarrSeason[]>;
   private radarrServers: RadarrSettings[];
   private sonarrServers: SonarrSettings[];
+  private lidarrServers: LidarrSettings[];
 
   async run() {
     const settings = getSettings();
@@ -28,6 +30,7 @@ class AvailabilitySync {
     this.sonarrSeasonsCache = {};
     this.radarrServers = settings.radarr.filter((server) => server.syncEnabled);
     this.sonarrServers = settings.sonarr.filter((server) => server.syncEnabled);
+    this.lidarrServers = (settings.lidarr || []).filter((server) => server.syncEnabled);
 
     try {
       logger.info(`Starting availability sync...`, {
@@ -202,6 +205,26 @@ class AvailabilitySync {
             await this.mediaUpdater(media, true);
           }
         }
+
+        // Check Lidarr for music media (artists and albums)
+        if (
+          media.mediaType === MediaType.MUSIC ||
+          media.mediaType === MediaType.ARTIST ||
+          media.mediaType === MediaType.ALBUM
+        ) {
+          const existsInLidarr = await this.mediaExistsInLidarr(media);
+
+          if (existsInLidarr) {
+            logger.info(
+              `The ${media.mediaType} [MusicBrainz ID ${media.musicBrainzId}] still exists. Preventing removal.`,
+              {
+                label: 'Availability Sync',
+              }
+            );
+          } else if (media.status === MediaStatus.AVAILABLE) {
+            await this.mediaUpdater(media, false);
+          }
+        }
       }
     } catch (ex) {
       logger.error('Failed to complete availability sync.', {
@@ -248,6 +271,7 @@ class AvailabilitySync {
     try {
       // If media type is tv, check if a season is processing
       // to see if we need to keep the external metadata
+      // For music, check if there are any approved requests
       let isMediaProcessing = false;
 
       if (media.mediaType === 'tv') {
@@ -266,6 +290,27 @@ class AvailabilitySync {
               is4k: is4k,
             }
           )
+          .getOne();
+
+        if (request) {
+          isMediaProcessing = true;
+        }
+      } else if (
+        media.mediaType === MediaType.MUSIC ||
+        media.mediaType === MediaType.ARTIST ||
+        media.mediaType === MediaType.ALBUM
+      ) {
+        const requestRepository = getRepository(MediaRequest);
+
+        const request = await requestRepository
+          .createQueryBuilder('request')
+          .leftJoinAndSelect('request.media', 'media')
+          .where('(media.id = :id)', {
+            id: media.id,
+          })
+          .andWhere('request.status = :requestStatus', {
+            requestStatus: MediaRequestStatus.APPROVED,
+          })
           .getOne();
 
         if (request) {
@@ -292,21 +337,61 @@ class AvailabilitySync {
         ? media[is4k ? 'ratingKey4k' : 'ratingKey']
         : null;
 
+      const mediaTypeLabel =
+        media.mediaType === 'movie'
+          ? 'movie'
+          : media.mediaType === 'tv'
+          ? 'show'
+          : media.mediaType === MediaType.ARTIST
+          ? 'artist'
+          : media.mediaType === MediaType.ALBUM
+          ? 'album'
+          : 'media';
+
+      const serviceLabel =
+        media.mediaType === 'movie'
+          ? 'Radarr'
+          : media.mediaType === 'tv'
+          ? 'Sonarr'
+          : 'Lidarr';
+
+      const idLabel =
+        media.mediaType === 'movie' || media.mediaType === 'tv'
+          ? `TMDB ID ${media.tmdbId}`
+          : `MusicBrainz ID ${media.musicBrainzId}`;
+
+      const prefix =
+        media.mediaType === MediaType.MUSIC ||
+        media.mediaType === MediaType.ARTIST ||
+        media.mediaType === MediaType.ALBUM
+          ? ''
+          : `${is4k ? '4K' : 'non-4K'} `;
+
       logger.info(
-        `The ${is4k ? '4K' : 'non-4K'} ${
-          media.mediaType === 'movie' ? 'movie' : 'show'
-        } [TMDB ID ${media.tmdbId}] was not found in any ${
-          media.mediaType === 'movie' ? 'Radarr' : 'Sonarr'
-        } and Plex instance. Status will be changed to deleted.`,
+        `The ${prefix}${mediaTypeLabel} [${idLabel}] was not found in any ${serviceLabel} and Plex instance. Status will be changed to deleted.`,
         { label: 'Availability Sync' }
       );
 
       await mediaRepository.save(media);
     } catch (ex) {
+      const mediaTypeLabel =
+        media.mediaType === 'movie'
+          ? 'movie'
+          : media.mediaType === 'tv'
+          ? 'show'
+          : media.mediaType === MediaType.ARTIST
+          ? 'artist'
+          : media.mediaType === MediaType.ALBUM
+          ? 'album'
+          : 'media';
+
+      const idLabel =
+        media.mediaType === 'movie' || media.mediaType === 'tv'
+          ? `TMDB ID ${media.tmdbId}`
+          : `MusicBrainz ID ${media.musicBrainzId}`;
+
       logger.debug(
-        `Failure updating the ${is4k ? '4K' : 'non-4K'} ${
-          media.mediaType === 'tv' ? 'show' : 'movie'
-        } [TMDB ID ${media.tmdbId}].`,
+        `Failure updating the ${is4k ? '4K' : 'non-4K'} ${mediaTypeLabel} [${idLabel}].`,
         {
           errorMessage: ex.message,
           label: 'Availability Sync',
@@ -667,6 +752,62 @@ class AvailabilitySync {
     }
 
     return seasonExistsInPlex;
+  }
+
+  private async mediaExistsInLidarr(media: Media): Promise<boolean> {
+    let existsInLidarr = false;
+
+    if (!media.musicBrainzId) {
+      return false;
+    }
+
+    // Check for availability in all of the available lidarr servers
+    // If any find the media, we will assume the media exists
+    for (const server of this.lidarrServers) {
+      const lidarrAPI = new LidarrAPI({
+        apiKey: server.apiKey,
+        url: LidarrAPI.buildUrl(server, '/api/v1'),
+      });
+
+      try {
+        if (media.mediaType === MediaType.ARTIST) {
+          const lidarrArtist: LidarrArtist | null =
+            await lidarrAPI.getArtistByMusicBrainzId(media.musicBrainzId);
+
+          if (
+            lidarrArtist &&
+            lidarrArtist.statistics &&
+            lidarrArtist.statistics.trackFileCount > 0
+          ) {
+            existsInLidarr = true;
+          }
+        } else if (media.mediaType === MediaType.ALBUM) {
+          const lidarrAlbum: LidarrAlbum | null =
+            await lidarrAPI.getAlbumByMusicBrainzId(media.musicBrainzId);
+
+          if (
+            lidarrAlbum &&
+            lidarrAlbum.statistics &&
+            lidarrAlbum.statistics.trackFileCount > 0
+          ) {
+            existsInLidarr = true;
+          }
+        }
+      } catch (ex) {
+        if (!ex.message.includes('404')) {
+          existsInLidarr = true;
+          logger.debug(
+            `Failure retrieving the ${media.mediaType} [MusicBrainz ID ${media.musicBrainzId}] from Lidarr.`,
+            {
+              errorMessage: ex.message,
+              label: 'Availability Sync',
+            }
+          );
+        }
+      }
+    }
+
+    return existsInLidarr;
   }
 }
 

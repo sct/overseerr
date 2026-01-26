@@ -1,6 +1,8 @@
 import PersonCard from '@app/components/PersonCard';
 import TitleCard from '@app/components/TitleCard';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
+import ArtistTitleCard from '@app/components/TitleCard/ArtistTitleCard';
+import AlbumTitleCard from '@app/components/TitleCard/AlbumTitleCard';
 import useVerticalScroll from '@app/hooks/useVerticalScroll';
 import globalMessages from '@app/i18n/globalMessages';
 import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
@@ -9,11 +11,13 @@ import type {
   MovieResult,
   PersonResult,
   TvResult,
+  ArtistResult,
+  AlbumResult,
 } from '@server/models/Search';
 import { useIntl } from 'react-intl';
 
 type ListViewProps = {
-  items?: (TvResult | MovieResult | PersonResult | CollectionResult)[];
+  items?: (TvResult | MovieResult | PersonResult | CollectionResult | ArtistResult | AlbumResult)[];
   plexItems?: WatchlistItem[];
   isEmpty?: boolean;
   isLoading?: boolean;
@@ -109,6 +113,24 @@ const ListView = ({
                   personId={title.id}
                   name={title.name}
                   profilePath={title.profilePath}
+                  canExpand
+                />
+              );
+              break;
+            case 'artist':
+              titleCard = (
+                <ArtistTitleCard
+                  id={title.id}
+                  mbid={title.id}
+                  canExpand
+                />
+              );
+              break;
+            case 'album':
+              titleCard = (
+                <AlbumTitleCard
+                  id={title.id}
+                  mbid={title.id}
                   canExpand
                 />
               );

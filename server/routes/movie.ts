@@ -7,6 +7,7 @@ import Media from '@server/entity/Media';
 import logger from '@server/logger';
 import { mapMovieDetails } from '@server/models/Movie';
 import { mapMovieResult } from '@server/models/Search';
+import { toPositiveInteger } from '@server/utils/validation';
 import { Router } from 'express';
 
 const movieRoutes = Router();
@@ -15,8 +16,16 @@ movieRoutes.get('/:id', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
   try {
+    const movieId = toPositiveInteger(req.params.id);
+    if (!movieId) {
+      return next({
+        status: 400,
+        message: 'Invalid movie ID.',
+      });
+    }
+
     const tmdbMovie = await tmdb.getMovie({
-      movieId: Number(req.params.id),
+      movieId,
       language: (req.query.language as string) ?? req.locale,
     });
 
@@ -40,9 +49,21 @@ movieRoutes.get('/:id/recommendations', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
   try {
+    const movieId = toPositiveInteger(req.params.id);
+    if (!movieId) {
+      return next({
+        status: 400,
+        message: 'Invalid movie ID.',
+      });
+    }
+
+    const page = toPositiveInteger(
+      typeof req.query.page === 'string' ? req.query.page : undefined
+    ) ?? 1;
+
     const results = await tmdb.getMovieRecommendations({
-      movieId: Number(req.params.id),
-      page: Number(req.query.page),
+      movieId,
+      page,
       language: (req.query.language as string) ?? req.locale,
     });
 
@@ -81,9 +102,21 @@ movieRoutes.get('/:id/similar', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
   try {
+    const movieId = toPositiveInteger(req.params.id);
+    if (!movieId) {
+      return next({
+        status: 400,
+        message: 'Invalid movie ID.',
+      });
+    }
+
+    const page = toPositiveInteger(
+      typeof req.query.page === 'string' ? req.query.page : undefined
+    ) ?? 1;
+
     const results = await tmdb.getMovieSimilar({
-      movieId: Number(req.params.id),
-      page: Number(req.query.page),
+      movieId,
+      page,
       language: (req.query.language as string) ?? req.locale,
     });
 
@@ -126,8 +159,16 @@ movieRoutes.get('/:id/ratings', async (req, res, next) => {
   const rtapi = new RottenTomatoes();
 
   try {
+    const movieId = toPositiveInteger(req.params.id);
+    if (!movieId) {
+      return next({
+        status: 400,
+        message: 'Invalid movie ID.',
+      });
+    }
+
     const movie = await tmdb.getMovie({
-      movieId: Number(req.params.id),
+      movieId,
     });
 
     const rtratings = await rtapi.getMovieRatings(
@@ -165,8 +206,16 @@ movieRoutes.get('/:id/ratingscombined', async (req, res, next) => {
   const imdbApi = new IMDBRadarrProxy();
 
   try {
+    const movieId = toPositiveInteger(req.params.id);
+    if (!movieId) {
+      return next({
+        status: 400,
+        message: 'Invalid movie ID.',
+      });
+    }
+
     const movie = await tmdb.getMovie({
-      movieId: Number(req.params.id),
+      movieId,
     });
 
     const rtratings = await rtapi.getMovieRatings(

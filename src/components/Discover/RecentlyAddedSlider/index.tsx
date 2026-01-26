@@ -1,7 +1,10 @@
 import Slider from '@app/components/Slider';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
+import ArtistTitleCard from '@app/components/TitleCard/ArtistTitleCard';
+import AlbumTitleCard from '@app/components/TitleCard/AlbumTitleCard';
 import { Permission, useUser } from '@app/hooks/useUser';
 import type { MediaResultsResponse } from '@server/interfaces/api/mediaInterfaces';
+import { MediaType } from '@server/constants/media';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
@@ -36,15 +39,37 @@ const RecentlyAddedSlider = () => {
       <Slider
         sliderKey="media"
         isLoading={!media}
-        items={(media?.results ?? []).map((item) => (
-          <TmdbTitleCard
-            key={`media-slider-item-${item.id}`}
-            id={item.id}
-            tmdbId={item.tmdbId}
-            tvdbId={item.tvdbId}
-            type={item.mediaType}
-          />
-        ))}
+        items={(media?.results ?? []).map((item) => {
+          // Handle music types
+          if (item.mediaType === MediaType.ARTIST && item.musicBrainzId) {
+            return (
+              <ArtistTitleCard
+                key={`media-slider-item-${item.id}`}
+                id={item.musicBrainzId}
+                mbid={item.musicBrainzId}
+              />
+            );
+          }
+          if (item.mediaType === MediaType.ALBUM && item.musicBrainzId) {
+            return (
+              <AlbumTitleCard
+                key={`media-slider-item-${item.id}`}
+                id={item.musicBrainzId}
+                mbid={item.musicBrainzId}
+              />
+            );
+          }
+          // Handle movie/TV types
+          return (
+            <TmdbTitleCard
+              key={`media-slider-item-${item.id}`}
+              id={item.id}
+              tmdbId={item.tmdbId || 0}
+              tvdbId={item.tvdbId}
+              type={item.mediaType === MediaType.MOVIE ? 'movie' : 'tv'}
+            />
+          );
+        })}
       />
     </>
   );

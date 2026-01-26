@@ -9,6 +9,9 @@ export enum MediaRequestStatus {
 export enum MediaType {
   MOVIE = 'movie',
   TV = 'tv',
+  MUSIC = 'music',
+  ARTIST = 'artist',
+  ALBUM = 'album',
 }
 
 export enum MediaStatus {

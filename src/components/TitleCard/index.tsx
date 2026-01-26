@@ -18,7 +18,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 interface TitleCardProps {
-  id: number;
+  id: number | string; // Can be number (TMDB) or string (MusicBrainz ID)
   image?: string;
   summary?: string;
   year?: string;
@@ -28,6 +28,7 @@ interface TitleCardProps {
   status?: MediaStatus;
   canExpand?: boolean;
   inProgress?: boolean;
+  mbid?: string; // MusicBrainz ID for music types
 }
 
 const TitleCard = ({
@@ -40,6 +41,7 @@ const TitleCard = ({
   mediaType,
   inProgress = false,
   canExpand = false,
+  mbid,
 }: TitleCardProps) => {
   const isTouch = useIsTouch();
   const intl = useIntl();
@@ -75,7 +77,9 @@ const TitleCard = ({
       Permission.REQUEST,
       mediaType === 'movie' || mediaType === 'collection'
         ? Permission.REQUEST_MOVIE
-        : Permission.REQUEST_TV,
+        : mediaType === 'tv'
+        ? Permission.REQUEST_TV
+        : Permission.REQUEST,
     ],
     { type: 'or' }
   );
@@ -86,13 +90,18 @@ const TitleCard = ({
       data-testid="title-card"
     >
       <RequestModal
-        tmdbId={id}
+        tmdbId={mediaType === 'artist' || mediaType === 'album' ? undefined : (typeof id === 'number' ? id : parseInt(id) || 0)}
+        mbid={mbid || (mediaType === 'artist' || mediaType === 'album' ? String(id) : undefined)}
         show={showRequestModal}
         type={
           mediaType === 'movie'
             ? 'movie'
             : mediaType === 'collection'
             ? 'collection'
+            : mediaType === 'artist'
+            ? 'artist'
+            : mediaType === 'album'
+            ? 'album'
             : 'tv'
         }
         onComplete={requestComplete}
@@ -193,6 +202,10 @@ const TitleCard = ({
                     ? `/movie/${id}`
                     : mediaType === 'collection'
                     ? `/collection/${id}`
+                    : mediaType === 'artist'
+                    ? `/artist/${id}`
+                    : mediaType === 'album'
+                    ? `/album/${id}`
                     : `/tv/${id}`
                 }
               >

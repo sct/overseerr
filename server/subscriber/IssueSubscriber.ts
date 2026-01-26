@@ -26,19 +26,45 @@ export class IssueSubscriber implements EntitySubscriberInterface<Issue> {
 
     try {
       if (entity.media.mediaType === MediaType.MOVIE) {
-        const movie = await tmdb.getMovie({ movieId: entity.media.tmdbId });
+        if (!entity.media.tmdbId) {
+          logger.warn('Movie issue missing TMDB ID', {
+            label: 'Issue Subscriber',
+            issueId: entity.id,
+            mediaId: entity.media.id,
+          });
+          return;
+        }
+        const tmdbId: number = entity.media.tmdbId as number; // Type assertion after null check
+        const movie = await tmdb.getMovie({ movieId: tmdbId });
 
         title = `${movie.title}${
           movie.release_date ? ` (${movie.release_date.slice(0, 4)})` : ''
         }`;
         image = `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`;
-      } else {
-        const tvshow = await tmdb.getTvShow({ tvId: entity.media.tmdbId });
+      } else if (entity.media.mediaType === MediaType.TV) {
+        if (!entity.media.tmdbId) {
+          logger.warn('TV issue missing TMDB ID', {
+            label: 'Issue Subscriber',
+            issueId: entity.id,
+            mediaId: entity.media.id,
+          });
+          return;
+        }
+        const tmdbId: number = entity.media.tmdbId as number; // Type assertion after null check
+        const tvshow = await tmdb.getTvShow({ tvId: tmdbId });
 
         title = `${tvshow.name}${
           tvshow.first_air_date ? ` (${tvshow.first_air_date.slice(0, 4)})` : ''
         }`;
         image = `https://image.tmdb.org/t/p/w600_and_h900_bestv2${tvshow.poster_path}`;
+      } else {
+        // Music media types don't use TMDB, skip notification
+        logger.debug('Skipping issue notification for music media type', {
+          label: 'Issue Subscriber',
+          issueId: entity.id,
+          mediaType: entity.media.mediaType,
+        });
+        return;
       }
 
       const [firstComment] = sortBy(entity.comments, 'id');

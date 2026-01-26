@@ -5,6 +5,7 @@ import Media from '@server/entity/Media';
 import logger from '@server/logger';
 import { mapTvResult } from '@server/models/Search';
 import { mapSeasonWithEpisodes, mapTvDetails } from '@server/models/Tv';
+import { toPositiveInteger } from '@server/utils/validation';
 import { Router } from 'express';
 
 const tvRoutes = Router();
@@ -12,8 +13,16 @@ const tvRoutes = Router();
 tvRoutes.get('/:id', async (req, res, next) => {
   const tmdb = new TheMovieDb();
   try {
+    const tvId = toPositiveInteger(req.params.id);
+    if (!tvId) {
+      return next({
+        status: 400,
+        message: 'Invalid TV series ID.',
+      });
+    }
+
     const tv = await tmdb.getTvShow({
-      tvId: Number(req.params.id),
+      tvId,
       language: (req.query.language as string) ?? req.locale,
     });
 
@@ -37,9 +46,26 @@ tvRoutes.get('/:id/season/:seasonNumber', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
   try {
+    const tvId = toPositiveInteger(req.params.id);
+    const seasonNumber = toPositiveInteger(req.params.seasonNumber);
+    
+    if (!tvId) {
+      return next({
+        status: 400,
+        message: 'Invalid TV series ID.',
+      });
+    }
+    
+    if (!seasonNumber) {
+      return next({
+        status: 400,
+        message: 'Invalid season number.',
+      });
+    }
+
     const season = await tmdb.getTvSeason({
-      tvId: Number(req.params.id),
-      seasonNumber: Number(req.params.seasonNumber),
+      tvId,
+      seasonNumber,
       language: (req.query.language as string) ?? req.locale,
     });
 
@@ -62,9 +88,21 @@ tvRoutes.get('/:id/recommendations', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
   try {
+    const tvId = toPositiveInteger(req.params.id);
+    if (!tvId) {
+      return next({
+        status: 400,
+        message: 'Invalid TV series ID.',
+      });
+    }
+
+    const page = toPositiveInteger(
+      typeof req.query.page === 'string' ? req.query.page : undefined
+    ) ?? 1;
+
     const results = await tmdb.getTvRecommendations({
-      tvId: Number(req.params.id),
-      page: Number(req.query.page),
+      tvId,
+      page,
       language: (req.query.language as string) ?? req.locale,
     });
 
@@ -102,9 +140,21 @@ tvRoutes.get('/:id/similar', async (req, res, next) => {
   const tmdb = new TheMovieDb();
 
   try {
+    const tvId = toPositiveInteger(req.params.id);
+    if (!tvId) {
+      return next({
+        status: 400,
+        message: 'Invalid TV series ID.',
+      });
+    }
+
+    const page = toPositiveInteger(
+      typeof req.query.page === 'string' ? req.query.page : undefined
+    ) ?? 1;
+
     const results = await tmdb.getTvSimilar({
-      tvId: Number(req.params.id),
-      page: Number(req.query.page),
+      tvId,
+      page,
       language: (req.query.language as string) ?? req.locale,
     });
 
@@ -143,8 +193,16 @@ tvRoutes.get('/:id/ratings', async (req, res, next) => {
   const rtapi = new RottenTomatoes();
 
   try {
+    const tvId = toPositiveInteger(req.params.id);
+    if (!tvId) {
+      return next({
+        status: 400,
+        message: 'Invalid TV series ID.',
+      });
+    }
+
     const tv = await tmdb.getTvShow({
-      tvId: Number(req.params.id),
+      tvId,
     });
 
     const rtratings = await rtapi.getTVRatings(

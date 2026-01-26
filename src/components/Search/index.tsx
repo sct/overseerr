@@ -7,6 +7,8 @@ import type {
   MovieResult,
   PersonResult,
   TvResult,
+  ArtistResult,
+  AlbumResult,
 } from '@server/models/Search';
 import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
@@ -28,7 +30,7 @@ const Search = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MovieResult | TvResult | PersonResult>(
+  } = useDiscover<MovieResult | TvResult | PersonResult | ArtistResult | AlbumResult>(
     `/api/v1/search`,
     {
       query: router.query.query,

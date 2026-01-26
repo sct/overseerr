@@ -1,4 +1,5 @@
 import TheMovieDb from '@server/api/themoviedb';
+import MusicBrainzAPI from '@server/api/musicbrainz';
 import {
   MediaRequestStatus,
   MediaStatus,
@@ -9,6 +10,7 @@ import type { MediaRequestBody } from '@server/interfaces/api/requestInterfaces'
 import notificationManager, { Notification } from '@server/lib/notifications';
 import { Permission } from '@server/lib/permissions';
 import logger from '@server/logger';
+import { isValidMBID } from '@server/utils/validation';
 import { truncate } from 'lodash';
 import {
   AfterInsert,
@@ -101,6 +103,15 @@ export class MediaRequest {
           requestBody.is4k ? '4K ' : ''
         }series requests.`
       );
+    } else if (
+      (requestBody.mediaType === MediaType.MUSIC ||
+        requestBody.mediaType === MediaType.ARTIST ||
+        requestBody.mediaType === MediaType.ALBUM) &&
+      !requestUser.hasPermission([Permission.REQUEST], { type: 'or' })
+    ) {
+      throw new RequestPermissionError(
+        'You do not have permission to make music requests.'
+      );
     }
 
     const quotas = await requestUser.getQuota();
@@ -109,36 +120,85 @@ export class MediaRequest {
       throw new QuotaRestrictedError('Movie Quota exceeded.');
     } else if (requestBody.mediaType === MediaType.TV && quotas.tv.restricted) {
       throw new QuotaRestrictedError('Series Quota exceeded.');
+    } else if (
+      (requestBody.mediaType === MediaType.MUSIC ||
+        requestBody.mediaType === MediaType.ARTIST ||
+        requestBody.mediaType === MediaType.ALBUM) &&
+      quotas.music?.restricted
+    ) {
+      throw new QuotaRestrictedError('Music Quota exceeded.');
     }
 
     const tmdbMedia =
       requestBody.mediaType === MediaType.MOVIE
         ? await tmdb.getMovie({ movieId: requestBody.mediaId })
-        : await tmdb.getTvShow({ tvId: requestBody.mediaId });
+        : requestBody.mediaType === MediaType.TV
+        ? await tmdb.getTvShow({ tvId: requestBody.mediaId })
+        : null;
 
     let media = await mediaRepository.findOne({
-      where: {
-        tmdbId: requestBody.mediaId,
-        mediaType: requestBody.mediaType,
-      },
+      where:
+        requestBody.mediaType === MediaType.MUSIC ||
+        requestBody.mediaType === MediaType.ARTIST ||
+        requestBody.mediaType === MediaType.ALBUM
+          ? {
+              musicBrainzId: requestBody.musicBrainzId,
+              mediaType: requestBody.mediaType,
+            }
+          : {
+              tmdbId: requestBody.mediaId,
+              mediaType: requestBody.mediaType,
+            },
       relations: ['requests'],
     });
 
     if (!media) {
-      media = new Media({
-        tmdbId: tmdbMedia.id,
-        tvdbId: requestBody.tvdbId ?? tmdbMedia.external_ids.tvdb_id,
-        status: !requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
-        status4k: requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
-        mediaType: requestBody.mediaType,
-      });
-    } else {
-      if (media.status === MediaStatus.UNKNOWN && !requestBody.is4k) {
-        media.status = MediaStatus.PENDING;
+      if (
+        requestBody.mediaType === MediaType.MUSIC ||
+        requestBody.mediaType === MediaType.ARTIST ||
+        requestBody.mediaType === MediaType.ALBUM
+      ) {
+        if (!requestBody.musicBrainzId) {
+          throw new Error('MusicBrainz ID is required for music requests');
+        }
+        // Validate MBID format to prevent injection attacks
+        if (!isValidMBID(requestBody.musicBrainzId)) {
+          throw new Error('Invalid MusicBrainz ID format');
+        }
+        media = new Media({
+          musicBrainzId: requestBody.musicBrainzId,
+          status: MediaStatus.PENDING,
+          mediaType: requestBody.mediaType,
+        });
+      } else {
+        if (!tmdbMedia) {
+          throw new Error('TMDB media data not found');
+        }
+        // TypeScript type narrowing - tmdbMedia is guaranteed non-null here
+        const tmdbMediaData: NonNullable<typeof tmdbMedia> = tmdbMedia;
+        media = new Media({
+          tmdbId: tmdbMediaData.id,
+          tvdbId: requestBody.tvdbId ?? tmdbMediaData.external_ids.tvdb_id,
+          status: !requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
+          status4k: requestBody.is4k ? MediaStatus.PENDING : MediaStatus.UNKNOWN,
+          mediaType: requestBody.mediaType,
+        });
       }
+    } else {
+      if (
+        requestBody.mediaType !== MediaType.MUSIC &&
+        requestBody.mediaType !== MediaType.ARTIST &&
+        requestBody.mediaType !== MediaType.ALBUM
+      ) {
+        if (media.status === MediaStatus.UNKNOWN && !requestBody.is4k) {
+          media.status = MediaStatus.PENDING;
+        }
 
-      if (media.status4k === MediaStatus.UNKNOWN && requestBody.is4k) {
-        media.status4k = MediaStatus.PENDING;
+        if (media.status4k === MediaStatus.UNKNOWN && requestBody.is4k) {
+          media.status4k = MediaStatus.PENDING;
+        }
+      } else if (media.status === MediaStatus.UNKNOWN) {
+        media.status = MediaStatus.PENDING;
       }
     }
 
@@ -146,14 +206,25 @@ export class MediaRequest {
       .createQueryBuilder('request')
       .leftJoin('request.media', 'media')
       .leftJoinAndSelect('request.requestedBy', 'user')
-      .where('request.is4k = :is4k', { is4k: requestBody.is4k })
-      .andWhere('media.tmdbId = :tmdbId', { tmdbId: tmdbMedia.id })
+      .where('request.is4k = :is4k', { is4k: requestBody.is4k ?? false })
+      .andWhere(
+        requestBody.mediaType === MediaType.MUSIC ||
+          requestBody.mediaType === MediaType.ARTIST ||
+          requestBody.mediaType === MediaType.ALBUM
+          ? 'media.musicBrainzId = :musicBrainzId'
+          : 'media.tmdbId = :tmdbId',
+        requestBody.mediaType === MediaType.MUSIC ||
+          requestBody.mediaType === MediaType.ARTIST ||
+          requestBody.mediaType === MediaType.ALBUM
+          ? { musicBrainzId: requestBody.musicBrainzId }
+          : { tmdbId: tmdbMedia?.id }
+      )
       .andWhere('media.mediaType = :mediaType', {
         mediaType: requestBody.mediaType,
       })
       .getMany();
 
-    if (existing && existing.length > 0) {
+      if (existing && existing.length > 0) {
       // If there is an existing movie request that isn't declined, don't allow a new one.
       if (
         requestBody.mediaType === MediaType.MOVIE &&
@@ -161,9 +232,28 @@ export class MediaRequest {
         existing[0].status !== MediaRequestStatus.COMPLETED
       ) {
         logger.warn('Duplicate request for media blocked', {
-          tmdbId: tmdbMedia.id,
+          tmdbId: tmdbMedia?.id,
           mediaType: requestBody.mediaType,
           is4k: requestBody.is4k,
+          label: 'Media Request',
+        });
+
+        throw new DuplicateMediaRequestError(
+          'Request for this media already exists.'
+        );
+      }
+
+      // If there is an existing music request that isn't declined, don't allow a new one.
+      if (
+        (requestBody.mediaType === MediaType.MUSIC ||
+          requestBody.mediaType === MediaType.ARTIST ||
+          requestBody.mediaType === MediaType.ALBUM) &&
+        existing[0].status !== MediaRequestStatus.DECLINED &&
+        existing[0].status !== MediaRequestStatus.COMPLETED
+      ) {
+        logger.warn('Duplicate request for media blocked', {
+          musicBrainzId: requestBody.musicBrainzId,
+          mediaType: requestBody.mediaType,
           label: 'Media Request',
         });
 
@@ -185,53 +275,65 @@ export class MediaRequest {
       }
     }
 
-    if (requestBody.mediaType === MediaType.MOVIE) {
-      await mediaRepository.save(media);
+    // Ensure media exists before processing request - TypeScript type narrowing
+    if (!media) {
+      throw new Error('Media object is required but was not found or created');
+    }
+    // After this check, media is guaranteed to be non-null
+    const mediaEntity: Media = media;
 
-      const request = new MediaRequest({
-        type: MediaType.MOVIE,
-        media,
-        requestedBy: requestUser,
-        // If the user is an admin or has the "auto approve" permission, automatically approve the request
-        status: user.hasPermission(
-          [
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K
-              : Permission.AUTO_APPROVE,
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K_MOVIE
-              : Permission.AUTO_APPROVE_MOVIE,
-            Permission.MANAGE_REQUESTS,
-          ],
-          { type: 'or' }
-        )
-          ? MediaRequestStatus.APPROVED
-          : MediaRequestStatus.PENDING,
-        modifiedBy: user.hasPermission(
-          [
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K
-              : Permission.AUTO_APPROVE,
-            requestBody.is4k
-              ? Permission.AUTO_APPROVE_4K_MOVIE
-              : Permission.AUTO_APPROVE_MOVIE,
-            Permission.MANAGE_REQUESTS,
-          ],
-          { type: 'or' }
-        )
-          ? user
-          : undefined,
-        is4k: requestBody.is4k,
-        serverId: requestBody.serverId,
-        profileId: requestBody.profileId,
-        rootFolder: requestBody.rootFolder,
-        tags: requestBody.tags,
+    switch (requestBody.mediaType) {
+      case MediaType.MOVIE: {
+        await mediaRepository.save(mediaEntity);
+
+        const request = new MediaRequest({
+          type: MediaType.MOVIE,
+          media: mediaEntity,
+          requestedBy: requestUser,
+          // If the user is an admin or has the "auto approve" permission, automatically approve the request
+          status: user.hasPermission(
+            [
+              requestBody.is4k
+                ? Permission.AUTO_APPROVE_4K
+                : Permission.AUTO_APPROVE,
+              requestBody.is4k
+                ? Permission.AUTO_APPROVE_4K_MOVIE
+                : Permission.AUTO_APPROVE_MOVIE,
+              Permission.MANAGE_REQUESTS,
+            ],
+            { type: 'or' }
+          )
+            ? MediaRequestStatus.APPROVED
+            : MediaRequestStatus.PENDING,
+          modifiedBy: user.hasPermission(
+            [
+              requestBody.is4k
+                ? Permission.AUTO_APPROVE_4K
+                : Permission.AUTO_APPROVE,
+              requestBody.is4k
+                ? Permission.AUTO_APPROVE_4K_MOVIE
+                : Permission.AUTO_APPROVE_MOVIE,
+              Permission.MANAGE_REQUESTS,
+            ],
+            { type: 'or' }
+          )
+            ? user
+            : undefined,
+          is4k: requestBody.is4k,
+          serverId: requestBody.serverId,
+          profileId: requestBody.profileId,
+          rootFolder: requestBody.rootFolder,
+          tags: requestBody.tags,
         isAutoRequest: options.isAutoRequest ?? false,
       });
 
-      await requestRepository.save(request);
-      return request;
-    } else {
+        await requestRepository.save(request);
+        return request;
+      }
+      case MediaType.TV: {
+      if (!tmdbMedia) {
+        throw new Error('TMDB media data not found for TV series');
+      }
       const tmdbMediaShow = tmdbMedia as Awaited<
         ReturnType<typeof tmdb.getTvShow>
       >;
@@ -246,8 +348,8 @@ export class MediaRequest {
       // We need to check existing requests on this title to make sure we don't double up on seasons that were
       // already requested. In the case they were, we just throw out any duplicates but still approve the request.
       // (Unless there are no seasons, in which case we abort)
-      if (media.requests) {
-        existingSeasons = media.requests
+      if (mediaEntity.requests) {
+        existingSeasons = mediaEntity.requests
           .filter(
             (request) =>
               request.is4k === requestBody.is4k &&
@@ -264,10 +366,10 @@ export class MediaRequest {
       }
 
       // We should also check seasons that are available/partially available but don't have existing requests
-      if (media.seasons) {
+      if (mediaEntity.seasons) {
         existingSeasons = [
           ...existingSeasons,
-          ...media.seasons
+          ...mediaEntity.seasons
             .filter(
               (season) =>
                 season[requestBody.is4k ? 'status4k' : 'status'] !==
@@ -292,11 +394,11 @@ export class MediaRequest {
         throw new QuotaRestrictedError('Series Quota exceeded.');
       }
 
-      await mediaRepository.save(media);
+      await mediaRepository.save(mediaEntity);
 
       const request = new MediaRequest({
         type: MediaType.TV,
-        media,
+        media: mediaEntity,
         requestedBy: requestUser,
         // If the user is an admin or has the "auto approve" permission, automatically approve the request
         status: user.hasPermission(
@@ -359,6 +461,59 @@ export class MediaRequest {
       await requestRepository.save(request);
       return request;
     }
+    case MediaType.MUSIC:
+    case MediaType.ARTIST:
+    case MediaType.ALBUM: {
+      if (!requestBody.musicBrainzId) {
+        throw new Error('MusicBrainz ID is required for music requests');
+      }
+
+      // Media should already exist from above, but ensure it's not null
+      if (!media) {
+        throw new Error('Media object is missing for music request');
+      }
+      // TypeScript type narrowing - assert non-null after check
+      const mediaEntityForMusic: Media = media as Media;
+
+      await mediaRepository.save(mediaEntityForMusic);
+
+      const request = new MediaRequest({
+        type: requestBody.mediaType,
+        media: mediaEntityForMusic,
+        requestedBy: requestUser,
+        status: user.hasPermission(
+          [Permission.AUTO_APPROVE, Permission.MANAGE_REQUESTS],
+          { type: 'or' }
+        )
+          ? MediaRequestStatus.APPROVED
+          : MediaRequestStatus.PENDING,
+        modifiedBy: user.hasPermission(
+          [Permission.AUTO_APPROVE, Permission.MANAGE_REQUESTS],
+          { type: 'or' }
+        )
+          ? user
+          : undefined,
+        is4k: false, // Music doesn't have 4K
+        serverId: requestBody.serverId,
+        profileId: requestBody.profileId,
+        rootFolder: requestBody.rootFolder,
+        tags: requestBody.tags,
+        isAutoRequest: options.isAutoRequest ?? false,
+      });
+
+      await requestRepository.save(request);
+      return request;
+    }
+    default: {
+      // Exhaustiveness check - ensures all enum values are handled
+      // If we reach here, TypeScript knows all cases are covered
+      const exhaustiveCheck: never = requestBody.mediaType;
+      // This will never execute, but satisfies TypeScript's return type requirement
+      return Promise.reject(
+        new Error(`Unsupported media type: ${exhaustiveCheck}`)
+      ) as Promise<MediaRequest>;
+    }
+    }
   }
 
   @PrimaryGeneratedColumn()
@@ -419,6 +574,9 @@ export class MediaRequest {
 
   @Column({ nullable: true })
   public languageProfileId: number;
+
+  @Column({ nullable: true })
+  public metadataProfileId: number;
 
   @Column({
     type: 'text',
@@ -556,9 +714,22 @@ export class MediaRequest {
     type: Notification
   ) {
     const tmdb = new TheMovieDb();
+    const musicBrainz = new MusicBrainzAPI();
 
     try {
-      const mediaType = entity.type === MediaType.MOVIE ? 'Movie' : 'Series';
+      let mediaType: string;
+      if (entity.type === MediaType.MOVIE) {
+        mediaType = 'Movie';
+      } else if (entity.type === MediaType.TV) {
+        mediaType = 'Series';
+      } else if (entity.type === MediaType.ARTIST) {
+        mediaType = 'Artist';
+      } else if (entity.type === MediaType.ALBUM) {
+        mediaType = 'Album';
+      } else {
+        mediaType = 'Media';
+      }
+
       let event: string | undefined;
       let notifyAdmin = true;
       let notifySystem = true;
@@ -593,7 +764,16 @@ export class MediaRequest {
       }
 
       if (entity.type === MediaType.MOVIE) {
-        const movie = await tmdb.getMovie({ movieId: media.tmdbId });
+        if (!media.tmdbId) {
+          logger.warn('Movie request missing TMDB ID', {
+            label: 'Media Request',
+            requestId: entity.id,
+            mediaId: media.id,
+          });
+          return;
+        }
+        const tmdbId = media.tmdbId;
+        const movie = await tmdb.getMovie({ movieId: tmdbId });
         notificationManager.sendNotification(type, {
           media,
           request: entity,
@@ -612,7 +792,16 @@ export class MediaRequest {
           image: `https://image.tmdb.org/t/p/w600_and_h900_bestv2${movie.poster_path}`,
         });
       } else if (entity.type === MediaType.TV) {
-        const tv = await tmdb.getTvShow({ tvId: media.tmdbId });
+        if (!media.tmdbId) {
+          logger.warn('TV request missing TMDB ID', {
+            label: 'Media Request',
+            requestId: entity.id,
+            mediaId: media.id,
+          });
+          return;
+        }
+        const tmdbId = media.tmdbId;
+        const tv = await tmdb.getTvShow({ tvId: tmdbId });
         notificationManager.sendNotification(type, {
           media,
           request: entity,
@@ -638,6 +827,69 @@ export class MediaRequest {
             },
           ],
         });
+      } else if (
+        entity.type === MediaType.ARTIST ||
+        entity.type === MediaType.ALBUM
+      ) {
+        if (!media.musicBrainzId) {
+          logger.warn('Music request missing MusicBrainz ID', {
+            label: 'Media Request',
+            requestId: entity.id,
+            mediaId: media.id,
+          });
+          return;
+        }
+
+        try {
+          let subject: string;
+          let image: string | undefined;
+
+          if (entity.type === MediaType.ARTIST) {
+            const artist = await musicBrainz.getArtist(media.musicBrainzId);
+            subject = artist.name;
+            // MusicBrainz doesn't provide images directly, use placeholder
+            image = undefined;
+          } else {
+            const releaseGroup = await musicBrainz.getReleaseGroup(
+              media.musicBrainzId
+            );
+            subject = releaseGroup.title;
+            // MusicBrainz doesn't provide images directly, use placeholder
+            image = undefined;
+          }
+
+          notificationManager.sendNotification(type, {
+            media,
+            request: entity,
+            notifyAdmin,
+            notifySystem,
+            notifyUser: notifyAdmin ? undefined : entity.requestedBy,
+            event,
+            subject,
+            message: '',
+            image,
+          });
+        } catch (e) {
+          logger.error('Failed to fetch music data for notification', {
+            label: 'Media Request',
+            errorMessage: e.message,
+            requestId: entity.id,
+            mediaId: media.id,
+            musicBrainzId: media.musicBrainzId,
+          });
+          // Send notification anyway with basic info
+          notificationManager.sendNotification(type, {
+            media,
+            request: entity,
+            notifyAdmin,
+            notifySystem,
+            notifyUser: notifyAdmin ? undefined : entity.requestedBy,
+            event,
+            subject:
+              entity.type === MediaType.ARTIST ? 'Artist' : 'Album',
+            message: '',
+          });
+        }
       }
     } catch (e) {
       logger.error('Something went wrong sending media notification(s)', {

@@ -12,6 +12,7 @@ import {
   SparklesIcon,
   TvIcon,
   UsersIcon,
+  MusicalNoteIcon,
 } from '@heroicons/react/24/outline';
 import {
   ClockIcon as FilledClockIcon,
@@ -21,6 +22,7 @@ import {
   SparklesIcon as FilledSparklesIcon,
   TvIcon as FilledTvIcon,
   UsersIcon as FilledUsersIcon,
+  MusicalNoteIcon as FilledMusicalNoteIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import Link from 'next/link';
@@ -89,6 +91,13 @@ const MobileMenu = ({
       svgIcon: <TvIcon className="h-6 w-6" />,
       svgIconSelected: <FilledTvIcon className="h-6 w-6" />,
       activeRegExp: /^\/discover\/tv$/,
+    },
+    {
+      href: '/discover/artists',
+      content: intl.formatMessage(menuMessages.browsemusic),
+      svgIcon: <MusicalNoteIcon className="h-6 w-6" />,
+      svgIconSelected: <FilledMusicalNoteIcon className="h-6 w-6" />,
+      activeRegExp: /^\/discover\/(artists|albums)/,
     },
     {
       href: '/requests',

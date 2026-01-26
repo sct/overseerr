@@ -20,6 +20,65 @@ import Link from 'next/link';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR from 'swr';
 
+// Music detail interfaces
+interface ArtistDetails {
+  id: string;
+  name: string;
+  sortName?: string;
+  disambiguation?: string;
+  country?: string;
+  type?: string;
+  area?: { id: string; name: string };
+  lifeSpan?: {
+    begin?: string;
+    end?: string;
+    ended?: boolean;
+  };
+  tags?: Array<{ name: string; count: number }>;
+  releaseGroups?: Array<{
+    id: string;
+    title: string;
+    'primary-type'?: string;
+    'first-release-date'?: string;
+    'artist-credit'?: Array<{
+      artist: { id: string; name: string };
+      name?: string;
+    }>;
+  }>;
+  mediaInfo?: {
+    status?: number;
+    downloadStatus?: Array<unknown>;
+    requests?: Array<unknown>;
+    serviceUrl?: string;
+  };
+}
+
+interface AlbumDetails {
+  id: string;
+  title: string;
+  primaryType?: string;
+  secondaryTypes?: string[];
+  firstReleaseDate?: string;
+  disambiguation?: string;
+  artistCredit?: Array<{
+    artist: { id: string; name: string };
+    name?: string;
+  }>;
+  releases?: Array<{
+    id: string;
+    title: string;
+    date?: string;
+    country?: string;
+  }>;
+  tags?: Array<{ name: string; count: number }>;
+  mediaInfo?: {
+    status?: number;
+    downloadStatus?: Array<unknown>;
+    requests?: Array<unknown>;
+    serviceUrl?: string;
+  };
+}
+
 const messages = defineMessages({
   manageModalTitle: 'Manage {mediaType}',
   manageModalIssues: 'Open Issues',
@@ -48,8 +107,16 @@ const messages = defineMessages({
   tvshow: 'series',
 });
 
-const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
-  return (movie as MovieDetails).title !== undefined;
+const isMovie = (movie: MovieDetails | TvDetails | ArtistDetails | AlbumDetails): movie is MovieDetails => {
+  return (movie as MovieDetails).title !== undefined && 'tmdbId' in (movie as MovieDetails);
+};
+
+const isArtist = (item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails): item is ArtistDetails => {
+  return (item as ArtistDetails).name !== undefined && 'id' in item && typeof item.id === 'string' && !('title' in item);
+};
+
+const isAlbum = (item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails): item is AlbumDetails => {
+  return (item as AlbumDetails).title !== undefined && 'id' in item && typeof item.id === 'string' && !('tmdbId' in item);
 };
 
 interface ManageSlideOverProps {
@@ -69,13 +136,23 @@ interface ManageSlideOverTvProps extends ManageSlideOverProps {
   data: TvDetails;
 }
 
+interface ManageSlideOverArtistProps extends ManageSlideOverProps {
+  mediaType: 'artist';
+  data: ArtistDetails;
+}
+
+interface ManageSlideOverAlbumProps extends ManageSlideOverProps {
+  mediaType: 'album';
+  data: AlbumDetails;
+}
+
 const ManageSlideOver = ({
   show,
   mediaType,
   onClose,
   data,
   revalidate,
-}: ManageSlideOverMovieProps | ManageSlideOverTvProps) => {
+}: ManageSlideOverMovieProps | ManageSlideOverTvProps | ManageSlideOverArtistProps | ManageSlideOverAlbumProps) => {
   const { user: currentUser, hasPermission } = useUser();
   const intl = useIntl();
   const settings = useSettings();
@@ -94,10 +171,14 @@ const ManageSlideOver = ({
 
   const markAvailable = async (is4k = false) => {
     if (data.mediaInfo) {
+      // Music doesn't support 4K
+      if (is4k && (mediaType === 'artist' || mediaType === 'album')) {
+        return;
+      }
       await axios.post(`/api/v1/media/${data.mediaInfo?.id}/available`, {
         is4k,
         ...(mediaType === 'tv' && {
-          seasons: data.seasons.filter((season) => season.seasonNumber !== 0),
+          seasons: (data as TvDetails).seasons.filter((season) => season.seasonNumber !== 0),
         }),
       });
       revalidate();
@@ -132,11 +213,17 @@ const ManageSlideOver = ({
       show={show}
       title={intl.formatMessage(messages.manageModalTitle, {
         mediaType: intl.formatMessage(
-          mediaType === 'movie' ? globalMessages.movie : globalMessages.tvshow
+          mediaType === 'movie'
+            ? globalMessages.movie
+            : mediaType === 'tv'
+            ? globalMessages.tvshow
+            : mediaType === 'artist'
+            ? globalMessages.artist
+            : globalMessages.album
         ),
       })}
       onClose={() => onClose()}
-      subText={isMovie(data) ? data.title : data.name}
+      subText={isMovie(data) ? data.title : isArtist(data) ? data.name : isAlbum(data) ? data.title : data.name}
     >
       <div className="space-y-6">
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
@@ -330,7 +417,12 @@ const ManageSlideOver = ({
                       <ServerIcon />
                       <span>
                         {intl.formatMessage(messages.openarr, {
-                          arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                          arr:
+                            mediaType === 'movie'
+                              ? 'Radarr'
+                              : mediaType === 'tv'
+                              ? 'Sonarr'
+                              : 'Lidarr',
                         })}
                       </span>
                     </Button>
@@ -456,7 +548,12 @@ const ManageSlideOver = ({
                       <ServerIcon />
                       <span>
                         {intl.formatMessage(messages.openarr4k, {
-                          arr: mediaType === 'movie' ? 'Radarr' : 'Sonarr',
+                          arr:
+                            mediaType === 'movie'
+                              ? 'Radarr'
+                              : mediaType === 'tv'
+                              ? 'Sonarr'
+                              : 'Lidarr',
                         })}
                       </span>
                     </Button>
@@ -482,13 +579,16 @@ const ManageSlideOver = ({
                     {intl.formatMessage(
                       mediaType === 'movie'
                         ? messages.markavailable
-                        : messages.markallseasonsavailable
+                        : mediaType === 'tv'
+                        ? messages.markallseasonsavailable
+                        : messages.markavailable
                     )}
                   </span>
                 </Button>
               )}
               {data?.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
-                settings.currentSettings.series4kEnabled && (
+                (mediaType === 'movie' || mediaType === 'tv') &&
+                (mediaType === 'movie' || settings.currentSettings.series4kEnabled) && (
                   <Button
                     onClick={() => markAvailable(true)}
                     className="w-full"
@@ -518,7 +618,13 @@ const ManageSlideOver = ({
                 <div className="mt-2 text-xs text-gray-400">
                   {intl.formatMessage(messages.manageModalClearMediaWarning, {
                     mediaType: intl.formatMessage(
-                      mediaType === 'movie' ? messages.movie : messages.tvshow
+                      mediaType === 'movie'
+                        ? messages.movie
+                        : mediaType === 'tv'
+                        ? messages.tvshow
+                        : mediaType === 'artist'
+                        ? globalMessages.artist.toLowerCase()
+                        : globalMessages.album.toLowerCase()
                     ),
                   })}
                 </div>

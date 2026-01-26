@@ -12,6 +12,7 @@ export interface ServiceCommonServer {
   activeAnimeProfileId?: number;
   activeAnimeDirectory?: string;
   activeAnimeLanguageProfileId?: number;
+  activeMetadataProfileId?: number;
   activeTags: number[];
   activeAnimeTags?: number[];
 }
@@ -19,6 +20,7 @@ export interface ServiceCommonServer {
 export interface ServiceCommonServerWithDetails {
   server: ServiceCommonServer;
   profiles: QualityProfile[];
+  metadataProfiles?: Array<{ id: number; name: string }>;
   rootFolders: Partial<RootFolder>[];
   languageProfiles?: LanguageProfile[];
   tags: Tag[];

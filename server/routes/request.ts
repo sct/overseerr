@@ -334,6 +334,8 @@ requestRoutes.put<{ requestId: string }>(
       if (
         (request.requestedBy.id !== req.user?.id ||
           (req.body.mediaType !== 'tv' &&
+            req.body.mediaType !== 'artist' &&
+            req.body.mediaType !== 'album' &&
             !req.user?.hasPermission(Permission.REQUEST_ADVANCED))) &&
         !req.user?.hasPermission(Permission.MANAGE_REQUESTS)
       ) {
@@ -370,7 +372,7 @@ requestRoutes.put<{ requestId: string }>(
         request.tags = req.body.tags;
         request.requestedBy = requestUser as User;
 
-        requestRepository.save(request);
+        await requestRepository.save(request);
       } else if (req.body.mediaType === MediaType.TV) {
         const mediaRepository = getRepository(Media);
         request.serverId = req.body.serverId;
@@ -445,6 +447,19 @@ requestRoutes.put<{ requestId: string }>(
             )
           );
         }
+
+        await requestRepository.save(request);
+      } else if (
+        req.body.mediaType === MediaType.ARTIST ||
+        req.body.mediaType === MediaType.ALBUM
+      ) {
+        // Music requests (artist/album)
+        request.serverId = req.body.serverId;
+        request.profileId = req.body.profileId;
+        request.rootFolder = req.body.rootFolder;
+        request.metadataProfileId = req.body.metadataProfileId;
+        request.tags = req.body.tags;
+        request.requestedBy = requestUser as User;
 
         await requestRepository.save(request);
       }

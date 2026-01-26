@@ -1,5 +1,6 @@
 import RadarrAPI from '@server/api/servarr/radarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
+import LidarrAPI from '@server/api/servarr/lidarr';
 import { MediaStatus, MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
@@ -72,9 +73,9 @@ class Media {
   @Column({ type: 'varchar' })
   public mediaType: MediaType;
 
-  @Column()
+  @Column({ nullable: true })
   @Index()
-  public tmdbId: number;
+  public tmdbId?: number;
 
   @Column({ unique: true, nullable: true })
   @Index()
@@ -83,6 +84,10 @@ class Media {
   @Column({ nullable: true })
   @Index()
   public imdbId?: string;
+
+  @Column({ nullable: true, type: 'varchar' })
+  @Index()
+  public musicBrainzId?: string;
 
   @Column({ type: 'int', default: MediaStatus.UNKNOWN })
   public status: MediaStatus;
@@ -255,6 +260,31 @@ class Media {
         }
       }
     }
+
+    if (
+      (this.mediaType === MediaType.MUSIC ||
+        this.mediaType === MediaType.ARTIST ||
+        this.mediaType === MediaType.ALBUM) &&
+      this.serviceId !== null &&
+      this.externalServiceSlug !== null
+    ) {
+      const settings = getSettings();
+      const server = settings.lidarr?.find(
+        (lidarr) => lidarr.id === this.serviceId
+      );
+
+      if (server) {
+        if (this.mediaType === MediaType.ARTIST) {
+          this.serviceUrl = server.externalUrl
+            ? `${server.externalUrl}/artist/${this.externalServiceSlug}`
+            : LidarrAPI.buildUrl(server, `/artist/${this.externalServiceSlug}`);
+        } else if (this.mediaType === MediaType.ALBUM) {
+          this.serviceUrl = server.externalUrl
+            ? `${server.externalUrl}/album/${this.externalServiceSlug}`
+            : LidarrAPI.buildUrl(server, `/album/${this.externalServiceSlug}`);
+        }
+      }
+    }
   }
 
   @AfterLoad()
@@ -307,6 +337,28 @@ class Media {
         this.downloadStatus4k = downloadTracker.getSeriesProgress(
           this.serviceId4k,
           this.externalServiceId4k
+        );
+      }
+    }
+
+    if (
+      (this.mediaType === MediaType.MUSIC ||
+        this.mediaType === MediaType.ARTIST ||
+        this.mediaType === MediaType.ALBUM) &&
+      this.externalServiceId !== undefined &&
+      this.externalServiceId !== null &&
+      this.serviceId !== undefined &&
+      this.serviceId !== null
+    ) {
+      if (this.mediaType === MediaType.ARTIST) {
+        this.downloadStatus = downloadTracker.getArtistProgress(
+          this.serviceId,
+          this.externalServiceId
+        );
+      } else if (this.mediaType === MediaType.ALBUM) {
+        this.downloadStatus = downloadTracker.getAlbumProgress(
+          this.serviceId,
+          this.externalServiceId
         );
       }
     }

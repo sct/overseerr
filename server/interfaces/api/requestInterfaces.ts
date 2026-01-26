@@ -9,6 +9,7 @@ export interface RequestResultsResponse extends PaginatedResponse {
 export type MediaRequestBody = {
   mediaType: MediaType;
   mediaId: number;
+  musicBrainzId?: string; // For music requests
   tvdbId?: number;
   seasons?: number[] | 'all';
   is4k?: boolean;
@@ -16,6 +17,7 @@ export type MediaRequestBody = {
   profileId?: number;
   rootFolder?: string;
   languageProfileId?: number;
+  metadataProfileId?: number; // For Lidarr
   userId?: number;
   tags?: number[];
 };
