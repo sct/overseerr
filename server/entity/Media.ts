@@ -274,7 +274,8 @@ class Media {
       );
 
       if (server) {
-        if (this.mediaType === MediaType.ARTIST) {
+        if (this.mediaType === MediaType.ARTIST || this.mediaType === MediaType.MUSIC) {
+          // MUSIC type is treated as ARTIST in Lidarr
           this.serviceUrl = server.externalUrl
             ? `${server.externalUrl}/artist/${this.externalServiceSlug}`
             : LidarrAPI.buildUrl(server, `/artist/${this.externalServiceSlug}`);

@@ -163,7 +163,7 @@ lidarrRoutes.get<{ id: string }>('/:id/profiles', async (req, res, next) => {
   );
 
   if (!lidarrSettings) {
-    return next({ status: '404', message: 'Settings instance not found' });
+    return next({ status: 404, message: 'Settings instance not found' });
   }
 
   const lidarr = new LidarrAPI({

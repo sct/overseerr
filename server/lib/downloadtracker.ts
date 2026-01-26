@@ -261,7 +261,7 @@ class DownloadTracker {
     });
 
     // Load downloads from Lidarr servers
-    Promise.all(
+    await Promise.all(
       filteredServers.map(async (server) => {
         if (server.syncEnabled) {
           const lidarr = new LidarrAPI({

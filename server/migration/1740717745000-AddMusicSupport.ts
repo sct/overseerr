@@ -10,6 +10,7 @@ export class AddMusicSupport1740717745000 implements MigrationInterface {
     );
 
     // Make tmdbId nullable (music doesn't use TMDB)
+    // Note: We need to specify column names explicitly to avoid column order issues
     await queryRunner.query(
       `CREATE TABLE "temporary_media" (
         "id" integer PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -36,8 +37,10 @@ export class AddMusicSupport1740717745000 implements MigrationInterface {
       )`
     );
 
+    // Use explicit column names to ensure correct data mapping regardless of column order
     await queryRunner.query(
-      `INSERT INTO "temporary_media" SELECT * FROM "media"`
+      `INSERT INTO "temporary_media" ("id", "mediaType", "tmdbId", "tvdbId", "imdbId", "musicBrainzId", "status", "status4k", "createdAt", "updatedAt", "lastSeasonChange", "mediaAddedAt", "serviceId", "serviceId4k", "externalServiceId", "externalServiceId4k", "externalServiceSlug", "externalServiceSlug4k", "ratingKey", "ratingKey4k") 
+       SELECT "id", "mediaType", "tmdbId", "tvdbId", "imdbId", "musicBrainzId", "status", "status4k", "createdAt", "updatedAt", "lastSeasonChange", "mediaAddedAt", "serviceId", "serviceId4k", "externalServiceId", "externalServiceId4k", "externalServiceSlug", "externalServiceSlug4k", "ratingKey", "ratingKey4k" FROM "media"`
     );
 
     await queryRunner.query(`DROP TABLE "media"`);

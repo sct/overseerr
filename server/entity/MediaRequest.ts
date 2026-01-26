@@ -129,11 +129,22 @@ export class MediaRequest {
       throw new QuotaRestrictedError('Music Quota exceeded.');
     }
 
+    // Validate mediaId is provided for movie/TV requests
+    if (
+      (requestBody.mediaType === MediaType.MOVIE ||
+        requestBody.mediaType === MediaType.TV) &&
+      !requestBody.mediaId
+    ) {
+      throw new Error(
+        `TMDB ID (mediaId) is required for ${requestBody.mediaType} requests`
+      );
+    }
+
     const tmdbMedia =
       requestBody.mediaType === MediaType.MOVIE
-        ? await tmdb.getMovie({ movieId: requestBody.mediaId })
+        ? await tmdb.getMovie({ movieId: requestBody.mediaId! })
         : requestBody.mediaType === MediaType.TV
-        ? await tmdb.getTvShow({ tvId: requestBody.mediaId })
+        ? await tmdb.getTvShow({ tvId: requestBody.mediaId! })
         : null;
 
     let media = await mediaRepository.findOne({
@@ -146,7 +157,7 @@ export class MediaRequest {
               mediaType: requestBody.mediaType,
             }
           : {
-              tmdbId: requestBody.mediaId,
+              tmdbId: requestBody.mediaId!,
               mediaType: requestBody.mediaType,
             },
       relations: ['requests'],
