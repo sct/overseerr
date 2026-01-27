@@ -30,7 +30,7 @@ const ShowMoreCard = ({ url, posters }: ShowMoreCardProps) => {
   }
 
   return (
-    <Link href={url}>
+    <Link href={url} legacyBehavior>
       <a
         className={'w-36 sm:w-36 md:w-44'}
         onMouseEnter={() => {

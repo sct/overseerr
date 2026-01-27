@@ -2,17 +2,17 @@ import ShowMoreCard from '@app/components/MediaSlider/ShowMoreCard';
 import PersonCard from '@app/components/PersonCard';
 import Slider from '@app/components/Slider';
 import TitleCard from '@app/components/TitleCard';
-import ArtistTitleCard from '@app/components/TitleCard/ArtistTitleCard';
 import AlbumTitleCard from '@app/components/TitleCard/AlbumTitleCard';
+import ArtistTitleCard from '@app/components/TitleCard/ArtistTitleCard';
 import useSettings from '@app/hooks/useSettings';
 import { ArrowRightCircleIcon } from '@heroicons/react/24/outline';
 import { MediaStatus } from '@server/constants/media';
 import type {
+  AlbumResult,
+  ArtistResult,
   MovieResult,
   PersonResult,
   TvResult,
-  ArtistResult,
-  AlbumResult,
 } from '@server/models/Search';
 import Link from 'next/link';
 import { useEffect } from 'react';
@@ -22,7 +22,13 @@ interface MixedResult {
   page: number;
   totalResults: number;
   totalPages: number;
-  results: (TvResult | MovieResult | PersonResult | ArtistResult | AlbumResult)[];
+  results: (
+    | TvResult
+    | MovieResult
+    | PersonResult
+    | ArtistResult
+    | AlbumResult
+  )[];
 }
 
 interface MediaSliderProps {
@@ -68,7 +74,10 @@ const MediaSlider = ({
   if (settings.currentSettings.hideAvailable) {
     titles = titles.filter(
       (i) =>
-        (i.mediaType === 'movie' || i.mediaType === 'tv' || i.mediaType === 'artist' || i.mediaType === 'album') &&
+        (i.mediaType === 'movie' ||
+          i.mediaType === 'tv' ||
+          i.mediaType === 'artist' ||
+          i.mediaType === 'album') &&
         i.mediaInfo?.status !== MediaStatus.AVAILABLE &&
         i.mediaInfo?.status !== MediaStatus.PARTIALLY_AVAILABLE
     );
@@ -158,7 +167,9 @@ const MediaSlider = ({
         posters={titles
           .slice(20, 24)
           .map((title) =>
-            title.mediaType !== 'person' && title.mediaType !== 'artist' && title.mediaType !== 'album'
+            title.mediaType !== 'person' &&
+            title.mediaType !== 'artist' &&
+            title.mediaType !== 'album'
               ? (title as MovieResult | TvResult).posterPath
               : undefined
           )}
@@ -170,7 +181,7 @@ const MediaSlider = ({
     <>
       <div className="slider-header">
         {linkUrl ? (
-          <Link href={linkUrl}>
+          <Link href={linkUrl} legacyBehavior>
             <a className="slider-title min-w-0 pr-16">
               <span className="truncate">{title}</span>
               <ArrowRightCircleIcon />

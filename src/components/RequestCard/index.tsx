@@ -107,7 +107,10 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
                   { type: 'or' }
                 ) && (
                   <div className="card-field !hidden sm:!block">
-                    <Link href={`/users/${requestData.requestedBy.id}`}>
+                    <Link
+                      href={`/users/${requestData.requestedBy.id}`}
+                      legacyBehavior
+                    >
                       <a className="group flex items-center">
                         <img
                           src={requestData.requestedBy.avatar}
@@ -355,6 +358,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                 ? `/movie/${requestData.media.tmdbId}`
                 : `/tv/${requestData.media.tmdbId}`
             }
+            legacyBehavior
           >
             <a className="overflow-hidden overflow-ellipsis whitespace-nowrap text-base font-bold text-white hover:underline sm:text-lg">
               {isMovie(title) ? title.title : title.name}
@@ -365,7 +369,10 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
             { type: 'or' }
           ) && (
             <div className="card-field">
-              <Link href={`/users/${requestData.requestedBy.id}`}>
+              <Link
+                href={`/users/${requestData.requestedBy.id}`}
+                legacyBehavior
+              >
                 <a className="group flex items-center">
                   <img
                     src={requestData.requestedBy.avatar}
@@ -587,6 +594,7 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               ? `/movie/${requestData.media.tmdbId}`
               : `/tv/${requestData.media.tmdbId}`
           }
+          legacyBehavior
         >
           <a className="w-20 flex-shrink-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-md shadow-sm transition duration-300 hover:scale-105 hover:shadow-md sm:w-28">
             <CachedImage

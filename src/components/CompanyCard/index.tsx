@@ -12,7 +12,7 @@ const CompanyCard = ({ image, url, name }: CompanyCardProps) => {
   const [isHovered, setHovered] = useState(false);
 
   return (
-    <Link href={url}>
+    <Link href={url} legacyBehavior>
       <a
         className={`relative flex h-32 w-56 transform-gpu cursor-pointer items-center justify-center p-8 shadow ring-1 transition duration-300 ease-in-out sm:h-36 sm:w-72 ${
           isHovered

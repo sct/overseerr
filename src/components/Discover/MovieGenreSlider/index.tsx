@@ -25,7 +25,7 @@ const MovieGenreSlider = () => {
   return (
     <>
       <div className="slider-header">
-        <Link href="/discover/movies/genres">
+        <Link href="/discover/movies/genres" legacyBehavior>
           <a className="slider-title">
             <span>{intl.formatMessage(messages.moviegenres)}</span>
             <ArrowRightCircleIcon />

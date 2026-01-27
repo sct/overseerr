@@ -155,6 +155,7 @@ const UserProfile = () => {
                         ? '/profile/requests?filter=all'
                         : `/users/${user?.id}/requests?filter=all`
                     }
+                    legacyBehavior
                   >
                     <a>{intl.formatNumber(user.requestCount)}</a>
                   </Link>
@@ -288,6 +289,7 @@ const UserProfile = () => {
                     ? '/profile/requests?filter=all'
                     : `/users/${user?.id}/requests?filter=all`
                 }
+                legacyBehavior
               >
                 <a className="slider-title">
                   <span>{intl.formatMessage(messages.recentrequests)}</span>
@@ -329,6 +331,7 @@ const UserProfile = () => {
                     ? '/profile/watchlist'
                     : `/users/${user?.id}/watchlist`
                 }
+                legacyBehavior
               >
                 <a className="slider-title">
                   <span>{intl.formatMessage(messages.plexwatchlist)}</span>

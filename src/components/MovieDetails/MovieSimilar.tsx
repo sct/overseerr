@@ -42,7 +42,7 @@ const MovieSimilar = () => {
       <div className="mt-1 mb-5">
         <Header
           subtext={
-            <Link href={`/movie/${movieData?.id}`}>
+            <Link href={`/movie/${movieData?.id}`} legacyBehavior>
               <a className="hover:underline">{movieData?.title}</a>
             </Link>
           }

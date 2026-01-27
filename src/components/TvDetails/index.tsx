@@ -215,7 +215,11 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     seriesAttributes.push(
       data.genres
         .map((g) => (
-          <Link href={`/discover/tv?genre=${g.id}`} key={`genre-${g.id}`}>
+          <Link
+            href={`/discover/tv?genre=${g.id}`}
+            key={`genre-${g.id}`}
+            legacyBehavior
+          >
             <a className="hover:underline">{g.name}</a>
           </Link>
         ))
@@ -497,14 +501,14 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                   .map((person) => (
                     <li key={`crew-${person.job}-${person.id}`}>
                       <span>{person.job}</span>
-                      <Link href={`/person/${person.id}`}>
+                      <Link href={`/person/${person.id}`} legacyBehavior>
                         <a className="crew-name">{person.name}</a>
                       </Link>
                     </li>
                   ))}
               </ul>
               <div className="mt-4 flex justify-end">
-                <Link href={`/tv/${data.id}/crew`}>
+                <Link href={`/tv/${data.id}/crew`} legacyBehavior>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
                     <ArrowRightCircleIcon className="ml-1.5 inline-block h-5 w-5" />
@@ -519,6 +523,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                 <Link
                   href={`/discover/tv?keywords=${keyword.id}`}
                   key={`keyword-id-${keyword.id}`}
+                  legacyBehavior
                 >
                   <a className="mb-2 mr-2 inline-flex last:mr-0">
                     <Tag>{keyword.name}</Tag>
@@ -950,7 +955,10 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.originallanguage)}</span>
                 <span className="media-fact-value">
-                  <Link href={`/discover/tv/language/${data.originalLanguage}`}>
+                  <Link
+                    href={`/discover/tv/language/${data.originalLanguage}`}
+                    legacyBehavior
+                  >
                     <a>
                       {intl.formatDisplayName(data.originalLanguage, {
                         type: 'language',
@@ -1008,6 +1016,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                       <Link
                         href={`/discover/tv/network/${n.id}`}
                         key={`network-${n.id}`}
+                        legacyBehavior
                       >
                         <a>{n.name}</a>
                       </Link>
@@ -1053,7 +1062,11 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
       {data.credits.cast.length > 0 && (
         <>
           <div className="slider-header">
-            <Link href="/tv/[tvId]/cast" as={`/tv/${data.id}/cast`}>
+            <Link
+              href="/tv/[tvId]/cast"
+              as={`/tv/${data.id}/cast`}
+              legacyBehavior
+            >
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
                 <ArrowRightCircleIcon />

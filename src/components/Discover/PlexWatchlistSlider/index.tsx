@@ -40,7 +40,7 @@ const PlexWatchlistSlider = () => {
   return (
     <>
       <div className="slider-header">
-        <Link href="/discover/watchlist">
+        <Link href="/discover/watchlist" legacyBehavior>
           <a className="slider-title">
             <span>{intl.formatMessage(messages.plexwatchlist)}</span>
             <ArrowRightCircleIcon />

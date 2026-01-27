@@ -8,10 +8,11 @@ import {
   CogIcon,
   ExclamationTriangleIcon,
   FilmIcon,
+  MusicalNoteIcon,
   SparklesIcon,
   TvIcon,
   UsersIcon,
-  MusicalNoteIcon,
+  XMarkIcon,
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -201,6 +202,7 @@ const Sidebar = ({
                             key={`mobile-${sidebarLink.messagesKey}`}
                             href={sidebarLink.href}
                             as={sidebarLink.as}
+                            legacyBehavior
                           >
                             <a
                               onClick={() => setClosed()}
@@ -271,6 +273,7 @@ const Sidebar = ({
                       key={`desktop-${sidebarLink.messagesKey}`}
                       href={sidebarLink.href}
                       as={sidebarLink.as}
+                      legacyBehavior
                     >
                       <a
                         className={`group flex items-center rounded-md px-2 py-2 text-lg font-medium leading-6 text-white transition duration-150 ease-in-out focus:outline-none

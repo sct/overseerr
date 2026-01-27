@@ -9,20 +9,20 @@ import {
   EllipsisHorizontalIcon,
   ExclamationTriangleIcon,
   FilmIcon,
+  MusicalNoteIcon,
   SparklesIcon,
   TvIcon,
   UsersIcon,
-  MusicalNoteIcon,
 } from '@heroicons/react/24/outline';
 import {
   ClockIcon as FilledClockIcon,
   CogIcon as FilledCogIcon,
   ExclamationTriangleIcon as FilledExclamationTriangleIcon,
   FilmIcon as FilledFilmIcon,
+  MusicalNoteIcon as FilledMusicalNoteIcon,
   SparklesIcon as FilledSparklesIcon,
   TvIcon as FilledTvIcon,
   UsersIcon as FilledUsersIcon,
-  MusicalNoteIcon as FilledMusicalNoteIcon,
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import Link from 'next/link';
@@ -179,7 +179,11 @@ const MobileMenu = ({
         {filteredLinks.map((link) => {
           const isActive = router.pathname.match(link.activeRegExp);
           return (
-            <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
+            <Link
+              key={`mobile-menu-link-${link.href}`}
+              href={link.href}
+              legacyBehavior
+            >
               <a
                 className={`flex items-center ${
                   isActive ? 'text-indigo-500' : ''
@@ -228,7 +232,11 @@ const MobileMenu = ({
               const isActive =
                 router.pathname.match(link.activeRegExp) && !isOpen;
               return (
-                <Link key={`mobile-menu-link-${link.href}`} href={link.href}>
+                <Link
+                  key={`mobile-menu-link-${link.href}`}
+                  href={link.href}
+                  legacyBehavior
+                >
                   <a
                     className={`relative flex flex-col items-center space-y-1 ${
                       isActive ? 'text-indigo-500' : ''

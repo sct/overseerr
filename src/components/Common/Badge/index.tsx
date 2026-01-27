@@ -93,7 +93,7 @@ const Badge = (
     );
   } else if (href) {
     return (
-      <Link href={href}>
+      <Link href={href} legacyBehavior>
         <a
           className={badgeStyle.join(' ')}
           ref={ref as React.Ref<HTMLAnchorElement>}

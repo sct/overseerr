@@ -139,6 +139,7 @@ const QuotaDisplay = ({
                 ProfileLink: (msg: React.ReactNode) => (
                   <Link
                     href={userOverride ? `/users/${userOverride}` : '/profile'}
+                    legacyBehavior
                   >
                     <a className="text-white transition duration-300 hover:underline">
                       {msg}

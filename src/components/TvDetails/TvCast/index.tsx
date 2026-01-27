@@ -34,7 +34,7 @@ const TvCast = () => {
       <div className="mt-1 mb-5">
         <Header
           subtext={
-            <Link href={`/tv/${data.id}`}>
+            <Link href={`/tv/${data.id}`} legacyBehavior>
               <a className="hover:underline">{data.name}</a>
             </Link>
           }

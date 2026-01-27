@@ -133,6 +133,7 @@ const IssueItem = ({ issue }: IssueItemProps) => {
                 ? `/movie/${issue.media.tmdbId}`
                 : `/tv/${issue.media.tmdbId}`
             }
+            legacyBehavior
           >
             <a className="relative h-auto w-12 flex-shrink-0 scale-100 transform-gpu overflow-hidden rounded-md transition duration-300 hover:scale-105">
               <CachedImage
@@ -162,6 +163,7 @@ const IssueItem = ({ issue }: IssueItemProps) => {
                   ? `/movie/${issue.media.tmdbId}`
                   : `/tv/${issue.media.tmdbId}`
               }
+              legacyBehavior
             >
               <a className="mr-2 min-w-0 truncate text-lg font-bold text-white hover:underline xl:text-xl">
                 {isMovie(title) ? title.title : title.name}
@@ -222,7 +224,10 @@ const IssueItem = ({ issue }: IssueItemProps) => {
                       />
                     ),
                     user: (
-                      <Link href={`/users/${issue.createdBy.id}`}>
+                      <Link
+                        href={`/users/${issue.createdBy.id}`}
+                        legacyBehavior
+                      >
                         <a className="group flex items-center truncate">
                           <img
                             src={issue.createdBy.avatar}

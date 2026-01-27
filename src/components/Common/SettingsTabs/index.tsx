@@ -55,7 +55,7 @@ const SettingsLink = ({
   }
 
   return (
-    <Link href={route}>
+    <Link href={route} legacyBehavior>
       <a
         className={`${linkClasses} ${
           currentPath.match(regex) ? activeLinkColor : inactiveLinkColor

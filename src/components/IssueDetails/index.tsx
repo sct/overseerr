@@ -253,6 +253,7 @@ const IssueDetails = () => {
               href={`/${
                 issueData.media.mediaType === MediaType.MOVIE ? 'movie' : 'tv'
               }/${data.id}`}
+              legacyBehavior
             >
               <a className="hover:underline">{title}</a>
             </Link>{' '}
@@ -270,6 +271,7 @@ const IssueDetails = () => {
                       ? '/profile'
                       : `/users/${issueData.createdBy.id}`
                   }
+                  legacyBehavior
                 >
                   <a className="group ml-1 inline-flex h-full items-center xl:ml-1.5">
                     <img

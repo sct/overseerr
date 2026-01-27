@@ -14,7 +14,7 @@ const GenreCard = ({ image, url, name, canExpand = false }: GenreCardProps) => {
   const [isHovered, setHovered] = useState(false);
 
   return (
-    <Link href={url}>
+    <Link href={url} legacyBehavior>
       <a
         className={`relative flex h-32 items-center justify-center sm:h-36 ${
           canExpand ? 'w-full' : 'w-56 sm:w-72'

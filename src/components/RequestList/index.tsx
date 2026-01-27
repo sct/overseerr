@@ -1,14 +1,14 @@
 import Button from '@app/components/Common/Button';
 import ConfirmButton from '@app/components/Common/ConfirmButton';
 import Header from '@app/components/Common/Header';
-import KeyboardShortcuts from '@app/components/KeyboardShortcuts';
-import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import { RequestItemSkeleton } from '@app/components/Common/LoadingSkeleton';
+import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
+import KeyboardShortcuts from '@app/components/KeyboardShortcuts';
 import RequestItem from '@app/components/RequestList/RequestItem';
+import useKeyboardShortcuts from '@app/hooks/useKeyboardShortcuts';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
 import { Permission, useUser } from '@app/hooks/useUser';
-import useKeyboardShortcuts from '@app/hooks/useKeyboardShortcuts';
 import globalMessages from '@app/i18n/globalMessages';
 import {
   BarsArrowDownIcon,
@@ -121,24 +121,18 @@ const RequestList = () => {
     );
   }, [currentFilter, currentSort, currentPageSize]);
 
-  if (!data && !error) {
-    return <LoadingSpinner />;
-  }
-
-  if (!data) {
-    return <LoadingSpinner />;
-  }
-
-  const hasNextPage = data.pageInfo.pages > pageIndex + 1;
+  const hasNextPage = data?.pageInfo.pages
+    ? data.pageInfo.pages > pageIndex + 1
+    : false;
   const hasPrevPage = pageIndex > 0;
   const canManageRequests = hasPermission(Permission.MANAGE_REQUESTS);
 
   const allSelectedOnPage =
-    data.results.length > 0 &&
-    data.results.every((r) => selectedRequestIds.includes(r.id));
+    (data?.results.length ?? 0) > 0 &&
+    data?.results.every((r) => selectedRequestIds.includes(r.id));
 
   const setAllOnPageSelected = (selected: boolean) => {
-    if (!selected) {
+    if (!selected || !data?.results) {
       setSelectedRequestIds([]);
       return;
     }
@@ -199,7 +193,9 @@ const RequestList = () => {
         responseType: 'blob',
       });
 
-      const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8' });
+      const blob = new Blob([response.data], {
+        type: 'text/csv;charset=utf-8',
+      });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
@@ -259,7 +255,9 @@ const RequestList = () => {
       {
         key: '/',
         action: () => {
-          const searchInput = document.querySelector('input[type="text"]') as HTMLInputElement;
+          const searchInput = document.querySelector(
+            'input[type="text"]'
+          ) as HTMLInputElement;
           if (searchInput) {
             searchInput.focus();
           }
@@ -269,6 +267,14 @@ const RequestList = () => {
     ],
     canManageRequests
   );
+
+  if (!data && !error) {
+    return <LoadingSpinner />;
+  }
+
+  if (!data) {
+    return <LoadingSpinner />;
+  }
 
   return (
     <>
@@ -282,11 +288,11 @@ const RequestList = () => {
         <Header
           subtext={
             router.pathname.startsWith('/profile') ? (
-              <Link href={`/profile`}>
+              <Link href={`/profile`} legacyBehavior>
                 <a className="hover:underline">{currentUser?.displayName}</a>
               </Link>
             ) : router.query.userId ? (
-              <Link href={`/users/${user?.id}`}>
+              <Link href={`/users/${user?.id}`} legacyBehavior>
                 <a className="hover:underline">{user?.displayName}</a>
               </Link>
             ) : (
@@ -304,6 +310,7 @@ const RequestList = () => {
             <select
               id="filter"
               name="filter"
+              aria-label="Filter requests"
               onChange={(e) => {
                 setCurrentFilter(e.target.value as Filter);
                 router.push({
@@ -352,6 +359,7 @@ const RequestList = () => {
             <select
               id="sort"
               name="sort"
+              aria-label="Sort requests"
               onChange={(e) => {
                 setCurrentSort(e.target.value as Sort);
                 router.push({
@@ -524,6 +532,7 @@ const RequestList = () => {
                   <select
                     id="pageSize"
                     name="pageSize"
+                    aria-label="Results per page"
                     onChange={(e) => {
                       setCurrentPageSize(Number(e.target.value));
                       router

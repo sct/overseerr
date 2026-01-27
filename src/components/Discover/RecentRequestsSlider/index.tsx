@@ -24,7 +24,7 @@ const RecentRequestsSlider = () => {
   return (
     <>
       <div className="slider-header">
-        <Link href="/requests?filter=all">
+        <Link href="/requests?filter=all" legacyBehavior>
           <a className="slider-title">
             <span>{intl.formatMessage(sliderTitles.recentrequests)}</span>
             <ArrowRightCircleIcon />

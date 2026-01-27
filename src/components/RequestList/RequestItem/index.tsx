@@ -38,8 +38,8 @@ interface ArtistDetails {
   area?: { id: string; name: string };
   mediaInfo?: {
     status?: number;
-    downloadStatus?: Array<unknown>;
-    requests?: Array<unknown>;
+    downloadStatus?: unknown[];
+    requests?: unknown[];
     serviceUrl?: string;
   };
 }
@@ -51,14 +51,14 @@ interface AlbumDetails {
   secondaryTypes?: string[];
   firstReleaseDate?: string;
   disambiguation?: string;
-  artistCredit?: Array<{
+  artistCredit?: {
     artist: { id: string; name: string };
     name?: string;
-  }>;
+  }[];
   mediaInfo?: {
     status?: number;
-    downloadStatus?: Array<unknown>;
-    requests?: Array<unknown>;
+    downloadStatus?: unknown[];
+    requests?: unknown[];
     serviceUrl?: string;
   };
 }
@@ -87,13 +87,21 @@ const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
 const isArtist = (
   item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails
 ): item is ArtistDetails => {
-  return (item as ArtistDetails).name !== undefined && 'id' in item && typeof item.id === 'string';
+  return (
+    (item as ArtistDetails).name !== undefined &&
+    'id' in item &&
+    typeof item.id === 'string'
+  );
 };
 
 const isAlbum = (
   item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails
 ): item is AlbumDetails => {
-  return (item as AlbumDetails).title !== undefined && 'id' in item && typeof item.id === 'string';
+  return (
+    (item as AlbumDetails).title !== undefined &&
+    'id' in item &&
+    typeof item.id === 'string'
+  );
 };
 
 interface RequestItemErrorProps {
@@ -215,8 +223,18 @@ const RequestItemError = ({
                       ).length > 0
                     }
                     is4k={requestData.is4k}
-                    tmdbId={requestData.type === 'artist' || requestData.type === 'album' ? undefined : requestData.media.tmdbId}
-                    mbid={requestData.type === 'artist' || requestData.type === 'album' ? requestData.media.musicBrainzId : undefined}
+                    tmdbId={
+                      requestData.type === 'artist' ||
+                      requestData.type === 'album'
+                        ? undefined
+                        : requestData.media.tmdbId
+                    }
+                    mbid={
+                      requestData.type === 'artist' ||
+                      requestData.type === 'album'
+                        ? requestData.media.musicBrainzId
+                        : undefined
+                    }
                     mediaType={requestData.type}
                     plexUrl={requestData.is4k ? plexUrl4k : plexUrl}
                     serviceUrl={
@@ -250,7 +268,10 @@ const RequestItemError = ({
                           />
                         ),
                         user: (
-                          <Link href={`/users/${requestData.requestedBy.id}`}>
+                          <Link
+                            href={`/users/${requestData.requestedBy.id}`}
+                            legacyBehavior
+                          >
                             <a className="group flex items-center truncate">
                               <img
                                 src={requestData.requestedBy.avatar}
@@ -304,7 +325,10 @@ const RequestItemError = ({
                         />
                       ),
                       user: (
-                        <Link href={`/users/${requestData.modifiedBy.id}`}>
+                        <Link
+                          href={`/users/${requestData.modifiedBy.id}`}
+                          legacyBehavior
+                        >
                           <a className="group flex items-center truncate">
                             <img
                               src={requestData.modifiedBy.avatar}
@@ -363,7 +387,7 @@ const RequestItem = ({
   const intl = useIntl();
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
-  
+
   // Determine URL based on request type
   const isMusicRequest = request.type === 'artist' || request.type === 'album';
   const url = isMusicRequest
@@ -373,10 +397,10 @@ const RequestItem = ({
     : request.type === 'movie'
     ? `/api/v1/movie/${request.media.tmdbId}`
     : `/api/v1/tv/${request.media.tmdbId}`;
-  
-  const { data: title, error } = useSWR<MovieDetails | TvDetails | ArtistDetails | AlbumDetails>(
-    inView ? url : null
-  );
+
+  const { data: title, error } = useSWR<
+    MovieDetails | TvDetails | ArtistDetails | AlbumDetails
+  >(inView ? url : null);
   const { data: requestData, mutate: revalidate } = useSWR<MediaRequest>(
     `/api/v1/request/${request.id}`,
     {
@@ -467,36 +491,37 @@ const RequestItem = ({
       />
       <div className="relative flex w-full flex-col justify-between overflow-hidden rounded-xl bg-gray-800 py-4 text-gray-400 shadow-md ring-1 ring-gray-700 xl:h-28 xl:flex-row">
         {showSelection && (
-          <div
-            className="absolute left-3 top-3 z-20"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="absolute left-3 top-3 z-20">
             <input
               type="checkbox"
               className="h-4 w-4 cursor-pointer rounded border-gray-500 bg-gray-900 text-indigo-500 focus:ring-indigo-500"
               checked={!!selected}
               onChange={(e) => onSelectedChange?.(e.target.checked)}
+              onClick={(e) => e.stopPropagation()}
               aria-label="Select request"
             />
           </div>
         )}
-        {!isMusicRequest && title && 'backdropPath' in title && title.backdropPath && (
-          <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
-            <CachedImage
-              src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
-              alt=""
-              layout="fill"
-              objectFit="cover"
-            />
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  'linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%)',
-              }}
-            />
-          </div>
-        )}
+        {!isMusicRequest &&
+          title &&
+          'backdropPath' in title &&
+          title.backdropPath && (
+            <div className="absolute inset-0 z-0 w-full bg-cover bg-center xl:w-2/3">
+              <CachedImage
+                src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
+                alt=""
+                layout="fill"
+                objectFit="cover"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(90deg, rgba(31, 41, 55, 0.47) 0%, rgba(31, 41, 55, 1) 100%)',
+                }}
+              />
+            </div>
+          )}
         <div className="relative flex w-full flex-col justify-between overflow-hidden sm:flex-row">
           <div className="relative z-10 flex w-full items-center overflow-hidden pl-4 pr-4 sm:pr-0 xl:w-7/12 2xl:w-2/3">
             <Link
@@ -509,6 +534,7 @@ const RequestItem = ({
                   ? `/movie/${requestData.media.tmdbId}`
                   : `/tv/${requestData.media.tmdbId}`
               }
+              legacyBehavior
             >
               <a className="relative h-auto w-12 flex-shrink-0 scale-100 transform-gpu overflow-hidden rounded-md transition duration-300 hover:scale-105">
                 <CachedImage
@@ -550,6 +576,7 @@ const RequestItem = ({
                     ? `/movie/${requestData.media.tmdbId}`
                     : `/tv/${requestData.media.tmdbId}`
                 }
+                legacyBehavior
               >
                 <a className="mr-2 min-w-0 truncate text-lg font-bold text-white hover:underline xl:text-xl">
                   {isMusicRequest
@@ -563,29 +590,31 @@ const RequestItem = ({
                     : title.name}
                 </a>
               </Link>
-              {!isMovie(title) && !isMusicRequest && request.seasons.length > 0 && (
-                <div className="card-field">
-                  <span className="card-field-name">
-                    {intl.formatMessage(messages.seasons, {
-                      seasonCount:
-                        title.seasons.length === request.seasons.length
-                          ? 0
-                          : request.seasons.length,
-                    })}
-                  </span>
-                  <div className="hide-scrollbar flex flex-nowrap overflow-x-scroll">
-                    {request.seasons.map((season) => (
-                      <span key={`season-${season.id}`} className="mr-2">
-                        <Badge>
-                          {season.seasonNumber === 0
-                            ? intl.formatMessage(globalMessages.specials)
-                            : season.seasonNumber}
-                        </Badge>
-                      </span>
-                    ))}
+              {!isMovie(title) &&
+                !isMusicRequest &&
+                request.seasons.length > 0 && (
+                  <div className="card-field">
+                    <span className="card-field-name">
+                      {intl.formatMessage(messages.seasons, {
+                        seasonCount:
+                          title.seasons.length === request.seasons.length
+                            ? 0
+                            : request.seasons.length,
+                      })}
+                    </span>
+                    <div className="hide-scrollbar flex flex-nowrap overflow-x-scroll">
+                      {request.seasons.map((season) => (
+                        <span key={`season-${season.id}`} className="mr-2">
+                          <Badge>
+                            {season.seasonNumber === 0
+                              ? intl.formatMessage(globalMessages.specials)
+                              : season.seasonNumber}
+                          </Badge>
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </div>
           </div>
           <div className="z-10 mt-4 ml-4 flex w-full flex-col justify-center overflow-hidden pr-4 text-sm sm:ml-2 sm:mt-0 xl:flex-1 xl:pr-0">
@@ -651,7 +680,9 @@ const RequestItem = ({
                   }
                   is4k={requestData.is4k}
                   tmdbId={isMusicRequest ? undefined : requestData.media.tmdbId}
-                  mbid={isMusicRequest ? requestData.media.musicBrainzId : undefined}
+                  mbid={
+                    isMusicRequest ? requestData.media.musicBrainzId : undefined
+                  }
                   mediaType={requestData.type}
                   plexUrl={requestData.is4k ? plexUrl4k : plexUrl}
                   serviceUrl={
@@ -685,7 +716,10 @@ const RequestItem = ({
                         />
                       ),
                       user: (
-                        <Link href={`/users/${requestData.requestedBy.id}`}>
+                        <Link
+                          href={`/users/${requestData.requestedBy.id}`}
+                          legacyBehavior
+                        >
                           <a className="group flex items-center truncate">
                             <img
                               src={requestData.requestedBy.avatar}
@@ -739,7 +773,10 @@ const RequestItem = ({
                       />
                     ),
                     user: (
-                      <Link href={`/users/${requestData.modifiedBy.id}`}>
+                      <Link
+                        href={`/users/${requestData.modifiedBy.id}`}
+                        legacyBehavior
+                      >
                         <a className="group flex items-center truncate">
                           <img
                             src={requestData.modifiedBy.avatar}

@@ -1,3 +1,9 @@
+import MusicBrainzAPI from '@server/api/musicbrainz';
+import type {
+  LidarrAlbumOptions,
+  LidarrArtistOptions,
+} from '@server/api/servarr/lidarr';
+import LidarrAPI from '@server/api/servarr/lidarr';
 import type { RadarrMovieOptions } from '@server/api/servarr/radarr';
 import RadarrAPI from '@server/api/servarr/radarr';
 import type {
@@ -5,12 +11,6 @@ import type {
   SonarrSeries,
 } from '@server/api/servarr/sonarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
-import type {
-  LidarrArtistOptions,
-  LidarrAlbumOptions,
-} from '@server/api/servarr/lidarr';
-import LidarrAPI from '@server/api/servarr/lidarr';
-import MusicBrainzAPI from '@server/api/musicbrainz';
 import TheMovieDb from '@server/api/themoviedb';
 import { ANIME_KEYWORD_ID } from '@server/api/themoviedb/constants';
 import {
@@ -170,7 +170,9 @@ export class MediaRequestSubscriber
         let event: string;
 
         if (entity.type === MediaType.ARTIST) {
-          const artist = await musicBrainz.getArtist(entity.media.musicBrainzId);
+          const artist = await musicBrainz.getArtist(
+            entity.media.musicBrainzId
+          );
           subject = artist.name;
           event = 'Artist Request Now Available';
         } else {
@@ -192,12 +194,15 @@ export class MediaRequestSubscriber
           request: entity,
         });
       } catch (e) {
-        logger.error('Something went wrong sending music availability notification', {
-          label: 'Notifications',
-          errorMessage: e.message,
-          requestId: entity.id,
-          mediaId: entity.media.id,
-        });
+        logger.error(
+          'Something went wrong sending music availability notification',
+          {
+            label: 'Notifications',
+            errorMessage: e.message,
+            requestId: entity.id,
+            mediaId: entity.media.id,
+          }
+        );
       }
     }
   }
@@ -772,9 +777,7 @@ export class MediaRequestSubscriber
           return;
         }
 
-        let lidarrSettings = settings.lidarr.find(
-          (lidarr) => lidarr.isDefault
-        );
+        let lidarrSettings = settings.lidarr.find((lidarr) => lidarr.isDefault);
 
         if (
           entity.serverId !== null &&
@@ -1089,7 +1092,8 @@ export class MediaRequestSubscriber
         ? media.status !== MediaStatus.AVAILABLE &&
           media.status !== MediaStatus.PARTIALLY_AVAILABLE &&
           media.status !== MediaStatus.PROCESSING
-        : media[entity.is4k ? 'status4k' : 'status'] !== MediaStatus.AVAILABLE &&
+        : media[entity.is4k ? 'status4k' : 'status'] !==
+            MediaStatus.AVAILABLE &&
           media[entity.is4k ? 'status4k' : 'status'] !==
             MediaStatus.PARTIALLY_AVAILABLE &&
           media[entity.is4k ? 'status4k' : 'status'] !== MediaStatus.PROCESSING)
@@ -1129,8 +1133,7 @@ export class MediaRequestSubscriber
       media.requests.filter(
         (request) => request.status === MediaRequestStatus.PENDING
       ).length === 0 &&
-      media.status === MediaStatus.PENDING &&
-      media.status !== MediaStatus.DELETED
+      media.status === MediaStatus.PENDING
     ) {
       media.status = MediaStatus.UNKNOWN;
       mediaRepository.save(media);

@@ -34,21 +34,21 @@ interface ArtistDetails {
     end?: string;
     ended?: boolean;
   };
-  tags?: Array<{ name: string; count: number }>;
-  releaseGroups?: Array<{
+  tags?: { name: string; count: number }[];
+  releaseGroups?: {
     id: string;
     title: string;
     'primary-type'?: string;
     'first-release-date'?: string;
-    'artist-credit'?: Array<{
+    'artist-credit'?: {
       artist: { id: string; name: string };
       name?: string;
-    }>;
-  }>;
+    }[];
+  }[];
   mediaInfo?: {
     status?: number;
-    downloadStatus?: Array<unknown>;
-    requests?: Array<unknown>;
+    downloadStatus?: unknown[];
+    requests?: unknown[];
     serviceUrl?: string;
   };
 }
@@ -60,21 +60,21 @@ interface AlbumDetails {
   secondaryTypes?: string[];
   firstReleaseDate?: string;
   disambiguation?: string;
-  artistCredit?: Array<{
+  artistCredit?: {
     artist: { id: string; name: string };
     name?: string;
-  }>;
-  releases?: Array<{
+  }[];
+  releases?: {
     id: string;
     title: string;
     date?: string;
     country?: string;
-  }>;
-  tags?: Array<{ name: string; count: number }>;
+  }[];
+  tags?: { name: string; count: number }[];
   mediaInfo?: {
     status?: number;
-    downloadStatus?: Array<unknown>;
-    requests?: Array<unknown>;
+    downloadStatus?: unknown[];
+    requests?: unknown[];
     serviceUrl?: string;
   };
 }
@@ -107,16 +107,35 @@ const messages = defineMessages({
   tvshow: 'series',
 });
 
-const isMovie = (movie: MovieDetails | TvDetails | ArtistDetails | AlbumDetails): movie is MovieDetails => {
-  return (movie as MovieDetails).title !== undefined && 'tmdbId' in (movie as MovieDetails);
+const isMovie = (
+  movie: MovieDetails | TvDetails | ArtistDetails | AlbumDetails
+): movie is MovieDetails => {
+  return (
+    (movie as MovieDetails).title !== undefined &&
+    'tmdbId' in (movie as MovieDetails)
+  );
 };
 
-const isArtist = (item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails): item is ArtistDetails => {
-  return (item as ArtistDetails).name !== undefined && 'id' in item && typeof item.id === 'string' && !('title' in item);
+const isArtist = (
+  item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails
+): item is ArtistDetails => {
+  return (
+    (item as ArtistDetails).name !== undefined &&
+    'id' in item &&
+    typeof item.id === 'string' &&
+    !('title' in item)
+  );
 };
 
-const isAlbum = (item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails): item is AlbumDetails => {
-  return (item as AlbumDetails).title !== undefined && 'id' in item && typeof item.id === 'string' && !('tmdbId' in item);
+const isAlbum = (
+  item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails
+): item is AlbumDetails => {
+  return (
+    (item as AlbumDetails).title !== undefined &&
+    'id' in item &&
+    typeof item.id === 'string' &&
+    !('tmdbId' in item)
+  );
 };
 
 interface ManageSlideOverProps {
@@ -152,7 +171,11 @@ const ManageSlideOver = ({
   onClose,
   data,
   revalidate,
-}: ManageSlideOverMovieProps | ManageSlideOverTvProps | ManageSlideOverArtistProps | ManageSlideOverAlbumProps) => {
+}:
+  | ManageSlideOverMovieProps
+  | ManageSlideOverTvProps
+  | ManageSlideOverArtistProps
+  | ManageSlideOverAlbumProps) => {
   const { user: currentUser, hasPermission } = useUser();
   const intl = useIntl();
   const settings = useSettings();
@@ -178,7 +201,9 @@ const ManageSlideOver = ({
       await axios.post(`/api/v1/media/${data.mediaInfo?.id}/available`, {
         is4k,
         ...(mediaType === 'tv' && {
-          seasons: (data as TvDetails).seasons.filter((season) => season.seasonNumber !== 0),
+          seasons: (data as TvDetails).seasons.filter(
+            (season) => season.seasonNumber !== 0
+          ),
         }),
       });
       revalidate();
@@ -223,7 +248,15 @@ const ManageSlideOver = ({
         ),
       })}
       onClose={() => onClose()}
-      subText={isMovie(data) ? data.title : isArtist(data) ? data.name : isAlbum(data) ? data.title : data.name}
+      subText={
+        isMovie(data)
+          ? data.title
+          : isArtist(data)
+          ? data.name
+          : isAlbum(data)
+          ? data.title
+          : data.name
+      }
     >
       <div className="space-y-6">
         {((data?.mediaInfo?.downloadStatus ?? []).length > 0 ||
@@ -365,6 +398,7 @@ const ManageSlideOver = ({
                                       : `/users/${user.id}`
                                   }
                                   key={`watch-user-${user.id}`}
+                                  legacyBehavior
                                 >
                                   <a className="z-0 mb-1 -mr-2 shrink-0 hover:z-50">
                                     <Tooltip
@@ -496,6 +530,7 @@ const ManageSlideOver = ({
                                       : `/users/${user.id}`
                                   }
                                   key={`watch-user-${user.id}`}
+                                  legacyBehavior
                                 >
                                   <a className="z-0 mb-1 -mr-2 shrink-0 hover:z-50">
                                     <Tooltip
@@ -588,7 +623,8 @@ const ManageSlideOver = ({
               )}
               {data?.mediaInfo.status4k !== MediaStatus.AVAILABLE &&
                 (mediaType === 'movie' || mediaType === 'tv') &&
-                (mediaType === 'movie' || settings.currentSettings.series4kEnabled) && (
+                (mediaType === 'movie' ||
+                  settings.currentSettings.series4kEnabled) && (
                   <Button
                     onClick={() => markAvailable(true)}
                     className="w-full"

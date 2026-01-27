@@ -6,15 +6,19 @@ import Button from '@app/components/Common/Button';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import Modal from '@app/components/Common/Modal';
 import PageTitle from '@app/components/Common/PageTitle';
+import LidarrModal from '@app/components/Settings/LidarrModal';
 import RadarrModal from '@app/components/Settings/RadarrModal';
 import SonarrModal from '@app/components/Settings/SonarrModal';
-import LidarrModal from '@app/components/Settings/LidarrModal';
 import globalMessages from '@app/i18n/globalMessages';
-import { Transition } from '@headlessui/react';
 import { PencilIcon, PlusIcon, TrashIcon } from '@heroicons/react/24/solid';
-import type { RadarrSettings, SonarrSettings, LidarrSettings } from '@server/lib/settings';
+import type {
+  LidarrSettings,
+  RadarrSettings,
+  SonarrSettings,
+} from '@server/lib/settings';
 import axios from 'axios';
-import { Fragment, useState } from 'react';
+import type { ComponentType, SVGProps } from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import useSWR, { mutate } from 'swr';
 
@@ -48,6 +52,28 @@ const messages = defineMessages({
   mediaTypeMusic: 'music',
   deleteServer: 'Delete {serverType} Server',
 });
+
+const resolveLogoSrc = (logo: unknown): string | null => {
+  if (typeof logo === 'string') {
+    return logo;
+  }
+
+  if (logo && typeof logo === 'object' && 'src' in (logo as { src?: string })) {
+    return (logo as { src?: string }).src ?? null;
+  }
+
+  return null;
+};
+
+const renderServiceLogo = (logo: unknown, className: string) => {
+  const logoSrc = resolveLogoSrc(logo);
+  if (logoSrc) {
+    return <img src={logoSrc} alt="" className={className} />;
+  }
+
+  const LogoComponent = logo as ComponentType<SVGProps<SVGSVGElement>>;
+  return <LogoComponent className={className} />;
+};
 
 interface ServerInstanceProps {
   name: string;
@@ -143,13 +169,13 @@ const ServerInstance = ({
           className="opacity-50 hover:opacity-100"
         >
           {isSonarr ? (
-            <SonarrLogo className="h-10 w-10 flex-shrink-0" />
+            renderServiceLogo(SonarrLogo, 'h-10 w-10 flex-shrink-0')
           ) : isLidarr ? (
-            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded bg-indigo-600 text-white font-semibold">
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded bg-indigo-600 font-semibold text-white">
               L
             </div>
           ) : (
-            <RadarrLogo className="h-10 w-10 flex-shrink-0" />
+            renderServiceLogo(RadarrLogo, 'h-10 w-10 flex-shrink-0')
           )}
         </a>
       </div>
@@ -289,16 +315,7 @@ const SettingsServices = () => {
           }}
         />
       )}
-      <Transition
-        as={Fragment}
-        show={deleteServerModal.open}
-        enter="transition-opacity ease-in-out duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity ease-in-out duration-300"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-      >
+      {deleteServerModal.open && (
         <Modal
           okText={intl.formatMessage(globalMessages.delete)}
           okButtonType="danger"
@@ -321,7 +338,7 @@ const SettingsServices = () => {
         >
           {intl.formatMessage(messages.deleteserverconfirm)}
         </Modal>
-      </Transition>
+      )}
       <div className="section">
         {!radarrData && !radarrError && <LoadingSpinner />}
         {radarrData && !radarrError && (

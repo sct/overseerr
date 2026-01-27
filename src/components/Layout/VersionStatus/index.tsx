@@ -39,7 +39,7 @@ const VersionStatus = ({ onClick }: VersionStatusProps) => {
       : intl.formatMessage(messages.streamstable);
 
   return (
-    <Link href="/settings/about">
+    <Link href="/settings/about" legacyBehavior>
       <a
         onClick={onClick}
         onKeyDown={(e) => {

@@ -74,7 +74,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
     useLockBodyScroll(true, disableScrollLock);
 
     return ReactDOM.createPortal(
-      <Transition.Child
+      <Transition.Root
         appear
         as="div"
         className="fixed top-0 bottom-0 left-0 right-0 z-50 flex h-full w-full items-center justify-center bg-gray-800 bg-opacity-70"
@@ -84,6 +84,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
         leave="transition-opacity duration-300"
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
+        show={true}
         ref={parentRef}
       >
         <Transition
@@ -224,7 +225,7 @@ const Modal = React.forwardRef<HTMLDivElement, ModalProps>(
             </div>
           )}
         </Transition>
-      </Transition.Child>,
+      </Transition.Root>,
       document.body
     );
   }

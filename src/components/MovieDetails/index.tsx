@@ -233,7 +233,11 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     movieAttributes.push(
       data.genres
         .map((g) => (
-          <Link href={`/discover/movies?genre=${g.id}`} key={`genre-${g.id}`}>
+          <Link
+            href={`/discover/movies?genre=${g.id}`}
+            key={`genre-${g.id}`}
+            legacyBehavior
+          >
             <a className="hover:underline">{g.name}</a>
           </Link>
         ))
@@ -448,14 +452,14 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 {sortedCrew.slice(0, 6).map((person) => (
                   <li key={`crew-${person.job}-${person.id}`}>
                     <span>{person.job}</span>
-                    <Link href={`/person/${person.id}`}>
+                    <Link href={`/person/${person.id}`} legacyBehavior>
                       <a className="crew-name">{person.name}</a>
                     </Link>
                   </li>
                 ))}
               </ul>
               <div className="mt-4 flex justify-end">
-                <Link href={`/movie/${data.id}/crew`}>
+                <Link href={`/movie/${data.id}/crew`} legacyBehavior>
                   <a className="flex items-center text-gray-400 transition duration-300 hover:text-gray-100">
                     <span>{intl.formatMessage(messages.viewfullcrew)}</span>
                     <ArrowRightCircleIcon className="ml-1.5 inline-block h-5 w-5" />
@@ -470,6 +474,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 <Link
                   href={`/discover/movies?keywords=${keyword.id}`}
                   key={`keyword-id-${keyword.id}`}
+                  legacyBehavior
                 >
                   <a className="mb-2 mr-2 inline-flex last:mr-0">
                     <Tag>{keyword.name}</Tag>
@@ -482,7 +487,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
         <div className="media-overview-right">
           {data.collection && (
             <div className="mb-6">
-              <Link href={`/collection/${data.collection.id}`}>
+              <Link href={`/collection/${data.collection.id}`} legacyBehavior>
                 <a>
                   <div className="group relative z-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-lg bg-gray-800 bg-cover bg-center shadow-md ring-1 ring-gray-700 transition duration-300 hover:scale-105 hover:ring-gray-500">
                     <div className="absolute inset-0 z-0">
@@ -703,6 +708,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                 <span className="media-fact-value">
                   <Link
                     href={`/discover/movies/language/${data.originalLanguage}`}
+                    legacyBehavior
                   >
                     <a>
                       {intl.formatDisplayName(data.originalLanguage, {
@@ -768,6 +774,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                         <Link
                           href={`/discover/movies/studio/${s.id}`}
                           key={`studio-${s.id}`}
+                          legacyBehavior
                         >
                           <a className="block">{s.name}</a>
                         </Link>
@@ -827,7 +834,11 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
       {data.credits.cast.length > 0 && (
         <>
           <div className="slider-header">
-            <Link href="/movie/[movieId]/cast" as={`/movie/${data.id}/cast`}>
+            <Link
+              href="/movie/[movieId]/cast"
+              as={`/movie/${data.id}/cast`}
+              legacyBehavior
+            >
               <a className="slider-title">
                 <span>{intl.formatMessage(messages.cast)}</span>
                 <ArrowRightCircleIcon />

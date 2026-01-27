@@ -166,6 +166,7 @@ const CollectionDetails = ({ collection }: CollectionDetailsProps) => {
           <Link
             href={`/discover/movies/genre/${genreId}`}
             key={`genre-${genreId}`}
+            legacyBehavior
           >
             <a className="hover:underline">
               {genres.find((g) => g.id === genreId)?.name}

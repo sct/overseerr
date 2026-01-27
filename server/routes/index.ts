@@ -178,7 +178,28 @@ router.get(
     }
   }
 );
-router.use('/settings', isAuthenticated(Permission.ADMIN), settingsRoutes);
+// Initialize endpoint must be accessible without auth (for setup)
+router.post('/settings/initialize', async (req, res) => {
+  const settings = getSettings();
+
+  settings.public.initialized = true;
+  settings.save();
+
+  return res.status(200).json({ initialized: settings.public.initialized });
+});
+
+router.use('/settings', (req, res, next) => {
+  const settings = getSettings();
+  if (!settings.public.initialized) {
+    return settingsRoutes(req, res, next);
+  }
+  return isAuthenticated(Permission.ADMIN)(req, res, (error) => {
+    if (error) {
+      return next(error);
+    }
+    return settingsRoutes(req, res, next);
+  });
+});
 router.use('/search', isAuthenticated(), searchLimiter, searchRoutes);
 router.use('/discover', isAuthenticated(), discoverRoutes);
 router.use('/request', isAuthenticated(), requestRoutes);

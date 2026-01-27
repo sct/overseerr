@@ -83,7 +83,10 @@ const IssueComment = ({
           {intl.formatMessage(messages.areyousuredelete)}
         </Modal>
       </Transition>
-      <Link href={isActiveUser ? '/profile' : `/users/${comment.user.id}`}>
+      <Link
+        href={isActiveUser ? '/profile' : `/users/${comment.user.id}`}
+        legacyBehavior
+      >
         <a>
           <img
             src={comment.user.avatar}
@@ -242,6 +245,7 @@ const IssueComment = ({
                     href={
                       isActiveUser ? '/profile' : `/users/${comment.user.id}`
                     }
+                    legacyBehavior
                   >
                     <a className="font-semibold text-gray-100 transition duration-300 hover:text-white hover:underline">
                       {comment.user.displayName}

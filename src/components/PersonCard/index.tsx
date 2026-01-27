@@ -21,7 +21,7 @@ const PersonCard = ({
   const [isHovered, setHovered] = useState(false);
 
   return (
-    <Link href={`/person/${personId}`}>
+    <Link href={`/person/${personId}`} legacyBehavior>
       <a
         className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}
         onMouseEnter={() => {

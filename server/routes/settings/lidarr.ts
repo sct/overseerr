@@ -19,7 +19,8 @@ lidarrRoutes.post('/', (req, res, next) => {
   if (!req.body.name || !req.body.hostname || !req.body.apiKey) {
     return next({
       status: 400,
-      message: 'Missing required fields: name, hostname, and apiKey are required.',
+      message:
+        'Missing required fields: name, hostname, and apiKey are required.',
     });
   }
 
@@ -112,7 +113,8 @@ lidarrRoutes.put<{ id: string }, LidarrSettings, LidarrSettings>(
     if (!req.body.name || !req.body.hostname || !req.body.apiKey) {
       return next({
         status: 400,
-        message: 'Missing required fields: name, hostname, and apiKey are required.',
+        message:
+          'Missing required fields: name, hostname, and apiKey are required.',
       });
     }
 
@@ -130,9 +132,7 @@ lidarrRoutes.put<{ id: string }, LidarrSettings, LidarrSettings>(
       });
     }
 
-    const lidarrIndex = settings.lidarr.findIndex(
-      (l) => l.id === lidarrId
-    );
+    const lidarrIndex = settings.lidarr.findIndex((l) => l.id === lidarrId);
 
     if (lidarrIndex === -1) {
       return next({ status: 404, message: 'Settings instance not found' });
@@ -191,7 +191,7 @@ lidarrRoutes.get<{ id: string }>(
     );
 
     if (!lidarrSettings) {
-      return next({ status: '404', message: 'Settings instance not found' });
+      return next({ status: 404, message: 'Settings instance not found' });
     }
 
     const lidarr = new LidarrAPI({
@@ -218,7 +218,7 @@ lidarrRoutes.delete<{ id: string }>('/:id', (req, res, next) => {
   );
 
   if (lidarrIndex === -1) {
-    return next({ status: '404', message: 'Settings instance not found' });
+    return next({ status: 404, message: 'Settings instance not found' });
   }
 
   const removed = settings.lidarr.splice(lidarrIndex, 1);

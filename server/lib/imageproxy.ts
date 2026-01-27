@@ -239,7 +239,7 @@ class ImageProxy {
     });
 
     await promises.mkdir(dir, { recursive: true });
-    await promises.writeFile(filename, buffer);
+    await promises.writeFile(filename, this.toUint8Array(buffer));
   }
 
   private getCacheKey(path: string) {
@@ -250,12 +250,18 @@ class ImageProxy {
     const hash = createHash('sha256');
     for (const item of items) {
       if (typeof item === 'number') hash.update(String(item));
-      else {
+      else if (typeof item === 'string') {
         hash.update(item);
+      } else {
+        hash.update(this.toUint8Array(item));
       }
     }
     // See https://en.wikipedia.org/wiki/Base64#Filenames
     return hash.digest('base64').replace(/\//g, '-');
+  }
+
+  private toUint8Array(buffer: Buffer): Uint8Array {
+    return buffer as unknown as Uint8Array;
   }
 
   private getCacheDirectory() {

@@ -34,7 +34,7 @@ const MovieCrew = () => {
       <div className="mt-1 mb-5">
         <Header
           subtext={
-            <Link href={`/movie/${data.id}`}>
+            <Link href={`/movie/${data.id}`} legacyBehavior>
               <a className="hover:underline">{data.title}</a>
             </Link>
           }

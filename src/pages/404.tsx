@@ -21,7 +21,7 @@ const Custom404 = () => {
           error: intl.formatMessage(messages.pagenotfound),
         })}
       </div>
-      <Link href="/">
+      <Link href="/" legacyBehavior>
         <a className="mt-2 flex">
           {intl.formatMessage(messages.returnHome)}
           <ArrowRightCircleIcon className="ml-2 h-6 w-6" />

@@ -90,8 +90,19 @@ const TitleCard = ({
       data-testid="title-card"
     >
       <RequestModal
-        tmdbId={mediaType === 'artist' || mediaType === 'album' ? undefined : (typeof id === 'number' ? id : parseInt(id) || 0)}
-        mbid={mbid || (mediaType === 'artist' || mediaType === 'album' ? String(id) : undefined)}
+        tmdbId={
+          mediaType === 'artist' || mediaType === 'album'
+            ? undefined
+            : typeof id === 'number'
+            ? id
+            : parseInt(id) || 0
+        }
+        mbid={
+          mbid ||
+          (mediaType === 'artist' || mediaType === 'album'
+            ? String(id)
+            : undefined)
+        }
         show={showRequestModal}
         type={
           mediaType === 'movie'
@@ -208,6 +219,7 @@ const TitleCard = ({
                     ? `/album/${id}`
                     : `/tv/${id}`
                 }
+                legacyBehavior
               >
                 <a
                   className="absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left"

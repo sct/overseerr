@@ -6,17 +6,17 @@ import { AuditLog } from '@server/entity/AuditLog';
 import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
 import { User } from '@server/entity/User';
-import type { PlexConnection } from '@server/interfaces/api/plexInterfaces';
 import type { AuditLogResultsResponse } from '@server/interfaces/api/auditInterfaces';
+import type { PlexConnection } from '@server/interfaces/api/plexInterfaces';
 import type {
   LogMessage,
   LogsResultsResponse,
   SettingsAboutResponse,
 } from '@server/interfaces/api/settingsInterfaces';
 import { scheduledJobs } from '@server/job/schedule';
+import { createAuditLog } from '@server/lib/auditLog';
 import type { AvailableCacheIds } from '@server/lib/cache';
 import cacheManager from '@server/lib/cache';
-import { createAuditLog } from '@server/lib/auditLog';
 import ImageProxy from '@server/lib/imageproxy';
 import { Permission } from '@server/lib/permissions';
 import { plexFullScanner } from '@server/lib/scanners/plex';
@@ -36,10 +36,10 @@ import path from 'path';
 import semver from 'semver';
 import { URL } from 'url';
 import apiKeysRoutes from './apiKeys';
+import lidarrRoutes from './lidarr';
 import notificationRoutes from './notifications';
 import radarrRoutes from './radarr';
 import sonarrRoutes from './sonarr';
-import lidarrRoutes from './lidarr';
 
 const settingsRoutes = Router();
 
@@ -61,11 +61,13 @@ const filteredMainSettings = (
   return main;
 };
 
-settingsRoutes.get('/main', (req, res, next) => {
+settingsRoutes.get('/main', (req, res) => {
   const settings = getSettings();
 
+  // During setup, user may not be authenticated yet
   if (!req.user) {
-    return next({ status: 400, message: 'User missing from request.' });
+    // Return settings without filtering API key during setup
+    return res.status(200).json(settings.main);
   }
 
   res.status(200).json(filteredMainSettings(req.user, settings.main));
@@ -77,15 +79,18 @@ settingsRoutes.post('/main', (req, res) => {
   settings.main = merge(settings.main, req.body);
   settings.save();
 
-  createAuditLog({
-    user: req.user,
-    ip: req.ip,
-    action: 'settings.main.update',
-    entityType: 'Settings',
-    meta: {
-      keys: Object.keys(req.body ?? {}),
-    },
-  });
+  // Only create audit log if user is authenticated (not during setup)
+  if (req.user) {
+    createAuditLog({
+      user: req.user,
+      ip: req.ip,
+      action: 'settings.main.update',
+      entityType: 'Settings',
+      meta: {
+        keys: Object.keys(req.body ?? {}),
+      },
+    });
+  }
 
   return res.status(200).json(settings.main);
 });
@@ -380,13 +385,13 @@ settingsRoutes.get(
     switch (req.query.filter) {
       case 'debug':
         filter.push('debug');
-        // eslint-disable-next-line no-fallthrough
+      // eslint-disable-next-line no-fallthrough
       case 'info':
         filter.push('info');
-        // eslint-disable-next-line no-fallthrough
+      // eslint-disable-next-line no-fallthrough
       case 'warn':
         filter.push('warn');
-        // eslint-disable-next-line no-fallthrough
+      // eslint-disable-next-line no-fallthrough
       case 'error':
         filter.push('error');
         break;
@@ -507,7 +512,10 @@ settingsRoutes.get('/audit', async (req, res, next) => {
       );
     }
 
-    const [logs, count] = await query.take(pageSize).skip(skip).getManyAndCount();
+    const [logs, count] = await query
+      .take(pageSize)
+      .skip(skip)
+      .getManyAndCount();
 
     return res.status(200).json({
       pageInfo: {
@@ -525,7 +533,11 @@ settingsRoutes.get('/audit', async (req, res, next) => {
         meta: l.meta,
         createdAt: l.createdAt,
         user: l.user
-          ? { id: l.user.id, displayName: l.user.displayName, avatar: l.user.avatar }
+          ? {
+              id: l.user.id,
+              displayName: l.user.displayName,
+              avatar: l.user.avatar,
+            }
           : undefined,
       })),
     } as AuditLogResultsResponse);
@@ -667,15 +679,7 @@ settingsRoutes.post<{ cacheId: AvailableCacheIds }>(
   }
 );
 
-// Initialize endpoint - allows skipping setup (no auth required for testing)
-settingsRoutes.post('/initialize', async (_req, res) => {
-  const settings = getSettings();
-
-  settings.public.initialized = true;
-  settings.save();
-
-  return res.status(200).json(settings.public);
-});
+// Initialize endpoint moved to server/routes/index.ts to bypass auth middleware
 
 settingsRoutes.get('/about', async (req, res) => {
   const mediaRepository = getRepository(Media);

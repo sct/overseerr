@@ -41,34 +41,50 @@ const Setup = () => {
 
   const finishSetup = async () => {
     setIsUpdating(true);
-    const response = await axios.post<{ initialized: boolean }>(
-      '/api/v1/settings/initialize'
-    );
-
-    setIsUpdating(false);
-    if (response.data.initialized) {
+    try {
+      // Save locale before initialization so it can run unauthenticated
       await axios.post('/api/v1/settings/main', { locale });
-      mutate('/api/v1/settings/public');
+    } catch (mainError) {
+      console.error('Failed to update main settings:', mainError);
+    }
 
-      router.push('/');
+    try {
+      const response = await axios.post<{ initialized: boolean }>(
+        '/api/v1/settings/initialize'
+      );
+      if (response.data.initialized) {
+        mutate('/api/v1/settings/public');
+        router.push('/');
+      }
+    } catch (e) {
+      console.error('Failed to initialize settings:', e);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
   const skipSetup = async () => {
     setIsUpdating(true);
     try {
+      // Save locale before initialization so it can run unauthenticated
+      try {
+        await axios.post('/api/v1/settings/main', { locale });
+      } catch (mainError) {
+        // Log but continue if main settings update fails
+        console.error('Failed to update main settings:', mainError);
+      }
+
       const response = await axios.post<{ initialized: boolean }>(
         '/api/v1/settings/initialize'
       );
 
       if (response.data.initialized) {
-        await axios.post('/api/v1/settings/main', { locale });
         mutate('/api/v1/settings/public');
-
         router.push('/');
       }
     } catch (e) {
       // If initialize fails, try to continue anyway
+      console.error('Failed to initialize settings:', e);
       router.push('/');
     } finally {
       setIsUpdating(false);
