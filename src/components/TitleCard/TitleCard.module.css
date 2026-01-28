@@ -1,0 +1,34 @@
+.cardAspect {
+  padding-bottom: 150%;
+}
+
+.overlayGradient {
+  background: linear-gradient(
+    180deg,
+    rgba(45, 55, 72, 0.4) 0%,
+    rgba(45, 55, 72, 0.9) 100%
+  );
+}
+
+.titleClamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.summaryClamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  word-break: break-word;
+}
+
+.summaryClampLong {
+  -webkit-line-clamp: 5;
+}
+
+.summaryClampShort {
+  -webkit-line-clamp: 3;
+}

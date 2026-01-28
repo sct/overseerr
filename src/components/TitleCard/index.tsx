@@ -16,6 +16,7 @@ import type { MediaType } from '@server/models/Search';
 import Link from 'next/link';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
+import styles from './TitleCard.module.css';
 
 interface TitleCardProps {
   id: number | string; // Can be number (TMDB) or string (MusicBrainz ID)
@@ -127,10 +128,7 @@ const TitleCard = ({
           showDetail
             ? 'scale-105 shadow-lg ring-gray-500'
             : 'scale-100 shadow ring-gray-700'
-        }`}
-        style={{
-          paddingBottom: '150%',
-        }}
+        } ${styles.cardAspect}`}
         onMouseEnter={() => {
           if (!isTouch) {
             setShowDetail(true);
@@ -233,11 +231,7 @@ const TitleCard = ({
                 legacyBehavior
               >
                 <a
-                  className="absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left"
-                  style={{
-                    background:
-                      'linear-gradient(180deg, rgba(45, 55, 72, 0.4) 0%, rgba(45, 55, 72, 0.9) 100%)',
-                  }}
+                  className={`absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left ${styles.overlayGradient}`}
                 >
                   <div className="flex h-full w-full items-end">
                     <div
@@ -255,33 +249,22 @@ const TitleCard = ({
                       )}
 
                       <h1
-                        className="whitespace-normal text-xl font-bold leading-tight"
-                        style={{
-                          WebkitLineClamp: 3,
-                          display: '-webkit-box',
-                          overflow: 'hidden',
-                          WebkitBoxOrient: 'vertical',
-                          wordBreak: 'break-word',
-                        }}
+                        className={`whitespace-normal text-xl font-bold leading-tight ${styles.titleClamp}`}
                         data-testid="title-card-title"
                       >
                         {title}
                       </h1>
                       <div
-                        className="whitespace-normal text-xs"
-                        style={{
-                          WebkitLineClamp:
-                            !showRequestButton ||
-                            (currentStatus &&
-                              currentStatus !== MediaStatus.UNKNOWN &&
-                              currentStatus !== MediaStatus.DELETED)
-                              ? 5
-                              : 3,
-                          display: '-webkit-box',
-                          overflow: 'hidden',
-                          WebkitBoxOrient: 'vertical',
-                          wordBreak: 'break-word',
-                        }}
+                        className={`whitespace-normal text-xs ${
+                          styles.summaryClamp
+                        } ${
+                          !showRequestButton ||
+                          (currentStatus &&
+                            currentStatus !== MediaStatus.UNKNOWN &&
+                            currentStatus !== MediaStatus.DELETED)
+                            ? styles.summaryClampLong
+                            : styles.summaryClampShort
+                        }`}
                       >
                         {summary}
                       </div>
