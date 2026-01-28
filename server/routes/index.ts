@@ -178,8 +178,16 @@ router.get(
     }
   }
 );
-// Initialize endpoint must be accessible without auth (for setup)
-router.post('/settings/initialize', async (req, res) => {
+// Initialize endpoint – no auth so setup/skip-setup works; rate-limited to reduce abuse
+const initializeLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 10,
+  standardHeaders: true,
+  legacyHeaders: false,
+  keyGenerator: (req: Request) => (req.ip ?? '').trim() || 'ip:unknown',
+});
+
+router.post('/settings/initialize', initializeLimiter, async (req, res) => {
   const settings = getSettings();
 
   settings.public.initialized = true;

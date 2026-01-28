@@ -32,6 +32,7 @@ const messages = defineMessages({
   pastdays: '{type} (past {days} days)',
   movierequests: 'Movie Requests',
   seriesrequest: 'Series Requests',
+  musicrequests: 'Music Requests',
   recentlywatched: 'Recently Watched',
   plexwatchlist: 'Plex Watchlist',
   emptywatchlist:
@@ -143,7 +144,7 @@ const UserProfile = () => {
             { type: 'and' }
           )) && (
           <div className="relative z-40">
-            <dl className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-3">
+            <dl className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
               <div className="overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ring-gray-700 sm:p-6">
                 <dt className="truncate text-sm font-bold text-gray-300">
                   {intl.formatMessage(messages.totalrequests)}
@@ -271,6 +272,61 @@ const UserProfile = () => {
                   )}
                 </dd>
               </div>
+              <div
+                className={`overflow-hidden rounded-lg bg-gray-800 bg-opacity-50 px-4 py-5 shadow ring-1 ${
+                  quota.music?.restricted
+                    ? 'bg-gradient-to-t from-red-900 to-transparent ring-red-500'
+                    : 'ring-gray-700'
+                } sm:p-6`}
+              >
+                <dt
+                  className={`truncate text-sm font-bold ${
+                    quota.music?.restricted ? 'text-red-500' : 'text-gray-300'
+                  }`}
+                >
+                  {quota.music?.limit
+                    ? intl.formatMessage(messages.pastdays, {
+                        type: intl.formatMessage(messages.musicrequests),
+                        days: quota?.music?.days,
+                      })
+                    : intl.formatMessage(messages.musicrequests)}
+                </dt>
+                <dd
+                  className={`mt-1 flex items-center text-sm ${
+                    quota.music?.restricted ? 'text-red-500' : 'text-white'
+                  }`}
+                >
+                  {quota.music?.limit ? (
+                    <>
+                      <ProgressCircle
+                        progress={Math.round(
+                          ((quota?.music?.remaining ?? 0) /
+                            (quota?.music?.limit ?? 1)) *
+                            100
+                        )}
+                        useHeatLevel
+                        className="mr-2 h-8 w-8"
+                      />
+                      <div>
+                        {intl.formatMessage(messages.requestsperdays, {
+                          limit: (
+                            <span className="text-3xl font-semibold">
+                              {intl.formatMessage(messages.limit, {
+                                remaining: quota.music?.remaining,
+                                limit: quota.music?.limit,
+                              })}
+                            </span>
+                          ),
+                        })}
+                      </div>
+                    </>
+                  ) : (
+                    <span className="text-3xl font-semibold">
+                      {intl.formatMessage(messages.unlimited)}
+                    </span>
+                  )}
+                </dd>
+              </div>
             </dl>
           </div>
         )}
@@ -380,15 +436,30 @@ const UserProfile = () => {
             <Slider
               sliderKey="media"
               isLoading={!watchData}
-              items={watchData?.recentlyWatched.map((item) => (
-                <TmdbTitleCard
-                  key={`media-slider-item-${item.id}`}
-                  id={item.id}
-                  tmdbId={item.tmdbId}
-                  tvdbId={item.tvdbId}
-                  type={item.mediaType}
-                />
-              ))}
+              items={watchData?.recentlyWatched
+                .filter(
+                  (item) =>
+                    (item.mediaType === 'movie' || item.mediaType === 'tv') &&
+                    typeof (item as { id?: number }).id === 'number' &&
+                    typeof (item as { tmdbId?: number }).tmdbId === 'number'
+                )
+                .map((item) => {
+                  const i = item as {
+                    id: number;
+                    tmdbId: number;
+                    tvdbId?: number;
+                    mediaType: 'movie' | 'tv';
+                  };
+                  return (
+                    <TmdbTitleCard
+                      key={`media-slider-item-${i.id}`}
+                      id={i.id}
+                      tmdbId={i.tmdbId}
+                      tvdbId={i.tvdbId}
+                      type={i.mediaType}
+                    />
+                  );
+                })}
             />
           </>
         )}

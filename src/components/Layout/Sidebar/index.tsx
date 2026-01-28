@@ -8,6 +8,7 @@ import {
   CogIcon,
   ExclamationTriangleIcon,
   FilmIcon,
+  MagnifyingGlassIcon,
   MusicalNoteIcon,
   SparklesIcon,
   TvIcon,
@@ -24,6 +25,7 @@ export const menuMessages = defineMessages({
   browsemovies: 'Movies',
   browsetv: 'Series',
   browsemusic: 'Music',
+  searchmusic: 'Search Music',
   requests: 'Requests',
   issues: 'Issues',
   users: 'Users',
@@ -74,6 +76,12 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'browsemusic',
     svgIcon: <MusicalNoteIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/discover\/(artists|albums)/,
+  },
+  {
+    href: '/search?mediaType=artist',
+    messagesKey: 'searchmusic',
+    svgIcon: <MagnifyingGlassIcon className="mr-3 h-6 w-6" />,
+    activeRegExp: /^\/search/,
   },
   {
     href: '/requests',

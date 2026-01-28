@@ -64,10 +64,9 @@ const filteredMainSettings = (
 settingsRoutes.get('/main', (req, res) => {
   const settings = getSettings();
 
-  // During setup, user may not be authenticated yet
+  // During setup, user may not be authenticated – never expose apiKey to unauthenticated callers
   if (!req.user) {
-    // Return settings without filtering API key during setup
-    return res.status(200).json(settings.main);
+    return res.status(200).json(omit(settings.main, 'apiKey'));
   }
 
   res.status(200).json(filteredMainSettings(req.user, settings.main));

@@ -1,4 +1,7 @@
-import MusicBrainzAPI from '@server/api/musicbrainz';
+import MusicBrainzAPI, {
+  type MusicBrainzArtist,
+  type MusicBrainzReleaseGroup,
+} from '@server/api/musicbrainz';
 import TheMovieDb from '@server/api/themoviedb';
 import type { TmdbSearchMultiResponse } from '@server/api/themoviedb/interfaces';
 import { MediaType } from '@server/constants/media';
@@ -66,6 +69,124 @@ searchRoutes.get('/', async (req, res, next) => {
   const musicResults: Results[] = [];
 
   try {
+    // Music-only search: skip TMDB, query MusicBrainz only
+    if (mediaType === 'artist' || mediaType === 'album') {
+      const musicBrainz = new MusicBrainzAPI();
+      const limit = 20;
+      const offset = (page - 1) * limit;
+
+      const [artistSearch, albumSearch] = await Promise.allSettled([
+        mediaType === 'artist' || !mediaType
+          ? musicBrainz.searchArtists(sanitizedQuery, limit, offset)
+          : Promise.resolve({ 'artist-list': [] }),
+        mediaType === 'album' || !mediaType
+          ? musicBrainz.searchReleaseGroups(sanitizedQuery, limit, offset)
+          : Promise.resolve({ 'release-group-list': [] }),
+      ]);
+
+      const musicBrainzIds: string[] = [];
+      if (
+        artistSearch.status === 'fulfilled' &&
+        artistSearch.value['artist-list']
+      ) {
+        musicBrainzIds.push(
+          ...artistSearch.value['artist-list'].map((a: { id: string }) => a.id)
+        );
+      }
+      if (
+        albumSearch.status === 'fulfilled' &&
+        albumSearch.value['release-group-list']
+      ) {
+        musicBrainzIds.push(
+          ...albumSearch.value['release-group-list'].map(
+            (rg: { id: string }) => rg.id
+          )
+        );
+      }
+
+      const mediaRepository = getRepository(Media);
+      const media = musicBrainzIds.length
+        ? await mediaRepository.find({
+            where: musicBrainzIds.map((mbid) => ({
+              musicBrainzId: mbid,
+              mediaType: In([
+                MediaType.ARTIST,
+                MediaType.ALBUM,
+                MediaType.MUSIC,
+              ]),
+            })),
+          })
+        : [];
+
+      if (
+        artistSearch.status === 'fulfilled' &&
+        artistSearch.value['artist-list']
+      ) {
+        musicResults.push(
+          ...artistSearch.value['artist-list'].map(
+            (artist: MusicBrainzArtist) =>
+              mapArtistResult(
+                artist,
+                media.find(
+                  (m) =>
+                    m.musicBrainzId === artist.id &&
+                    (m.mediaType === MediaType.ARTIST ||
+                      m.mediaType === MediaType.MUSIC)
+                )
+              )
+          )
+        );
+      }
+      if (
+        albumSearch.status === 'fulfilled' &&
+        albumSearch.value['release-group-list']
+      ) {
+        musicResults.push(
+          ...albumSearch.value['release-group-list'].map(
+            (album: MusicBrainzReleaseGroup) =>
+              mapAlbumResult(
+                album,
+                media.find(
+                  (m) =>
+                    m.musicBrainzId === album.id &&
+                    (m.mediaType === MediaType.ALBUM ||
+                      m.mediaType === MediaType.MUSIC)
+                )
+              )
+          )
+        );
+      }
+
+      const combined = [...musicResults];
+      // Use MusicBrainz count for total across all pages; fallback to current-page length if missing
+      const artistCount =
+        mediaType === 'artist' &&
+        artistSearch.status === 'fulfilled' &&
+        'count' in artistSearch.value &&
+        typeof artistSearch.value.count === 'number'
+          ? artistSearch.value.count
+          : null;
+      const albumCount =
+        mediaType === 'album' &&
+        albumSearch.status === 'fulfilled' &&
+        'count' in albumSearch.value &&
+        typeof albumSearch.value.count === 'number'
+          ? albumSearch.value.count
+          : null;
+      const totalCount =
+        artistCount !== null
+          ? artistCount
+          : albumCount !== null
+          ? albumCount
+          : combined.length;
+      return res.status(200).json({
+        page,
+        results: combined,
+        totalResults: totalCount,
+        totalPages: Math.ceil(totalCount / limit) || 1,
+      });
+    }
+
     if (searchProvider) {
       const [id] = sanitizedQuery
         .toLowerCase()
@@ -78,7 +199,7 @@ searchRoutes.get('/', async (req, res, next) => {
     } else {
       const tmdb = new TheMovieDb();
 
-      // Use type-specific search if filters are applied
+      // Use type-specific search if filters are applied (movie/tv only)
       if (mediaType === 'movie' && (year || genre)) {
         const movieResults = await tmdb.searchMovies({
           query: sanitizedQuery,
