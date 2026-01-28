@@ -38,7 +38,7 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata tini && rm -rf /tmp/*
+RUN apk add --no-cache tzdata tini ca-certificates && rm -rf /tmp/*
 
 # copy from build image
 COPY --from=BUILD_IMAGE /app ./

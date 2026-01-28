@@ -15,8 +15,8 @@ export interface MusicBrainzArtist {
   };
   country?: string;
   type?: string;
-  tags?: Array<{ name: string; count: number }>;
-  'tag-list'?: Array<{ name: string; count: number }>;
+  tags?: { name: string; count: number }[];
+  'tag-list'?: { name: string; count: number }[];
   area?: {
     id: string;
     name: string;
@@ -29,7 +29,7 @@ export interface MusicBrainzArtist {
     id: string;
     name: string;
   };
-  relations?: Array<{
+  relations?: {
     type: string;
     'type-id': string;
     direction: string;
@@ -40,18 +40,18 @@ export interface MusicBrainzArtist {
     url?: {
       resource: string;
     };
-  }>;
-  releases?: Array<{
+  }[];
+  releases?: {
     id: string;
     title: string;
     'first-release-date'?: string;
-  }>;
-  'release-groups'?: Array<{
+  }[];
+  'release-groups'?: {
     id: string;
     title: string;
     'primary-type'?: string;
     'first-release-date'?: string;
-  }>;
+  }[];
 }
 
 export interface MusicBrainzReleaseGroup {
@@ -61,26 +61,26 @@ export interface MusicBrainzReleaseGroup {
   'secondary-types'?: string[];
   'first-release-date'?: string;
   disambiguation?: string;
-  'artist-credit'?: Array<{
+  'artist-credit'?: {
     artist: {
       id: string;
       name: string;
     };
     name?: string;
-  }>;
-  releases?: Array<{
+  }[];
+  releases?: {
     id: string;
     title: string;
     date?: string;
     country?: string;
-  }>;
-  tags?: Array<{ name: string; count: number }>;
-  'tag-list'?: Array<{ name: string; count: number }>;
-  relations?: Array<{
+  }[];
+  tags?: { name: string; count: number }[];
+  'tag-list'?: { name: string; count: number }[];
+  relations?: {
     type: string;
     'type-id': string;
     direction: string;
-  }>;
+  }[];
 }
 
 export interface MusicBrainzRelease {
@@ -93,26 +93,47 @@ export interface MusicBrainzRelease {
     title: string;
     'primary-type'?: string;
   };
-  'artist-credit'?: Array<{
+  'artist-credit'?: {
     artist: {
       id: string;
       name: string;
     };
     name?: string;
-  }>;
+  }[];
   'medium-count'?: number;
   'track-count'?: number;
-  media?: Array<{
+  media?: {
     format?: string;
     'track-count'?: number;
-    tracks?: Array<{
+    tracks?: {
       id: string;
       title: string;
       length?: number;
       position?: number;
-    }>;
-  }>;
+    }[];
+  }[];
   disambiguation?: string;
+}
+
+export interface MusicBrainzRecording {
+  id: string;
+  title: string;
+  length?: number;
+  disambiguation?: string;
+  'first-release-date'?: string;
+  'artist-credit'?: {
+    artist: {
+      id: string;
+      name: string;
+    };
+    name?: string;
+  }[];
+  releases?: {
+    id: string;
+    title: string;
+    date?: string;
+    country?: string;
+  }[];
 }
 
 export interface MusicBrainzSearchResponse<T> {
@@ -122,6 +143,7 @@ export interface MusicBrainzSearchResponse<T> {
   'artist-list'?: T[];
   'release-group-list'?: T[];
   'release-list'?: T[];
+  'recording-list'?: T[];
 }
 
 class MusicBrainzAPI extends ExternalAPI {
@@ -146,11 +168,13 @@ class MusicBrainzAPI extends ExternalAPI {
 
   public async searchArtists(
     query: string,
-    limit: number = 25,
-    offset: number = 0
+    limit = 25,
+    offset = 0
   ): Promise<MusicBrainzSearchResponse<MusicBrainzArtist>> {
     try {
-      const response = await this.get<MusicBrainzSearchResponse<MusicBrainzArtist>>(
+      const response = await this.get<
+        MusicBrainzSearchResponse<MusicBrainzArtist>
+      >(
         '/artist',
         {
           params: {
@@ -203,8 +227,8 @@ class MusicBrainzAPI extends ExternalAPI {
 
   public async searchReleaseGroups(
     query: string,
-    limit: number = 25,
-    offset: number = 0
+    limit = 25,
+    offset = 0
   ): Promise<MusicBrainzSearchResponse<MusicBrainzReleaseGroup>> {
     try {
       const response = await this.get<
@@ -262,11 +286,13 @@ class MusicBrainzAPI extends ExternalAPI {
 
   public async searchReleases(
     query: string,
-    limit: number = 25,
-    offset: number = 0
+    limit = 25,
+    offset = 0
   ): Promise<MusicBrainzSearchResponse<MusicBrainzRelease>> {
     try {
-      const response = await this.get<MusicBrainzSearchResponse<MusicBrainzRelease>>(
+      const response = await this.get<
+        MusicBrainzSearchResponse<MusicBrainzRelease>
+      >(
         '/release',
         {
           params: {
@@ -287,6 +313,65 @@ class MusicBrainzAPI extends ExternalAPI {
         query,
       });
       throw new Error('Failed to search releases');
+    }
+  }
+
+  public async searchRecordings(
+    query: string,
+    limit = 25,
+    offset = 0
+  ): Promise<MusicBrainzSearchResponse<MusicBrainzRecording>> {
+    try {
+      const response = await this.get<
+        MusicBrainzSearchResponse<MusicBrainzRecording>
+      >(
+        '/recording',
+        {
+          params: {
+            query,
+            limit,
+            offset,
+            fmt: 'json',
+          },
+        },
+        3600 // Cache for 1 hour
+      );
+
+      return response;
+    } catch (e) {
+      logger.error('Failed to search recordings on MusicBrainz', {
+        label: 'MusicBrainz API',
+        errorMessage: e.message,
+        query,
+      });
+      throw new Error('Failed to search recordings');
+    }
+  }
+
+  public async getRecording(
+    mbid: string,
+    includes: string[] = ['artists', 'releases']
+  ): Promise<MusicBrainzRecording> {
+    try {
+      const response = await this.get<MusicBrainzRecording>(
+        `/recording/${mbid}`,
+        {
+          params: {
+            inc: includes.join('+'),
+            fmt: 'json',
+          },
+        },
+        3600 // Cache for 1 hour
+      );
+
+      return response;
+    } catch (e) {
+      logger.error('Failed to get recording from MusicBrainz', {
+        label: 'MusicBrainz API',
+        errorMessage: e.message,
+        mbid,
+      });
+      throw new Error('Failed to get recording');
     }
   }
 
@@ -319,8 +404,8 @@ class MusicBrainzAPI extends ExternalAPI {
 
   public async getArtistAlbums(
     artistMbid: string,
-    limit: number = 100,
-    offset: number = 0
+    limit = 100,
+    offset = 0
   ): Promise<MusicBrainzSearchResponse<MusicBrainzReleaseGroup>> {
     try {
       const response = await this.searchReleaseGroups(

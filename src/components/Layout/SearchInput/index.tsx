@@ -4,7 +4,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  searchPlaceholder: 'Search Movies & TV',
+  searchPlaceholder: 'Search Movies, TV & Music',
 });
 
 const SearchInput = () => {
@@ -45,6 +45,8 @@ const SearchInput = () => {
           {searchValue.length > 0 && (
             <button
               className="absolute inset-y-0 right-2 m-auto h-7 w-7 border-none p-1 text-gray-400 outline-none transition hover:text-white focus:border-none focus:outline-none"
+              type="button"
+              aria-label="Clear search"
               onClick={() => clear()}
             >
               <XCircleIcon className="h-5 w-5" />

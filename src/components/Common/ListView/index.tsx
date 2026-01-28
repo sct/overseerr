@@ -1,23 +1,33 @@
 import PersonCard from '@app/components/PersonCard';
 import TitleCard from '@app/components/TitleCard';
-import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
-import ArtistTitleCard from '@app/components/TitleCard/ArtistTitleCard';
 import AlbumTitleCard from '@app/components/TitleCard/AlbumTitleCard';
+import ArtistTitleCard from '@app/components/TitleCard/ArtistTitleCard';
+import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
+import TrackTitleCard from '@app/components/TitleCard/TrackTitleCard';
 import useVerticalScroll from '@app/hooks/useVerticalScroll';
 import globalMessages from '@app/i18n/globalMessages';
 import type { WatchlistItem } from '@server/interfaces/api/discoverInterfaces';
 import type {
+  AlbumResult,
+  ArtistResult,
   CollectionResult,
   MovieResult,
   PersonResult,
+  TrackResult,
   TvResult,
-  ArtistResult,
-  AlbumResult,
 } from '@server/models/Search';
 import { useIntl } from 'react-intl';
 
 type ListViewProps = {
-  items?: (TvResult | MovieResult | PersonResult | CollectionResult | ArtistResult | AlbumResult)[];
+  items?: (
+    | TvResult
+    | MovieResult
+    | PersonResult
+    | CollectionResult
+    | ArtistResult
+    | AlbumResult
+    | TrackResult
+  )[];
   plexItems?: WatchlistItem[];
   isEmpty?: boolean;
   isLoading?: boolean;
@@ -44,7 +54,8 @@ const ListView = ({
             {intl.formatMessage(globalMessages.noresults)}
           </div>
           <div className="max-w-md text-sm text-gray-400">
-            Try adjusting your search terms or filters to find what you're looking for.
+            Try adjusting your search terms or filters to find what you&apos;re
+            looking for.
           </div>
         </div>
       )}
@@ -125,20 +136,17 @@ const ListView = ({
               break;
             case 'artist':
               titleCard = (
-                <ArtistTitleCard
-                  id={title.id}
-                  mbid={title.id}
-                  canExpand
-                />
+                <ArtistTitleCard id={title.id} mbid={title.id} canExpand />
               );
               break;
             case 'album':
               titleCard = (
-                <AlbumTitleCard
-                  id={title.id}
-                  mbid={title.id}
-                  canExpand
-                />
+                <AlbumTitleCard id={title.id} mbid={title.id} canExpand />
+              );
+              break;
+            case 'track':
+              titleCard = (
+                <TrackTitleCard id={title.id} mbid={title.id} canExpand />
               );
               break;
           }

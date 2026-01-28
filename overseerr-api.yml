@@ -538,7 +538,6 @@ components:
         - activeProfileId
         - activeProfileName
         - activeDirectory
-        - is4k
         - isDefault
     ServarrTag:
       type: object
@@ -713,6 +712,49 @@ components:
           type: array
           items:
             type: object
+        mediaInfo:
+          $ref: '#/components/schemas/MediaInfo'
+    TrackResult:
+      type: object
+      required:
+        - id
+        - mediaType
+        - title
+      properties:
+        id:
+          type: string
+          example: '9fddfba6-1276-4c9e-9b63-36b3bd6e9f9b'
+        mediaType:
+          type: string
+          example: 'track'
+        title:
+          type: string
+          example: 'Enter Sandman'
+        length:
+          type: number
+          nullable: true
+          example: 331000
+        firstReleaseDate:
+          type: string
+          nullable: true
+          example: '1991-07-29'
+        disambiguation:
+          type: string
+          nullable: true
+        artistCredit:
+          type: array
+          items:
+            type: object
+            properties:
+              artist:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  name:
+                    type: string
+              name:
+                type: string
         mediaInfo:
           $ref: '#/components/schemas/MediaInfo'
     PersonResult:
@@ -4684,6 +4726,32 @@ paths:
           schema:
             type: string
             example: en
+        - in: query
+          name: mediaType
+          schema:
+            type: string
+            enum:
+              - movie
+              - tv
+              - artist
+              - album
+              - track
+            example: movie
+        - in: query
+          name: year
+          schema:
+            type: number
+            example: 2020
+        - in: query
+          name: genre
+          schema:
+            type: number
+            example: 28
+        - in: query
+          name: status
+          schema:
+            type: number
+            example: 1
       responses:
         '200':
           description: Results
@@ -4708,6 +4776,9 @@ paths:
                         - $ref: '#/components/schemas/MovieResult'
                         - $ref: '#/components/schemas/TvResult'
                         - $ref: '#/components/schemas/PersonResult'
+                        - $ref: '#/components/schemas/ArtistResult'
+                        - $ref: '#/components/schemas/AlbumResult'
+                        - $ref: '#/components/schemas/TrackResult'
   /search/keyword:
     get:
       summary: Search for keywords

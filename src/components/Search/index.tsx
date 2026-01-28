@@ -4,16 +4,17 @@ import ListView from '@app/components/Common/ListView';
 import PageTitle from '@app/components/Common/PageTitle';
 import useDiscover from '@app/hooks/useDiscover';
 import globalMessages from '@app/i18n/globalMessages';
-import { MediaStatus } from '@server/constants/media';
 import Error from '@app/pages/_error';
+import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { MediaStatus } from '@server/constants/media';
 import type {
+  AlbumResult,
+  ArtistResult,
   MovieResult,
   PersonResult,
+  TrackResult,
   TvResult,
-  ArtistResult,
-  AlbumResult,
 } from '@server/models/Search';
-import { FunnelIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -31,6 +32,9 @@ const messages = defineMessages({
   allTypes: 'All Types',
   movie: 'Movie',
   tv: 'TV Show',
+  artist: 'Artist',
+  album: 'Album',
+  track: 'Track',
   allGenres: 'All Genres',
   allYears: 'All Years',
   allStatuses: 'All Statuses',
@@ -89,7 +93,14 @@ const Search = () => {
     titles,
     fetchMore,
     error,
-  } = useDiscover<MovieResult | TvResult | PersonResult | ArtistResult | AlbumResult>(
+  } = useDiscover<
+    | MovieResult
+    | TvResult
+    | PersonResult
+    | ArtistResult
+    | AlbumResult
+    | TrackResult
+  >(
     `/api/v1/search`,
     {
       query: router.query.query,
@@ -108,9 +119,7 @@ const Search = () => {
   const allGenres = [
     ...(movieGenres?.genres || []),
     ...(tvGenres?.genres || []),
-  ].filter(
-    (g, i, arr) => arr.findIndex((g2) => g2.id === g.id) === i
-  );
+  ].filter((g, i, arr) => arr.findIndex((g2) => g2.id === g.id) === i);
 
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
@@ -152,11 +161,25 @@ const Search = () => {
               <select
                 className="form-input-field"
                 value={mediaType}
+                aria-label={intl.formatMessage(messages.mediaType)}
                 onChange={(e) => setMediaType(e.target.value)}
               >
-                <option value="">{intl.formatMessage(messages.allTypes)}</option>
-                <option value="movie">{intl.formatMessage(messages.movie)}</option>
+                <option value="">
+                  {intl.formatMessage(messages.allTypes)}
+                </option>
+                <option value="movie">
+                  {intl.formatMessage(messages.movie)}
+                </option>
                 <option value="tv">{intl.formatMessage(messages.tv)}</option>
+                <option value="artist">
+                  {intl.formatMessage(messages.artist)}
+                </option>
+                <option value="album">
+                  {intl.formatMessage(messages.album)}
+                </option>
+                <option value="track">
+                  {intl.formatMessage(messages.track)}
+                </option>
               </select>
             </div>
             <div>
@@ -166,9 +189,12 @@ const Search = () => {
               <select
                 className="form-input-field"
                 value={year}
+                aria-label={intl.formatMessage(messages.year)}
                 onChange={(e) => setYear(e.target.value)}
               >
-                <option value="">{intl.formatMessage(messages.allYears)}</option>
+                <option value="">
+                  {intl.formatMessage(messages.allYears)}
+                </option>
                 {years.map((y) => (
                   <option key={y} value={y}>
                     {y}
@@ -183,9 +209,12 @@ const Search = () => {
               <select
                 className="form-input-field"
                 value={genre}
+                aria-label={intl.formatMessage(messages.genre)}
                 onChange={(e) => setGenre(e.target.value)}
               >
-                <option value="">{intl.formatMessage(messages.allGenres)}</option>
+                <option value="">
+                  {intl.formatMessage(messages.allGenres)}
+                </option>
                 {allGenres.map((g) => (
                   <option key={g.id} value={g.id}>
                     {g.name}
@@ -200,12 +229,17 @@ const Search = () => {
               <select
                 className="form-input-field"
                 value={status}
+                aria-label={intl.formatMessage(messages.status)}
                 onChange={(e) => setStatus(e.target.value)}
               >
-                <option value="">{intl.formatMessage(messages.allStatuses)}</option>
+                <option value="">
+                  {intl.formatMessage(messages.allStatuses)}
+                </option>
                 <option value={String(MediaStatus.UNKNOWN)}>Unknown</option>
                 <option value={String(MediaStatus.PENDING)}>Pending</option>
-                <option value={String(MediaStatus.PROCESSING)}>Processing</option>
+                <option value={String(MediaStatus.PROCESSING)}>
+                  Processing
+                </option>
                 <option value={String(MediaStatus.AVAILABLE)}>Available</option>
                 <option value={String(MediaStatus.PARTIALLY_AVAILABLE)}>
                   Partially Available

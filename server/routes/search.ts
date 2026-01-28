@@ -1,45 +1,69 @@
+import MusicBrainzAPI from '@server/api/musicbrainz';
 import TheMovieDb from '@server/api/themoviedb';
 import type { TmdbSearchMultiResponse } from '@server/api/themoviedb/interfaces';
-import MusicBrainzAPI from '@server/api/musicbrainz';
-import Media from '@server/entity/Media';
 import { MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
+import Media from '@server/entity/Media';
 import { findSearchProvider } from '@server/lib/search';
 import logger from '@server/logger';
-import { mapSearchResults, mapArtistResult, mapAlbumResult, type Results } from '@server/models/Search';
-import { sanitizeSearchQuery, toPositiveInteger } from '@server/utils/validation';
-import { In } from 'typeorm';
+import {
+  mapAlbumResult,
+  mapArtistResult,
+  mapSearchResults,
+  mapTrackResult,
+  type Results,
+} from '@server/models/Search';
+import {
+  sanitizeSearchQuery,
+  toPositiveInteger,
+} from '@server/utils/validation';
 import { Router } from 'express';
+import { In } from 'typeorm';
 
 const searchRoutes = Router();
 
 searchRoutes.get('/', async (req, res, next) => {
   const queryString = req.query.query as string;
-  
+
   if (!queryString || typeof queryString !== 'string') {
     return next({
       status: 400,
       message: 'Search query is required.',
     });
   }
-  
+
   // Sanitize search query to prevent injection attacks
   const sanitizedQuery = sanitizeSearchQuery(queryString);
-  
+
   if (!sanitizedQuery || sanitizedQuery.length === 0) {
     return next({
       status: 400,
       message: 'Invalid search query.',
     });
   }
-  
+
   const searchProvider = findSearchProvider(sanitizedQuery.toLowerCase());
   const year = req.query.year ? Number(req.query.year) : undefined;
   const genre = req.query.genre ? Number(req.query.genre) : undefined;
-  const mediaType = req.query.mediaType as 'movie' | 'tv' | undefined;
+  const mediaType = req.query.mediaType as
+    | 'movie'
+    | 'tv'
+    | 'artist'
+    | 'album'
+    | 'track'
+    | undefined;
   const status = req.query.status as string | undefined;
-  let tmdbResults: TmdbSearchMultiResponse;
-  let musicResults: Results[] = [];
+  const page =
+    toPositiveInteger(
+      typeof req.query.page === 'string' ? req.query.page : undefined
+    ) ?? 1;
+  let tmdbResults: TmdbSearchMultiResponse = {
+    page,
+    total_pages: 0,
+    total_results: 0,
+    results: [],
+  } as TmdbSearchMultiResponse;
+  const musicResults: Results[] = [];
 
   try {
     if (searchProvider) {
@@ -54,10 +78,6 @@ searchRoutes.get('/', async (req, res, next) => {
     } else {
       const tmdb = new TheMovieDb();
 
-      const page = toPositiveInteger(
-        typeof req.query.page === 'string' ? req.query.page : undefined
-      ) ?? 1;
-
       // Use type-specific search if filters are applied
       if (mediaType === 'movie' && (year || genre)) {
         const movieResults = await tmdb.searchMovies({
@@ -68,7 +88,10 @@ searchRoutes.get('/', async (req, res, next) => {
         });
         tmdbResults = {
           ...movieResults,
-          results: movieResults.results.map((r) => ({ ...r, media_type: 'movie' })),
+          results: movieResults.results.map((r) => ({
+            ...r,
+            media_type: 'movie',
+          })),
         } as TmdbSearchMultiResponse;
       } else if (mediaType === 'tv' && (year || genre)) {
         const tvResults = await tmdb.searchTvShows({
@@ -81,7 +104,7 @@ searchRoutes.get('/', async (req, res, next) => {
           ...tvResults,
           results: tvResults.results.map((r) => ({ ...r, media_type: 'tv' })),
         } as TmdbSearchMultiResponse;
-      } else {
+      } else if (!mediaType || mediaType === 'movie' || mediaType === 'tv') {
         tmdbResults = await tmdb.searchMulti({
           query: sanitizedQuery,
           page,
@@ -89,26 +112,55 @@ searchRoutes.get('/', async (req, res, next) => {
         });
       }
 
-      // Also search MusicBrainz in parallel (only if not filtering by mediaType)
-      if (!mediaType) {
+      // Also search MusicBrainz in parallel (when not filtering to TMDB-only)
+      if (
+        !mediaType ||
+        mediaType === 'artist' ||
+        mediaType === 'album' ||
+        mediaType === 'track'
+      ) {
         try {
           const musicBrainz = new MusicBrainzAPI();
           const limit = 10; // Limit music results per page
           const offset = (page - 1) * limit;
 
-          const [artistSearch, albumSearch] = await Promise.allSettled([
-            musicBrainz.searchArtists(sanitizedQuery, limit, offset),
-            musicBrainz.searchReleaseGroups(sanitizedQuery, limit, offset),
-          ]);
+          const [artistSearch, albumSearch, trackSearch] =
+            await Promise.allSettled([
+              mediaType && mediaType !== 'artist'
+                ? Promise.resolve(null)
+                : musicBrainz.searchArtists(sanitizedQuery, limit, offset),
+              mediaType && mediaType !== 'album'
+                ? Promise.resolve(null)
+                : musicBrainz.searchReleaseGroups(
+                    sanitizedQuery,
+                    limit,
+                    offset
+                  ),
+              mediaType && mediaType !== 'track'
+                ? Promise.resolve(null)
+                : musicBrainz.searchRecordings(sanitizedQuery, limit, offset),
+            ]);
 
           const musicBrainzIds: string[] = [];
-          
-          if (artistSearch.status === 'fulfilled' && artistSearch.value['artist-list']) {
-            musicBrainzIds.push(...artistSearch.value['artist-list'].map((a) => a.id));
+
+          if (
+            artistSearch.status === 'fulfilled' &&
+            artistSearch.value &&
+            artistSearch.value['artist-list']
+          ) {
+            musicBrainzIds.push(
+              ...artistSearch.value['artist-list'].map((a) => a.id)
+            );
           }
-          
-          if (albumSearch.status === 'fulfilled' && albumSearch.value['release-group-list']) {
-            musicBrainzIds.push(...albumSearch.value['release-group-list'].map((rg) => rg.id));
+
+          if (
+            albumSearch.status === 'fulfilled' &&
+            albumSearch.value &&
+            albumSearch.value['release-group-list']
+          ) {
+            musicBrainzIds.push(
+              ...albumSearch.value['release-group-list'].map((rg) => rg.id)
+            );
           }
 
           const mediaRepository = getRepository(Media);
@@ -116,12 +168,20 @@ searchRoutes.get('/', async (req, res, next) => {
             ? await mediaRepository.find({
                 where: musicBrainzIds.map((mbid) => ({
                   musicBrainzId: mbid,
-                  mediaType: In([MediaType.ARTIST, MediaType.ALBUM, MediaType.MUSIC]),
+                  mediaType: In([
+                    MediaType.ARTIST,
+                    MediaType.ALBUM,
+                    MediaType.MUSIC,
+                  ]),
                 })),
               })
             : [];
 
-          if (artistSearch.status === 'fulfilled' && artistSearch.value['artist-list']) {
+          if (
+            artistSearch.status === 'fulfilled' &&
+            artistSearch.value &&
+            artistSearch.value['artist-list']
+          ) {
             musicResults.push(
               ...artistSearch.value['artist-list'].map((artist) =>
                 mapArtistResult(
@@ -129,14 +189,19 @@ searchRoutes.get('/', async (req, res, next) => {
                   media.find(
                     (m) =>
                       m.musicBrainzId === artist.id &&
-                      (m.mediaType === MediaType.ARTIST || m.mediaType === MediaType.MUSIC)
+                      (m.mediaType === MediaType.ARTIST ||
+                        m.mediaType === MediaType.MUSIC)
                   )
                 )
               )
             );
           }
 
-          if (albumSearch.status === 'fulfilled' && albumSearch.value['release-group-list']) {
+          if (
+            albumSearch.status === 'fulfilled' &&
+            albumSearch.value &&
+            albumSearch.value['release-group-list']
+          ) {
             musicResults.push(
               ...albumSearch.value['release-group-list'].map((album) =>
                 mapAlbumResult(
@@ -144,9 +209,21 @@ searchRoutes.get('/', async (req, res, next) => {
                   media.find(
                     (m) =>
                       m.musicBrainzId === album.id &&
-                      (m.mediaType === MediaType.ALBUM || m.mediaType === MediaType.MUSIC)
+                      (m.mediaType === MediaType.ALBUM ||
+                        m.mediaType === MediaType.MUSIC)
                   )
                 )
+              )
+            );
+          }
+          if (
+            trackSearch.status === 'fulfilled' &&
+            trackSearch.value &&
+            trackSearch.value['recording-list']
+          ) {
+            musicResults.push(
+              ...trackSearch.value['recording-list'].map((recording) =>
+                mapTrackResult(recording)
               )
             );
           }
@@ -165,8 +242,8 @@ searchRoutes.get('/', async (req, res, next) => {
       tmdbResults.results.map((result) => result.id)
     );
 
-    let mappedResults = mapSearchResults(tmdbResults.results, media);
-    
+    const mappedResults = mapSearchResults(tmdbResults.results, media);
+
     // Combine TMDB and MusicBrainz results
     const allResults = [...mappedResults, ...musicResults];
 
@@ -184,9 +261,17 @@ searchRoutes.get('/', async (req, res, next) => {
       });
       // Only apply genre filter to movie/TV results, keep music results
       const musicOnlyResults = allResults.filter(
-        (result) => result.mediaType === 'artist' || result.mediaType === 'album'
+        (result) =>
+          result.mediaType === 'artist' ||
+          result.mediaType === 'album' ||
+          result.mediaType === 'track'
       );
-      allResults.splice(0, allResults.length, ...filteredResults, ...musicOnlyResults);
+      allResults.splice(
+        0,
+        allResults.length,
+        ...filteredResults,
+        ...musicOnlyResults
+      );
     }
 
     // Filter by availability status if specified
@@ -199,8 +284,16 @@ searchRoutes.get('/', async (req, res, next) => {
           return result.mediaInfo.status === Number(status);
         }
         // For music, include if status is '0' (unknown/unavailable) or if no status filter
-        if (result.mediaType === 'artist' || result.mediaType === 'album') {
-          return status === '0' || !result.mediaInfo || result.mediaInfo.status === Number(status);
+        if (
+          result.mediaType === 'artist' ||
+          result.mediaType === 'album' ||
+          result.mediaType === 'track'
+        ) {
+          return (
+            status === '0' ||
+            !result.mediaInfo ||
+            result.mediaInfo.status === Number(status)
+          );
         }
         return status === '0'; // Unknown/unavailable
       });
@@ -208,8 +301,8 @@ searchRoutes.get('/', async (req, res, next) => {
     }
 
     return res.status(200).json({
-      page: tmdbResults.page,
-      totalPages: tmdbResults.total_pages,
+      page: tmdbResults.page || page,
+      totalPages: tmdbResults.total_pages || 1,
       totalResults: allResults.length,
       results: allResults,
     });
@@ -237,7 +330,7 @@ searchRoutes.get('/keyword', async (req, res, next) => {
         message: 'Search query is required.',
       });
     }
-    
+
     const sanitizedQuery = sanitizeSearchQuery(query);
     if (!sanitizedQuery || sanitizedQuery.length === 0) {
       return next({
@@ -246,9 +339,10 @@ searchRoutes.get('/keyword', async (req, res, next) => {
       });
     }
 
-    const page = toPositiveInteger(
-      typeof req.query.page === 'string' ? req.query.page : undefined
-    ) ?? 1;
+    const page =
+      toPositiveInteger(
+        typeof req.query.page === 'string' ? req.query.page : undefined
+      ) ?? 1;
 
     const results = await tmdb.searchKeyword({
       query: sanitizedQuery,
@@ -280,7 +374,7 @@ searchRoutes.get('/company', async (req, res, next) => {
         message: 'Search query is required.',
       });
     }
-    
+
     const sanitizedQuery = sanitizeSearchQuery(query);
     if (!sanitizedQuery || sanitizedQuery.length === 0) {
       return next({
@@ -289,9 +383,10 @@ searchRoutes.get('/company', async (req, res, next) => {
       });
     }
 
-    const page = toPositiveInteger(
-      typeof req.query.page === 'string' ? req.query.page : undefined
-    ) ?? 1;
+    const page =
+      toPositiveInteger(
+        typeof req.query.page === 'string' ? req.query.page : undefined
+      ) ?? 1;
 
     const results = await tmdb.searchCompany({
       query: sanitizedQuery,

@@ -10,7 +10,14 @@ import type {
 import { MediaType as MainMediaType } from '@server/constants/media';
 import type Media from '@server/entity/Media';
 
-export type MediaType = 'tv' | 'movie' | 'person' | 'collection' | 'artist' | 'album';
+export type MediaType =
+  | 'tv'
+  | 'movie'
+  | 'person'
+  | 'collection'
+  | 'artist'
+  | 'album'
+  | 'track';
 
 interface SearchResult {
   id: number;
@@ -79,13 +86,30 @@ export interface AlbumResult {
   secondaryTypes?: string[];
   firstReleaseDate?: string;
   disambiguation?: string;
-  artistCredit?: Array<{
+  artistCredit?: {
     artist: {
       id: string;
       name: string;
     };
     name?: string;
-  }>;
+  }[];
+  mediaInfo?: Media;
+}
+
+export interface TrackResult {
+  id: string; // MusicBrainz ID
+  mediaType: 'track';
+  title: string;
+  length?: number;
+  firstReleaseDate?: string;
+  disambiguation?: string;
+  artistCredit?: {
+    artist: {
+      id: string;
+      name: string;
+    };
+    name?: string;
+  }[];
   mediaInfo?: Media;
 }
 
@@ -99,7 +123,14 @@ export interface PersonResult {
   knownFor: (MovieResult | TvResult)[];
 }
 
-export type Results = MovieResult | TvResult | PersonResult | CollectionResult | ArtistResult | AlbumResult;
+export type Results =
+  | MovieResult
+  | TvResult
+  | PersonResult
+  | CollectionResult
+  | ArtistResult
+  | AlbumResult
+  | TrackResult;
 
 export const mapMovieResult = (
   movieResult: TmdbMovieResult,
@@ -293,10 +324,10 @@ export const mapAlbumResult = (
     'secondary-types'?: string[];
     'first-release-date'?: string;
     disambiguation?: string;
-    'artist-credit'?: Array<{
+    'artist-credit'?: {
       artist: { id: string; name: string };
       name?: string;
-    }>;
+    }[];
   },
   media?: Media
 ): AlbumResult => ({
@@ -308,5 +339,29 @@ export const mapAlbumResult = (
   firstReleaseDate: album['first-release-date'],
   disambiguation: album.disambiguation,
   artistCredit: album['artist-credit'],
+  mediaInfo: media,
+});
+
+export const mapTrackResult = (
+  recording: {
+    id: string;
+    title: string;
+    length?: number;
+    disambiguation?: string;
+    'first-release-date'?: string;
+    'artist-credit'?: {
+      artist: { id: string; name: string };
+      name?: string;
+    }[];
+  },
+  media?: Media
+): TrackResult => ({
+  id: recording.id,
+  mediaType: 'track',
+  title: recording.title,
+  length: recording.length,
+  firstReleaseDate: recording['first-release-date'],
+  disambiguation: recording.disambiguation,
+  artistCredit: recording['artist-credit'],
   mediaInfo: media,
 });

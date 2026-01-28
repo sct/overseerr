@@ -25,6 +25,8 @@ const globalMessages = defineMessages({
   artists: 'Artists',
   album: 'Album',
   albums: 'Albums',
+  track: 'Track',
+  tracks: 'Tracks',
   cancel: 'Cancel',
   canceling: 'Canceling…',
   approve: 'Approve',

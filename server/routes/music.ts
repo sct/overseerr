@@ -182,6 +182,46 @@ musicRoutes.get('/album/:mbid', async (req, res, next) => {
   }
 });
 
+musicRoutes.get('/track/:mbid', async (req, res, next) => {
+  const { mbid } = req.params;
+
+  if (!isValidMBID(mbid)) {
+    return next({
+      status: 400,
+      message: 'Invalid MusicBrainz ID format.',
+    });
+  }
+
+  const musicBrainz = new MusicBrainzAPI();
+
+  try {
+    const recording = await musicBrainz.getRecording(mbid, [
+      'artists',
+      'releases',
+    ]);
+
+    return res.status(200).json({
+      id: recording.id,
+      title: recording.title,
+      length: recording.length,
+      disambiguation: recording.disambiguation,
+      firstReleaseDate: recording['first-release-date'],
+      artistCredit: recording['artist-credit'] || [],
+      releases: recording.releases || [],
+    });
+  } catch (e) {
+    logger.debug('Something went wrong retrieving track', {
+      label: 'API',
+      errorMessage: e.message,
+      mbid,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve track.',
+    });
+  }
+});
+
 musicRoutes.get('/artist/:mbid/similar', async (req, res, next) => {
   const { mbid } = req.params;
 
@@ -202,11 +242,11 @@ musicRoutes.get('/artist/:mbid/similar', async (req, res, next) => {
       'url-relations',
     ]);
 
-    const similarArtists: Array<{
+    const similarArtists: {
       id: string;
       name: string;
       type?: string;
-    }> = [];
+    }[] = [];
 
     // Extract similar artists from relations
     if (artist.relations) {
@@ -230,8 +270,9 @@ musicRoutes.get('/artist/:mbid/similar', async (req, res, next) => {
 
     // If we don't have enough similar artists from relations, use tags to find similar
     if (similarArtists.length < 5 && artist.tags && artist.tags.length > 0) {
-      const topTag = artist.tags
-        .sort((a, b) => (b.count || 0) - (a.count || 0))[0];
+      const topTag = artist.tags.sort(
+        (a, b) => (b.count || 0) - (a.count || 0)
+      )[0];
       if (topTag) {
         const tagResults = await musicBrainz.searchArtists(
           `tag:${topTag.name}`,
@@ -240,7 +281,10 @@ musicRoutes.get('/artist/:mbid/similar', async (req, res, next) => {
         );
         const tagArtists =
           tagResults['artist-list']?.filter((a) => a.id !== mbid) || [];
-        for (const tagArtist of tagArtists.slice(0, 5 - similarArtists.length)) {
+        for (const tagArtist of tagArtists.slice(
+          0,
+          5 - similarArtists.length
+        )) {
           if (!similarArtists.find((sa) => sa.id === tagArtist.id)) {
             similarArtists.push({
               id: tagArtist.id,

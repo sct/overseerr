@@ -3,6 +3,8 @@ FROM node:20-alpine
 COPY . /app
 WORKDIR /app
 
+RUN apk add --no-cache ca-certificates
+
 RUN yarn
 
 CMD yarn dev

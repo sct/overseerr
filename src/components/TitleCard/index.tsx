@@ -72,53 +72,56 @@ const TitleCard = ({
 
   const closeModal = useCallback(() => setShowRequestModal(false), []);
 
-  const showRequestButton = hasPermission(
-    [
-      Permission.REQUEST,
-      mediaType === 'movie' || mediaType === 'collection'
-        ? Permission.REQUEST_MOVIE
-        : mediaType === 'tv'
-        ? Permission.REQUEST_TV
-        : Permission.REQUEST,
-    ],
-    { type: 'or' }
-  );
+  const showRequestButton =
+    hasPermission(
+      [
+        Permission.REQUEST,
+        mediaType === 'movie' || mediaType === 'collection'
+          ? Permission.REQUEST_MOVIE
+          : mediaType === 'tv'
+          ? Permission.REQUEST_TV
+          : Permission.REQUEST,
+      ],
+      { type: 'or' }
+    ) && mediaType !== 'track';
 
   return (
     <div
       className={canExpand ? 'w-full' : 'w-36 sm:w-36 md:w-44'}
       data-testid="title-card"
     >
-      <RequestModal
-        tmdbId={
-          mediaType === 'artist' || mediaType === 'album'
-            ? undefined
-            : typeof id === 'number'
-            ? id
-            : parseInt(id) || 0
-        }
-        mbid={
-          mbid ||
-          (mediaType === 'artist' || mediaType === 'album'
-            ? String(id)
-            : undefined)
-        }
-        show={showRequestModal}
-        type={
-          mediaType === 'movie'
-            ? 'movie'
-            : mediaType === 'collection'
-            ? 'collection'
-            : mediaType === 'artist'
-            ? 'artist'
-            : mediaType === 'album'
-            ? 'album'
-            : 'tv'
-        }
-        onComplete={requestComplete}
-        onUpdating={requestUpdating}
-        onCancel={closeModal}
-      />
+      {mediaType !== 'track' && (
+        <RequestModal
+          tmdbId={
+            mediaType === 'artist' || mediaType === 'album'
+              ? undefined
+              : typeof id === 'number'
+              ? id
+              : parseInt(id) || 0
+          }
+          mbid={
+            mbid ||
+            (mediaType === 'artist' || mediaType === 'album'
+              ? String(id)
+              : undefined)
+          }
+          show={showRequestModal}
+          type={
+            mediaType === 'movie'
+              ? 'movie'
+              : mediaType === 'collection'
+              ? 'collection'
+              : mediaType === 'artist'
+              ? 'artist'
+              : mediaType === 'album'
+              ? 'album'
+              : 'tv'
+          }
+          onComplete={requestComplete}
+          onUpdating={requestUpdating}
+          onCancel={closeModal}
+        />
+      )}
       <div
         className={`relative transform-gpu cursor-default overflow-hidden rounded-xl bg-gray-800 bg-cover outline-none ring-1 transition duration-300 ${
           showDetail
@@ -168,7 +171,13 @@ const TitleCard = ({
                   ? intl.formatMessage(globalMessages.movie)
                   : mediaType === 'collection'
                   ? intl.formatMessage(globalMessages.collection)
-                  : intl.formatMessage(globalMessages.tvshow)}
+                  : mediaType === 'tv'
+                  ? intl.formatMessage(globalMessages.tvshow)
+                  : mediaType === 'artist'
+                  ? intl.formatMessage(globalMessages.artist)
+                  : mediaType === 'album'
+                  ? intl.formatMessage(globalMessages.album)
+                  : intl.formatMessage(globalMessages.track)}
               </div>
             </div>
             {currentStatus && currentStatus !== MediaStatus.UNKNOWN && (
@@ -217,6 +226,8 @@ const TitleCard = ({
                     ? `/artist/${id}`
                     : mediaType === 'album'
                     ? `/album/${id}`
+                    : mediaType === 'track'
+                    ? `/track/${id}`
                     : `/tv/${id}`
                 }
                 legacyBehavior
