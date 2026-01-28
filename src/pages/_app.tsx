@@ -258,7 +258,10 @@ CoreApp.getInitialProps = async (initialProps) => {
     currentSettings = response.data;
 
     const initialized = response.data.initialized;
-    const skipSetup = process.env.SKIP_SETUP === 'true' || ctx.query.skipSetup === 'true';
+    // Only allow skipSetup query param in non-production (testing); production uses env SKIP_SETUP only
+    const skipSetup =
+      process.env.SKIP_SETUP === 'true' ||
+      (process.env.NODE_ENV !== 'production' && ctx.query.skipSetup === 'true');
 
     if (!initialized && !skipSetup) {
       if (!router.pathname.match(/(setup|login\/plex)/)) {
@@ -293,9 +296,15 @@ CoreApp.getInitialProps = async (initialProps) => {
         // If there is no user, and ctx.res is set (to check if we are on the server side)
         // _AND_ we are not already on the login or setup route, redirect to /login with a 307
         // before anything actually renders
-        // Allow skipping login if SKIP_SETUP is enabled (for testing)
-        const skipSetup = process.env.SKIP_SETUP === 'true' || ctx.query.skipSetup === 'true';
-        if (!router.pathname.match(/(login|setup|resetpassword)/) && !skipSetup) {
+        // Allow skipping login only via env in production; query param only in non-production
+        const skipSetup =
+          process.env.SKIP_SETUP === 'true' ||
+          (process.env.NODE_ENV !== 'production' &&
+            ctx.query.skipSetup === 'true');
+        if (
+          !router.pathname.match(/(login|setup|resetpassword)/) &&
+          !skipSetup
+        ) {
           ctx.res.writeHead(307, {
             Location: '/login',
           });
