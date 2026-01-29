@@ -68,12 +68,13 @@ const AlbumDetails = () => {
     error,
     mutate: revalidate,
   } = useSWR<AlbumDetails>(`/api/v1/music/album/${router.query.mbid}`, {
-    refreshInterval: refreshIntervalHelper(
-      {
-        downloadStatus: data?.mediaInfo?.downloadStatus,
-      },
-      15000
-    ),
+    refreshInterval: (currentData) =>
+      refreshIntervalHelper(
+        {
+          downloadStatus: currentData?.mediaInfo?.downloadStatus,
+        },
+        15000
+      ),
   });
 
   useEffect(() => {

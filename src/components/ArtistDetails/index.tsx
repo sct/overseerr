@@ -78,12 +78,13 @@ const ArtistDetails = () => {
     error,
     mutate: revalidate,
   } = useSWR<ArtistDetails>(`/api/v1/music/artist/${router.query.mbid}`, {
-    refreshInterval: refreshIntervalHelper(
-      {
-        downloadStatus: data?.mediaInfo?.downloadStatus,
-      },
-      15000
-    ),
+    refreshInterval: (currentData) =>
+      refreshIntervalHelper(
+        {
+          downloadStatus: currentData?.mediaInfo?.downloadStatus,
+        },
+        15000
+      ),
   });
 
   useEffect(() => {

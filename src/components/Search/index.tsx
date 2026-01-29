@@ -86,6 +86,10 @@ const Search = () => {
 
   const hasActiveFilters = !!(year || genre || mediaType || status);
 
+  const searchQuery =
+    typeof router.query.query === 'string' ? router.query.query : '';
+  const hasQuery = searchQuery.trim().length > 0;
+
   const {
     isLoadingInitialData,
     isEmpty,
@@ -102,9 +106,9 @@ const Search = () => {
     | AlbumResult
     | TrackResult
   >(
-    `/api/v1/search`,
+    hasQuery ? `/api/v1/search` : null,
     {
-      query: router.query.query,
+      ...(hasQuery && { query: searchQuery }),
       ...(year && { year: Number(year) }),
       ...(genre && { genre: Number(genre) }),
       ...(mediaType && { mediaType }),
@@ -132,8 +136,8 @@ const Search = () => {
         <div className="flex items-center justify-between">
           <Header>
             {mediaType === 'artist' ||
-            mediaType === 'album' ||
-            mediaType === 'track'
+              mediaType === 'album' ||
+              mediaType === 'track'
               ? intl.formatMessage(messages.searchmusic)
               : intl.formatMessage(messages.searchresults)}
           </Header>
@@ -163,8 +167,8 @@ const Search = () => {
           <div
             className={
               mediaType === 'artist' ||
-              mediaType === 'album' ||
-              mediaType === 'track'
+                mediaType === 'album' ||
+                mediaType === 'track'
                 ? 'grid grid-cols-1 gap-4 sm:grid-cols-2'
                 : 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'
             }
@@ -200,49 +204,49 @@ const Search = () => {
             {(mediaType !== 'artist' &&
               mediaType !== 'album' &&
               mediaType !== 'track') && (
-              <>
-                <div>
-                  <label className="text-label">
-                    {intl.formatMessage(messages.year)}
-                  </label>
-                  <select
-                    className="form-input-field"
-                    value={year}
-                    aria-label={intl.formatMessage(messages.year)}
-                    onChange={(e) => setYear(e.target.value)}
-                  >
-                    <option value="">
-                      {intl.formatMessage(messages.allYears)}
-                    </option>
-                    {years.map((y) => (
-                      <option key={y} value={y}>
-                        {y}
+                <>
+                  <div>
+                    <label className="text-label">
+                      {intl.formatMessage(messages.year)}
+                    </label>
+                    <select
+                      className="form-input-field"
+                      value={year}
+                      aria-label={intl.formatMessage(messages.year)}
+                      onChange={(e) => setYear(e.target.value)}
+                    >
+                      <option value="">
+                        {intl.formatMessage(messages.allYears)}
                       </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="text-label">
-                    {intl.formatMessage(messages.genre)}
-                  </label>
-                  <select
-                    className="form-input-field"
-                    value={genre}
-                    aria-label={intl.formatMessage(messages.genre)}
-                    onChange={(e) => setGenre(e.target.value)}
-                  >
-                    <option value="">
-                      {intl.formatMessage(messages.allGenres)}
-                    </option>
-                    {allGenres.map((g) => (
-                      <option key={g.id} value={g.id}>
-                        {g.name}
+                      {years.map((y) => (
+                        <option key={y} value={y}>
+                          {y}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-label">
+                      {intl.formatMessage(messages.genre)}
+                    </label>
+                    <select
+                      className="form-input-field"
+                      value={genre}
+                      aria-label={intl.formatMessage(messages.genre)}
+                      onChange={(e) => setGenre(e.target.value)}
+                    >
+                      <option value="">
+                        {intl.formatMessage(messages.allGenres)}
                       </option>
-                    ))}
-                  </select>
-                </div>
-              </>
-            )}
+                      {allGenres.map((g) => (
+                        <option key={g.id} value={g.id}>
+                          {g.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </>
+              )}
             <div>
               <label className="text-label">
                 {intl.formatMessage(messages.status)}

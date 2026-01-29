@@ -49,15 +49,19 @@ const useDiscover = <
   S = Record<string, never>,
   O = Record<string, unknown>
 >(
-  endpoint: string,
+  endpoint?: string | null,
   options?: O,
-  { hideAvailable = true } = {}
+  { hideAvailable = true, enabled = true } = {}
 ): DiscoverResult<T, S> => {
   const settings = useSettings();
+  const isEnabled = Boolean(endpoint) && enabled;
   const { data, error, size, setSize, isValidating } = useSWRInfinite<
     BaseSearchResult<T> & S
   >(
     (pageIndex: number, previousPageData) => {
+      if (!isEnabled) {
+        return null;
+      }
       if (previousPageData && pageIndex + 1 > previousPageData.totalPages) {
         return null;
       }
@@ -81,13 +85,14 @@ const useDiscover = <
     }
   );
 
-  const isLoadingInitialData = !data && !error;
+  const isLoadingInitialData = isEnabled && !data && !error;
   const isLoadingMore =
-    isLoadingInitialData ||
-    (size > 0 &&
-      !!data &&
-      typeof data[size - 1] === 'undefined' &&
-      isValidating);
+    (isEnabled &&
+      (isLoadingInitialData ||
+        (size > 0 &&
+          !!data &&
+          typeof data[size - 1] === 'undefined' &&
+          isValidating)));
 
   const fetchMore = () => {
     setSize(size + 1);
@@ -104,8 +109,9 @@ const useDiscover = <
     );
   }
 
-  const isEmpty = !isLoadingInitialData && titles?.length === 0;
+  const isEmpty = isEnabled && !isLoadingInitialData && titles?.length === 0;
   const isReachingEnd =
+    !isEnabled ||
     isEmpty ||
     (!!data && (data[data?.length - 1]?.results.length ?? 0) < 20) ||
     (!!data && (data[data?.length - 1]?.totalResults ?? 0) < 41);
