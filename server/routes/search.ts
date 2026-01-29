@@ -107,15 +107,15 @@ searchRoutes.get('/', async (req, res, next) => {
       const mediaRepository = getRepository(Media);
       const media = musicBrainzIds.length
         ? await mediaRepository.find({
-            where: musicBrainzIds.map((mbid) => ({
-              musicBrainzId: mbid,
-              mediaType: In([
-                MediaType.ARTIST,
-                MediaType.ALBUM,
-                MediaType.MUSIC,
-              ]),
-            })),
-          })
+          where: musicBrainzIds.map((mbid) => ({
+            musicBrainzId: mbid,
+            mediaType: In([
+              MediaType.ARTIST,
+              MediaType.ALBUM,
+              MediaType.MUSIC,
+            ]),
+          })),
+        })
         : [];
 
       if (
@@ -161,24 +161,24 @@ searchRoutes.get('/', async (req, res, next) => {
       // Use MusicBrainz count for total across all pages; fallback to current-page length if missing
       const artistCount =
         mediaType === 'artist' &&
-        artistSearch.status === 'fulfilled' &&
-        'count' in artistSearch.value &&
-        typeof artistSearch.value.count === 'number'
+          artistSearch.status === 'fulfilled' &&
+          'count' in artistSearch.value &&
+          typeof artistSearch.value.count === 'number'
           ? artistSearch.value.count
           : null;
       const albumCount =
         mediaType === 'album' &&
-        albumSearch.status === 'fulfilled' &&
-        'count' in albumSearch.value &&
-        typeof albumSearch.value.count === 'number'
+          albumSearch.status === 'fulfilled' &&
+          'count' in albumSearch.value &&
+          typeof albumSearch.value.count === 'number'
           ? albumSearch.value.count
           : null;
       const totalCount =
         artistCount !== null
           ? artistCount
           : albumCount !== null
-          ? albumCount
-          : combined.length;
+            ? albumCount
+            : combined.length;
       return res.status(200).json({
         page,
         results: combined,
@@ -234,32 +234,30 @@ searchRoutes.get('/', async (req, res, next) => {
       }
 
       // Also search MusicBrainz in parallel (when not filtering to TMDB-only)
-      if (
-        !mediaType ||
-        mediaType === 'artist' ||
-        mediaType === 'album' ||
-        mediaType === 'track'
-      ) {
+      if (!mediaType || mediaType === 'track') {
         try {
           const musicBrainz = new MusicBrainzAPI();
           const limit = 10; // Limit music results per page
           const offset = (page - 1) * limit;
+          const shouldSearchArtists = !mediaType;
+          const shouldSearchAlbums = !mediaType;
+          const shouldSearchTracks = !mediaType || mediaType === 'track';
 
           const [artistSearch, albumSearch, trackSearch] =
             await Promise.allSettled([
-              mediaType && mediaType !== 'artist'
-                ? Promise.resolve(null)
-                : musicBrainz.searchArtists(sanitizedQuery, limit, offset),
-              mediaType && mediaType !== 'album'
-                ? Promise.resolve(null)
-                : musicBrainz.searchReleaseGroups(
-                    sanitizedQuery,
-                    limit,
-                    offset
-                  ),
-              mediaType && mediaType !== 'track'
-                ? Promise.resolve(null)
-                : musicBrainz.searchRecordings(sanitizedQuery, limit, offset),
+              shouldSearchArtists
+                ? musicBrainz.searchArtists(sanitizedQuery, limit, offset)
+                : Promise.resolve(null),
+              shouldSearchAlbums
+                ? musicBrainz.searchReleaseGroups(
+                  sanitizedQuery,
+                  limit,
+                  offset
+                )
+                : Promise.resolve(null),
+              shouldSearchTracks
+                ? musicBrainz.searchRecordings(sanitizedQuery, limit, offset)
+                : Promise.resolve(null),
             ]);
 
           const musicBrainzIds: string[] = [];
@@ -287,15 +285,15 @@ searchRoutes.get('/', async (req, res, next) => {
           const mediaRepository = getRepository(Media);
           const media = musicBrainzIds.length
             ? await mediaRepository.find({
-                where: musicBrainzIds.map((mbid) => ({
-                  musicBrainzId: mbid,
-                  mediaType: In([
-                    MediaType.ARTIST,
-                    MediaType.ALBUM,
-                    MediaType.MUSIC,
-                  ]),
-                })),
-              })
+              where: musicBrainzIds.map((mbid) => ({
+                musicBrainzId: mbid,
+                mediaType: In([
+                  MediaType.ARTIST,
+                  MediaType.ALBUM,
+                  MediaType.MUSIC,
+                ]),
+              })),
+            })
             : [];
 
           if (

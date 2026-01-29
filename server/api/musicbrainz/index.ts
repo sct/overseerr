@@ -140,6 +140,10 @@ export interface MusicBrainzSearchResponse<T> {
   created?: string;
   count: number;
   offset: number;
+  artists?: T[];
+  'release-groups'?: T[];
+  releases?: T[];
+  recordings?: T[];
   'artist-list'?: T[];
   'release-group-list'?: T[];
   'release-list'?: T[];
@@ -187,7 +191,10 @@ class MusicBrainzAPI extends ExternalAPI {
         3600 // Cache for 1 hour
       );
 
-      return response;
+      return {
+        ...response,
+        'artist-list': response['artist-list'] ?? response.artists ?? [],
+      };
     } catch (e) {
       logger.error('Failed to search artists on MusicBrainz', {
         label: 'MusicBrainz API',
@@ -214,7 +221,11 @@ class MusicBrainzAPI extends ExternalAPI {
         3600 // Cache for 1 hour
       );
 
-      return response;
+      return {
+        ...response,
+        'release-group-list':
+          response['release-group-list'] ?? response['release-groups'] ?? [],
+      };
     } catch (e) {
       logger.error('Failed to get artist from MusicBrainz', {
         label: 'MusicBrainz API',
@@ -246,7 +257,10 @@ class MusicBrainzAPI extends ExternalAPI {
         3600 // Cache for 1 hour
       );
 
-      return response;
+      return {
+        ...response,
+        'release-list': response['release-list'] ?? response.releases ?? [],
+      };
     } catch (e) {
       logger.error('Failed to search release groups on MusicBrainz', {
         label: 'MusicBrainz API',
@@ -273,7 +287,11 @@ class MusicBrainzAPI extends ExternalAPI {
         3600 // Cache for 1 hour
       );
 
-      return response;
+      return {
+        ...response,
+        'recording-list':
+          response['recording-list'] ?? response.recordings ?? [],
+      };
     } catch (e) {
       logger.error('Failed to get release group from MusicBrainz', {
         label: 'MusicBrainz API',
