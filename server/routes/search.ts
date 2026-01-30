@@ -72,116 +72,159 @@ searchRoutes.get('/', async (req, res, next) => {
     // Music-only search: skip TMDB, query MusicBrainz only
     if (mediaType === 'artist' || mediaType === 'album') {
       const musicBrainz = new MusicBrainzAPI();
+
+      if (mediaType === 'artist') {
+        const artistLimit = 10;
+        const albumLimit = 15;
+        const trackLimit = 15;
+        const artistOffset = 0;
+
+        const artistSearch = await musicBrainz.searchArtists(
+          sanitizedQuery,
+          artistLimit,
+          artistOffset
+        );
+        const artists = artistSearch['artist-list'] ?? [];
+        const normalizedQuery = sanitizedQuery.trim().toLowerCase();
+        const exactArtists = artists.filter(
+          (artist) => artist.name?.toLowerCase() === normalizedQuery
+        );
+        const displayedArtists =
+          exactArtists.length > 0 ? exactArtists : artists;
+        const primaryArtist = exactArtists[0] ?? artists[0];
+
+        const [albumSearch, trackSearch] = await Promise.allSettled([
+          primaryArtist
+            ? musicBrainz.searchReleaseGroups(
+                `arid:${primaryArtist.id}`,
+                albumLimit,
+                0
+              )
+            : Promise.resolve({ 'release-group-list': [] }),
+          primaryArtist
+            ? musicBrainz.searchRecordings(
+                `arid:${primaryArtist.id}`,
+                trackLimit,
+                0
+              )
+            : Promise.resolve({ 'recording-list': [] }),
+        ]);
+
+        const albumResults =
+          albumSearch.status === 'fulfilled'
+            ? albumSearch.value['release-group-list'] ?? []
+            : [];
+        const trackResults =
+          trackSearch.status === 'fulfilled'
+            ? trackSearch.value['recording-list'] ?? []
+            : [];
+
+        const musicBrainzIds: string[] = [
+          ...displayedArtists.map((artist) => artist.id),
+          ...albumResults.map((album: { id: string }) => album.id),
+        ];
+
+        const mediaRepository = getRepository(Media);
+        const media = musicBrainzIds.length
+          ? await mediaRepository.find({
+              where: musicBrainzIds.map((mbid) => ({
+                musicBrainzId: mbid,
+                mediaType: In([
+                  MediaType.ARTIST,
+                  MediaType.ALBUM,
+                  MediaType.MUSIC,
+                ]),
+              })),
+            })
+          : [];
+
+        musicResults.push(
+          ...displayedArtists.map((artist: MusicBrainzArtist) =>
+            mapArtistResult(
+              artist,
+              media.find(
+                (m) =>
+                  m.musicBrainzId === artist.id &&
+                  (m.mediaType === MediaType.ARTIST ||
+                    m.mediaType === MediaType.MUSIC)
+              )
+            )
+          )
+        );
+
+        musicResults.push(
+          ...albumResults.map((album: MusicBrainzReleaseGroup) =>
+            mapAlbumResult(
+              album,
+              media.find(
+                (m) =>
+                  m.musicBrainzId === album.id &&
+                  (m.mediaType === MediaType.ALBUM ||
+                    m.mediaType === MediaType.MUSIC)
+              )
+            )
+          )
+        );
+
+        musicResults.push(
+          ...trackResults.map((recording) => mapTrackResult(recording))
+        );
+
+        const totalCount = musicResults.length;
+        return res.status(200).json({
+          page: 1,
+          results: musicResults,
+          totalResults: totalCount,
+          totalPages: 1,
+        });
+      }
+
       const limit = 20;
       const offset = (page - 1) * limit;
 
-      const [artistSearch, albumSearch] = await Promise.allSettled([
-        mediaType === 'artist' || !mediaType
-          ? musicBrainz.searchArtists(sanitizedQuery, limit, offset)
-          : Promise.resolve({ 'artist-list': [] }),
-        mediaType === 'album' || !mediaType
-          ? musicBrainz.searchReleaseGroups(sanitizedQuery, limit, offset)
-          : Promise.resolve({ 'release-group-list': [] }),
-      ]);
+      const albumSearch = await musicBrainz.searchReleaseGroups(
+        sanitizedQuery,
+        limit,
+        offset
+      );
 
-      const musicBrainzIds: string[] = [];
-      if (
-        artistSearch.status === 'fulfilled' &&
-        artistSearch.value['artist-list']
-      ) {
-        musicBrainzIds.push(
-          ...artistSearch.value['artist-list'].map((a: { id: string }) => a.id)
-        );
-      }
-      if (
-        albumSearch.status === 'fulfilled' &&
-        albumSearch.value['release-group-list']
-      ) {
-        musicBrainzIds.push(
-          ...albumSearch.value['release-group-list'].map(
-            (rg: { id: string }) => rg.id
-          )
-        );
-      }
+      const albumResults = albumSearch['release-group-list'] ?? [];
+      const musicBrainzIds = albumResults.map(
+        (album: { id: string }) => album.id
+      );
 
       const mediaRepository = getRepository(Media);
       const media = musicBrainzIds.length
         ? await mediaRepository.find({
-          where: musicBrainzIds.map((mbid) => ({
-            musicBrainzId: mbid,
-            mediaType: In([
-              MediaType.ARTIST,
-              MediaType.ALBUM,
-              MediaType.MUSIC,
-            ]),
-          })),
-        })
+            where: musicBrainzIds.map((mbid) => ({
+              musicBrainzId: mbid,
+              mediaType: In([MediaType.ALBUM, MediaType.MUSIC]),
+            })),
+          })
         : [];
 
-      if (
-        artistSearch.status === 'fulfilled' &&
-        artistSearch.value['artist-list']
-      ) {
-        musicResults.push(
-          ...artistSearch.value['artist-list'].map(
-            (artist: MusicBrainzArtist) =>
-              mapArtistResult(
-                artist,
-                media.find(
-                  (m) =>
-                    m.musicBrainzId === artist.id &&
-                    (m.mediaType === MediaType.ARTIST ||
-                      m.mediaType === MediaType.MUSIC)
-                )
-              )
+      musicResults.push(
+        ...albumResults.map((album: MusicBrainzReleaseGroup) =>
+          mapAlbumResult(
+            album,
+            media.find(
+              (m) =>
+                m.musicBrainzId === album.id &&
+                (m.mediaType === MediaType.ALBUM ||
+                  m.mediaType === MediaType.MUSIC)
+            )
           )
-        );
-      }
-      if (
-        albumSearch.status === 'fulfilled' &&
-        albumSearch.value['release-group-list']
-      ) {
-        musicResults.push(
-          ...albumSearch.value['release-group-list'].map(
-            (album: MusicBrainzReleaseGroup) =>
-              mapAlbumResult(
-                album,
-                media.find(
-                  (m) =>
-                    m.musicBrainzId === album.id &&
-                    (m.mediaType === MediaType.ALBUM ||
-                      m.mediaType === MediaType.MUSIC)
-                )
-              )
-          )
-        );
-      }
+        )
+      );
 
-      const combined = [...musicResults];
-      // Use MusicBrainz count for total across all pages; fallback to current-page length if missing
-      const artistCount =
-        mediaType === 'artist' &&
-          artistSearch.status === 'fulfilled' &&
-          'count' in artistSearch.value &&
-          typeof artistSearch.value.count === 'number'
-          ? artistSearch.value.count
-          : null;
-      const albumCount =
-        mediaType === 'album' &&
-          albumSearch.status === 'fulfilled' &&
-          'count' in albumSearch.value &&
-          typeof albumSearch.value.count === 'number'
-          ? albumSearch.value.count
-          : null;
       const totalCount =
-        artistCount !== null
-          ? artistCount
-          : albumCount !== null
-            ? albumCount
-            : combined.length;
+        typeof albumSearch.count === 'number'
+          ? albumSearch.count
+          : musicResults.length;
+
       return res.status(200).json({
         page,
-        results: combined,
+        results: musicResults,
         totalResults: totalCount,
         totalPages: Math.ceil(totalCount / limit) || 1,
       });
@@ -249,11 +292,7 @@ searchRoutes.get('/', async (req, res, next) => {
                 ? musicBrainz.searchArtists(sanitizedQuery, limit, offset)
                 : Promise.resolve(null),
               shouldSearchAlbums
-                ? musicBrainz.searchReleaseGroups(
-                  sanitizedQuery,
-                  limit,
-                  offset
-                )
+                ? musicBrainz.searchReleaseGroups(sanitizedQuery, limit, offset)
                 : Promise.resolve(null),
               shouldSearchTracks
                 ? musicBrainz.searchRecordings(sanitizedQuery, limit, offset)
@@ -285,15 +324,15 @@ searchRoutes.get('/', async (req, res, next) => {
           const mediaRepository = getRepository(Media);
           const media = musicBrainzIds.length
             ? await mediaRepository.find({
-              where: musicBrainzIds.map((mbid) => ({
-                musicBrainzId: mbid,
-                mediaType: In([
-                  MediaType.ARTIST,
-                  MediaType.ALBUM,
-                  MediaType.MUSIC,
-                ]),
-              })),
-            })
+                where: musicBrainzIds.map((mbid) => ({
+                  musicBrainzId: mbid,
+                  mediaType: In([
+                    MediaType.ARTIST,
+                    MediaType.ALBUM,
+                    MediaType.MUSIC,
+                  ]),
+                })),
+              })
             : [];
 
           if (

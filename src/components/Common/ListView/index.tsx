@@ -1,7 +1,6 @@
 import PersonCard from '@app/components/PersonCard';
 import TitleCard from '@app/components/TitleCard';
 import AlbumTitleCard from '@app/components/TitleCard/AlbumTitleCard';
-import ArtistTitleCard from '@app/components/TitleCard/ArtistTitleCard';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
 import TrackTitleCard from '@app/components/TitleCard/TrackTitleCard';
 import useVerticalScroll from '@app/hooks/useVerticalScroll';
@@ -136,7 +135,18 @@ const ListView = ({
               break;
             case 'artist':
               titleCard = (
-                <ArtistTitleCard id={title.id} mbid={title.id} canExpand />
+                <TitleCard
+                  id={title.id}
+                  image={undefined}
+                  status={title.mediaInfo?.status}
+                  summary={undefined}
+                  title={title.name}
+                  userScore={undefined}
+                  year={undefined}
+                  mediaType="artist"
+                  canExpand
+                  mbid={title.id}
+                />
               );
               break;
             case 'album':

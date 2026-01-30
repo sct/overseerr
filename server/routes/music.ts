@@ -2,11 +2,109 @@ import MusicBrainzAPI from '@server/api/musicbrainz';
 import { MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
+import cacheManager from '@server/lib/cache';
 import logger from '@server/logger';
 import { isValidMBID, validatePagination } from '@server/utils/validation';
+import axios from 'axios';
 import { Router } from 'express';
 
 const musicRoutes = Router();
+
+const wikidataCache = cacheManager.getCache('musicbrainz');
+
+const getArtistImageUrl = (
+  relations: { type: string; url?: { resource: string } }[] = []
+) => {
+  const imageRelations = relations.filter(
+    (relation) => relation.type === 'image' && relation.url?.resource
+  );
+
+  const commonsImage = imageRelations.find((relation) =>
+    relation.url?.resource?.includes('upload.wikimedia.org')
+  );
+
+  const directImage = imageRelations.find((relation) =>
+    /\.(jpg|jpeg|png|webp)$/i.test(relation.url?.resource ?? '')
+  );
+
+  return (
+    commonsImage?.url?.resource ??
+    directImage?.url?.resource ??
+    imageRelations[0]?.url?.resource
+  );
+};
+
+const getWikidataId = (
+  relations: { type: string; url?: { resource: string } }[] = []
+) => {
+  const wikidataRelation = relations.find(
+    (relation) => relation.type === 'wikidata' && relation.url?.resource
+  );
+
+  const wikidataUrl = wikidataRelation?.url?.resource ?? '';
+  const match = wikidataUrl.match(/(Q\d+)/i);
+
+  return match?.[1];
+};
+
+const fetchWikidataImageUrl = async (qid: string) => {
+  const cacheKey = `wikidata-image-${qid}`;
+  const cached = wikidataCache.get<string>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
+  const response = await axios.get(
+    `https://www.wikidata.org/wiki/Special:EntityData/${qid}.json`,
+    {
+      headers: {
+        'User-Agent': 'Overseerr/1.0 (https://github.com/sct/overseerr)',
+        Accept: 'application/json',
+      },
+      timeout: 10000,
+    }
+  );
+
+  const entity = response.data?.entities?.[qid];
+  const imageValue =
+    entity?.claims?.P18?.[0]?.mainsnak?.datavalue?.value ?? null;
+
+  if (typeof imageValue === 'string' && imageValue.length > 0) {
+    const imageUrl = `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(
+      imageValue
+    )}?width=600`;
+    wikidataCache.set(cacheKey, imageUrl, 3600);
+    return imageUrl;
+  }
+
+  return undefined;
+};
+
+const resolveArtistImageUrl = async (
+  relations: { type: string; url?: { resource: string } }[] = []
+) => {
+  const directUrl = getArtistImageUrl(relations);
+  if (directUrl) {
+    return directUrl;
+  }
+
+  const wikidataId = getWikidataId(relations);
+  if (wikidataId) {
+    try {
+      return await fetchWikidataImageUrl(wikidataId);
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      logger.debug('Failed to fetch Wikidata image', {
+        label: 'API',
+        errorMessage,
+        wikidataId,
+      });
+    }
+  }
+
+  return undefined;
+};
 
 musicRoutes.get('/artist/:mbid', async (req, res, next) => {
   const { mbid } = req.params;
@@ -27,6 +125,7 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
       'release-groups',
       'tags',
       'ratings',
+      'url-relations',
     ]);
 
     const mediaRepository = getRepository(Media);
@@ -37,6 +136,8 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
       },
       relations: ['requests'],
     });
+
+    const imageUrl = await resolveArtistImageUrl(artist.relations);
 
     return res.status(200).json({
       id: artist.id,
@@ -49,6 +150,7 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
       lifeSpan: artist['life-span'],
       tags: artist.tags || artist['tag-list'] || [],
       releaseGroups: artist['release-groups'] || [],
+      imageUrl,
       mediaInfo: media,
     });
   } catch (e) {
@@ -324,6 +426,49 @@ musicRoutes.get('/artist/:mbid/similar', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Unable to retrieve similar artists.',
+    });
+  }
+});
+
+musicRoutes.get('/artist/:mbid/top-tracks', async (req, res, next) => {
+  const { mbid } = req.params;
+
+  if (!isValidMBID(mbid)) {
+    return next({
+      status: 400,
+      message: 'Invalid MusicBrainz ID format.',
+    });
+  }
+
+  const musicBrainz = new MusicBrainzAPI();
+
+  try {
+    const { limit, offset } = validatePagination(
+      undefined,
+      typeof req.query.limit === 'string' ? req.query.limit : undefined,
+      12
+    );
+
+    const recordings = await musicBrainz.searchRecordings(
+      `arid:${mbid}`,
+      limit,
+      offset
+    );
+
+    return res.status(200).json({
+      results: (recordings['recording-list'] || []).map((recording) => ({
+        id: recording.id,
+      })),
+    });
+  } catch (e) {
+    logger.debug('Something went wrong retrieving artist top tracks', {
+      label: 'API',
+      errorMessage: e.message,
+      mbid,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve artist top tracks.',
     });
   }
 });
