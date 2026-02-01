@@ -1,25 +1,53 @@
-# Active Context - OverseerrV2
+# Active Context - OverseerrV2 (2026-02-01)
 
-## Status: Fixing TypeScript Compilation Errors
+## Fanart.tv Integration - COMPLETE ✅
 
-### TypeScript Issues Being Fixed:
-1. ✅ Added `fanart` to `AvailableCacheIds` type
-2. ✅ Added `fanartApiKey?: string` to `MainSettings` interface  
-3. ✅ Fixed cache usage - `.data` to get NodeCache
-4. ✅ Added `getAllCaches()` method to CacheManager
-5. 🔄 Server restart in progress
+### What's Working:
+1. **Fanart API Client** (`server/api/fanart.ts`)
+   - Artist image fetching (thumbnails, logos, backgrounds)
+   - Album artwork fetching  
+   - Smart image picking (HD priority, popularity-based)
+   - Rate limiting & caching
 
-### Changes Made:
-- `server/lib/cache.ts` - Added 'fanart' cache, getAllCaches()
-- `server/lib/settings.ts` - Added fanartApiKey to MainSettings
-- `server/api/fanart.ts` - Fixed cache manager usage
+2. **Backend Routes** (`server/routes/music.ts`)
+   - `/api/v1/music/artist/:mbid` - Returns fanartThumbnail, fanartLogo, fanartBackground
+   - `/api/v1/music/album/:mbid` - Returns fanartImage
+   - Graceful fallback to Last.fm / Cover Art Archive
 
-### To Test Fanart:
-1. Server starts successfully
-2. Visit http://localhost:3000
-3. Search music artist (e.g., "The Beatles")
-4. Artist page should show HD fanart images
+3. **Type Definitions**
+   - 'fanart' added to AvailableCacheIds
+   - fanartApiKey added to MainSettings
 
-### AI Model Routing (via OpenRouter):
-- General: ChatGPT 5
-- Coding: xAI Grok Code Fast 1
+### Commits Made:
+- `7221736` - feat: Add Fanart.tv API client
+- `48cfc206` - feat: integrate fanart.tv into music routes
+- `e452e2df` - docs: add clawdbot memory bank
+- `39f03f6e` - docs: update memory bank with fanart progress
+
+## Current Blocker: Network Access
+
+**Problem:** Server starts successfully on port 5055 but not accessible from Windows (192.168.0.153:5055)
+
+**Evidence:**
+- Server binds to *:5055 (all interfaces)
+- `curl http://127.0.0.1:5055` works locally
+- `curl http://192.168.0.153:5055` works locally  
+- Windows cannot connect
+
+**Possible Causes:**
+1. Ubuntu firewall (ufw) blocking external connections
+2. VM network mode (bridged vs NAT)
+3. Windows firewall blocking outgoing
+
+**Workaround:** Use browser on Ubuntu VM, or forward port via SSH
+
+## Next Steps:
+1. Fix network access (firewall/VM config)
+2. Test fanart images display in UI
+3. Update ArtistDetails/AlbumDetails components
+4. Fix OpenRouter model routing config
+
+## OpenRouter Issue (Separate):
+Error: "thinking is enabled but reasoning_content is missing"
+- Likely model config mismatch
+- Need to check Grok Code Fast 1 vs ChatGPT 5 settings
