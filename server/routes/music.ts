@@ -1,3 +1,5 @@
+import FanartAPI from '@server/api/fanart';
+import { getLastFmArtistInfoByMbid, pickLastFmImage } from '@server/api/lastfm';
 import MusicBrainzAPI from '@server/api/musicbrainz';
 import { MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
@@ -7,6 +9,7 @@ import { isValidMBID, validatePagination } from '@server/utils/validation';
 import { Router } from 'express';
 
 const musicRoutes = Router();
+const fanart = new FanartAPI();
 
 musicRoutes.get('/artist/:mbid', async (req, res, next) => {
   const { mbid } = req.params;
@@ -38,9 +41,42 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
       relations: ['requests'],
     });
 
+    // Optional Fanart.tv enrichment (HD images). Safe to ignore on failure.
+    let fanartThumbnail: string | undefined;
+    let fanartLogo: string | undefined;
+    let fanartBackground: string | undefined;
+    try {
+      if (fanart.isConfigured()) {
+        const fanartImages = await fanart.getArtistImagesByMbid(mbid);
+        fanartThumbnail = fanart.pickArtistThumbnail(fanartImages, true);
+        fanartLogo = fanart.pickArtistLogo(fanartImages, true);
+        fanartBackground = fanart.pickArtistBackground(fanartImages);
+      }
+    } catch (e) {
+      // fanart is optional, ignore errors
+    }
+
+    // Optional Last.fm enrichment (images/bio). Safe to ignore on failure.
+    let lastFmImage: string | undefined;
+    let lastFmBio: string | undefined;
+    try {
+      const lastfm = await getLastFmArtistInfoByMbid(mbid);
+      lastFmImage = pickLastFmImage(lastfm);
+      // Use summary if available; strip noisy "Read more" later in UI if needed.
+      lastFmBio = lastfm?.bio?.summary || lastfm?.bio?.content;
+    } catch (e) {
+      // no-op
+    }
+
     return res.status(200).json({
       id: artist.id,
       name: artist.name,
+      // Prefer fanart HD images, fallback to Last.fm
+      imageUrl: fanartThumbnail || lastFmImage,
+      fanartThumbnail,
+      fanartLogo,
+      fanartBackground,
+      bio: lastFmBio,
       sortName: artist['sort-name'],
       disambiguation: artist.disambiguation,
       country: artist.country,
@@ -157,9 +193,27 @@ musicRoutes.get('/album/:mbid', async (req, res, next) => {
       relations: ['requests'],
     });
 
+    // Fetch fanart album images
+    let fanartImage: string | undefined;
+    try {
+      if (fanart.isConfigured()) {
+        const fanartImages = await fanart.getAlbumImagesByMbid(mbid);
+        fanartImage = fanart.pickAlbumCover(fanartImages);
+      }
+    } catch (e) {
+      // fanart is optional
+    }
+
+    // Cover Art Archive supports release-group front artwork with no auth.
+    const coverArtUrl = `https://coverartarchive.org/release-group/${mbid}/front-250`;
+
     return res.status(200).json({
       id: releaseGroup.id,
       title: releaseGroup.title,
+      // Prefer fanart, fallback to cover art archive
+      imageUrl: fanartImage || coverArtUrl,
+      coverArtUrl,
+      fanartImage,
       primaryType: releaseGroup['primary-type'],
       secondaryTypes: releaseGroup['secondary-types'] || [],
       firstReleaseDate: releaseGroup['first-release-date'],
