@@ -929,6 +929,7 @@ discoverRoutes.get('/artists', async (req, res, next) => {
       totalResults: results.count || 0,
       results: sortedResults.map((artist) => ({
         id: artist.id,
+        mediaType: 'artist',
         name: artist.name,
         sortName: artist['sort-name'],
         disambiguation: artist.disambiguation,
@@ -936,7 +937,7 @@ discoverRoutes.get('/artists', async (req, res, next) => {
         type: artist.type,
         area: artist.area,
         mediaInfo: media.find((m) => m.musicBrainzId === artist.id),
-      })),
+      })), 
     });
   } catch (e) {
     logger.debug('Something went wrong retrieving artists', {
@@ -1031,6 +1032,7 @@ discoverRoutes.get('/albums', async (req, res, next) => {
       totalResults: results.count || 0,
       results: sortedResults.map((rg) => ({
         id: rg.id,
+        mediaType: 'album',
         title: rg.title,
         primaryType: rg['primary-type'],
         secondaryTypes: rg['secondary-types'] || [],
@@ -1042,7 +1044,7 @@ discoverRoutes.get('/albums', async (req, res, next) => {
       })),
     });
   } catch (e) {
-    logger.debug('Something went wrong retrieving albums', {
+    logger.debug('Something went wrong retrieving albums', { 
       label: 'API',
       errorMessage: e.message,
     });
@@ -1098,6 +1100,7 @@ discoverRoutes.get('/albums/upcoming', async (req, res, next) => {
       totalResults: results.count || 0,
       results: sortedResults.map((rg) => ({
         id: rg.id,
+        mediaType: 'album',
         title: rg.title,
         primaryType: rg['primary-type'],
         secondaryTypes: rg['secondary-types'] || [],
@@ -1161,6 +1164,7 @@ discoverRoutes.get('/albums/popular', async (req, res, next) => {
       totalResults: results.count || 0,
       results: sortedResults.map((rg) => ({
         id: rg.id,
+        mediaType: 'album',
         title: rg.title,
         primaryType: rg['primary-type'],
         secondaryTypes: rg['secondary-types'] || [],
@@ -1172,7 +1176,7 @@ discoverRoutes.get('/albums/popular', async (req, res, next) => {
       })),
     });
   } catch (e) {
-    logger.debug('Something went wrong retrieving popular albums', {
+    logger.debug('Something went wrong retrieving popular albums', { 
       label: 'API',
       errorMessage: e.message,
     });
@@ -1224,6 +1228,7 @@ discoverRoutes.get('/artists/popular', async (req, res, next) => {
       totalResults: results.count || 0,
       results: sortedResults.map((artist) => ({
         id: artist.id,
+        mediaType: 'artist',
         name: artist.name,
         sortName: artist['sort-name'],
         disambiguation: artist.disambiguation,

@@ -7,7 +7,6 @@ import StatusBadge from '@app/components/StatusBadge';
 import Tag from '@app/components/Common/Tag';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import ManageSlideOver from '@app/components/ManageSlideOver';
-import Slider from '@app/components/Slider';
 import AlbumTitleCard from '@app/components/TitleCard/AlbumTitleCard';
 import useSettings from '@app/hooks/useSettings';
 import { Permission, useUser } from '@app/hooks/useUser';
@@ -15,7 +14,7 @@ import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { CogIcon } from '@heroicons/react/24/outline';
-import { MediaStatus } from '@server/constants/media';
+import type Media from '@server/entity/Media';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -56,12 +55,7 @@ interface ArtistDetails {
       name?: string;
     }>;
   }>;
-  mediaInfo?: {
-    status?: number;
-    downloadStatus?: Array<unknown>;
-    requests?: Array<unknown>;
-    serviceUrl?: string;
-  };
+  mediaInfo?: Media;
 }
 
 const ArtistDetails = () => {
@@ -82,6 +76,7 @@ const ArtistDetails = () => {
       refreshIntervalHelper(
         {
           downloadStatus: currentData?.mediaInfo?.downloadStatus,
+          downloadStatus4k: undefined,
         },
         15000
       ),
@@ -100,12 +95,7 @@ const ArtistDetails = () => {
   }
 
   return (
-    <div
-      className="media-page"
-      style={{
-        height: 493,
-      }}
-    >
+    <div className="media-page">
       <PageTitle title={data.name} />
       <ManageSlideOver
         data={data}
@@ -199,18 +189,15 @@ const ArtistDetails = () => {
           {data.releaseGroups && data.releaseGroups.length > 0 && (
             <>
               <h2 className="py-4">{intl.formatMessage(messages.discography)}</h2>
-              <Slider
-                sliderKey="albums"
-                isLoading={false}
-                isEmpty={false}
-                items={data.releaseGroups.slice(0, 20).map((rg) => (
-                  <AlbumTitleCard
-                    key={`album-${rg.id}`}
-                    id={rg.id}
-                    mbid={rg.id}
-                  />
-                ))}
-              />
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+                {(data.releaseGroups || [])
+                  // keep discography sane: focus on albums and avoid huge lists
+                  .filter((rg) => !rg['primary-type'] || rg['primary-type'] === 'Album')
+                  .slice(0, 12)
+                  .map((rg) => (
+                    <AlbumTitleCard key={`album-${rg.id}`} id={rg.id} mbid={rg.id} />
+                  ))}
+              </div>
             </>
           )}
         </div>

@@ -13,7 +13,7 @@ import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { CogIcon } from '@heroicons/react/24/outline';
-import { MediaStatus } from '@server/constants/media';
+import type Media from '@server/entity/Media';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -46,12 +46,7 @@ interface AlbumDetails {
     country?: string;
   }>;
   tags?: Array<{ name: string; count: number }>;
-  mediaInfo?: {
-    status?: number;
-    downloadStatus?: Array<unknown>;
-    requests?: Array<unknown>;
-    serviceUrl?: string;
-  };
+  mediaInfo?: Media;
 }
 
 const AlbumDetails = () => {
@@ -72,6 +67,7 @@ const AlbumDetails = () => {
       refreshIntervalHelper(
         {
           downloadStatus: currentData?.mediaInfo?.downloadStatus,
+          downloadStatus4k: undefined,
         },
         15000
       ),

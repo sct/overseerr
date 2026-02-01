@@ -12,6 +12,7 @@ export interface AlbumTitleCardProps {
 interface AlbumDetails {
   id: string;
   title: string;
+  imageUrl?: string;
   primaryType?: string;
   firstReleaseDate?: string;
   disambiguation?: string;
@@ -59,7 +60,7 @@ const AlbumTitleCard = ({
   return (
     <TitleCard
       id={id}
-      image={undefined}
+      image={album.imageUrl}
       status={album.mediaInfo?.status}
       summary={artistName ? `by ${artistName}` : undefined}
       title={album.title}

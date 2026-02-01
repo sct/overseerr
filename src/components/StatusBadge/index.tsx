@@ -27,7 +27,7 @@ interface StatusBadgeProps {
   serviceUrl?: string;
   tmdbId?: number;
   mbid?: string; // MusicBrainz ID for music types
-  mediaType?: 'movie' | 'tv' | 'artist' | 'album';
+  mediaType?: 'movie' | 'tv' | 'artist' | 'album' | 'music';
   title?: string | string[];
 }
 
@@ -54,20 +54,22 @@ const StatusBadge = ({
     return Math.round(((media?.size - media?.sizeLeft) / media?.size) * 100);
   };
 
+  const normalizedMediaType = mediaType === 'music' ? 'artist' : mediaType;
+
   if (
-    mediaType &&
+    normalizedMediaType &&
     plexUrl &&
     hasPermission(
       is4k
         ? [
             Permission.REQUEST_4K,
-            mediaType === 'movie'
+            normalizedMediaType === 'movie'
               ? Permission.REQUEST_4K_MOVIE
               : Permission.REQUEST_4K_TV,
           ]
         : [
             Permission.REQUEST,
-            mediaType === 'movie'
+            normalizedMediaType === 'movie'
               ? Permission.REQUEST_MOVIE
               : Permission.REQUEST_TV,
           ],
@@ -76,26 +78,30 @@ const StatusBadge = ({
       }
     ) &&
     (!is4k ||
-      (mediaType === 'movie'
+      (normalizedMediaType === 'movie'
         ? settings.currentSettings.movie4kEnabled
         : settings.currentSettings.series4kEnabled))
   ) {
     mediaLink = plexUrl;
     mediaLinkDescription = intl.formatMessage(messages.playonplex);
   } else if (hasPermission(Permission.MANAGE_REQUESTS)) {
-    if (mediaType && (tmdbId || mbid)) {
-      if (mediaType === 'artist' || mediaType === 'album') {
-        mediaLink = `/${mediaType}/${mbid}?manage=1`;
+    if (normalizedMediaType && (tmdbId || mbid)) {
+      if (normalizedMediaType === 'artist' || normalizedMediaType === 'album') {
+        mediaLink = `/${normalizedMediaType}/${mbid}?manage=1`;
         mediaLinkDescription = intl.formatMessage(messages.managemedia, {
           mediaType: intl.formatMessage(
-            mediaType === 'artist' ? globalMessages.artist : globalMessages.album
+            normalizedMediaType === 'artist'
+              ? globalMessages.artist
+              : globalMessages.album
           ),
         });
       } else {
-        mediaLink = `/${mediaType}/${tmdbId}?manage=1`;
+        mediaLink = `/${normalizedMediaType}/${tmdbId}?manage=1`;
         mediaLinkDescription = intl.formatMessage(messages.managemedia, {
           mediaType: intl.formatMessage(
-            mediaType === 'movie' ? globalMessages.movie : globalMessages.tvshow
+            normalizedMediaType === 'movie'
+              ? globalMessages.movie
+              : globalMessages.tvshow
           ),
         });
       }
@@ -103,9 +109,9 @@ const StatusBadge = ({
       mediaLink = serviceUrl;
       mediaLinkDescription = intl.formatMessage(messages.openinarr, {
         arr:
-          mediaType === 'movie'
+          normalizedMediaType === 'movie'
             ? 'Radarr'
-            : mediaType === 'tv'
+            : normalizedMediaType === 'tv'
             ? 'Sonarr'
             : 'Lidarr',
       });

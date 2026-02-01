@@ -1,24 +1,25 @@
-# Active Context
+# Active Context - OverseerrV2
 
-## Currently Working On
-Fanart.tv integration for HD music artwork
+## Status: Fixing TypeScript Compilation Errors
 
-## Recent Changes (Committed)
-1. Created `server/api/fanart.ts` - API client for fanart.tv
-2. Integrated fanart into `server/routes/music.ts`:
-   - Artist endpoint: fetches thumbnails, logos, backgrounds
-   - Album endpoint: fetches album artwork
-   - Graceful fallback to Last.fm / Cover Art Archive
+### TypeScript Issues Being Fixed:
+1. ✅ Added `fanart` to `AvailableCacheIds` type
+2. ✅ Added `fanartApiKey?: string` to `MainSettings` interface  
+3. ✅ Fixed cache usage - `.data` to get NodeCache
+4. ✅ Added `getAllCaches()` method to CacheManager
+5. 🔄 Server restart in progress
 
-## Next Tasks
-- Update UI components to display fanart images (ArtistDetails, AlbumDetails)
-- Test fanart integration with real MBIDs
-- Continue music request flow development
+### Changes Made:
+- `server/lib/cache.ts` - Added 'fanart' cache, getAllCaches()
+- `server/lib/settings.ts` - Added fanartApiKey to MainSettings
+- `server/api/fanart.ts` - Fixed cache manager usage
 
-## Blockers
-None
+### To Test Fanart:
+1. Server starts successfully
+2. Visit http://localhost:3000
+3. Search music artist (e.g., "The Beatles")
+4. Artist page should show HD fanart images
 
-## Important Notes
-- Fanart API key stored in: `config/settings.json` (main.fanartApiKey)
-- Win11 node available for testing
-- Husky hooks disabled (was blocking commits)
+### AI Model Routing (via OpenRouter):
+- General: ChatGPT 5
+- Coding: xAI Grok Code Fast 1

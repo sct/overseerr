@@ -12,6 +12,7 @@ import { Bars4Icon, ServerIcon } from '@heroicons/react/24/outline';
 import { CheckCircleIcon, DocumentMinusIcon } from '@heroicons/react/24/solid';
 import { IssueStatus } from '@server/constants/issue';
 import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
+import type Media from '@server/entity/Media';
 import type { MediaWatchDataResponse } from '@server/interfaces/api/mediaInterfaces';
 import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails } from '@server/models/Tv';
@@ -45,12 +46,7 @@ interface ArtistDetails {
       name?: string;
     }[];
   }[];
-  mediaInfo?: {
-    status?: number;
-    downloadStatus?: unknown[];
-    requests?: unknown[];
-    serviceUrl?: string;
-  };
+  mediaInfo?: Media;
 }
 
 interface AlbumDetails {
@@ -71,12 +67,7 @@ interface AlbumDetails {
     country?: string;
   }[];
   tags?: { name: string; count: number }[];
-  mediaInfo?: {
-    status?: number;
-    downloadStatus?: unknown[];
-    requests?: unknown[];
-    serviceUrl?: string;
-  };
+  mediaInfo?: Media;
 }
 
 const messages = defineMessages({
@@ -653,15 +644,14 @@ const ManageSlideOver = ({
                 </ConfirmButton>
                 <div className="mt-2 text-xs text-gray-400">
                   {intl.formatMessage(messages.manageModalClearMediaWarning, {
-                    mediaType: intl.formatMessage(
+                    mediaType:
                       mediaType === 'movie'
-                        ? messages.movie
+                        ? intl.formatMessage(messages.movie)
                         : mediaType === 'tv'
-                        ? messages.tvshow
+                        ? intl.formatMessage(messages.tvshow)
                         : mediaType === 'artist'
-                        ? globalMessages.artist.toLowerCase()
-                        : globalMessages.album.toLowerCase()
-                    ),
+                        ? intl.formatMessage(globalMessages.artist).toLowerCase()
+                        : intl.formatMessage(globalMessages.album).toLowerCase(),
                   })}
                 </div>
               </div>

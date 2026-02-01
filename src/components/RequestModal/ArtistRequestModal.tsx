@@ -5,7 +5,7 @@ import AdvancedRequester from '@app/components/RequestModal/AdvancedRequester';
 import QuotaDisplay from '@app/components/RequestModal/QuotaDisplay';
 import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
-import { MediaStatus } from '@server/constants/media';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import { Permission } from '@server/lib/permissions';
@@ -17,6 +17,7 @@ import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
+  alreadyrequested: 'Already Requested',
   requestSuccess: '<strong>{name}</strong> requested successfully!',
   requestCancel: 'Request for <strong>{name}</strong> canceled.',
   requestartisttitle: 'Request Artist',
@@ -220,8 +221,8 @@ const ArtistRequestModal = ({
     data.mediaInfo.requests.length > 0 &&
     data.mediaInfo.requests.some(
       (req) =>
-        req.status !== 4 && // Not declined
-        req.status !== 6 // Not completed
+        req.status !== MediaRequestStatus.DECLINED &&
+        req.status !== MediaRequestStatus.COMPLETED
     );
 
   return (
@@ -246,7 +247,7 @@ const ArtistRequestModal = ({
             ? intl.formatMessage(messages.approve)
             : intl.formatMessage(messages.cancel)
           : hasExistingRequest
-          ? intl.formatMessage(globalMessages.alreadyrequested)
+          ? intl.formatMessage(messages.alreadyrequested)
           : intl.formatMessage(globalMessages.request)
       }
       okDisabled={!editRequest && hasExistingRequest}

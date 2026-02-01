@@ -1,0 +1,57 @@
+--- server/routes/music.ts
++++ server/routes/music.ts
+@@ -1,3 +1,8 @@
++import FanartAPI, {
++  pickArtistThumbnail as pickFanartArtistThumbnail,
++  pickArtistLogo as pickFanartArtistLogo,
++  pickArtistBackground as pickFanartArtistBackground,
++} from '@server/api/fanart';
+ import { getLastFmArtistInfoByMbid, pickLastFmImage } from '@server/api/lastfm';
+ import MusicBrainzAPI from '@server/api/musicbrainz';
+ import { MediaType } from '@server/constants/media';
+@@ -9,6 +14,7 @@ import { Router } from 'express';
+ 
+ const musicRoutes = Router();
++const fanart = new FanartAPI();
+ 
+ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
+   const { mbid } = req.params;
+@@ -29,10 +35,25 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
+       relations: ['requests'],
+     });
+ 
+-    // Optional Last.fm enrichment (images/bio). Safe to ignore on failure.
++    // Optional Fanart.tv enrichment (HD images). Safe to ignore on failure.
++    let fanartThumbnail: string | undefined;
++    let fanartLogo: string | undefined;
++    let fanartBackground: string | undefined;
++    try {
++      if (fanart.isConfigured()) {
++        const fanartImages = await fanart.getArtistImagesByMbid(mbid);
++        fanartThumbnail = pickFanartArtistThumbnail(fanartImages, true);
++        fanartLogo = pickFanartArtistLogo(fanartImages, true);
++        fanartBackground = pickFanartArtistBackground(fanartImages);
++      }
++    } catch (e) {
++      // fanart is optional, ignore errors
++    }
++
++    // Optional Last.fm enrichment (images/bio). Safe to ignore on failure.
+     let lastFmImage: string | undefined;
+     let lastFmBio: string | undefined;
+     try {
+       const lastfm = await getLastFmArtistInfoByMbid(mbid);
+       lastFmImage = pickLastFmImage(lastfm);
+@@ -45,7 +66,11 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
+     return res.status(200).json({
+       id: artist.id,
+       name: artist.name,
+-      imageUrl: lastFmImage,
++      // Prefer fanart HD images, fallback to Last.fm
++      imageUrl: fanartThumbnail || lastFmImage,
++      fanartThumbnail,
++      fanartLogo,
++      fanartBackground,
+       bio: lastFmBio,
+       sortName: artist['sort-name'],
+       disambiguation: artist.disambiguation,

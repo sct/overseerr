@@ -1,4 +1,3 @@
-import Spinner from '@app/assets/spinner.svg';
 import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import StatusBadgeMini from '@app/components/Common/StatusBadgeMini';
@@ -17,6 +16,31 @@ import Link from 'next/link';
 import { Fragment, useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import styles from './TitleCard.module.css';
+
+const SpinnerIcon = ({ className }: { className?: string }) => (
+  <svg
+    className={className}
+    viewBox="0 0 38 38"
+    xmlns="http://www.w3.org/2000/svg"
+    stroke="currentColor"
+  >
+    <g fill="none" fillRule="evenodd">
+      <g transform="translate(1 1)" strokeWidth="2">
+        <circle strokeOpacity=".5" cx="18" cy="18" r="18" />
+        <path d="M36 18c0-9.94-8.06-18-18-18">
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from="0 18 18"
+            to="360 18 18"
+            dur="1s"
+            repeatCount="indefinite"
+          />
+        </path>
+      </g>
+    </g>
+  </svg>
+);
 
 interface TitleCardProps {
   id: number | string; // Can be number (TMDB) or string (MusicBrainz ID)
@@ -150,7 +174,9 @@ const TitleCard = ({
             alt=""
             src={
               image
-                ? `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
+                ? image.startsWith('http')
+                  ? image
+                  : `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
                 : `/images/overseerr_poster_not_found_logo_top.png`
             }
             layout="fill"
@@ -199,7 +225,7 @@ const TitleCard = ({
             leaveTo="opacity-0"
           >
             <div className="absolute inset-0 z-40 flex items-center justify-center rounded-xl bg-gray-800 bg-opacity-75 text-white">
-              <Spinner className="h-10 w-10" />
+              <SpinnerIcon className="h-10 w-10" />
             </div>
           </Transition>
 

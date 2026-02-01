@@ -70,7 +70,7 @@ class FanartAPI extends ExternalAPI {
     super(FANART_BASE_URL, {
       api_key: apiKey,
     }, {
-      nodeCache: cacheManager.getCache('fanart'),
+      nodeCache: cacheManager.getCache('fanart').data,
       rateLimit: {
         maxRPS: 2,
         maxRequests: 10,

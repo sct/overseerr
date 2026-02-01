@@ -12,6 +12,7 @@ export interface ArtistTitleCardProps {
 interface ArtistDetails {
   id: string;
   name: string;
+  imageUrl?: string;
   sortName?: string;
   disambiguation?: string;
   country?: string;
@@ -52,7 +53,7 @@ const ArtistTitleCard = ({
   return (
     <TitleCard
       id={id}
-      image={undefined}
+      image={artist.imageUrl}
       status={artist.mediaInfo?.status}
       summary={undefined}
       title={artist.name}

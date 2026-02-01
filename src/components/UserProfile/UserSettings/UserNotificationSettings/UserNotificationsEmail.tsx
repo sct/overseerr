@@ -44,7 +44,7 @@ const UserEmailSettings = () => {
     pgpKey: Yup.string()
       .nullable()
       .matches(
-        /-----BEGIN PGP PUBLIC KEY BLOCK-----.+-----END PGP PUBLIC KEY BLOCK-----/s,
+        /-----BEGIN PGP PUBLIC KEY BLOCK-----[\s\S]+-----END PGP PUBLIC KEY BLOCK-----/,
         intl.formatMessage(messages.validationPgpPublicKey)
       ),
   });
