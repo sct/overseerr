@@ -69,6 +69,18 @@ class ExternalAPI {
     return response.data;
   }
 
+  protected getCached<T>(
+    endpoint: string,
+    params?: Record<string, unknown>
+  ): T | undefined {
+    if (!this.cache) {
+      return undefined;
+    }
+
+    const cacheKey = this.serializeCacheKey(endpoint, params);
+    return this.cache.get<T>(cacheKey);
+  }
+
   protected async post<T>(
     endpoint: string,
     data: Record<string, unknown>,

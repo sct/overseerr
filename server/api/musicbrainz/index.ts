@@ -151,9 +151,17 @@ export interface MusicBrainzSearchResponse<T> {
 }
 
 class MusicBrainzAPI extends ExternalAPI {
-  constructor() {
+  private mirror?: MusicBrainzAPI;
+
+  constructor({
+    baseUrl = 'https://musicbrainz.org/ws/2',
+    enableMirror = true,
+  }: {
+    baseUrl?: string;
+    enableMirror?: boolean;
+  } = {}) {
     super(
-      'https://musicbrainz.org/ws/2',
+      baseUrl,
       {},
       {
         headers: {
@@ -168,6 +176,82 @@ class MusicBrainzAPI extends ExternalAPI {
           ?.data,
       }
     );
+
+    if (enableMirror) {
+      this.mirror = new MusicBrainzAPI({
+        baseUrl: 'https://musicbrainz.eu/ws/2',
+        enableMirror: false,
+      });
+    }
+  }
+
+  private isRetryableError(error: unknown): boolean {
+    const status = (error as { response?: { status?: number } }).response?.status;
+    if (!status) {
+      return false;
+    }
+
+    return status === 429 || status === 503 || (status >= 500 && status < 600);
+  }
+
+  private async requestWithRetry<T>(
+    request: () => Promise<T>,
+    retries = 2
+  ): Promise<T> {
+    let lastError: unknown;
+
+    for (let attempt = 0; attempt <= retries; attempt += 1) {
+      try {
+        return await request();
+      } catch (error) {
+        lastError = error;
+        if (!this.isRetryableError(error) || attempt === retries) {
+          break;
+        }
+
+        const delayMs = 500 * Math.pow(2, attempt);
+        await new Promise((resolve) => setTimeout(resolve, delayMs));
+      }
+    }
+
+    throw lastError;
+  }
+
+  private async getWithFallback<T>(
+    endpoint: string,
+    config?: { params?: Record<string, unknown> },
+    ttl?: number
+  ): Promise<T> {
+    try {
+      return await this.requestWithRetry(
+        () => this.get<T>(endpoint, config, ttl),
+        2
+      );
+    } catch (primaryError) {
+      if (this.mirror) {
+        const mirror = this.mirror;
+        try {
+          return await mirror.requestWithRetry(
+            () => mirror.get<T>(endpoint, config, ttl),
+            2
+          );
+        } catch (mirrorError) {
+          const cached = this.getCached<T>(endpoint, config?.params);
+          if (cached) {
+            return cached;
+          }
+
+          throw mirrorError;
+        }
+      }
+
+      const cached = this.getCached<T>(endpoint, config?.params);
+      if (cached) {
+        return cached;
+      }
+
+      throw primaryError;
+    }
   }
 
   public async searchArtists(
@@ -176,7 +260,7 @@ class MusicBrainzAPI extends ExternalAPI {
     offset = 0
   ): Promise<MusicBrainzSearchResponse<MusicBrainzArtist>> {
     try {
-      const response = await this.get<
+      const response = await this.getWithFallback<
         MusicBrainzSearchResponse<MusicBrainzArtist>
       >(
         '/artist',
@@ -210,7 +294,7 @@ class MusicBrainzAPI extends ExternalAPI {
     includes: string[] = ['releases', 'release-groups', 'tags', 'ratings']
   ): Promise<MusicBrainzArtist> {
     try {
-      const response = await this.get<MusicBrainzArtist>(
+      const response = await this.getWithFallback<MusicBrainzArtist>(
         `/artist/${mbid}`,
         {
           params: {
@@ -228,7 +312,7 @@ class MusicBrainzAPI extends ExternalAPI {
         errorMessage: e.message,
         mbid,
       });
-      throw new Error('Failed to get artist');
+      throw e;
     }
   }
 
@@ -238,7 +322,7 @@ class MusicBrainzAPI extends ExternalAPI {
     offset = 0
   ): Promise<MusicBrainzSearchResponse<MusicBrainzReleaseGroup>> {
     try {
-      const response = await this.get<
+      const response = await this.getWithFallback<
         MusicBrainzSearchResponse<MusicBrainzReleaseGroup>
       >(
         '/release-group',
@@ -273,7 +357,7 @@ class MusicBrainzAPI extends ExternalAPI {
     includes: string[] = ['artists', 'releases', 'tags', 'ratings']
   ): Promise<MusicBrainzReleaseGroup> {
     try {
-      const response = await this.get<MusicBrainzReleaseGroup>(
+      const response = await this.getWithFallback<MusicBrainzReleaseGroup>(
         `/release-group/${mbid}`,
         {
           params: {
@@ -291,7 +375,7 @@ class MusicBrainzAPI extends ExternalAPI {
         errorMessage: e.message,
         mbid,
       });
-      throw new Error('Failed to get release group');
+      throw e;
     }
   }
 
@@ -301,7 +385,7 @@ class MusicBrainzAPI extends ExternalAPI {
     offset = 0
   ): Promise<MusicBrainzSearchResponse<MusicBrainzRelease>> {
     try {
-      const response = await this.get<
+      const response = await this.getWithFallback<
         MusicBrainzSearchResponse<MusicBrainzRelease>
       >(
         '/release',
@@ -336,7 +420,7 @@ class MusicBrainzAPI extends ExternalAPI {
     offset = 0
   ): Promise<MusicBrainzSearchResponse<MusicBrainzRecording>> {
     try {
-      const response = await this.get<
+      const response = await this.getWithFallback<
         MusicBrainzSearchResponse<MusicBrainzRecording>
       >(
         '/recording',
@@ -371,7 +455,7 @@ class MusicBrainzAPI extends ExternalAPI {
     includes: string[] = ['artists', 'releases']
   ): Promise<MusicBrainzRecording> {
     try {
-      const response = await this.get<MusicBrainzRecording>(
+      const response = await this.getWithFallback<MusicBrainzRecording>(
         `/recording/${mbid}`,
         {
           params: {
@@ -389,7 +473,7 @@ class MusicBrainzAPI extends ExternalAPI {
         errorMessage: e.message,
         mbid,
       });
-      throw new Error('Failed to get recording');
+      throw e;
     }
   }
 
@@ -398,7 +482,7 @@ class MusicBrainzAPI extends ExternalAPI {
     includes: string[] = ['artists', 'recordings', 'release-groups']
   ): Promise<MusicBrainzRelease> {
     try {
-      const response = await this.get<MusicBrainzRelease>(
+      const response = await this.getWithFallback<MusicBrainzRelease>(
         `/release/${mbid}`,
         {
           params: {

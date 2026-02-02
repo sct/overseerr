@@ -18,6 +18,7 @@ import {
   mapCollectionResult,
   mapMovieResult,
   mapPersonResult,
+  mapTrackResult,
   mapTvResult,
 } from '@server/models/Search';
 import { mapNetwork } from '@server/models/Tv';
@@ -84,7 +85,7 @@ discoverRoutes.get('/movies', async (req, res, next) => {
     const keywords = query.keywords;
     
     // Validate and normalize pagination
-    const { page, limit } = validatePagination(query.page, undefined, 500);
+    const { page } = validatePagination(query.page, undefined, 500);
     
     const data = await tmdb.getDiscoverMovies({
       page,
@@ -365,7 +366,7 @@ discoverRoutes.get('/tv', async (req, res, next) => {
     const keywords = query.keywords;
     
     // Validate and normalize pagination
-    const { page, limit } = validatePagination(query.page, undefined, 500);
+    const { page } = validatePagination(query.page, undefined, 500);
     
     const data = await tmdb.getDiscoverTv({
       page,
@@ -871,7 +872,7 @@ discoverRoutes.get('/artists', async (req, res, next) => {
     );
     
     // Build query with optional filters
-    let queryParts: string[] = [];
+    const queryParts: string[] = [];
     
     // Tag filter
     if (req.query.tag && typeof req.query.tag === 'string') {
@@ -888,10 +889,17 @@ discoverRoutes.get('/artists', async (req, res, next) => {
       queryParts.push(`country:${sanitizeSearchQuery(req.query.country)}`);
     }
     
+    const requestedQuery =
+      typeof req.query.query === 'string' ? sanitizeSearchQuery(req.query.query) : '';
+    const shouldUsePopularFallback =
+      queryParts.length === 0 &&
+      (!requestedQuery || requestedQuery === '*' || requestedQuery === '');
     // Default query if no filters
-    const query = queryParts.length > 0 
+    const query = queryParts.length > 0
       ? queryParts.join(' AND ')
-      : sanitizeSearchQuery((req.query.query as string) || '*');
+      : shouldUsePopularFallback
+      ? 'tagcount:[1 TO *]'
+      : requestedQuery;
 
     const results = await musicBrainz.searchArtists(query, limit, offset);
 
@@ -913,7 +921,7 @@ discoverRoutes.get('/artists', async (req, res, next) => {
       sortedResults = [...sortedResults].sort((a, b) => 
         (a['sort-name'] || a.name).localeCompare(b['sort-name'] || b.name)
       );
-    } else if (req.query.sortBy === 'tagcount') {
+    } else if (req.query.sortBy === 'tagcount' || shouldUsePopularFallback) {
       sortedResults = [...sortedResults].sort((a, b) => {
         const tagsA = a.tags || a['tag-list'] || [];
         const tagsB = b.tags || b['tag-list'] || [];
@@ -961,7 +969,7 @@ discoverRoutes.get('/albums', async (req, res, next) => {
     );
     
     // Build query with optional filters
-    let queryParts: string[] = [];
+    const queryParts: string[] = [];
     
     // Tag filter
     if (req.query.tag && typeof req.query.tag === 'string') {
@@ -1242,6 +1250,44 @@ discoverRoutes.get('/artists/popular', async (req, res, next) => {
     return next({
       status: 500,
       message: 'Unable to retrieve popular artists.',
+    });
+  }
+});
+
+discoverRoutes.get('/tracks/popular', async (req, res, next) => {
+  const musicBrainz = new MusicBrainzAPI();
+
+  try {
+    const { page, limit, offset } = validatePagination(
+      typeof req.query.page === 'string' ? req.query.page : undefined,
+      25,
+      100
+    );
+
+    const tag =
+      typeof req.query.tag === 'string' ? sanitizeSearchQuery(req.query.tag) : 'pop';
+    const results = await musicBrainz.searchRecordings(`tag:${tag}`, limit, offset);
+    const finalResults =
+      results['recording-list'] && results['recording-list'].length > 0
+        ? results
+        : await musicBrainz.searchRecordings('tagcount:[1 TO *]', limit, offset);
+
+    return res.status(200).json({
+      page,
+      totalPages: Math.ceil((finalResults.count || 0) / limit),
+      totalResults: finalResults.count || 0,
+      results: (finalResults['recording-list'] || []).map((recording) =>
+        mapTrackResult(recording)
+      ),
+    });
+  } catch (e) {
+    logger.debug('Something went wrong retrieving popular tracks', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    return next({
+      status: 500,
+      message: 'Unable to retrieve popular tracks.',
     });
   }
 });

@@ -154,14 +154,17 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
       mediaInfo: media,
     });
   } catch (e) {
+    const status =
+      (e as { response?: { status?: number } }).response?.status;
     logger.debug('Something went wrong retrieving artist', {
       label: 'API',
       errorMessage: e.message,
       mbid,
     });
     return next({
-      status: 500,
-      message: 'Unable to retrieve artist.',
+      status: status === 404 ? 404 : 500,
+      message:
+        status === 404 ? 'Artist not found.' : 'Unable to retrieve artist.',
     });
   }
 });
@@ -193,11 +196,11 @@ musicRoutes.get('/artist/:mbid/albums', async (req, res, next) => {
       albums['release-group-list']?.map((rg) => rg.id) || [];
     const media = musicBrainzIds.length
       ? await mediaRepository.find({
-          where: musicBrainzIds.map((mbid) => ({
-            musicBrainzId: mbid,
-            mediaType: MediaType.ALBUM,
-          })),
-        })
+        where: musicBrainzIds.map((mbid) => ({
+          musicBrainzId: mbid,
+          mediaType: MediaType.ALBUM,
+        })),
+      })
       : [];
 
     return res.status(200).json({
@@ -217,14 +220,19 @@ musicRoutes.get('/artist/:mbid/albums', async (req, res, next) => {
       })),
     });
   } catch (e) {
+    const status =
+      (e as { response?: { status?: number } }).response?.status;
     logger.debug('Something went wrong retrieving artist albums', {
       label: 'API',
       errorMessage: e.message,
       mbid,
     });
     return next({
-      status: 500,
-      message: 'Unable to retrieve artist albums.',
+      status: status === 404 ? 404 : 500,
+      message:
+        status === 404
+          ? 'Artist not found.'
+          : 'Unable to retrieve artist albums.',
     });
   }
 });
@@ -272,14 +280,17 @@ musicRoutes.get('/album/:mbid', async (req, res, next) => {
       mediaInfo: media,
     });
   } catch (e) {
+    const status =
+      (e as { response?: { status?: number } }).response?.status;
     logger.debug('Something went wrong retrieving album', {
       label: 'API',
       errorMessage: e.message,
       mbid,
     });
     return next({
-      status: 500,
-      message: 'Unable to retrieve album.',
+      status: status === 404 ? 404 : 500,
+      message:
+        status === 404 ? 'Album not found.' : 'Unable to retrieve album.',
     });
   }
 });
@@ -312,14 +323,17 @@ musicRoutes.get('/track/:mbid', async (req, res, next) => {
       releases: recording.releases || [],
     });
   } catch (e) {
+    const status =
+      (e as { response?: { status?: number } }).response?.status;
     logger.debug('Something went wrong retrieving track', {
       label: 'API',
       errorMessage: e.message,
       mbid,
     });
     return next({
-      status: 500,
-      message: 'Unable to retrieve track.',
+      status: status === 404 ? 404 : 500,
+      message:
+        status === 404 ? 'Track not found.' : 'Unable to retrieve track.',
     });
   }
 });
@@ -402,11 +416,11 @@ musicRoutes.get('/artist/:mbid/similar', async (req, res, next) => {
     const musicBrainzIds = similarArtists.map((a) => a.id);
     const media = musicBrainzIds.length
       ? await mediaRepository.find({
-          where: musicBrainzIds.map((mbid) => ({
-            musicBrainzId: mbid,
-            mediaType: MediaType.ARTIST,
-          })),
-        })
+        where: musicBrainzIds.map((mbid) => ({
+          musicBrainzId: mbid,
+          mediaType: MediaType.ARTIST,
+        })),
+      })
       : [];
 
     return res.status(200).json({

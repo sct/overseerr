@@ -110,7 +110,9 @@ const ArtistDetails = () => {
   }
 
   if (!data) {
-    return <Error statusCode={404} />;
+    const statusCode =
+      (error as { response?: { status?: number } })?.response?.status ?? 404;
+    return <Error statusCode={statusCode} />;
   }
 
   const topTracks = topTracksData?.results ?? [];
