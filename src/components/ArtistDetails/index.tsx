@@ -56,6 +56,10 @@ interface ArtistDetails {
     }>;
   }>;
   mediaInfo?: Media;
+  fanartThumbnail?: string;
+  fanartLogo?: string;
+  fanartBackground?: string;
+  imageUrl?: string;
 }
 
 const ArtistDetails = () => {

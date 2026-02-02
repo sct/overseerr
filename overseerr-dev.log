@@ -1,0 +1,13 @@
+
+> overseerr@0.1.0 dev
+> nodemon -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x "ts-node -r ./scripts/slowbuffer-polyfill.js -r tsconfig-paths/register --files --project server/tsconfig.json server/index.ts"
+
+[33m[nodemon] 2.0.20[39m
+[33m[nodemon] to restart at any time, enter `rs`[39m
+[33m[nodemon] watching path(s): server/**/* overseerr-api.yml[39m
+[33m[nodemon] watching extensions: json,ts,yml[39m
+[32m[nodemon] starting `ts-node -r ./scripts/slowbuffer-polyfill.js -r tsconfig-paths/register --files --project server/tsconfig.json server/index.ts`[39m
+2026-02-02T03:56:17.660Z [[32minfo[39m]: Starting Overseerr version develop-local 
+2026-02-02T03:56:19.331Z [[32minfo[39m][Notifications]: Registered notification agents 
+2026-02-02T03:56:19.342Z [[32minfo[39m][Jobs]: Scheduled jobs loaded 
+2026-02-02T03:56:19.431Z [[32minfo[39m][Server]: Server ready on port 5055 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x \"ts-node -r ./scripts/slowbuffer-polyfill.js -r tsconfig-paths/register --files --project server/tsconfig.json server/index.ts\"",
+    "dev": "nodemon --turbo -e ts --watch server --watch overseerr-api.yml -e .json,.ts,.yml -x \"ts-node -r ./scripts/slowbuffer-polyfill.js -r tsconfig-paths/register --files --project server/tsconfig.json server/index.ts\"",
     "build:server": "tsc --project server/tsconfig.json && copyfiles -u 2 server/templates/**/*.{html,pug} dist/templates && tsc-alias -p server/tsconfig.json",
     "build:next": "next build --webpack",
     "build": "yarn build:next && yarn build:server",
@@ -62,6 +62,7 @@
     "gravatar-url": "3.1.0",
     "intl": "1.2.5",
     "lodash": "4.17.21",
+    "musicbrainz-api": "^1.0.0",
     "next": "^16.1.5",
     "node-cache": "5.1.2",
     "node-gyp": "9.3.1",
