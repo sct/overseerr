@@ -120,6 +120,7 @@ export interface MainSettings {
   partialRequestsEnabled: boolean;
   locale: string;
   redis: RedisSettings;
+  fanartApiKey?: string;
 }
 
 interface PublicSettings {

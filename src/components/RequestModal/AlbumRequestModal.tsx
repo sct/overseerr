@@ -5,7 +5,7 @@ import AdvancedRequester from '@app/components/RequestModal/AdvancedRequester';
 import QuotaDisplay from '@app/components/RequestModal/QuotaDisplay';
 import { useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
-import { MediaStatus } from '@server/constants/media';
+import { MediaRequestStatus, MediaStatus } from '@server/constants/media';
 import type { MediaRequest } from '@server/entity/MediaRequest';
 import type { QuotaResponse } from '@server/interfaces/api/userInterfaces';
 import { Permission } from '@server/lib/permissions';
@@ -17,6 +17,7 @@ import useSWR, { mutate } from 'swr';
 
 const messages = defineMessages({
   requestadmin: 'This request will be approved automatically.',
+  alreadyrequested: 'Already Requested',
   requestSuccess: '<strong>{title}</strong> requested successfully!',
   requestCancel: 'Request for <strong>{title}</strong> canceled.',
   requestalbumtitle: 'Request Album',
@@ -46,10 +47,10 @@ interface AlbumDetails {
   primaryType?: string;
   firstReleaseDate?: string;
   disambiguation?: string;
-  artistCredit?: Array<{
+  artistCredit?: {
     artist: { id: string; name: string };
     name?: string;
-  }>;
+  }[];
   mediaInfo?: {
     status?: number;
     requests?: MediaRequest[];
@@ -222,8 +223,8 @@ const AlbumRequestModal = ({
     data.mediaInfo.requests.length > 0 &&
     data.mediaInfo.requests.some(
       (req) =>
-        req.status !== 4 && // Not declined
-        req.status !== 6 // Not completed
+        req.status !== MediaRequestStatus.DECLINED &&
+        req.status !== MediaRequestStatus.COMPLETED
     );
 
   return (
@@ -248,7 +249,7 @@ const AlbumRequestModal = ({
             ? intl.formatMessage(messages.approve)
             : intl.formatMessage(messages.cancel)
           : hasExistingRequest
-          ? intl.formatMessage(globalMessages.alreadyrequested)
+          ? intl.formatMessage(messages.alreadyrequested)
           : intl.formatMessage(globalMessages.request)
       }
       okDisabled={!editRequest && hasExistingRequest}
@@ -272,10 +273,9 @@ const AlbumRequestModal = ({
               username: editRequest?.requestedBy.displayName,
             })
         : null}
-      {hasPermission(
-        [Permission.MANAGE_REQUESTS, Permission.AUTO_APPROVE],
-        { type: 'or' }
-      ) &&
+      {hasPermission([Permission.MANAGE_REQUESTS, Permission.AUTO_APPROVE], {
+        type: 'or',
+      }) &&
         !hasExistingRequest &&
         !editRequest && (
           <p className="mt-6">

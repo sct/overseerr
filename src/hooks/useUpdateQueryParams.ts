@@ -27,7 +27,9 @@ export const filterQueryString = (
   const cleanedFilters: ParsedUrlQuery = {};
 
   Object.keys(filters).forEach((key) => {
-    if (!router.pathname.match(new RegExp(`${key}`))) {
+    // Avoid dynamic RegExp construction here; query keys can contain characters
+    // that would otherwise produce invalid regex patterns.
+    if (!router.pathname.includes(key)) {
       cleanedFilters[key] = filters[key];
     }
   });

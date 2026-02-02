@@ -1,6 +1,6 @@
 import NodeCache from 'node-cache';
-import { getSettings } from './settings';
 import RedisCache from './cache/redis';
+import { getSettings } from './settings';
 
 export type AvailableCacheIds =
   | 'tmdb'
@@ -13,7 +13,8 @@ export type AvailableCacheIds =
   | 'github'
   | 'plexguid'
   | 'plextv'
-  | 'plexwatchlist';
+  | 'plexwatchlist'
+  | 'fanart';
 
 const DEFAULT_TTL = 300;
 const DEFAULT_CHECK_PERIOD = 120;
@@ -35,7 +36,7 @@ class Cache {
     this.id = id;
     this.name = name;
     this.defaultTtl = options.stdTtl ?? DEFAULT_TTL;
-    
+
     // Always initialize NodeCache (required for ExternalAPI compatibility)
     this.data = new NodeCache({
       stdTTL: this.defaultTtl,
@@ -55,15 +56,18 @@ class Cache {
         db: settings.main.redis.db,
         keyPrefix: `${settings.main.redis.keyPrefix}${id}:`,
       });
-      
+
       // Connect asynchronously, don't block initialization
-      this.redis.connect().then(() => {
-        this.redisInitialized = true;
-      }).catch(() => {
-        // Fallback to NodeCache if Redis fails
-        this.useRedis = false;
-        this.redisInitialized = false;
-      });
+      this.redis
+        .connect()
+        .then(() => {
+          this.redisInitialized = true;
+        })
+        .catch(() => {
+          // Fallback to NodeCache if Redis fails
+          this.useRedis = false;
+          this.redisInitialized = false;
+        });
     }
   }
 
@@ -75,7 +79,7 @@ class Cache {
   // Synchronous set for NodeCache compatibility
   public set(key: string, value: unknown, ttl?: number): boolean {
     const result = this.data.set(key, value, ttl ?? this.defaultTtl);
-    
+
     // Async write to Redis (fire and forget)
     if (this.useRedis && this.redis && this.redisInitialized) {
       const cacheTtl = ttl ?? this.defaultTtl;
@@ -83,22 +87,23 @@ class Cache {
         // Silently fail if Redis write fails
       });
     }
-    
+
     return result;
   }
 
   // Synchronous del for NodeCache compatibility
   public del(key: string | string[]): number {
     const result = this.data.del(key);
-    
+
     // Async delete from Redis
     if (this.useRedis && this.redis && this.redisInitialized) {
       const keys = Array.isArray(key) ? key : [key];
-      Promise.all(keys.map((k) => this.redis!.del(k))).catch(() => {
+      const redis = this.redis;
+      Promise.all(keys.map((k) => redis.del(k))).catch(() => {
         // Silently fail if Redis delete fails
       });
     }
-    
+
     return result;
   }
 
@@ -160,6 +165,7 @@ class CacheManager {
       checkPeriod: 60,
     }),
     plexwatchlist: new Cache('plexwatchlist', 'Plex Watchlist'),
+    fanart: new Cache('fanart', 'Fanart.tv API'),
   };
 
   public getCache(id: AvailableCacheIds): Cache {

@@ -1,5 +1,4 @@
 import TitleCard from '@app/components/TitleCard';
-import { Permission, useUser } from '@app/hooks/useUser';
 import { useInView } from 'react-intersection-observer';
 import useSWR from 'swr';
 
@@ -12,6 +11,7 @@ export interface ArtistTitleCardProps {
 interface ArtistDetails {
   id: string;
   name: string;
+  imageUrl?: string;
   sortName?: string;
   disambiguation?: string;
   country?: string;
@@ -22,20 +22,12 @@ interface ArtistDetails {
   };
 }
 
-const ArtistTitleCard = ({
-  id,
-  mbid,
-  canExpand,
-}: ArtistTitleCardProps) => {
-  const { hasPermission } = useUser();
-
+const ArtistTitleCard = ({ id, mbid, canExpand }: ArtistTitleCardProps) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });
   const url = `/api/v1/music/artist/${mbid}`;
-  const { data: artist, error } = useSWR<ArtistDetails>(
-    inView ? url : null
-  );
+  const { data: artist, error } = useSWR<ArtistDetails>(inView ? url : null);
 
   if (!artist && !error) {
     return (
@@ -52,7 +44,7 @@ const ArtistTitleCard = ({
   return (
     <TitleCard
       id={id}
-      image={undefined}
+      image={artist.imageUrl}
       status={artist.mediaInfo?.status}
       summary={undefined}
       title={artist.name}

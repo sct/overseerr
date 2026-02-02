@@ -14,6 +14,7 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { CogIcon } from '@heroicons/react/24/outline';
+import type Media from '@server/entity/Media';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -56,13 +57,11 @@ interface ArtistDetails {
       name?: string;
     }[];
   }[];
+  mediaInfo?: Media;
+  fanartThumbnail?: string;
+  fanartLogo?: string;
+  fanartBackground?: string;
   imageUrl?: string;
-  mediaInfo?: {
-    status?: number;
-    downloadStatus?: unknown[];
-    requests?: unknown[];
-    serviceUrl?: string;
-  };
 }
 
 interface TopTracksResponse {
@@ -88,6 +87,7 @@ const ArtistDetails = () => {
       refreshIntervalHelper(
         {
           downloadStatus: currentData?.mediaInfo?.downloadStatus,
+          downloadStatus4k: undefined,
         },
         15000
       ),
@@ -230,13 +230,19 @@ const ArtistDetails = () => {
                 sliderKey="albums"
                 isLoading={false}
                 isEmpty={false}
-                items={data.releaseGroups.slice(0, 20).map((rg) => (
-                  <AlbumTitleCard
-                    key={`album-${rg.id}`}
-                    id={rg.id}
-                    mbid={rg.id}
-                  />
-                ))}
+                items={(data.releaseGroups || [])
+                  .filter(
+                    (rg) =>
+                      !rg['primary-type'] || rg['primary-type'] === 'Album'
+                  )
+                  .slice(0, 20)
+                  .map((rg) => (
+                    <AlbumTitleCard
+                      key={`album-${rg.id}`}
+                      id={rg.id}
+                      mbid={rg.id}
+                    />
+                  ))}
               />
             </>
           )}

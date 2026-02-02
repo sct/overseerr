@@ -28,6 +28,26 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useToasts } from 'react-toast-notifications';
 import useSWR, { mutate } from 'swr';
 
+// Music detail interfaces
+interface ArtistDetails {
+  id: string;
+  name: string;
+  disambiguation?: string;
+  country?: string;
+  type?: string;
+  area?: { id: string; name: string };
+}
+
+interface AlbumDetails {
+  id: string;
+  title: string;
+  disambiguation?: string;
+  firstReleaseDate?: string;
+  primaryType?: string;
+}
+
+type RequestTitle = MovieDetails | TvDetails | ArtistDetails | AlbumDetails;
+
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
   failedretry: 'Something went wrong while retrying the request.',
@@ -42,8 +62,16 @@ const messages = defineMessages({
   unknowntitle: 'Unknown Title',
 });
 
-const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
-  return (movie as MovieDetails).title !== undefined;
+const isMovie = (media: RequestTitle): media is MovieDetails => {
+  return (media as MovieDetails).title !== undefined && 'tmdbId' in media;
+};
+
+const isArtist = (media: RequestTitle): media is ArtistDetails => {
+  return (media as ArtistDetails).name !== undefined && !('tmdbId' in media);
+};
+
+const isAlbum = (media: RequestTitle): media is AlbumDetails => {
+  return (media as AlbumDetails).title !== undefined && !('tmdbId' in media);
 };
 
 const RequestCardPlaceholder = () => {
@@ -209,7 +237,7 @@ const RequestCardError = ({ requestData }: RequestCardErrorProps) => {
 
 interface RequestCardProps {
   request: MediaRequest;
-  onTitleData?: (requestId: number, title: MovieDetails | TvDetails) => void;
+  onTitleData?: (requestId: number, title: RequestTitle) => void;
 }
 
 const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
@@ -221,14 +249,19 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
   const { addToast } = useToasts();
   const [isRetrying, setRetrying] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const url =
-    request.type === 'movie'
-      ? `/api/v1/movie/${request.media.tmdbId}`
-      : `/api/v1/tv/${request.media.tmdbId}`;
 
-  const { data: title, error } = useSWR<MovieDetails | TvDetails>(
-    inView ? `${url}` : null
-  );
+  const requestType = request.type === 'music' ? 'artist' : request.type;
+
+  const url =
+    requestType === 'movie'
+      ? `/api/v1/movie/${request.media.tmdbId}`
+      : requestType === 'tv'
+      ? `/api/v1/tv/${request.media.tmdbId}`
+      : requestType === 'artist'
+      ? `/api/v1/music/artist/${request.media.musicBrainzId}`
+      : `/api/v1/music/album/${request.media.musicBrainzId}`;
+
+  const { data: title, error } = useSWR<RequestTitle>(inView ? url : null);
   const {
     data: requestData,
     error: requestError,
@@ -311,8 +344,17 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
     <>
       <RequestModal
         show={showEditModal}
-        tmdbId={request.media.tmdbId}
-        type={request.type}
+        tmdbId={
+          requestType === 'movie' || requestType === 'tv'
+            ? request.media.tmdbId
+            : undefined
+        }
+        mbid={
+          requestType === 'artist' || requestType === 'album'
+            ? request.media.musicBrainzId
+            : undefined
+        }
+        type={requestType}
         is4k={request.is4k}
         editRequest={request}
         onCancel={() => setShowEditModal(false)}
@@ -325,43 +367,59 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
         className="relative flex w-72 overflow-hidden rounded-xl bg-gray-800 bg-cover bg-center p-4 text-gray-400 shadow ring-1 ring-gray-700 sm:w-96"
         data-testid="request-card"
       >
-        {title.backdropPath && (
-          <div className="absolute inset-0 z-0">
-            <CachedImage
-              alt=""
-              src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${title.backdropPath}`}
-              layout="fill"
-              objectFit="cover"
-            />
-            <div
-              className="absolute inset-0"
-              style={{
-                backgroundImage:
-                  'linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%)',
-              }}
-            />
-          </div>
-        )}
+        {!isArtist(title) &&
+          !isAlbum(title) &&
+          (title as MovieDetails | TvDetails).backdropPath && (
+            <div className="absolute inset-0 z-0">
+              <CachedImage
+                alt=""
+                src={`https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${
+                  (title as MovieDetails | TvDetails).backdropPath
+                }`}
+                layout="fill"
+                objectFit="cover"
+              />
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage:
+                    'linear-gradient(135deg, rgba(17, 24, 39, 0.47) 0%, rgba(17, 24, 39, 1) 75%)',
+                }}
+              />
+            </div>
+          )}
         <div
           className="relative z-10 flex min-w-0 flex-1 flex-col pr-4"
           data-testid="request-card-title"
         >
           <div className="hidden text-xs font-medium text-white sm:flex">
-            {(isMovie(title) ? title.releaseDate : title.firstAirDate)?.slice(
-              0,
-              4
-            )}
+            {(isMovie(title)
+              ? title.releaseDate
+              : !isArtist(title) && !isAlbum(title)
+              ? (title as TvDetails).firstAirDate
+              : isAlbum(title)
+              ? title.firstReleaseDate
+              : undefined
+            )?.slice(0, 4)}
           </div>
           <Link
             href={
-              request.type === 'movie'
+              requestType === 'movie'
                 ? `/movie/${requestData.media.tmdbId}`
-                : `/tv/${requestData.media.tmdbId}`
+                : requestType === 'tv'
+                ? `/tv/${requestData.media.tmdbId}`
+                : `/${requestType}/${requestData.media.musicBrainzId}`
             }
             legacyBehavior
           >
             <a className="overflow-hidden overflow-ellipsis whitespace-nowrap text-base font-bold text-white hover:underline sm:text-lg">
-              {isMovie(title) ? title.title : title.name}
+              {isMovie(title)
+                ? title.title
+                : isArtist(title)
+                ? title.name
+                : isAlbum(title)
+                ? title.title
+                : intl.formatMessage(messages.unknowntitle)}
             </a>
           </Link>
           {hasPermission(
@@ -386,29 +444,32 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
               </Link>
             </div>
           )}
-          {!isMovie(title) && request.seasons.length > 0 && (
-            <div className="my-0.5 hidden items-center text-sm sm:my-1 sm:flex">
-              <span className="mr-2 font-bold ">
-                {intl.formatMessage(messages.seasons, {
-                  seasonCount:
-                    title.seasons.length === request.seasons.length
-                      ? 0
-                      : request.seasons.length,
-                })}
-              </span>
-              <div className="hide-scrollbar overflow-x-scroll">
-                {request.seasons.map((season) => (
-                  <span key={`season-${season.id}`} className="mr-2">
-                    <Badge>
-                      {season.seasonNumber === 0
-                        ? intl.formatMessage(globalMessages.specials)
-                        : season.seasonNumber}
-                    </Badge>
-                  </span>
-                ))}
+          {!isMovie(title) &&
+            !isArtist(title) &&
+            !isAlbum(title) &&
+            request.seasons.length > 0 && (
+              <div className="my-0.5 hidden items-center text-sm sm:my-1 sm:flex">
+                <span className="mr-2 font-bold ">
+                  {intl.formatMessage(messages.seasons, {
+                    seasonCount:
+                      title.seasons.length === request.seasons.length
+                        ? 0
+                        : request.seasons.length,
+                  })}
+                </span>
+                <div className="hide-scrollbar overflow-x-scroll">
+                  {request.seasons.map((season) => (
+                    <span key={`season-${season.id}`} className="mr-2">
+                      <Badge>
+                        {season.seasonNumber === 0
+                          ? intl.formatMessage(globalMessages.specials)
+                          : season.seasonNumber}
+                      </Badge>
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
           <div className="mt-2 flex items-center text-sm sm:mt-1">
             <span className="mr-2 hidden font-bold sm:block">
               {intl.formatMessage(globalMessages.status)}
@@ -443,7 +504,15 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                     requestData.is4k ? 'downloadStatus4k' : 'downloadStatus'
                   ]
                 }
-                title={isMovie(title) ? title.title : title.name}
+                title={
+                  isMovie(title)
+                    ? title.title
+                    : isArtist(title)
+                    ? title.name
+                    : isAlbum(title)
+                    ? title.title
+                    : intl.formatMessage(messages.unknowntitle)
+                }
                 inProgress={
                   (
                     requestData.media[
@@ -452,7 +521,16 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
                   ).length > 0
                 }
                 is4k={requestData.is4k}
-                tmdbId={requestData.media.tmdbId}
+                tmdbId={
+                  requestType === 'movie' || requestType === 'tv'
+                    ? requestData.media.tmdbId
+                    : undefined
+                }
+                mbid={
+                  requestType === 'artist' || requestType === 'album'
+                    ? requestData.media.musicBrainzId
+                    : undefined
+                }
                 mediaType={requestData.type}
                 plexUrl={requestData.is4k ? plexUrl4k : plexUrl}
                 serviceUrl={
@@ -590,17 +668,23 @@ const RequestCard = ({ request, onTitleData }: RequestCardProps) => {
         </div>
         <Link
           href={
-            request.type === 'movie'
+            requestType === 'movie'
               ? `/movie/${requestData.media.tmdbId}`
-              : `/tv/${requestData.media.tmdbId}`
+              : requestType === 'tv'
+              ? `/tv/${requestData.media.tmdbId}`
+              : `/${requestType}/${requestData.media.musicBrainzId}`
           }
           legacyBehavior
         >
           <a className="w-20 flex-shrink-0 scale-100 transform-gpu cursor-pointer overflow-hidden rounded-md shadow-sm transition duration-300 hover:scale-105 hover:shadow-md sm:w-28">
             <CachedImage
               src={
-                title.posterPath
-                  ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${title.posterPath}`
+                !isArtist(title) &&
+                !isAlbum(title) &&
+                (title as MovieDetails | TvDetails).posterPath
+                  ? `https://image.tmdb.org/t/p/w600_and_h900_bestv2${
+                      (title as MovieDetails | TvDetails).posterPath
+                    }`
                   : '/images/overseerr_poster_not_found.png'
               }
               alt=""

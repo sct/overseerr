@@ -266,7 +266,7 @@ const LidarrModal = ({ onClose, lidarr, onSave }: LidarrModalProps) => {
             : undefined;
           const activeMetadataProfileId =
             values.activeMetadataProfileId !== undefined &&
-            values.activeMetadataProfileId !== ''
+            String(values.activeMetadataProfileId) !== ''
               ? Number(values.activeMetadataProfileId)
               : undefined;
 

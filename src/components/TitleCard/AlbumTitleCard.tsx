@@ -1,5 +1,4 @@
 import TitleCard from '@app/components/TitleCard';
-import { Permission, useUser } from '@app/hooks/useUser';
 import { useInView } from 'react-intersection-observer';
 import useSWR from 'swr';
 
@@ -12,32 +11,25 @@ export interface AlbumTitleCardProps {
 interface AlbumDetails {
   id: string;
   title: string;
+  imageUrl?: string;
   primaryType?: string;
   firstReleaseDate?: string;
   disambiguation?: string;
-  artistCredit?: Array<{
+  artistCredit?: {
     artist: { id: string; name: string };
     name?: string;
-  }>;
+  }[];
   mediaInfo?: {
     status?: number;
   };
 }
 
-const AlbumTitleCard = ({
-  id,
-  mbid,
-  canExpand,
-}: AlbumTitleCardProps) => {
-  const { hasPermission } = useUser();
-
+const AlbumTitleCard = ({ id, mbid, canExpand }: AlbumTitleCardProps) => {
   const { ref, inView } = useInView({
     triggerOnce: true,
   });
   const url = `/api/v1/music/album/${mbid}`;
-  const { data: album, error } = useSWR<AlbumDetails>(
-    inView ? url : null
-  );
+  const { data: album, error } = useSWR<AlbumDetails>(inView ? url : null);
 
   if (!album && !error) {
     return (
@@ -59,7 +51,7 @@ const AlbumTitleCard = ({
   return (
     <TitleCard
       id={id}
-      image={undefined}
+      image={album.imageUrl}
       status={album.mediaInfo?.status}
       summary={artistName ? `by ${artistName}` : undefined}
       title={album.title}

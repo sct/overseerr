@@ -48,6 +48,8 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
   const intl = useIntl();
   const [isUpdating, setIsUpdating] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  const requestType = request.type === 'music' ? 'artist' : request.type;
   const { profile, rootFolder, server, languageProfile } =
     useRequestOverride(request);
 
@@ -79,7 +81,7 @@ const RequestBlock = ({ request, onUpdate }: RequestBlockProps) => {
       <RequestModal
         show={showEditModal}
         tmdbId={request.media.tmdbId}
-        type={request.type}
+        type={requestType}
         is4k={request.is4k}
         editRequest={request}
         onCancel={() => setShowEditModal(false)}

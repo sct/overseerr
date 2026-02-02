@@ -31,37 +31,26 @@ import useSWR, { mutate } from 'swr';
 interface ArtistDetails {
   id: string;
   name: string;
-  sortName?: string;
   disambiguation?: string;
   country?: string;
   type?: string;
   area?: { id: string; name: string };
-  mediaInfo?: {
-    status?: number;
-    downloadStatus?: unknown[];
-    requests?: unknown[];
-    serviceUrl?: string;
+  lifeSpan?: {
+    begin?: string;
+    end?: string;
+    ended?: boolean;
   };
 }
 
 interface AlbumDetails {
   id: string;
   title: string;
-  primaryType?: string;
-  secondaryTypes?: string[];
-  firstReleaseDate?: string;
   disambiguation?: string;
-  artistCredit?: {
-    artist: { id: string; name: string };
-    name?: string;
-  }[];
-  mediaInfo?: {
-    status?: number;
-    downloadStatus?: unknown[];
-    requests?: unknown[];
-    serviceUrl?: string;
-  };
+  firstReleaseDate?: string;
+  primaryType?: string;
 }
+
+type RequestTitle = MovieDetails | TvDetails | ArtistDetails | AlbumDetails;
 
 const messages = defineMessages({
   seasons: '{seasonCount, plural, one {Season} other {Seasons}}',
@@ -80,28 +69,16 @@ const messages = defineMessages({
   unknowntitle: 'Unknown Title',
 });
 
-const isMovie = (movie: MovieDetails | TvDetails): movie is MovieDetails => {
-  return (movie as MovieDetails).title !== undefined;
+const isMovie = (media: RequestTitle): media is MovieDetails => {
+  return (media as MovieDetails).title !== undefined && 'tmdbId' in media;
 };
 
-const isArtist = (
-  item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails
-): item is ArtistDetails => {
-  return (
-    (item as ArtistDetails).name !== undefined &&
-    'id' in item &&
-    typeof item.id === 'string'
-  );
+const isArtist = (media: RequestTitle): media is ArtistDetails => {
+  return (media as ArtistDetails).name !== undefined && !('tmdbId' in media);
 };
 
-const isAlbum = (
-  item: MovieDetails | TvDetails | ArtistDetails | AlbumDetails
-): item is AlbumDetails => {
-  return (
-    (item as AlbumDetails).title !== undefined &&
-    'id' in item &&
-    typeof item.id === 'string'
-  );
+const isAlbum = (media: RequestTitle): media is AlbumDetails => {
+  return (media as AlbumDetails).title !== undefined && !('tmdbId' in media);
 };
 
 interface RequestItemErrorProps {
@@ -388,13 +365,15 @@ const RequestItem = ({
   const { user, hasPermission } = useUser();
   const [showEditModal, setShowEditModal] = useState(false);
 
+  const requestType = request.type === 'music' ? 'artist' : request.type;
+
   // Determine URL based on request type
-  const isMusicRequest = request.type === 'artist' || request.type === 'album';
+  const isMusicRequest = requestType === 'artist' || requestType === 'album';
   const url = isMusicRequest
-    ? request.type === 'artist'
+    ? requestType === 'artist'
       ? `/api/v1/music/artist/${request.media.musicBrainzId}`
       : `/api/v1/music/album/${request.media.musicBrainzId}`
-    : request.type === 'movie'
+    : requestType === 'movie'
     ? `/api/v1/movie/${request.media.tmdbId}`
     : `/api/v1/tv/${request.media.tmdbId}`;
 
@@ -480,7 +459,7 @@ const RequestItem = ({
         show={showEditModal}
         tmdbId={isMusicRequest ? undefined : request.media.tmdbId}
         mbid={isMusicRequest ? request.media.musicBrainzId : undefined}
-        type={request.type}
+        type={requestType}
         is4k={request.is4k}
         editRequest={request}
         onCancel={() => setShowEditModal(false)}
@@ -563,7 +542,7 @@ const RequestItem = ({
                     : null
                   : (isMovie(title)
                       ? title.releaseDate
-                      : title.firstAirDate
+                      : (title as TvDetails).firstAirDate
                     )?.slice(0, 4)}
               </div>
               <Link
@@ -587,7 +566,7 @@ const RequestItem = ({
                       : intl.formatMessage(messages.unknowntitle)
                     : isMovie(title)
                     ? title.title
-                    : title.name}
+                    : (title as TvDetails).name}
                 </a>
               </Link>
               {!isMovie(title) &&
@@ -597,7 +576,8 @@ const RequestItem = ({
                     <span className="card-field-name">
                       {intl.formatMessage(messages.seasons, {
                         seasonCount:
-                          title.seasons.length === request.seasons.length
+                          (title as TvDetails).seasons.length ===
+                          request.seasons.length
                             ? 0
                             : request.seasons.length,
                       })}
@@ -669,7 +649,7 @@ const RequestItem = ({
                         : intl.formatMessage(messages.unknowntitle)
                       : isMovie(title)
                       ? title.title
-                      : title.name
+                      : (title as TvDetails).name
                   }
                   inProgress={
                     (

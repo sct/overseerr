@@ -2,18 +2,16 @@ import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
-import RequestButton from '@app/components/RequestButton';
-import StatusBadge from '@app/components/StatusBadge';
 import Tag from '@app/components/Common/Tag';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import ManageSlideOver from '@app/components/ManageSlideOver';
-import useSettings from '@app/hooks/useSettings';
+import RequestButton from '@app/components/RequestButton';
+import StatusBadge from '@app/components/StatusBadge';
 import { Permission, useUser } from '@app/hooks/useUser';
-import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { CogIcon } from '@heroicons/react/24/outline';
-import { MediaStatus } from '@server/constants/media';
+import type Media from '@server/entity/Media';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -35,28 +33,22 @@ interface AlbumDetails {
   secondaryTypes?: string[];
   firstReleaseDate?: string;
   disambiguation?: string;
-  artistCredit?: Array<{
+  artistCredit?: {
     artist: { id: string; name: string };
     name?: string;
-  }>;
-  releases?: Array<{
+  }[];
+  releases?: {
     id: string;
     title: string;
     date?: string;
     country?: string;
-  }>;
-  tags?: Array<{ name: string; count: number }>;
-  mediaInfo?: {
-    status?: number;
-    downloadStatus?: Array<unknown>;
-    requests?: Array<unknown>;
-    serviceUrl?: string;
-  };
+  }[];
+  tags?: { name: string; count: number }[];
+  mediaInfo?: Media;
 }
 
 const AlbumDetails = () => {
-  const settings = useSettings();
-  const { user, hasPermission } = useUser();
+  const { hasPermission } = useUser();
   const router = useRouter();
   const intl = useIntl();
   const [showManager, setShowManager] = useState(
@@ -72,6 +64,7 @@ const AlbumDetails = () => {
       refreshIntervalHelper(
         {
           downloadStatus: currentData?.mediaInfo?.downloadStatus,
+          downloadStatus4k: undefined,
         },
         15000
       ),
@@ -92,9 +85,7 @@ const AlbumDetails = () => {
   }
 
   const artistName =
-    data.artistCredit?.[0]?.name ||
-    data.artistCredit?.[0]?.artist?.name ||
-    '';
+    data.artistCredit?.[0]?.name || data.artistCredit?.[0]?.artist?.name || '';
 
   return (
     <div
@@ -148,7 +139,9 @@ const AlbumDetails = () => {
           </h1>
           {artistName && (
             <span className="media-attributes">
-              <span>{intl.formatMessage(messages.artist)}: {artistName}</span>
+              <span>
+                {intl.formatMessage(messages.artist)}: {artistName}
+              </span>
             </span>
           )}
         </div>
@@ -177,7 +170,10 @@ const AlbumDetails = () => {
           {data.tags && data.tags.length > 0 && (
             <div className="mt-6">
               {data.tags.map((tag) => (
-                <span key={`tag-${tag.name}`} className="mb-2 mr-2 inline-flex last:mr-0">
+                <span
+                  key={`tag-${tag.name}`}
+                  className="mb-2 mr-2 inline-flex last:mr-0"
+                >
                   <Tag>{tag.name}</Tag>
                 </span>
               ))}
@@ -189,7 +185,9 @@ const AlbumDetails = () => {
             {data.firstReleaseDate && (
               <div className="media-fact">
                 <span>{intl.formatMessage(messages.releaseDate)}</span>
-                <span className="media-fact-value">{data.firstReleaseDate}</span>
+                <span className="media-fact-value">
+                  {data.firstReleaseDate}
+                </span>
               </div>
             )}
             {data.primaryType && (

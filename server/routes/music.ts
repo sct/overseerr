@@ -1,3 +1,5 @@
+import FanartAPI from '@server/api/fanart';
+import { getLastFmArtistInfoByMbid, pickLastFmImage } from '@server/api/lastfm';
 import MusicBrainzAPI from '@server/api/musicbrainz';
 import { MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
@@ -9,6 +11,7 @@ import axios from 'axios';
 import { Router } from 'express';
 
 const musicRoutes = Router();
+const fanart = new FanartAPI();
 
 const wikidataCache = cacheManager.getCache('musicbrainz');
 
@@ -137,11 +140,45 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
       relations: ['requests'],
     });
 
-    const imageUrl = await resolveArtistImageUrl(artist.relations);
+    // Optional Fanart.tv enrichment (HD images). Safe to ignore on failure.
+    let fanartThumbnail: string | undefined;
+    let fanartLogo: string | undefined;
+    let fanartBackground: string | undefined;
+    try {
+      if (fanart.isConfigured()) {
+        const fanartImages = await fanart.getArtistImagesByMbid(mbid);
+        fanartThumbnail = fanart.pickArtistThumbnail(fanartImages, true);
+        fanartLogo = fanart.pickArtistLogo(fanartImages, true);
+        fanartBackground = fanart.pickArtistBackground(fanartImages);
+      }
+    } catch (e) {
+      // fanart is optional, ignore errors
+    }
+
+    // Optional Last.fm enrichment (images/bio). Safe to ignore on failure.
+    let lastFmImage: string | undefined;
+    let lastFmBio: string | undefined;
+    try {
+      const lastfm = await getLastFmArtistInfoByMbid(mbid);
+      lastFmImage = pickLastFmImage(lastfm);
+      // Use summary if available; strip noisy "Read more" later in UI if needed.
+      lastFmBio = lastfm?.bio?.summary || lastfm?.bio?.content;
+    } catch (e) {
+      // no-op
+    }
+
+    // Fallback: MusicBrainz/Wikidata image when Fanart/Last.fm unavailable
+    const musicBrainzImage = await resolveArtistImageUrl(artist.relations);
+    const imageUrl = fanartThumbnail || lastFmImage || musicBrainzImage;
 
     return res.status(200).json({
       id: artist.id,
       name: artist.name,
+      imageUrl,
+      fanartThumbnail,
+      fanartLogo,
+      fanartBackground,
+      bio: lastFmBio,
       sortName: artist['sort-name'],
       disambiguation: artist.disambiguation,
       country: artist.country,
@@ -150,12 +187,10 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
       lifeSpan: artist['life-span'],
       tags: artist.tags || artist['tag-list'] || [],
       releaseGroups: artist['release-groups'] || [],
-      imageUrl,
       mediaInfo: media,
     });
   } catch (e) {
-    const status =
-      (e as { response?: { status?: number } }).response?.status;
+    const status = (e as { response?: { status?: number } }).response?.status;
     logger.debug('Something went wrong retrieving artist', {
       label: 'API',
       errorMessage: e.message,
@@ -196,11 +231,11 @@ musicRoutes.get('/artist/:mbid/albums', async (req, res, next) => {
       albums['release-group-list']?.map((rg) => rg.id) || [];
     const media = musicBrainzIds.length
       ? await mediaRepository.find({
-        where: musicBrainzIds.map((mbid) => ({
-          musicBrainzId: mbid,
-          mediaType: MediaType.ALBUM,
-        })),
-      })
+          where: musicBrainzIds.map((mbid) => ({
+            musicBrainzId: mbid,
+            mediaType: MediaType.ALBUM,
+          })),
+        })
       : [];
 
     return res.status(200).json({
@@ -220,8 +255,7 @@ musicRoutes.get('/artist/:mbid/albums', async (req, res, next) => {
       })),
     });
   } catch (e) {
-    const status =
-      (e as { response?: { status?: number } }).response?.status;
+    const status = (e as { response?: { status?: number } }).response?.status;
     logger.debug('Something went wrong retrieving artist albums', {
       label: 'API',
       errorMessage: e.message,
@@ -267,9 +301,27 @@ musicRoutes.get('/album/:mbid', async (req, res, next) => {
       relations: ['requests'],
     });
 
+    // Fetch fanart album images
+    let fanartImage: string | undefined;
+    try {
+      if (fanart.isConfigured()) {
+        const fanartImages = await fanart.getAlbumImagesByMbid(mbid);
+        fanartImage = fanart.pickAlbumCover(fanartImages);
+      }
+    } catch (e) {
+      // fanart is optional
+    }
+
+    // Cover Art Archive supports release-group front artwork with no auth.
+    const coverArtUrl = `https://coverartarchive.org/release-group/${mbid}/front-250`;
+
     return res.status(200).json({
       id: releaseGroup.id,
       title: releaseGroup.title,
+      // Prefer fanart, fallback to cover art archive
+      imageUrl: fanartImage || coverArtUrl,
+      coverArtUrl,
+      fanartImage,
       primaryType: releaseGroup['primary-type'],
       secondaryTypes: releaseGroup['secondary-types'] || [],
       firstReleaseDate: releaseGroup['first-release-date'],
@@ -280,8 +332,7 @@ musicRoutes.get('/album/:mbid', async (req, res, next) => {
       mediaInfo: media,
     });
   } catch (e) {
-    const status =
-      (e as { response?: { status?: number } }).response?.status;
+    const status = (e as { response?: { status?: number } }).response?.status;
     logger.debug('Something went wrong retrieving album', {
       label: 'API',
       errorMessage: e.message,
@@ -323,8 +374,7 @@ musicRoutes.get('/track/:mbid', async (req, res, next) => {
       releases: recording.releases || [],
     });
   } catch (e) {
-    const status =
-      (e as { response?: { status?: number } }).response?.status;
+    const status = (e as { response?: { status?: number } }).response?.status;
     logger.debug('Something went wrong retrieving track', {
       label: 'API',
       errorMessage: e.message,
@@ -416,11 +466,11 @@ musicRoutes.get('/artist/:mbid/similar', async (req, res, next) => {
     const musicBrainzIds = similarArtists.map((a) => a.id);
     const media = musicBrainzIds.length
       ? await mediaRepository.find({
-        where: musicBrainzIds.map((mbid) => ({
-          musicBrainzId: mbid,
-          mediaType: MediaType.ARTIST,
-        })),
-      })
+          where: musicBrainzIds.map((mbid) => ({
+            musicBrainzId: mbid,
+            mediaType: MediaType.ARTIST,
+          })),
+        })
       : [];
 
     return res.status(200).json({

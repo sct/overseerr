@@ -39,7 +39,10 @@ const messages = defineMessages({
     'Media added to your <PlexWatchlistSupportLink>Plex Watchlist</PlexWatchlistSupportLink> will appear here.',
 });
 
-type MediaTitle = MovieDetails | TvDetails;
+type MediaTitle =
+  | MovieDetails
+  | TvDetails
+  | { id: string; name?: string; title?: string };
 
 const UserProfile = () => {
   const intl = useIntl();
@@ -127,7 +130,13 @@ const UserProfile = () => {
             key={user.id}
             isDarker
             backgroundImages={Object.values(availableTitles)
-              .filter((media) => media.backdropPath)
+              .filter((media): media is MediaTitle & { backdropPath: string } =>
+                Boolean(
+                  media &&
+                    'backdropPath' in media &&
+                    (media as { backdropPath?: string }).backdropPath
+                )
+              )
               .map(
                 (media) =>
                   `https://image.tmdb.org/t/p/w1920_and_h800_multi_faces/${media.backdropPath}`
