@@ -2,7 +2,7 @@ import Button from '@app/components/Common/Button';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import useSettings from '@app/hooks/useSettings';
 import {
-  ArrowLeftOnRectangleIcon,
+  ArrowRightOnRectangleIcon,
   LifebuoyIcon,
 } from '@heroicons/react/24/outline';
 import axios from 'axios';
@@ -19,7 +19,7 @@ const messages = defineMessages({
   validationpasswordrequired: 'You must provide a password',
   loginerror: 'Something went wrong while trying to sign in.',
   signingin: 'Signing In…',
-  signin: 'Sign In',
+  signin: 'Sign in',
   forgotpassword: 'Forgot Password?',
 });
 
@@ -70,7 +70,7 @@ const LocalLogin = ({ revalidate }: LocalLoginProps) => {
           <>
             <Form>
               <div>
-                <label htmlFor="email" className="text-label">
+                <label htmlFor="email" className="text-label text-left">
                   {intl.formatMessage(messages.email)}
                 </label>
                 <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
@@ -89,7 +89,7 @@ const LocalLogin = ({ revalidate }: LocalLoginProps) => {
                       <div className="error">{errors.email}</div>
                     )}
                 </div>
-                <label htmlFor="password" className="text-label">
+                <label htmlFor="password" className="text-label text-left">
                   {intl.formatMessage(messages.password)}
                 </label>
                 <div className="mt-1 mb-2 sm:col-span-2 sm:mt-0">
@@ -118,23 +118,22 @@ const LocalLogin = ({ revalidate }: LocalLoginProps) => {
                   </div>
                 )}
               </div>
-              <div className="mt-8 border-t border-gray-700 pt-5">
+              <div className="mt-8">
                 <div className="flex flex-row-reverse justify-between">
-                  <span className="inline-flex rounded-md shadow-sm">
-                    <Button
-                      buttonType="primary"
-                      type="submit"
-                      disabled={isSubmitting || !isValid}
-                      data-testid="local-signin-button"
-                    >
-                      <ArrowLeftOnRectangleIcon />
-                      <span>
-                        {isSubmitting
-                          ? intl.formatMessage(messages.signingin)
-                          : intl.formatMessage(messages.signin)}
-                      </span>
-                    </Button>
-                  </span>
+                  <Button
+                    className="w-full"
+                    buttonType="primary"
+                    type="submit"
+                    disabled={isSubmitting || !isValid}
+                    data-testid="local-signin-button"
+                  >
+                    <span>
+                      {isSubmitting
+                        ? intl.formatMessage(messages.signingin)
+                        : intl.formatMessage(messages.signin)}
+                    </span>
+                    <ArrowRightOnRectangleIcon />
+                  </Button>
                   {passwordResetEnabled && (
                     <span className="inline-flex rounded-md shadow-sm">
                       <Link href="/resetpassword" passHref>

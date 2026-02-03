@@ -1,11 +1,12 @@
 import globalMessages from '@app/i18n/globalMessages';
 import PlexOAuth from '@app/utils/plex';
-import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import ArrowRightOnRectangleIcon from '@heroicons/react/24/outline/ArrowRightOnRectangleIcon';
+// import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  signinwithplex: 'Sign In',
+  signinwithplex: 'Sign in with Plex',
   signingin: 'Signing In…',
 });
 
@@ -49,7 +50,6 @@ const PlexLoginButton = ({
         disabled={loading || isProcessing}
         className="plex-button"
       >
-        <ArrowLeftOnRectangleIcon />
         <span>
           {loading
             ? intl.formatMessage(globalMessages.loading)
@@ -57,6 +57,7 @@ const PlexLoginButton = ({
             ? intl.formatMessage(messages.signingin)
             : intl.formatMessage(messages.signinwithplex)}
         </span>
+        <ArrowRightOnRectangleIcon />
       </button>
     </span>
   );

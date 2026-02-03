@@ -327,7 +327,7 @@
   "components.Login.signingin": "Anmelden …",
   "components.Login.signin": "Anmelden",
   "components.Settings.notificationAgentSettingsDescription": "Konfiguriere und aktiviere Benachrichtigungsagenten.",
-  "components.PlexLoginButton.signinwithplex": "Anmelden",
+  "components.PlexLoginButton.signinwithplex": "Mit Plex anmelden",
   "components.PlexLoginButton.signingin": "Anmeldung läuft …",
   "components.PermissionEdit.autoapproveSeries": "Automatische Genehmigung von Serien",
   "components.PermissionEdit.autoapprove": "Automatische Genehmigung",

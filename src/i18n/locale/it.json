@@ -410,7 +410,7 @@
   "components.RequestModal.SearchByNameModal.notvdbiddescription": "Non siamo riusciti a trovare una corrispondenza per questa serie. Seleziona la corrispondenza corretta dall'elenco seguente.",
   "components.RequestModal.AdvancedRequester.requestas": "Richiedi come",
   "components.RequestModal.AdvancedRequester.languageprofile": "Profilo lingua",
-  "components.PlexLoginButton.signinwithplex": "Accedi",
+  "components.PlexLoginButton.signinwithplex": "Accedi con Plex",
   "components.PlexLoginButton.signingin": "Accesso in corso…",
   "components.PermissionEdit.viewrequestsDescription": "Concede il permesso di visualizzare le richieste di altri utenti.",
   "components.PermissionEdit.viewrequests": "Visualizza le richieste",
