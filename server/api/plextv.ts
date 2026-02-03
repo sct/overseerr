@@ -216,13 +216,78 @@ class PlexTvAPI extends ExternalAPI {
       );
 
       return account.data.user;
-    } catch (e) {
-      logger.error(
-        `Something went wrong while getting the account from plex.tv: ${e.message}`,
+    } catch (primaryError) {
+      logger.debug(
+        `Primary account endpoint failed, trying API v2 fallback: ${primaryError.message}`,
         { label: 'Plex.tv API' }
       );
-      throw new Error('Invalid auth token');
+
+      try {
+        return await this.getUserFromV2Api();
+      } catch (v2Error) {
+        logger.error(
+          `Something went wrong while getting the account from plex.tv: ${primaryError.message}`,
+          { label: 'Plex.tv API' }
+        );
+        throw new Error('Invalid auth token');
+      }
     }
+  }
+
+  private async getUserFromV2Api(): Promise<PlexUser> {
+    const response = await this.axios.get('/api/v2/home/user', {
+      transformResponse: [],
+      responseType: 'text',
+      headers: {
+        'X-Plex-Client-Identifier': randomUUID(),
+      },
+    });
+
+    const parsed = await xml2js.parseStringPromise(response.data);
+    const userData = parsed?.user ?? parsed?.User;
+    const userEl = Array.isArray(userData)
+      ? userData[0]?.['$'] ?? userData[0]
+      : userData?.['$'] ?? userData;
+
+    if (!userEl || typeof userEl !== 'object') {
+      throw new Error('Unexpected response format from Plex API v2');
+    }
+
+    const id = parseInt(String(userEl.id ?? userEl.Id ?? '0'), 10);
+    const email = String(userEl.email ?? userEl.Email ?? '');
+    const username = String(
+      userEl.username ?? userEl.Username ?? userEl.title ?? userEl.Title ?? ''
+    );
+
+    if (!id || !email) {
+      throw new Error('Missing required user fields from Plex API');
+    }
+
+    const subscriptionEl =
+      userData?.[0]?.subscription ?? userData?.subscription;
+    const subAttrs = Array.isArray(subscriptionEl)
+      ? subscriptionEl[0]?.['$']
+      : subscriptionEl?.['$'] ?? subscriptionEl?.[0]?.['$'];
+
+    return {
+      id,
+      uuid: String(userEl.uuid ?? userEl.Uuid ?? ''),
+      email,
+      joined_at: String(userEl.joinedAt ?? ''),
+      username,
+      title: String(userEl.title ?? userEl.Title ?? username),
+      thumb: String(userEl.thumb ?? userEl.Thumb ?? ''),
+      hasPassword: userEl.hasPassword === '1',
+      authToken: String(userEl.authToken ?? userEl.AuthToken ?? this.authToken),
+      subscription: {
+        active: subAttrs?.active === '1',
+        status: String(subAttrs?.status ?? ''),
+        plan: String(subAttrs?.plan ?? ''),
+        features: [],
+      },
+      roles: { roles: [] },
+      entitlements: [],
+    };
   }
 
   public async checkUserAccess(userId: number): Promise<boolean> {

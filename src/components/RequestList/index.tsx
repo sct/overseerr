@@ -15,6 +15,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   FunnelIcon,
+  Squares2X2Icon,
 } from '@heroicons/react/24/solid';
 import type { RequestResultsResponse } from '@server/interfaces/api/requestInterfaces';
 import axios from 'axios';
@@ -30,6 +31,10 @@ const messages = defineMessages({
   showallrequests: 'Show All Requests',
   sortAdded: 'Most Recent',
   sortModified: 'Last Modified',
+  typeFilterAll: 'All Types',
+  typeFilterMovies: 'Movies',
+  typeFilterTv: 'Series',
+  typeFilterMusic: 'Music',
   selected: '{count, plural, one {# selected} other {# selected}}',
   clearSelection: 'Clear',
   bulkApprove: 'Approve',
@@ -55,6 +60,8 @@ enum Filter {
 
 type Sort = 'added' | 'modified';
 
+type MediaTypeFilter = 'all' | 'movie' | 'tv' | 'music';
+
 const RequestList = () => {
   const router = useRouter();
   const intl = useIntl();
@@ -65,6 +72,8 @@ const RequestList = () => {
   const { user: currentUser, hasPermission } = useUser();
   const [currentFilter, setCurrentFilter] = useState<Filter>(Filter.PENDING);
   const [currentSort, setCurrentSort] = useState<Sort>('added');
+  const [currentTypeFilter, setCurrentTypeFilter] =
+    useState<MediaTypeFilter>('all');
   const [currentPageSize, setCurrentPageSize] = useState<number>(10);
   const [selectedRequestIds, setSelectedRequestIds] = useState<number[]>([]);
   const [isBulkProcessing, setIsBulkProcessing] = useState(false);
@@ -83,6 +92,8 @@ const RequestList = () => {
     `/api/v1/request?take=${currentPageSize}&skip=${
       pageIndex * currentPageSize
     }&filter=${currentFilter}&sort=${currentSort}${
+      currentTypeFilter !== 'all' ? `&type=${currentTypeFilter}` : ''
+    }${
       router.pathname.startsWith('/profile')
         ? `&requestedBy=${currentUser?.id}`
         : router.query.userId
@@ -100,6 +111,7 @@ const RequestList = () => {
 
       setCurrentFilter(filterSettings.currentFilter);
       setCurrentSort(filterSettings.currentSort);
+      setCurrentTypeFilter(filterSettings.currentTypeFilter ?? 'all');
       setCurrentPageSize(filterSettings.currentPageSize);
     }
 
@@ -116,10 +128,11 @@ const RequestList = () => {
       JSON.stringify({
         currentFilter,
         currentSort,
+        currentTypeFilter,
         currentPageSize,
       })
     );
-  }, [currentFilter, currentSort, currentPageSize]);
+  }, [currentFilter, currentSort, currentTypeFilter, currentPageSize]);
 
   const hasNextPage = data?.pageInfo.pages
     ? data.pageInfo.pages > pageIndex + 1
@@ -178,6 +191,9 @@ const RequestList = () => {
       const params = new URLSearchParams();
       params.set('filter', currentFilter);
       params.set('sort', currentSort);
+      if (currentTypeFilter !== 'all') {
+        params.set('type', currentTypeFilter);
+      }
 
       const requestedByParam = router.pathname.startsWith('/profile')
         ? currentUser?.id
@@ -214,10 +230,17 @@ const RequestList = () => {
     }
   };
 
-  // Clear selection when the list context changes (filter/sort/page/user)
+  // Clear selection when the list context changes (filter/sort/type/page/user)
   useEffect(() => {
     setSelectedRequestIds([]);
-  }, [currentFilter, currentSort, currentPageSize, page, router.query.userId]);
+  }, [
+    currentFilter,
+    currentSort,
+    currentTypeFilter,
+    currentPageSize,
+    page,
+    router.query.userId,
+  ]);
 
   // Keyboard shortcuts for bulk actions
   useKeyboardShortcuts(
@@ -303,6 +326,40 @@ const RequestList = () => {
           {intl.formatMessage(messages.requests)}
         </Header>
         <div className="mt-2 flex flex-grow flex-col sm:flex-row lg:flex-grow-0">
+          <div className="mb-2 flex flex-grow sm:mb-0 sm:mr-2 lg:flex-grow-0">
+            <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-sm text-gray-100">
+              <Squares2X2Icon className="h-6 w-6" />
+            </span>
+            <select
+              id="typeFilter"
+              name="typeFilter"
+              aria-label="Filter by type"
+              onChange={(e) => {
+                setCurrentTypeFilter(e.target.value as MediaTypeFilter);
+                router.push({
+                  pathname: router.pathname,
+                  query: router.query.userId
+                    ? { userId: router.query.userId }
+                    : {},
+                });
+              }}
+              value={currentTypeFilter}
+              className="rounded-r-only"
+            >
+              <option value="all">
+                {intl.formatMessage(messages.typeFilterAll)}
+              </option>
+              <option value="movie">
+                {intl.formatMessage(messages.typeFilterMovies)}
+              </option>
+              <option value="tv">
+                {intl.formatMessage(messages.typeFilterTv)}
+              </option>
+              <option value="music">
+                {intl.formatMessage(messages.typeFilterMusic)}
+              </option>
+            </select>
+          </div>
           <div className="mb-2 flex flex-grow sm:mb-0 sm:mr-2 lg:flex-grow-0">
             <span className="inline-flex cursor-default items-center rounded-l-md border border-r-0 border-gray-500 bg-gray-800 px-3 text-sm text-gray-100">
               <FunnelIcon className="h-6 w-6" />

@@ -1,4 +1,7 @@
-import MusicBrainzAPI from '@server/api/musicbrainz';
+import MusicBrainzAPI, {
+  type MusicBrainzArtist,
+  type MusicBrainzReleaseGroup,
+} from '@server/api/musicbrainz';
 import PlexTvAPI from '@server/api/plextv';
 import type { SortOptions } from '@server/api/themoviedb';
 import TheMovieDb from '@server/api/themoviedb';
@@ -1163,10 +1166,34 @@ discoverRoutes.get('/albums/popular', async (req, res, next) => {
       100
     );
 
-    // Search for albums sorted by tag count (popularity proxy)
-    // Using a broad query and sorting by tag count
-    const query = 'primarytype:Album AND tagcount:[1 TO *]';
-    const results = await musicBrainz.searchReleaseGroups(query, limit, offset);
+    // Search for albums - try tagcount first, fallback to tag-based queries
+    const queries = [
+      'primarytype:album AND tagcount:[1 TO *]',
+      'primarytype:album AND tag:pop',
+      'primarytype:album AND tag:rock',
+      'primarytype:album AND tag:alternative',
+    ];
+    let results = {
+      'release-group-list': [] as MusicBrainzReleaseGroup[],
+      count: 0,
+    };
+    for (const query of queries) {
+      const searchResults = await musicBrainz.searchReleaseGroups(
+        query,
+        limit,
+        offset
+      );
+      if (
+        searchResults['release-group-list'] &&
+        searchResults['release-group-list'].length > 0
+      ) {
+        results = {
+          'release-group-list': searchResults['release-group-list'] ?? [],
+          count: searchResults.count ?? 0,
+        };
+        break;
+      }
+    }
 
     const mediaRepository = getRepository(Media);
     const musicBrainzIds =
@@ -1228,9 +1255,31 @@ discoverRoutes.get('/artists/popular', async (req, res, next) => {
       100
     );
 
-    // Search for artists sorted by tag count (popularity proxy)
-    const query = 'tagcount:[1 TO *]';
-    const results = await musicBrainz.searchArtists(query, limit, offset);
+    // Search for artists - try tagcount first, fallback to tag-based queries
+    const queries = [
+      'tagcount:[1 TO *]',
+      'tag:pop',
+      'tag:rock',
+      'tag:alternative',
+    ];
+    let results = { 'artist-list': [] as MusicBrainzArtist[], count: 0 };
+    for (const query of queries) {
+      const searchResults = await musicBrainz.searchArtists(
+        query,
+        limit,
+        offset
+      );
+      if (
+        searchResults['artist-list'] &&
+        searchResults['artist-list'].length > 0
+      ) {
+        results = {
+          'artist-list': searchResults['artist-list'] ?? [],
+          count: searchResults.count ?? 0,
+        };
+        break;
+      }
+    }
 
     const mediaRepository = getRepository(Media);
     const musicBrainzIds =
@@ -1301,14 +1350,32 @@ discoverRoutes.get('/tracks/popular', async (req, res, next) => {
       limit,
       offset
     );
-    const finalResults =
-      results['recording-list'] && results['recording-list'].length > 0
-        ? results
-        : await musicBrainz.searchRecordings(
-            'tagcount:[1 TO *]',
-            limit,
-            offset
-          );
+    let finalResults = results;
+    if (!results['recording-list'] || results['recording-list'].length === 0) {
+      const tagcountResults = await musicBrainz.searchRecordings(
+        'tagcount:[1 TO *]',
+        limit,
+        offset
+      );
+      if (
+        tagcountResults['recording-list'] &&
+        tagcountResults['recording-list'].length > 0
+      ) {
+        finalResults = tagcountResults;
+      } else {
+        const rockResults = await musicBrainz.searchRecordings(
+          'tag:rock',
+          limit,
+          offset
+        );
+        if (
+          rockResults['recording-list'] &&
+          rockResults['recording-list'].length > 0
+        ) {
+          finalResults = rockResults;
+        }
+      }
+    }
 
     return res.status(200).json({
       page,

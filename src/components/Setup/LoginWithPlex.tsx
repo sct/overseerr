@@ -1,3 +1,4 @@
+import Alert from '@app/components/Common/Alert';
 import PlexLoginButton from '@app/components/PlexLoginButton';
 import { useUser } from '@app/hooks/useUser';
 import axios from 'axios';
@@ -7,6 +8,7 @@ import { defineMessages, useIntl } from 'react-intl';
 const messages = defineMessages({
   welcome: 'Welcome to Overseerr',
   signinMessage: 'Get started by signing in with your Plex account',
+  loginError: 'Sign-in failed',
 });
 
 interface LoginWithPlexProps {
@@ -16,6 +18,8 @@ interface LoginWithPlexProps {
 const LoginWithPlex = ({ onComplete }: LoginWithPlexProps) => {
   const intl = useIntl();
   const [authToken, setAuthToken] = useState<string | undefined>(undefined);
+  const [error, setError] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const { user, revalidate } = useUser();
 
   // Effect that is triggered when the `authToken` comes back from the Plex OAuth
@@ -24,15 +28,28 @@ const LoginWithPlex = ({ onComplete }: LoginWithPlexProps) => {
 
   useEffect(() => {
     const login = async () => {
-      const response = await axios.post('/api/v1/auth/plex', { authToken });
+      if (!authToken) return;
+      setIsProcessing(true);
+      setError(null);
+      try {
+        const response = await axios.post('/api/v1/auth/plex', { authToken });
 
-      if (response.data?.id) {
-        revalidate();
+        if (response.data?.id) {
+          revalidate();
+        } else {
+          setError('Unable to authenticate. Please try again.');
+        }
+      } catch (e) {
+        const message =
+          e.response?.data?.message ||
+          e.message ||
+          'Unable to authenticate. Please try again.';
+        setError(message);
+      } finally {
+        setIsProcessing(false);
       }
     };
-    if (authToken) {
-      login();
-    }
+    login();
   }, [authToken, revalidate]);
 
   // Effect that is triggered whenever `useUser`'s user changes. If we get a new
@@ -51,8 +68,22 @@ const LoginWithPlex = ({ onComplete }: LoginWithPlexProps) => {
       <div className="mb-2 flex justify-center pb-6 text-sm">
         {intl.formatMessage(messages.signinMessage)}
       </div>
+      {error && (
+        <div className="mb-4">
+          <Alert title={intl.formatMessage(messages.loginError)} type="error">
+            {error}
+          </Alert>
+        </div>
+      )}
       <div className="flex items-center justify-center">
-        <PlexLoginButton onAuthToken={(authToken) => setAuthToken(authToken)} />
+        <PlexLoginButton
+          onAuthToken={(token) => {
+            setError(null);
+            setAuthToken(token);
+          }}
+          onError={(msg) => setError(msg)}
+          isProcessing={isProcessing}
+        />
       </div>
     </form>
   );

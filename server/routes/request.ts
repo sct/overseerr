@@ -158,6 +158,22 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
         });
       }
 
+      // Filter by media type (movie, tv, music)
+      const typeFilter = req.query.type as string | undefined;
+      if (typeFilter === 'movie') {
+        query = query.andWhere('request.type = :movieType', {
+          movieType: MediaType.MOVIE,
+        });
+      } else if (typeFilter === 'tv') {
+        query = query.andWhere('request.type = :tvType', {
+          tvType: MediaType.TV,
+        });
+      } else if (typeFilter === 'music') {
+        query = query.andWhere('request.type IN (:...musicTypes)', {
+          musicTypes: [MediaType.ARTIST, MediaType.ALBUM, MediaType.MUSIC],
+        });
+      }
+
       const [requests, requestCount] = await query
         .orderBy(sortFilter, 'DESC')
         .take(pageSize)
@@ -314,7 +330,10 @@ requestRoutes.get(
           statusFilter = [MediaRequestStatus.PENDING];
           break;
         case 'unavailable':
-          statusFilter = [MediaRequestStatus.PENDING, MediaRequestStatus.APPROVED];
+          statusFilter = [
+            MediaRequestStatus.PENDING,
+            MediaRequestStatus.APPROVED,
+          ];
           break;
         case 'failed':
           statusFilter = [MediaRequestStatus.FAILED];
@@ -392,6 +411,22 @@ requestRoutes.get(
         query = query.andWhere('requestedBy.id = :id', { id: requestedBy });
       }
 
+      // Filter by media type (movie, tv, music)
+      const typeFilter = req.query.type as string | undefined;
+      if (typeFilter === 'movie') {
+        query = query.andWhere('request.type = :movieType', {
+          movieType: MediaType.MOVIE,
+        });
+      } else if (typeFilter === 'tv') {
+        query = query.andWhere('request.type = :tvType', {
+          tvType: MediaType.TV,
+        });
+      } else if (typeFilter === 'music') {
+        query = query.andWhere('request.type IN (:...musicTypes)', {
+          musicTypes: [MediaType.ARTIST, MediaType.ALBUM, MediaType.MUSIC],
+        });
+      }
+
       const requests = await query.getMany();
 
       const csvEscape = (value: unknown): string => {
@@ -410,6 +445,7 @@ requestRoutes.get(
         'requestStatus',
         'is4k',
         'tmdbId',
+        'musicBrainzId',
         'mediaStatus',
         'createdAt',
         'updatedAt',
@@ -417,22 +453,29 @@ requestRoutes.get(
 
       const rows = requests.map((r) => {
         const mediaStatus = r.is4k ? r.media.status4k : r.media.status;
+        const isMusic =
+          r.type === MediaType.ARTIST ||
+          r.type === MediaType.ALBUM ||
+          r.type === MediaType.MUSIC;
         return [
           r.id,
           r.type,
           r.requestedBy?.displayName ?? '',
           r.modifiedBy?.displayName ?? '',
           // TS enums have reverse mappings
-          (MediaRequestStatus as any)[r.status] ?? r.status,
+          (MediaRequestStatus as Record<number, string>)[r.status] ?? r.status,
           r.is4k,
-          r.media.tmdbId,
-          (MediaStatus as any)[mediaStatus] ?? mediaStatus,
+          isMusic ? '' : r.media.tmdbId ?? '',
+          isMusic ? r.media.musicBrainzId ?? '' : '',
+          (MediaStatus as Record<number, string>)[mediaStatus] ?? mediaStatus,
           r.createdAt ? new Date(r.createdAt).toISOString() : '',
           r.updatedAt ? new Date(r.updatedAt).toISOString() : '',
         ].map(csvEscape);
       });
 
-      const csv = [header.map(csvEscape), ...rows].map((r) => r.join(',')).join('\n');
+      const csv = [header.map(csvEscape), ...rows]
+        .map((r) => r.join(','))
+        .join('\n');
 
       res.setHeader('Content-Type', 'text/csv; charset=utf-8');
       res.setHeader(
@@ -468,7 +511,12 @@ requestRoutes.post<never, BulkRequestResponse, BulkRequestBody>(
 
       const requests = await requestRepository.find({
         where: { id: In(requestIds) },
-        relations: { requestedBy: true, modifiedBy: true, seasons: true, media: true },
+        relations: {
+          requestedBy: true,
+          modifiedBy: true,
+          seasons: true,
+          media: true,
+        },
       });
 
       if (!requests.length) {
@@ -513,7 +561,10 @@ requestRoutes.post<never, BulkRequestResponse, BulkRequestBody>(
         label: 'Media Request',
         message: e.message,
       });
-      return next({ status: 500, message: 'Unable to process bulk request action.' });
+      return next({
+        status: 500,
+        message: 'Unable to process bulk request action.',
+      });
     }
   }
 );

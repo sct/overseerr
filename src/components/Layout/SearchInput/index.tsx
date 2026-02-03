@@ -1,15 +1,27 @@
 import useSearchInput from '@app/hooks/useSearchInput';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/router';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   searchPlaceholder: 'Search Movies, TV & Music',
+  searchPlaceholderMusic: 'Search Music',
 });
 
 const SearchInput = () => {
   const intl = useIntl();
+  const router = useRouter();
   const { searchValue, setSearchValue, setIsOpen, clear } = useSearchInput();
+
+  const isMusicContext =
+    router.pathname.startsWith('/discover/artists') ||
+    router.pathname.startsWith('/discover/albums') ||
+    router.pathname.startsWith('/search');
+
+  const placeholder = isMusicContext
+    ? intl.formatMessage(messages.searchPlaceholderMusic)
+    : intl.formatMessage(messages.searchPlaceholder);
   return (
     <div className="flex flex-1">
       <div className="flex w-full">
@@ -25,7 +37,7 @@ const SearchInput = () => {
             className={`block w-full rounded-full border border-gray-600 bg-gray-900 bg-opacity-80 py-2 pl-10 text-white placeholder-gray-300 hover:border-gray-500 focus:border-gray-500 focus:bg-opacity-100 focus:placeholder-gray-400 focus:outline-none focus:ring-0 sm:text-base ${
               searchValue.length > 0 ? 'pr-7' : ''
             }`}
-            placeholder={intl.formatMessage(messages.searchPlaceholder)}
+            placeholder={placeholder}
             type="search"
             autoComplete="off"
             value={searchValue}

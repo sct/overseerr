@@ -1,6 +1,6 @@
+import LidarrAPI from '@server/api/servarr/lidarr';
 import RadarrAPI from '@server/api/servarr/radarr';
 import SonarrAPI from '@server/api/servarr/sonarr';
-import LidarrAPI from '@server/api/servarr/lidarr';
 import { MediaStatus, MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
@@ -30,11 +30,13 @@ class Media {
     const mediaRepository = getRepository(Media);
 
     try {
-      let finalIds: number[];
-      if (!Array.isArray(tmdbIds)) {
-        finalIds = [tmdbIds];
-      } else {
-        finalIds = tmdbIds;
+      const rawIds = Array.isArray(tmdbIds) ? tmdbIds : [tmdbIds];
+      const finalIds = rawIds.filter(
+        (id): id is number => typeof id === 'number' && Number.isFinite(id)
+      );
+
+      if (finalIds.length === 0) {
+        return [];
       }
 
       const media = await mediaRepository.find({
@@ -274,7 +276,10 @@ class Media {
       );
 
       if (server) {
-        if (this.mediaType === MediaType.ARTIST || this.mediaType === MediaType.MUSIC) {
+        if (
+          this.mediaType === MediaType.ARTIST ||
+          this.mediaType === MediaType.MUSIC
+        ) {
           // MUSIC type is treated as ARTIST in Lidarr
           this.serviceUrl = server.externalUrl
             ? `${server.externalUrl}/artist/${this.externalServiceSlug}`

@@ -396,9 +396,12 @@ searchRoutes.get('/', async (req, res, next) => {
       }
     }
 
-    const media = await Media.getRelatedMedia(
-      tmdbResults.results.map((result) => result.id)
-    );
+    const tmdbIds = tmdbResults.results
+      .map((result) => result.id)
+      .filter(
+        (id): id is number => typeof id === 'number' && Number.isFinite(id)
+      );
+    const media = await Media.getRelatedMedia(tmdbIds);
 
     const mappedResults = mapSearchResults(tmdbResults.results, media);
 

@@ -199,7 +199,7 @@ export const mapPersonResult = (
   adult: personResult.adult,
   mediaType: personResult.media_type,
   profilePath: personResult.profile_path,
-  knownFor: personResult.known_for.map((result) => {
+  knownFor: (personResult.known_for ?? []).map((result) => {
     if (result.media_type === 'movie') {
       return mapMovieResult(result);
     }
@@ -237,8 +237,14 @@ export const mapSearchResults = (
         );
       case 'collection':
         return mapCollectionResult(result);
-      default:
+      case 'person':
         return mapPersonResult(result);
+      default:
+        // Fallback for unexpected media_type (e.g. undefined from API)
+        if ('title' in result && !('known_for' in result)) {
+          return mapCollectionResult(result as TmdbCollectionResult);
+        }
+        return mapPersonResult(result as TmdbPersonResult);
     }
   });
 

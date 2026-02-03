@@ -199,6 +199,7 @@
   "components.LanguageSelector.originalLanguageDefault": "All Languages",
   "components.Layout.LanguagePicker.displaylanguage": "Display Language",
   "components.Layout.SearchInput.searchPlaceholder": "Search Movies & TV",
+  "components.Layout.SearchInput.searchPlaceholderMusic": "Search Music",
   "components.Layout.Sidebar.browsemovies": "Movies",
   "components.Layout.Sidebar.browsetv": "Series",
   "components.Layout.Sidebar.browsemusic": "Music",
