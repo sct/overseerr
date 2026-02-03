@@ -1,7 +1,6 @@
 import globalMessages from '@app/i18n/globalMessages';
 import PlexOAuth from '@app/utils/plex';
-import ArrowRightOnRectangleIcon from '@heroicons/react/24/outline/ArrowRightOnRectangleIcon';
-// import { ArrowLeftOnRectangleIcon } from '@heroicons/react/24/outline';
+import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
