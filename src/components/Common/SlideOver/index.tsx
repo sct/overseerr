@@ -1,113 +1,128 @@
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-import { useLockBodyScroll } from '@app/hooks/useLockBodyScroll';
-import { Transition } from '@headlessui/react';
+import Button from '@app/components/Common/Button';
+import { useFocusTrap, useModalKeyboard } from '@app/hooks/useFocusTrap';
+import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
-import { Fragment, useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { Fragment, useRef } from 'react';
 
 interface SlideOverProps {
   show?: boolean;
-  title: React.ReactNode;
-  subText?: string;
-  onClose: () => void;
-  children: React.ReactNode;
+  onClose?: () => void;
+  title?: string;
+  subText?: React.ReactNode;
+  onSave?: () => void;
+  saveText?: React.ReactNode;
+  saveProcessing?: boolean;
+  saveDisabled?: boolean;
+  children?: React.ReactNode;
+  actionButtons?: React.ReactNode;
 }
 
 const SlideOver = ({
-  show = false,
+  show,
+  onClose,
   title,
   subText,
-  onClose,
+  onSave,
+  saveText,
+  saveProcessing,
+  saveDisabled,
   children,
+  actionButtons,
 }: SlideOverProps) => {
-  const [isMounted, setIsMounted] = useState(false);
-  const slideoverRef = useRef(null);
-  useLockBodyScroll(show);
+  const slideOverRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  // Implement focus trapping for accessibility
+  useFocusTrap(slideOverRef, !!show);
 
-  if (!isMounted) {
-    return null;
-  }
+  // Implement keyboard navigation (Escape key handling)
+  useModalKeyboard(onClose, !!show);
 
-  return ReactDOM.createPortal(
-    <Transition
-      as={Fragment}
-      show={show}
-      appear
-      enter="transition-opacity ease-in-out duration-300"
-      enterFrom="opacity-0"
-      enterTo="opacity-100"
-      leave="transition-opacity ease-in-out duration-300"
-      leaveFrom="opacity-100"
-      leaveTo="opacity-0"
-    >
-      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <div
-        className={`fixed inset-0 z-50 overflow-hidden bg-gray-800 bg-opacity-70`}
-        onClick={() => onClose()}
-        onKeyDown={(e) => {
-          if (e.key === 'Escape') {
-            onClose();
-          }
-        }}
+  return (
+    <Transition appear show={show ?? false} as={Fragment}>
+      <Dialog
+        as="div"
+        className="fixed inset-0 z-50 overflow-hidden"
+        onClose={() => onClose?.()}
       >
         <div className="absolute inset-0 overflow-hidden">
-          <section className="absolute inset-y-0 right-0 flex max-w-full">
+          <Transition.Child
+            as={Fragment}
+            enter="ease-in-out duration-300"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in-out duration-300"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <Dialog.Overlay className="absolute inset-0 bg-gray-900 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+          <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
             <Transition.Child
-              appear
-              enter="transition-transform ease-in-out duration-500 sm:duration-700"
+              as={Fragment}
+              enter="transform transition ease-in-out duration-300"
               enterFrom="translate-x-full"
               enterTo="translate-x-0"
-              leave="transition-transform ease-in-out duration-500 sm:duration-700"
+              leave="transform transition ease-in-out duration-300"
               leaveFrom="translate-x-0"
               leaveTo="translate-x-full"
             >
-              {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-              <div
-                className="slideover relative h-full w-screen max-w-md p-2 sm:p-3"
-                ref={slideoverRef}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="flex h-full flex-col rounded-lg bg-gray-800 bg-opacity-80 shadow-xl ring-1 ring-gray-700 backdrop-blur">
-                  <header className="space-y-1 border-b border-gray-700 py-4 px-4">
-                    <div className="flex items-center justify-between space-x-3">
-                      <h2 className="text-overseerr text-2xl font-bold leading-7">
-                        {title}
-                      </h2>
-                      <div className="flex h-7 items-center">
+              <div className="pointer-events-auto w-screen max-w-md">
+                <div
+                  ref={slideOverRef}
+                  className="flex h-full flex-col bg-gray-700 shadow-xl"
+                >
+                  <div className="flex items-start justify-between bg-gray-800 px-6 py-4">
+                    <div>
+                      {title && (
+                        <Dialog.Title className="text-lg font-medium text-white">
+                          {title}
+                        </Dialog.Title>
+                      )}
+                      {subText && <div className="mt-1">{subText}</div>}
+                    </div>
+                    {onClose && (
+                      <div className="ml-3 flex h-7 items-center">
                         <button
-                          aria-label="Close panel"
-                          className="text-gray-200 transition duration-150 ease-in-out hover:text-white"
-                          onClick={() => onClose()}
+                          type="button"
+                          className="rounded-md bg-gray-800 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                          onClick={onClose}
+                          aria-label="Close slideover"
                         >
-                          <XMarkIcon className="h-6 w-6" />
+                          <span className="sr-only">Close panel</span>
+                          <XMarkIcon className="h-6 w-6" aria-hidden="true" />
                         </button>
                       </div>
-                    </div>
-                    {subText && (
-                      <div>
-                        <p className="font-semibold leading-5 text-gray-300">
-                          {subText}
-                        </p>
-                      </div>
                     )}
-                  </header>
-                  <div className="hide-scrollbar flex flex-1 flex-col overflow-y-auto">
-                    <div className="flex-1 px-4 py-6 text-white">
-                      {children}
-                    </div>
                   </div>
+
+                  <div className="relative flex-1 overflow-y-auto overflow-x-hidden px-6 py-6">
+                    {children}
+                  </div>
+
+                  {(onSave || actionButtons) && (
+                    <div className="flex flex-col space-y-3 bg-gray-800 px-6 py-4">
+                      {actionButtons}
+                      {onSave && (
+                        <Button
+                          buttonType="primary"
+                          disabled={saveDisabled}
+                          onClick={onSave}
+                          className="w-full"
+                        >
+                          {saveProcessing
+                            ? 'Processing...'
+                            : saveText || 'Save'}
+                        </Button>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </Transition.Child>
-          </section>
+          </div>
         </div>
-      </div>
-    </Transition>,
-    document.body
+      </Dialog>
+    </Transition>
   );
 };
 

@@ -11,7 +11,14 @@ export interface LidarrArtistOptions {
   searchNow?: boolean;
   tags?: number[];
   addOptions?: {
-    monitor?: 'all' | 'future' | 'missing' | 'existing' | 'first' | 'latest' | 'none';
+    monitor?:
+      | 'all'
+      | 'future'
+      | 'missing'
+      | 'existing'
+      | 'first'
+      | 'latest'
+      | 'none';
     searchForMissingAlbums?: boolean;
   };
 }
@@ -41,14 +48,14 @@ export interface LidarrArtist {
   overview?: string;
   artistType?: string;
   disambiguation?: string;
-  links?: Array<{
+  links?: {
     url: string;
     name: string;
-  }>;
-  images?: Array<{
+  }[];
+  images?: {
     coverType: string;
     url: string;
-  }>;
+  }[];
   remotePoster?: string;
   path: string;
   qualityProfileId: number;
@@ -68,7 +75,14 @@ export interface LidarrArtist {
     percentOfTracks: number;
   };
   addOptions?: {
-    monitor?: 'all' | 'future' | 'missing' | 'existing' | 'first' | 'latest' | 'none';
+    monitor?:
+      | 'all'
+      | 'future'
+      | 'missing'
+      | 'existing'
+      | 'first'
+      | 'latest'
+      | 'none';
     searchForMissingAlbums?: boolean;
   };
 }
@@ -94,7 +108,7 @@ export interface LidarrAlbum {
     value: number;
   };
   releaseDate?: string;
-  releases?: Array<{
+  releases?: {
     id: number;
     albumId: number;
     foreignReleaseId: string;
@@ -102,17 +116,17 @@ export interface LidarrAlbum {
     status: string;
     duration: number;
     trackCount: number;
-    media: Array<{
+    media: {
       mediumNumber: number;
       mediumFormat: string;
       name: string;
-    }>;
+    }[];
     disambiguation?: string;
     country?: string[];
     label?: string[];
     format?: string;
     monitored: boolean;
-    trackFiles?: Array<{
+    trackFiles?: {
       id: number;
       path: string;
       size: number;
@@ -128,17 +142,17 @@ export interface LidarrAlbum {
           isRepack: boolean;
         };
       };
-    }>;
-  }>;
-  images?: Array<{
+    }[];
+  }[];
+  images?: {
     coverType: string;
     url: string;
-  }>;
+  }[];
   remoteCover?: string;
-  links?: Array<{
+  links?: {
     url: string;
     name: string;
-  }>;
+  }[];
   genres?: string[];
   tags: number[];
   addOptions?: {
@@ -466,9 +480,9 @@ class LidarrAPI extends ServarrBase<{ artistId: number; albumId: number }> {
     }
   }
 
-  public async getMetadataProfiles(): Promise<Array<{ id: number; name: string }>> {
+  public async getMetadataProfiles(): Promise<{ id: number; name: string }[]> {
     try {
-      const data = await this.getRolling<Array<{ id: number; name: string }>>(
+      const data = await this.getRolling<{ id: number; name: string }[]>(
         `/metadataprofile`,
         undefined,
         3600
