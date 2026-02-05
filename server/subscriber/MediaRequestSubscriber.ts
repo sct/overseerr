@@ -58,9 +58,6 @@ export class MediaRequestSubscriber
     let label: string;
 
     switch (format) {
-      case UserTagFormat.USERID_USERNAME:
-        label = `${userId} - ${username}`;
-        break;
       case UserTagFormat.USERID_HYPHEN_USERNAME:
         label = `${userId}-${username}`;
         break;
@@ -90,10 +87,8 @@ export class MediaRequestSubscriber
     const format = userTagFormat ?? UserTagFormat.USERNAME_ONLY;
     const expectedTagLabel = this.generateUserTag(userId, displayName, format);
 
-    let userTag = (await api.getTags()).find((v) =>
-      format === UserTagFormat.USERID_USERNAME
-        ? v.label.startsWith(`${userId} - `) || v.label === expectedTagLabel
-        : v.label === expectedTagLabel
+    let userTag = (await api.getTags()).find(
+      (v) => v.label === expectedTagLabel
     );
 
     if (!userTag) {

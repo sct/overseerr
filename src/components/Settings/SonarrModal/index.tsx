@@ -69,13 +69,9 @@ const messages = defineMessages({
   tagRequestsInfo:
     "Automatically add an additional tag with the requester's user ID & display name",
   userTagFormat: 'User Tag Format',
-  userTagFormatInfo:
-    'Choose how user tags are formatted. Username-only is recommended for Sonarr compatibility.',
+  userTagFormatInfo: 'Choose how user tags are formatted.',
   userTagFormatUsernameOnly: 'Username only (e.g., "username") - Recommended',
-  userTagFormatUserIdUsername:
-    'User ID - Username (e.g., "1 - username") - Legacy, not Sonarr compatible',
-  userTagFormatUserIdHyphenUsername:
-    'User ID-Username (e.g., "1-username") - Sonarr compatible',
+  userTagFormatUserIdHyphenUsername: 'User ID-Username (e.g., "1-username")',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
@@ -1064,11 +1060,6 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                         <option value={UserTagFormat.USERID_HYPHEN_USERNAME}>
                           {intl.formatMessage(
                             messages.userTagFormatUserIdHyphenUsername
-                          )}
-                        </option>
-                        <option value={UserTagFormat.USERID_USERNAME}>
-                          {intl.formatMessage(
-                            messages.userTagFormatUserIdUsername
                           )}
                         </option>
                       </Field>

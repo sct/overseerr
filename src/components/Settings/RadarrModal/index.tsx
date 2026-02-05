@@ -62,13 +62,9 @@ const messages = defineMessages({
   tagRequestsInfo:
     "Automatically add an additional tag with the requester's user ID & display name",
   userTagFormat: 'User Tag Format',
-  userTagFormatInfo:
-    'Choose how user tags are formatted. Username-only is recommended for Radarr compatibility.',
+  userTagFormatInfo: 'Choose how user tags are formatted.',
   userTagFormatUsernameOnly: 'Username only (e.g., "username") - Recommended',
-  userTagFormatUserIdUsername:
-    'User ID - Username (e.g., "1 - username") - Legacy, not Radarr compatible',
-  userTagFormatUserIdHyphenUsername:
-    'User ID-Username (e.g., "1-username") - Radarr compatible',
+  userTagFormatUserIdHyphenUsername: 'User ID-Username (e.g., "1-username")',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'URL base must have a leading slash',
@@ -769,11 +765,6 @@ const RadarrModal = ({ onClose, radarr, onSave }: RadarrModalProps) => {
                         <option value={UserTagFormat.USERID_HYPHEN_USERNAME}>
                           {intl.formatMessage(
                             messages.userTagFormatUserIdHyphenUsername
-                          )}
-                        </option>
-                        <option value={UserTagFormat.USERID_USERNAME}>
-                          {intl.formatMessage(
-                            messages.userTagFormatUserIdUsername
                           )}
                         </option>
                       </Field>
