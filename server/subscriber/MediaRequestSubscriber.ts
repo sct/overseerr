@@ -42,7 +42,7 @@ export class MediaRequestSubscriber
     return label
       .toLowerCase()
       .replace(/\s+/g, '-')
-      .replace(/[^a-z0-9_-]/g, '')
+      .replace(/[^a-z0-9-]/g, '')
       .replace(/-+/g, '-')
       .replace(/^-+|-+$/g, '');
   }
