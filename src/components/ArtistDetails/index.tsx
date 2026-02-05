@@ -2,7 +2,6 @@ import Button from '@app/components/Common/Button';
 import CachedImage from '@app/components/Common/CachedImage';
 import LoadingSpinner from '@app/components/Common/LoadingSpinner';
 import PageTitle from '@app/components/Common/PageTitle';
-import Tag from '@app/components/Common/Tag';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import ManageSlideOver from '@app/components/ManageSlideOver';
 import RequestButton from '@app/components/RequestButton';
@@ -13,7 +12,14 @@ import TrackTitleCard from '@app/components/TitleCard/TrackTitleCard';
 import { Permission, useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
-import { CogIcon } from '@heroicons/react/24/outline';
+import {
+  CalendarIcon,
+  CircleStackIcon,
+  CogIcon,
+  MapPinIcon,
+  MusicalNoteIcon,
+  UsersIcon,
+} from '@heroicons/react/24/outline';
 import type Media from '@server/entity/Media';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -31,6 +37,15 @@ const messages = defineMessages({
   type: 'Type',
   area: 'Area',
   manageartist: 'Manage Artist',
+  formed: 'Formed',
+  ended: 'Ended',
+  members: 'Members',
+  releases: 'Releases',
+  popularTracks: 'Popular Tracks',
+  biography: 'Biography',
+  relatedArtists: 'Related Artists',
+  externalLinks: 'External Links',
+  artistInfo: 'Artist Info',
 });
 
 interface ArtistDetails {
@@ -57,6 +72,13 @@ interface ArtistDetails {
       name?: string;
     }[];
   }[];
+  relations?: {
+    type: string;
+    artist?: {
+      id: string;
+      name: string;
+    };
+  }[];
   mediaInfo?: Media;
   fanartThumbnail?: string;
   fanartLogo?: string;
@@ -67,6 +89,7 @@ interface ArtistDetails {
 interface TopTracksResponse {
   results: {
     id: string;
+    title?: string;
   }[];
 }
 
@@ -118,6 +141,7 @@ const ArtistDetails = () => {
   const topTracks = topTracksData?.results ?? [];
   const topAlbums =
     data.releaseGroups?.filter((rg) => rg['primary-type'] === 'Album') ?? [];
+  const allAlbums = data.releaseGroups ?? [];
 
   return (
     <div className="media-page">
@@ -135,11 +159,17 @@ const ArtistDetails = () => {
         revalidate={() => revalidate()}
         show={showManager}
       />
-      <div className="relative mt-4 overflow-hidden rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 via-indigo-900/40 to-gray-900 px-6 py-8 shadow-xl sm:px-8">
+
+      {/* Hero Section */}
+      <div className="relative mt-4 overflow-hidden rounded-2xl border border-gray-800 bg-gradient-to-br from-gray-900 via-indigo-900/40 to-purple-900/30 px-6 py-8 shadow-2xl sm:px-8">
+        {/* Decorative background elements */}
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-indigo-500/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-purple-500/10 blur-3xl" />
+        <div className="pointer-events-none absolute right-1/4 top-1/3 h-32 w-32 rounded-full bg-blue-500/5 blur-2xl" />
+
         <div className="media-header relative">
-          <div className="relative h-36 w-36 overflow-hidden rounded-full border border-gray-700 bg-gray-800 shadow-2xl ring-2 ring-indigo-400/60 sm:h-44 sm:w-44 xl:h-48 xl:w-48">
+          {/* Artist Image */}
+          <div className="relative h-36 w-36 overflow-hidden rounded-full border-2 border-indigo-400/30 bg-gray-800 shadow-2xl ring-4 ring-indigo-400/20 sm:h-44 sm:w-44 xl:h-52 xl:w-52">
             <CachedImage
               src={
                 data.imageUrl ||
@@ -152,6 +182,8 @@ const ArtistDetails = () => {
               priority
             />
           </div>
+
+          {/* Artist Info */}
           <div className="media-title">
             <div className="media-status">
               <StatusBadge
@@ -164,28 +196,62 @@ const ArtistDetails = () => {
                 serviceUrl={data.mediaInfo?.serviceUrl}
               />
             </div>
-            <h1 data-testid="media-title">
+            <h1 data-testid="media-title" className="text-3xl xl:text-4xl">
               {data.name}
               {data.disambiguation && (
-                <span className="media-year"> ({data.disambiguation})</span>
+                <span className="media-year text-xl text-gray-400">
+                  {' '}
+                  ({data.disambiguation})
+                </span>
               )}
             </h1>
-            <span className="media-attributes">
-              {data.type && <span>{data.type}</span>}
+
+            {/* Quick Stats */}
+            <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-400">
+              {data.type && (
+                <span className="flex items-center gap-1.5 rounded-full bg-gray-800/80 px-3 py-1">
+                  <UsersIcon className="h-4 w-4 text-indigo-400" />
+                  {data.type}
+                </span>
+              )}
               {data.country && (
-                <>
-                  {data.type && <span>|</span>}
-                  <span>{data.country}</span>
-                </>
+                <span className="flex items-center gap-1.5 rounded-full bg-gray-800/80 px-3 py-1">
+                  <MapPinIcon className="h-4 w-4 text-indigo-400" />
+                  {data.country}
+                </span>
               )}
-              {data.area && (
-                <>
-                  {(data.type || data.country) && <span>|</span>}
-                  <span>{data.area.name}</span>
-                </>
+              {data.lifeSpan?.begin && (
+                <span className="flex items-center gap-1.5 rounded-full bg-gray-800/80 px-3 py-1">
+                  <CalendarIcon className="h-4 w-4 text-indigo-400" />
+                  {data.lifeSpan.begin}
+                  {data.lifeSpan.end && ` - ${data.lifeSpan.end}`}
+                </span>
               )}
-            </span>
+              {allAlbums.length > 0 && (
+                <span className="flex items-center gap-1.5 rounded-full bg-gray-800/80 px-3 py-1">
+                  <CircleStackIcon className="h-4 w-4 text-indigo-400" />
+                  {allAlbums.length}{' '}
+                  {allAlbums.length === 1 ? 'Album' : 'Albums'}
+                </span>
+              )}
+            </div>
+
+            {/* Tags */}
+            {data.tags && data.tags.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {data.tags.slice(0, 8).map((tag) => (
+                  <span
+                    key={`tag-${tag.name}`}
+                    className="rounded-full bg-indigo-500/20 px-3 py-1 text-xs font-medium text-indigo-300 ring-1 ring-indigo-500/30 transition-colors hover:bg-indigo-500/30"
+                  >
+                    {tag.name}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* Actions */}
           <div className="media-actions">
             <RequestButton
               mediaType="artist"
@@ -205,50 +271,60 @@ const ArtistDetails = () => {
           </div>
         </div>
       </div>
+
+      {/* Content Grid */}
       <div className="media-overview">
-        <div className="media-overview-left">
-          <h2>{intl.formatMessage(messages.overview)}</h2>
-          <p>{intl.formatMessage(messages.overviewunavailable)}</p>
-          {data.tags && data.tags.length > 0 && (
-            <div className="mt-6">
-              {data.tags.map((tag) => (
-                <span
-                  key={`tag-${tag.name}`}
-                  className="mb-2 mr-2 inline-flex last:mr-0"
-                >
-                  <Tag>{tag.name}</Tag>
+        <div className="media-overview-left space-y-8">
+          {/* Biography Placeholder - could be populated with data from API */}
+          <section>
+            <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-white">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20">
+                <MusicalNoteIcon className="h-5 w-5 text-indigo-400" />
+              </span>
+              {intl.formatMessage(messages.biography)}
+            </h2>
+            <p className="leading-relaxed text-gray-400">
+              {data.name} is a {data.type?.toLowerCase() || 'artist'}
+              {data.country ? ` from ${data.country}` : ''}
+              {data.area ? `, based in ${data.area.name}` : ''}.
+              {allAlbums.length > 0 &&
+                ` With ${allAlbums.length} releases in their discography, they have established themselves in the music industry.`}
+            </p>
+          </section>
+
+          {/* Discography */}
+          {allAlbums.length > 0 && (
+            <section>
+              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20">
+                  <CircleStackIcon className="h-5 w-5 text-indigo-400" />
                 </span>
-              ))}
-            </div>
-          )}
-          {data.releaseGroups && data.releaseGroups.length > 0 && (
-            <>
-              <h2 className="py-4">
                 {intl.formatMessage(messages.discography)}
               </h2>
               <Slider
                 sliderKey="albums"
                 isLoading={false}
                 isEmpty={false}
-                items={(data.releaseGroups || [])
-                  .filter(
-                    (rg) =>
-                      !rg['primary-type'] || rg['primary-type'] === 'Album'
-                  )
-                  .slice(0, 20)
-                  .map((rg) => (
-                    <AlbumTitleCard
-                      key={`album-${rg.id}`}
-                      id={rg.id}
-                      mbid={rg.id}
-                    />
-                  ))}
+                items={allAlbums.slice(0, 20).map((rg) => (
+                  <AlbumTitleCard
+                    key={`album-${rg.id}`}
+                    id={rg.id}
+                    mbid={rg.id}
+                  />
+                ))}
               />
-            </>
+            </section>
           )}
+
+          {/* Top Songs */}
           {(topTracks.length > 0 || (!topTracksData && !topTracksError)) && (
-            <>
-              <h2 className="py-4">{intl.formatMessage(messages.topSongs)}</h2>
+            <section>
+              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20">
+                  <MusicalNoteIcon className="h-5 w-5 text-indigo-400" />
+                </span>
+                {intl.formatMessage(messages.popularTracks)}
+              </h2>
               <Slider
                 sliderKey="top-songs"
                 isLoading={!topTracksData && !topTracksError}
@@ -261,11 +337,18 @@ const ArtistDetails = () => {
                   />
                 ))}
               />
-            </>
+            </section>
           )}
+
+          {/* Top Albums */}
           {topAlbums.length > 0 && (
-            <>
-              <h2 className="py-4">{intl.formatMessage(messages.topAlbums)}</h2>
+            <section>
+              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-white">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20">
+                  <CircleStackIcon className="h-5 w-5 text-indigo-400" />
+                </span>
+                {intl.formatMessage(messages.topAlbums)}
+              </h2>
               <Slider
                 sliderKey="top-albums"
                 isLoading={false}
@@ -278,59 +361,77 @@ const ArtistDetails = () => {
                   />
                 ))}
               />
-            </>
+            </section>
           )}
         </div>
+
+        {/* Sidebar */}
         <div className="media-overview-right">
-          <div className="media-facts">
-            {data.country && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.country)}</span>
-                <span className="media-fact-value">{data.country}</span>
+          <div className="rounded-xl border border-gray-800 bg-gray-900/50 p-6 shadow-xl backdrop-blur-sm">
+            <h3 className="mb-4 text-lg font-semibold text-white">
+              {intl.formatMessage(messages.artistInfo)}
+            </h3>
+
+            <div className="space-y-4">
+              {data.country && (
+                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                  <span className="text-gray-400">
+                    {intl.formatMessage(messages.country)}
+                  </span>
+                  <span className="font-medium text-white">{data.country}</span>
+                </div>
+              )}
+              {data.type && (
+                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                  <span className="text-gray-400">
+                    {intl.formatMessage(messages.type)}
+                  </span>
+                  <span className="font-medium text-white">{data.type}</span>
+                </div>
+              )}
+              {data.area && (
+                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                  <span className="text-gray-400">
+                    {intl.formatMessage(messages.area)}
+                  </span>
+                  <span className="font-medium text-white">
+                    {data.area.name}
+                  </span>
+                </div>
+              )}
+              {data.lifeSpan?.begin && (
+                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                  <span className="text-gray-400">
+                    {intl.formatMessage(messages.formed)}
+                  </span>
+                  <span className="font-medium text-white">
+                    {data.lifeSpan.begin}
+                  </span>
+                </div>
+              )}
+              {data.lifeSpan?.end && (
+                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                  <span className="text-gray-400">
+                    {intl.formatMessage(messages.ended)}
+                  </span>
+                  <span className="font-medium text-white">
+                    {data.lifeSpan.end}
+                  </span>
+                </div>
+              )}
+
+              <div className="pt-2">
+                <ExternalLinkBlock
+                  mediaType="artist"
+                  mbid={data.id}
+                  serviceUrl={data.mediaInfo?.serviceUrl}
+                />
               </div>
-            )}
-            {data.type && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.type)}</span>
-                <span className="media-fact-value">{data.type}</span>
-              </div>
-            )}
-            {data.area && (
-              <div className="media-fact">
-                <span>{intl.formatMessage(messages.area)}</span>
-                <span className="media-fact-value">{data.area.name}</span>
-              </div>
-            )}
-            {data.lifeSpan && (
-              <>
-                {data.lifeSpan.begin && (
-                  <div className="media-fact">
-                    <span>Started</span>
-                    <span className="media-fact-value">
-                      {data.lifeSpan.begin}
-                    </span>
-                  </div>
-                )}
-                {data.lifeSpan.end && (
-                  <div className="media-fact">
-                    <span>Ended</span>
-                    <span className="media-fact-value">
-                      {data.lifeSpan.end}
-                    </span>
-                  </div>
-                )}
-              </>
-            )}
-            <div className="media-fact">
-              <ExternalLinkBlock
-                mediaType="artist"
-                mbid={data.id}
-                serviceUrl={data.mediaInfo?.serviceUrl}
-              />
             </div>
           </div>
         </div>
       </div>
+
       <div className="extra-bottom-space relative" />
     </div>
   );

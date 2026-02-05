@@ -902,12 +902,13 @@ discoverRoutes.get('/artists', async (req, res, next) => {
     const shouldUsePopularFallback =
       queryParts.length === 0 &&
       (!requestedQuery || requestedQuery === '*' || requestedQuery === '');
-    // Default query if no filters
+    // Default query if no filters - use a broad query that MusicBrainz accepts
+    // The 'type:group OR type:person' matches most musical artists
     const query =
       queryParts.length > 0
         ? queryParts.join(' AND ')
         : shouldUsePopularFallback
-        ? 'tagcount:[1 TO *]'
+        ? '(type:group OR type:person)'
         : requestedQuery;
 
     const results = await musicBrainz.searchArtists(query, limit, offset);
@@ -929,6 +930,10 @@ discoverRoutes.get('/artists', async (req, res, next) => {
     if (req.query.sortBy === 'name') {
       sortedResults = [...sortedResults].sort((a, b) =>
         (a['sort-name'] || a.name).localeCompare(b['sort-name'] || b.name)
+      );
+    } else if (req.query.sortBy === 'name-desc') {
+      sortedResults = [...sortedResults].sort((a, b) =>
+        (b['sort-name'] || b.name).localeCompare(a['sort-name'] || a.name)
       );
     } else if (req.query.sortBy === 'tagcount' || shouldUsePopularFallback) {
       sortedResults = [...sortedResults].sort((a, b) => {
@@ -1018,11 +1023,13 @@ discoverRoutes.get('/albums', async (req, res, next) => {
       );
     }
 
-    // Default query if no filters
+    // Default query if no filters - use primarytype:Album for broad results
     const query =
       queryParts.length > 0
         ? queryParts.join(' AND ')
-        : sanitizeSearchQuery((req.query.query as string) || '*');
+        : sanitizeSearchQuery(
+            (req.query.query as string) || 'primarytype:Album'
+          );
 
     const results = await musicBrainz.searchReleaseGroups(query, limit, offset);
 
@@ -1044,11 +1051,21 @@ discoverRoutes.get('/albums', async (req, res, next) => {
       sortedResults = [...sortedResults].sort((a, b) =>
         a.title.localeCompare(b.title)
       );
+    } else if (req.query.sortBy === 'title-desc') {
+      sortedResults = [...sortedResults].sort((a, b) =>
+        b.title.localeCompare(a.title)
+      );
     } else if (req.query.sortBy === 'date') {
       sortedResults = [...sortedResults].sort((a, b) => {
         const dateA = a['first-release-date'] || '';
         const dateB = b['first-release-date'] || '';
         return dateB.localeCompare(dateA); // Newest first
+      });
+    } else if (req.query.sortBy === 'date-asc') {
+      sortedResults = [...sortedResults].sort((a, b) => {
+        const dateA = a['first-release-date'] || '';
+        const dateB = b['first-release-date'] || '';
+        return dateA.localeCompare(dateB); // Oldest first
       });
     } else if (req.query.sortBy === 'tagcount') {
       sortedResults = [...sortedResults].sort((a, b) => {

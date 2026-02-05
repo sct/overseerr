@@ -95,11 +95,11 @@ const MobileMenu = ({
       activeRegExp: /^\/discover\/tv$/,
     },
     {
-      href: '/discover/artists',
+      href: '/discover/music',
       content: intl.formatMessage(menuMessages.browsemusic),
       svgIcon: <MusicalNoteIcon className="h-6 w-6" />,
       svgIconSelected: <FilledMusicalNoteIcon className="h-6 w-6" />,
-      activeRegExp: /^\/discover\/(artists|albums)/,
+      activeRegExp: /^\/discover\/music/,
     },
     {
       href: '/search?mediaType=artist',

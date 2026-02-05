@@ -102,3 +102,65 @@ export const sanitizeInput = (input: string): string => {
     .replace(/\s+/g, ' ') // Normalize whitespace
     .slice(0, 1000); // Limit length to prevent DoS
 };
+
+/**
+ * Sanitizes a search query for MusicBrainz/Lucene-style search.
+ * Escapes special characters that could break or exploit the query.
+ */
+export const sanitizeSearchQuery = (input: string | undefined): string => {
+  if (!input || typeof input !== 'string') {
+    return '';
+  }
+
+  return input
+    .trim()
+    .replace(/[\\+&|!(){}[\]^"~*?:]/g, '') // Remove Lucene special chars
+    .replace(/\s+/g, ' ') // Normalize whitespace
+    .slice(0, 500); // Limit length
+};
+
+/**
+ * Parses a string to a positive integer. Returns undefined if invalid.
+ */
+export const toPositiveInteger = (
+  value: string | undefined
+): number | undefined => {
+  if (value === undefined || value === null || value === '') {
+    return undefined;
+  }
+  const num = parseInt(value, 10);
+  return Number.isInteger(num) && num > 0 ? num : undefined;
+};
+
+export interface PaginationResult {
+  page: number;
+  limit: number;
+  offset: number;
+}
+
+/**
+ * Validates and normalizes pagination parameters.
+ * @param page - Page number (1-based)
+ * @param limit - Items per page, or default limit when page is provided
+ * @param maxLimit - Maximum allowed limit
+ */
+export const validatePagination = (
+  page?: string,
+  limit?: string | number,
+  maxLimit = 100
+): PaginationResult => {
+  const defaultLimit = 25;
+  const parsedPage = toPositiveInteger(page) ?? 1;
+  const limitNum =
+    typeof limit === 'number'
+      ? Math.min(limit, maxLimit)
+      : toPositiveInteger(String(limit)) ?? defaultLimit;
+  const clampedLimit = Math.min(Math.max(1, limitNum), maxLimit);
+  const offset = (parsedPage - 1) * clampedLimit;
+
+  return {
+    page: parsedPage,
+    limit: clampedLimit,
+    offset,
+  };
+};

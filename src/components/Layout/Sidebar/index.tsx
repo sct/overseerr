@@ -56,43 +56,43 @@ const SidebarLinks: SidebarLinkProps[] = [
   {
     href: '/',
     messagesKey: 'dashboard',
-    svgIcon: <SparklesIcon className="mr-3 h-6 w-6" />,
+    svgIcon: <SparklesIcon className="h-5 w-5" />,
     activeRegExp: /^\/(discover\/?)?$/,
   },
   {
     href: '/discover/movies',
     messagesKey: 'browsemovies',
-    svgIcon: <FilmIcon className="mr-3 h-6 w-6" />,
+    svgIcon: <FilmIcon className="h-5 w-5" />,
     activeRegExp: /^\/discover\/movies$/,
   },
   {
     href: '/discover/tv',
     messagesKey: 'browsetv',
-    svgIcon: <TvIcon className="mr-3 h-6 w-6" />,
+    svgIcon: <TvIcon className="h-5 w-5" />,
     activeRegExp: /^\/discover\/tv$/,
   },
   {
-    href: '/discover/artists',
+    href: '/discover/music',
     messagesKey: 'browsemusic',
-    svgIcon: <MusicalNoteIcon className="mr-3 h-6 w-6" />,
-    activeRegExp: /^\/discover\/(artists|albums)/,
+    svgIcon: <MusicalNoteIcon className="h-5 w-5" />,
+    activeRegExp: /^\/discover\/music/,
   },
   {
     href: '/search?mediaType=artist',
     messagesKey: 'searchmusic',
-    svgIcon: <MagnifyingGlassIcon className="mr-3 h-6 w-6" />,
+    svgIcon: <MagnifyingGlassIcon className="h-5 w-5" />,
     activeRegExp: /^\/search/,
   },
   {
     href: '/requests',
     messagesKey: 'requests',
-    svgIcon: <ClockIcon className="mr-3 h-6 w-6" />,
+    svgIcon: <ClockIcon className="h-5 w-5" />,
     activeRegExp: /^\/requests/,
   },
   {
     href: '/issues',
     messagesKey: 'issues',
-    svgIcon: <ExclamationTriangleIcon className="mr-3 h-6 w-6" />,
+    svgIcon: <ExclamationTriangleIcon className="h-5 w-5" />,
     activeRegExp: /^\/issues/,
     requiredPermission: [
       Permission.MANAGE_ISSUES,
@@ -104,7 +104,7 @@ const SidebarLinks: SidebarLinkProps[] = [
   {
     href: '/users',
     messagesKey: 'users',
-    svgIcon: <UsersIcon className="mr-3 h-6 w-6" />,
+    svgIcon: <UsersIcon className="h-5 w-5" />,
     activeRegExp: /^\/users/,
     requiredPermission: Permission.MANAGE_USERS,
     dataTestId: 'sidebar-menu-users',
@@ -112,7 +112,7 @@ const SidebarLinks: SidebarLinkProps[] = [
   {
     href: '/settings',
     messagesKey: 'settings',
-    svgIcon: <CogIcon className="mr-3 h-6 w-6" />,
+    svgIcon: <CogIcon className="h-5 w-5" />,
     activeRegExp: /^\/settings/,
     requiredPermission: Permission.ADMIN,
     dataTestId: 'sidebar-menu-settings',
@@ -221,18 +221,28 @@ const Sidebar = ({
                               }}
                               role="button"
                               tabIndex={0}
-                              className={`flex items-center rounded-md px-2 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out focus:outline-none
+                              className={`flex items-center rounded-lg px-3 py-3 text-base font-medium leading-6 text-white transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500
                                 ${
                                   router.pathname.match(
                                     sidebarLink.activeRegExp
                                   )
-                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
-                                    : 'hover:bg-gray-700 focus:bg-gray-700'
+                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 shadow-lg'
+                                    : 'hover:bg-gray-700/80'
                                 }
                               `}
                               data-testid={`${sidebarLink.dataTestId}-mobile`}
                             >
-                              {sidebarLink.svgIcon}
+                              <span
+                                className={`mr-3 flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
+                                  router.pathname.match(
+                                    sidebarLink.activeRegExp
+                                  )
+                                    ? 'bg-white/10'
+                                    : 'bg-gray-700/50'
+                                }`}
+                              >
+                                {sidebarLink.svgIcon}
+                              </span>
                               {intl.formatMessage(
                                 menuMessages[sidebarLink.messagesKey]
                               )}
@@ -284,18 +294,26 @@ const Sidebar = ({
                       legacyBehavior
                     >
                       <a
-                        className={`group flex items-center rounded-md px-2 py-2 text-lg font-medium leading-6 text-white transition duration-150 ease-in-out focus:outline-none
+                        className={`group relative flex items-center rounded-lg px-3 py-2.5 text-base font-medium leading-6 text-white transition-all duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-800
                                 ${
                                   router.pathname.match(
                                     sidebarLink.activeRegExp
                                   )
-                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
-                                    : 'hover:bg-gray-700 focus:bg-gray-700'
+                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 shadow-lg shadow-indigo-900/50 hover:from-indigo-500 hover:to-purple-500'
+                                    : 'hover:bg-gray-700/80 hover:shadow-md hover:shadow-gray-900/20'
                                 }
                               `}
                         data-testid={sidebarLink.dataTestId}
                       >
-                        {sidebarLink.svgIcon}
+                        <span
+                          className={`mr-3 flex h-8 w-8 items-center justify-center rounded-lg transition-colors ${
+                            router.pathname.match(sidebarLink.activeRegExp)
+                              ? 'bg-white/10'
+                              : 'bg-gray-700/50 group-hover:bg-gray-600/50'
+                          }`}
+                        >
+                          {sidebarLink.svgIcon}
+                        </span>
                         {intl.formatMessage(
                           menuMessages[sidebarLink.messagesKey]
                         )}

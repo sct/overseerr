@@ -5,6 +5,20 @@ module.exports = {
   env: {
     commitTag: process.env.COMMIT_TAG || 'local',
   },
+  async redirects() {
+    return [
+      {
+        source: '/discover/artists',
+        destination: '/discover/music',
+        permanent: true,
+      },
+      {
+        source: '/discover/albums',
+        destination: '/discover/music',
+        permanent: true,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

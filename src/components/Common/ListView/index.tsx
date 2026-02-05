@@ -48,7 +48,22 @@ const ListView = ({
     <>
       {isEmpty && !isLoading && (
         <div className="mt-32 flex w-full flex-col items-center justify-center text-center">
-          <div className="mb-4 text-6xl text-gray-600">🔍</div>
+          <div className="mb-6 flex h-24 w-24 items-center justify-center rounded-full bg-gray-800">
+            <svg
+              className="h-12 w-12 text-gray-600"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
           <div className="mb-2 text-2xl font-semibold text-gray-300">
             {intl.formatMessage(globalMessages.noresults)}
           </div>

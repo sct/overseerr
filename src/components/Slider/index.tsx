@@ -148,25 +148,31 @@ const Slider = ({
   };
 
   return (
-    <div className="relative" data-testid="media-slider">
-      <div className="absolute right-0 -mt-10 flex text-gray-400">
+    <div className="group relative" data-testid="media-slider">
+      <div className="absolute right-0 -mt-10 flex items-center gap-1">
         <button
-          className={`${
-            scrollPos.isStart ? 'text-gray-800' : 'hover:text-white'
+          className={`rounded-md p-1 transition-all duration-200 ${
+            scrollPos.isStart
+              ? 'cursor-not-allowed text-gray-800'
+              : 'text-gray-400 hover:bg-gray-700/50 hover:text-white'
           }`}
           onClick={() => slide(Direction.LEFT)}
           disabled={scrollPos.isStart}
           type="button"
+          aria-label="Scroll left"
         >
           <ChevronLeftIcon className="h-6 w-6" />
         </button>
         <button
-          className={`${
-            scrollPos.isEnd ? 'text-gray-800' : 'hover:text-white'
+          className={`rounded-md p-1 transition-all duration-200 ${
+            scrollPos.isEnd
+              ? 'cursor-not-allowed text-gray-800'
+              : 'text-gray-400 hover:bg-gray-700/50 hover:text-white'
           }`}
           onClick={() => slide(Direction.RIGHT)}
           disabled={scrollPos.isEnd}
           type="button"
+          aria-label="Scroll right"
         >
           <ChevronRightIcon className="h-6 w-6" />
         </button>
@@ -194,10 +200,27 @@ const Slider = ({
             </div>
           ))}
         {isEmpty && (
-          <div className="mt-16 mb-16 text-center font-medium text-gray-400">
-            {emptyMessage
-              ? emptyMessage
-              : intl.formatMessage(globalMessages.noresults)}
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-800/80">
+              <svg
+                className="h-8 w-8 text-gray-500"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"
+                />
+              </svg>
+            </div>
+            <p className="font-medium text-gray-400">
+              {emptyMessage
+                ? emptyMessage
+                : intl.formatMessage(globalMessages.noresults)}
+            </p>
           </div>
         )}
       </div>

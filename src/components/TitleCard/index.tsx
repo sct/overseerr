@@ -12,7 +12,7 @@ import { Transition } from '@headlessui/react';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { MediaStatus } from '@server/constants/media';
 import type { MediaType } from '@server/models/Search';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 import styles from './TitleCard.module.css';
@@ -71,6 +71,7 @@ const TitleCard = React.memo(
   }: TitleCardProps) => {
     const isTouch = useIsTouch();
     const intl = useIntl();
+    const router = useRouter();
     const { hasPermission } = useUser();
     const [isUpdating, setIsUpdating] = useState(false);
     const [currentStatus, setCurrentStatus] = useState(status);
@@ -149,10 +150,10 @@ const TitleCard = React.memo(
           />
         )}
         <div
-          className={`relative transform-gpu cursor-default overflow-hidden rounded-xl bg-gray-800 bg-cover outline-none ring-1 transition duration-300 ${
+          className={`relative transform-gpu cursor-default overflow-hidden rounded-xl bg-gray-800 bg-cover outline-none ring-1 transition-all duration-300 ease-out will-change-transform ${
             showDetail
-              ? 'scale-105 shadow-lg ring-gray-500'
-              : 'scale-100 shadow ring-gray-700'
+              ? 'scale-105 shadow-xl shadow-black/40 ring-gray-500'
+              : 'scale-100 shadow-md shadow-black/20 ring-gray-700 hover:ring-gray-600'
           } ${styles.cardAspect}`}
           onMouseEnter={() => {
             if (!isTouch) {
@@ -162,12 +163,26 @@ const TitleCard = React.memo(
           onMouseLeave={() => setShowDetail(false)}
           onClick={() => setShowDetail(true)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') {
-              setShowDetail(true);
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              const path =
+                mediaType === 'movie'
+                  ? `/movie/${id}`
+                  : mediaType === 'collection'
+                  ? `/collection/${id}`
+                  : mediaType === 'artist'
+                  ? `/artist/${id}`
+                  : mediaType === 'album'
+                  ? `/album/${id}`
+                  : mediaType === 'track'
+                  ? `/track/${id}`
+                  : `/tv/${id}`;
+              router.push(path);
             }
           }}
-          role="link"
+          role="button"
           tabIndex={0}
+          aria-label={`${title} (${year || 'Unknown year'})`}
         >
           <div className="absolute inset-0 h-full w-full overflow-hidden">
             <CachedImage
@@ -241,64 +256,70 @@ const TitleCard = React.memo(
               leaveTo="opacity-0"
             >
               <div className="absolute inset-0 overflow-hidden rounded-xl">
-                <Link
-                  href={
-                    mediaType === 'movie'
-                      ? `/movie/${id}`
-                      : mediaType === 'collection'
-                      ? `/collection/${id}`
-                      : mediaType === 'artist'
-                      ? `/artist/${id}`
-                      : mediaType === 'album'
-                      ? `/album/${id}`
-                      : mediaType === 'track'
-                      ? `/track/${id}`
-                      : `/tv/${id}`
-                  }
-                  legacyBehavior
+                <div
+                  className={`absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left ${styles.overlayGradient}`}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => {
+                    const path =
+                      mediaType === 'movie'
+                        ? `/movie/${id}`
+                        : mediaType === 'collection'
+                        ? `/collection/${id}`
+                        : mediaType === 'artist'
+                        ? `/artist/${id}`
+                        : mediaType === 'album'
+                        ? `/album/${id}`
+                        : mediaType === 'track'
+                        ? `/track/${id}`
+                        : `/tv/${id}`;
+                    router.push(path);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      (e.target as HTMLElement).click();
+                    }
+                  }}
                 >
-                  <a
-                    className={`absolute inset-0 h-full w-full cursor-pointer overflow-hidden text-left ${styles.overlayGradient}`}
-                  >
-                    <div className="flex h-full w-full items-end">
+                  <div className="flex h-full w-full items-end">
+                    <div
+                      className={`px-2 text-white ${
+                        !showRequestButton ||
+                        (currentStatus &&
+                          currentStatus !== MediaStatus.UNKNOWN &&
+                          currentStatus !== MediaStatus.DELETED)
+                          ? 'pb-2'
+                          : 'pb-11'
+                      }`}
+                    >
+                      {year && (
+                        <div className="text-sm font-medium">{year}</div>
+                      )}
+
+                      <h1
+                        className={`whitespace-normal text-xl font-bold leading-tight ${styles.titleClamp}`}
+                        data-testid="title-card-title"
+                      >
+                        {title}
+                      </h1>
                       <div
-                        className={`px-2 text-white ${
+                        className={`whitespace-normal text-xs ${
+                          styles.summaryClamp
+                        } ${
                           !showRequestButton ||
                           (currentStatus &&
                             currentStatus !== MediaStatus.UNKNOWN &&
                             currentStatus !== MediaStatus.DELETED)
-                            ? 'pb-2'
-                            : 'pb-11'
+                            ? styles.summaryClampLong
+                            : styles.summaryClampShort
                         }`}
                       >
-                        {year && (
-                          <div className="text-sm font-medium">{year}</div>
-                        )}
-
-                        <h1
-                          className={`whitespace-normal text-xl font-bold leading-tight ${styles.titleClamp}`}
-                          data-testid="title-card-title"
-                        >
-                          {title}
-                        </h1>
-                        <div
-                          className={`whitespace-normal text-xs ${
-                            styles.summaryClamp
-                          } ${
-                            !showRequestButton ||
-                            (currentStatus &&
-                              currentStatus !== MediaStatus.UNKNOWN &&
-                              currentStatus !== MediaStatus.DELETED)
-                              ? styles.summaryClampLong
-                              : styles.summaryClampShort
-                          }`}
-                        >
-                          {summary}
-                        </div>
+                        {summary}
                       </div>
                     </div>
-                  </a>
-                </Link>
+                  </div>
+                </div>
 
                 <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-2">
                   {showRequestButton &&
@@ -309,7 +330,7 @@ const TitleCard = React.memo(
                         buttonType="primary"
                         buttonSize="sm"
                         onClick={(e) => {
-                          e.preventDefault();
+                          e.stopPropagation();
                           setShowRequestModal(true);
                         }}
                         className="h-7 w-full"

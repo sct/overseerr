@@ -128,7 +128,7 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
       'release-groups',
       'tags',
       'ratings',
-      'url-relations',
+      'url-rels',
     ]);
 
     const mediaRepository = getRepository(Media);
@@ -191,10 +191,13 @@ musicRoutes.get('/artist/:mbid', async (req, res, next) => {
     });
   } catch (e) {
     const status = (e as { response?: { status?: number } }).response?.status;
-    logger.debug('Something went wrong retrieving artist', {
+    const errorData = (e as { response?: { data?: unknown } }).response?.data;
+    logger.error('Something went wrong retrieving artist', {
       label: 'API',
       errorMessage: e.message,
+      errorData,
       mbid,
+      status,
     });
     return next({
       status: status === 404 ? 404 : 500,
@@ -404,8 +407,8 @@ musicRoutes.get('/artist/:mbid/similar', async (req, res, next) => {
   try {
     // Get artist with relations to find similar artists
     const artist = await musicBrainz.getArtist(mbid, [
-      'artist-relations',
-      'url-relations',
+      'artist-rels',
+      'url-rels',
     ]);
 
     const similarArtists: {

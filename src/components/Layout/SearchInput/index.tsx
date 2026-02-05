@@ -15,8 +15,7 @@ const SearchInput = () => {
   const { searchValue, setSearchValue, setIsOpen, clear } = useSearchInput();
 
   const isMusicContext =
-    router.pathname.startsWith('/discover/artists') ||
-    router.pathname.startsWith('/discover/albums') ||
+    router.pathname.startsWith('/discover/music') ||
     router.pathname.startsWith('/search');
 
   const placeholder = isMusicContext

@@ -39,6 +39,10 @@ const messages = defineMessages({
   allGenres: 'All Genres',
   allYears: 'All Years',
   allStatuses: 'All Statuses',
+  searchPlaceholder: 'Search for {type}...',
+  quickFilters: 'Quick Filters',
+  musicTypes: 'Music Types',
+  movieTvTypes: 'Movies & TV',
 });
 
 const Search = () => {
@@ -52,6 +56,12 @@ const Search = () => {
 
   const { data: movieGenres } = useSWR('/api/v1/genres/movie');
   const { data: tvGenres } = useSWR('/api/v1/genres/tv');
+
+  // Check if this is a music-only search context (from sidebar "Search Music")
+  const isMusicContext =
+    router.query.mediaType === 'artist' ||
+    router.query.mediaType === 'album' ||
+    router.query.mediaType === 'track';
 
   useEffect(() => {
     if (router.query.year) setYear(String(router.query.year));
@@ -90,6 +100,11 @@ const Search = () => {
     typeof router.query.query === 'string' ? router.query.query : '';
   const hasQuery = searchQuery.trim().length > 0;
 
+  // For music context, we need a valid query (not empty or *)
+  const isValidQuery =
+    searchQuery && searchQuery !== '*' && searchQuery.trim().length > 0;
+  const shouldSearch = isMusicContext ? isValidQuery : hasQuery;
+
   const {
     isLoadingInitialData,
     isEmpty,
@@ -106,9 +121,9 @@ const Search = () => {
     | AlbumResult
     | TrackResult
   >(
-    hasQuery ? `/api/v1/search` : null,
+    shouldSearch ? `/api/v1/search` : null,
     {
-      ...(hasQuery && { query: searchQuery }),
+      ...(shouldSearch && searchQuery && { query: searchQuery }),
       ...(year && { year: Number(year) }),
       ...(genre && { genre: Number(genre) }),
       ...(mediaType && { mediaType }),
@@ -136,8 +151,8 @@ const Search = () => {
         <div className="flex items-center justify-between">
           <Header>
             {mediaType === 'artist' ||
-              mediaType === 'album' ||
-              mediaType === 'track'
+            mediaType === 'album' ||
+            mediaType === 'track'
               ? intl.formatMessage(messages.searchmusic)
               : intl.formatMessage(messages.searchresults)}
           </Header>
@@ -148,6 +163,107 @@ const Search = () => {
             <FunnelIcon className="h-5 w-5" />
             <span>{intl.formatMessage(messages.filters)}</span>
           </Button>
+        </div>
+
+        {/* Quick Type Selector */}
+        <div className="mt-4 flex flex-wrap gap-2">
+          <span className="mr-2 text-sm text-gray-400">
+            {isMusicContext
+              ? intl.formatMessage(messages.musicTypes)
+              : intl.formatMessage(messages.quickFilters)}
+            :
+          </span>
+          {/* Music Types - Always show */}
+          <button
+            onClick={() => {
+              setMediaType('artist');
+              const query = { ...router.query, mediaType: 'artist' };
+              router.push({ pathname: router.pathname, query });
+            }}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              mediaType === 'artist'
+                ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            {intl.formatMessage(messages.artist)}
+          </button>
+          <button
+            onClick={() => {
+              setMediaType('album');
+              const query = { ...router.query, mediaType: 'album' };
+              router.push({ pathname: router.pathname, query });
+            }}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              mediaType === 'album'
+                ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            {intl.formatMessage(messages.album)}
+          </button>
+          <button
+            onClick={() => {
+              setMediaType('track');
+              const query = { ...router.query, mediaType: 'track' };
+              router.push({ pathname: router.pathname, query });
+            }}
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              mediaType === 'track'
+                ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white'
+                : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+            }`}
+          >
+            {intl.formatMessage(messages.track)}
+          </button>
+          {/* Only show Movie/TV Types in non-music context */}
+          {!isMusicContext && (
+            <>
+              <span className="mx-2 text-gray-600">|</span>
+              <button
+                onClick={() => {
+                  setMediaType('movie');
+                  const query = { ...router.query, mediaType: 'movie' };
+                  router.push({ pathname: router.pathname, query });
+                }}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                  mediaType === 'movie'
+                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                {intl.formatMessage(messages.movie)}
+              </button>
+              <button
+                onClick={() => {
+                  setMediaType('tv');
+                  const query = { ...router.query, mediaType: 'tv' };
+                  router.push({ pathname: router.pathname, query });
+                }}
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                  mediaType === 'tv'
+                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white'
+                    : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                }`}
+              >
+                {intl.formatMessage(messages.tv)}
+              </button>
+            </>
+          )}
+          {/* Clear filter */}
+          {mediaType && (
+            <button
+              onClick={() => {
+                setMediaType('');
+                const query = { ...router.query };
+                delete query.mediaType;
+                router.push({ pathname: router.pathname, query });
+              }}
+              className="rounded-full px-3 py-1 text-xs font-medium text-gray-500 transition-colors hover:text-gray-300"
+            >
+              Clear
+            </button>
+          )}
         </div>
       </div>
 
@@ -167,43 +283,45 @@ const Search = () => {
           <div
             className={
               mediaType === 'artist' ||
-                mediaType === 'album' ||
-                mediaType === 'track'
+              mediaType === 'album' ||
+              mediaType === 'track'
                 ? 'grid grid-cols-1 gap-4 sm:grid-cols-2'
                 : 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4'
             }
           >
-            <div>
-              <label className="text-label">
-                {intl.formatMessage(messages.mediaType)}
-              </label>
-              <select
-                className="form-input-field"
-                value={mediaType}
-                aria-label={intl.formatMessage(messages.mediaType)}
-                onChange={(e) => setMediaType(e.target.value)}
-              >
-                <option value="">
-                  {intl.formatMessage(messages.allTypes)}
-                </option>
-                <option value="movie">
-                  {intl.formatMessage(messages.movie)}
-                </option>
-                <option value="tv">{intl.formatMessage(messages.tv)}</option>
-                <option value="artist">
-                  {intl.formatMessage(messages.artist)}
-                </option>
-                <option value="album">
-                  {intl.formatMessage(messages.album)}
-                </option>
-                <option value="track">
-                  {intl.formatMessage(messages.track)}
-                </option>
-              </select>
-            </div>
-            {(mediaType !== 'artist' &&
+            {!isMusicContext && (
+              <div>
+                <label className="text-label">
+                  {intl.formatMessage(messages.mediaType)}
+                </label>
+                <select
+                  className="form-input-field"
+                  value={mediaType}
+                  aria-label={intl.formatMessage(messages.mediaType)}
+                  onChange={(e) => setMediaType(e.target.value)}
+                >
+                  <option value="">
+                    {intl.formatMessage(messages.allTypes)}
+                  </option>
+                  <option value="movie">
+                    {intl.formatMessage(messages.movie)}
+                  </option>
+                  <option value="tv">{intl.formatMessage(messages.tv)}</option>
+                  <option value="artist">
+                    {intl.formatMessage(messages.artist)}
+                  </option>
+                  <option value="album">
+                    {intl.formatMessage(messages.album)}
+                  </option>
+                  <option value="track">
+                    {intl.formatMessage(messages.track)}
+                  </option>
+                </select>
+              </div>
+            )}
+            {mediaType !== 'artist' &&
               mediaType !== 'album' &&
-              mediaType !== 'track') && (
+              mediaType !== 'track' && (
                 <>
                   <div>
                     <label className="text-label">
