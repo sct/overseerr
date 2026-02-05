@@ -12,6 +12,7 @@ import {
   MediaStatus,
   MediaType,
 } from '@server/constants/media';
+import { UserTagFormat } from '@server/constants/usertag';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
 import { MediaRequest } from '@server/entity/MediaRequest';
@@ -33,6 +34,97 @@ import { EventSubscriber } from 'typeorm';
 export class MediaRequestSubscriber
   implements EntitySubscriberInterface<MediaRequest>
 {
+  /**
+   * Sanitizes a tag label to be compatible with Radarr/Sonarr validation.
+   * Only allows lowercase letters, numbers, and hyphens.
+   */
+  private sanitizeTagLabel(label: string): string {
+    return label
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+
+  /**
+   * Generates a user tag label based on the configured format.
+   */
+  private generateUserTag(
+    userId: number,
+    username: string,
+    format: UserTagFormat = UserTagFormat.USERNAME_ONLY
+  ): string {
+    let label: string;
+
+    switch (format) {
+      case UserTagFormat.USERID_USERNAME:
+        label = `${userId} - ${username}`;
+        break;
+      case UserTagFormat.USERID_HYPHEN_USERNAME:
+        label = `${userId}-${username}`;
+        break;
+      case UserTagFormat.USERNAME_ONLY:
+      default:
+        label = username;
+        break;
+    }
+
+    return this.sanitizeTagLabel(label);
+  }
+
+  /**
+   * Handles user tag creation and assignment for Radarr/Sonarr requests.
+   * Finds or creates a user-specific tag and adds it to the tags array.
+   */
+  private async handleUserTagRequest(
+    api: RadarrAPI | SonarrAPI,
+    userTagFormat: UserTagFormat | undefined,
+    userId: number,
+    displayName: string,
+    tags: number[],
+    requestId: number,
+    mediaId: number,
+    serverInfo: string
+  ): Promise<void> {
+    const format = userTagFormat ?? UserTagFormat.USERNAME_ONLY;
+    const expectedTagLabel = this.generateUserTag(userId, displayName, format);
+
+    let userTag = (await api.getTags()).find((v) =>
+      format === UserTagFormat.USERID_USERNAME
+        ? v.label.startsWith(`${userId} - `)
+        : v.label === expectedTagLabel
+    );
+
+    if (!userTag) {
+      logger.info(`Requester has no active tag. Creating new`, {
+        label: 'Media Request',
+        requestId,
+        mediaId,
+        userId,
+        newTag: expectedTagLabel,
+        tagFormat: format,
+      });
+      userTag = await api.createTag({
+        label: expectedTagLabel,
+      });
+    }
+
+    if (userTag?.id) {
+      if (!tags.find((v) => v === userTag?.id)) {
+        tags.push(userTag.id);
+      }
+    } else {
+      logger.warn(`Requester has no tag and failed to add one`, {
+        label: 'Media Request',
+        requestId,
+        mediaId,
+        userId,
+        server: serverInfo,
+      });
+    }
+  }
+
   private async notifyAvailableMovie(entity: MediaRequest) {
     if (
       entity.media[entity.is4k ? 'status4k' : 'status'] ===
@@ -249,36 +341,16 @@ export class MediaRequestSubscriber
         }
 
         if (radarrSettings.tagRequests) {
-          let userTag = (await radarr.getTags()).find((v) =>
-            v.label.startsWith(entity.requestedBy.id + ' - ')
+          await this.handleUserTagRequest(
+            radarr,
+            radarrSettings.userTagFormat,
+            entity.requestedBy.id,
+            entity.requestedBy.displayName,
+            tags,
+            entity.id,
+            entity.media.id,
+            `${radarrSettings.hostname}:${radarrSettings.port}`
           );
-          if (!userTag) {
-            logger.info(`Requester has no active tag. Creating new`, {
-              label: 'Media Request',
-              requestId: entity.id,
-              mediaId: entity.media.id,
-              userId: entity.requestedBy.id,
-              newTag:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
-            });
-            userTag = await radarr.createTag({
-              label:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
-            });
-          }
-          if (userTag.id) {
-            if (!tags?.find((v) => v === userTag?.id)) {
-              tags?.push(userTag.id);
-            }
-          } else {
-            logger.warn(`Requester has no tag and failed to add one`, {
-              label: 'Media Request',
-              requestId: entity.id,
-              mediaId: entity.media.id,
-              userId: entity.requestedBy.id,
-              radarrServer: radarrSettings.hostname + ':' + radarrSettings.port,
-            });
-          }
         }
 
         if (
@@ -550,36 +622,16 @@ export class MediaRequestSubscriber
         }
 
         if (sonarrSettings.tagRequests) {
-          let userTag = (await sonarr.getTags()).find((v) =>
-            v.label.startsWith(entity.requestedBy.id + ' - ')
+          await this.handleUserTagRequest(
+            sonarr,
+            sonarrSettings.userTagFormat,
+            entity.requestedBy.id,
+            entity.requestedBy.displayName,
+            tags,
+            entity.id,
+            entity.media.id,
+            `${sonarrSettings.hostname}:${sonarrSettings.port}`
           );
-          if (!userTag) {
-            logger.info(`Requester has no active tag. Creating new`, {
-              label: 'Media Request',
-              requestId: entity.id,
-              mediaId: entity.media.id,
-              userId: entity.requestedBy.id,
-              newTag:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
-            });
-            userTag = await sonarr.createTag({
-              label:
-                entity.requestedBy.id + ' - ' + entity.requestedBy.displayName,
-            });
-          }
-          if (userTag.id) {
-            if (!tags?.find((v) => v === userTag?.id)) {
-              tags?.push(userTag.id);
-            }
-          } else {
-            logger.warn(`Requester has no tag and failed to add one`, {
-              label: 'Media Request',
-              requestId: entity.id,
-              mediaId: entity.media.id,
-              userId: entity.requestedBy.id,
-              sonarrServer: sonarrSettings.hostname + ':' + sonarrSettings.port,
-            });
-          }
         }
 
         const sonarrSeriesOptions: AddSeriesOptions = {

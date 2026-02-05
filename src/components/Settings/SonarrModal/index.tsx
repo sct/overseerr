@@ -2,6 +2,7 @@ import Modal from '@app/components/Common/Modal';
 import SensitiveInput from '@app/components/Common/SensitiveInput';
 import globalMessages from '@app/i18n/globalMessages';
 import { Transition } from '@headlessui/react';
+import { UserTagFormat } from '@server/constants/usertag';
 import type { SonarrSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { Field, Formik } from 'formik';
@@ -67,6 +68,14 @@ const messages = defineMessages({
   tagRequests: 'Tag Requests',
   tagRequestsInfo:
     "Automatically add an additional tag with the requester's user ID & display name",
+  userTagFormat: 'User Tag Format',
+  userTagFormatInfo:
+    'Choose how user tags are formatted. Username-only is recommended for Sonarr compatibility.',
+  userTagFormatUsernameOnly: 'Username only (e.g., "username") - Recommended',
+  userTagFormatUserIdUsername:
+    'User ID - Username (e.g., "1 - username") - Legacy, not Sonarr compatible',
+  userTagFormatUserIdHyphenUsername:
+    'User ID-Username (e.g., "1-username") - Sonarr compatible',
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   validationBaseUrlLeadingSlash: 'Base URL must have a leading slash',
@@ -260,6 +269,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
           syncEnabled: sonarr?.syncEnabled ?? false,
           enableSearch: !sonarr?.preventSearch,
           tagRequests: sonarr?.tagRequests ?? false,
+          userTagFormat: sonarr?.userTagFormat ?? UserTagFormat.USERNAME_ONLY,
         }}
         validationSchema={SonarrSettingsSchema}
         onSubmit={async (values) => {
@@ -303,6 +313,7 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
               syncEnabled: values.syncEnabled,
               preventSearch: !values.enableSearch,
               tagRequests: values.tagRequests,
+              userTagFormat: values.userTagFormat,
             };
             if (!sonarr) {
               await axios.post('/api/v1/settings/sonarr', submission);
@@ -1031,6 +1042,39 @@ const SonarrModal = ({ onClose, sonarr, onSave }: SonarrModalProps) => {
                     />
                   </div>
                 </div>
+                {values.tagRequests && (
+                  <div className="form-row">
+                    <label htmlFor="userTagFormat" className="text-label">
+                      {intl.formatMessage(messages.userTagFormat)}
+                      <span className="label-tip">
+                        {intl.formatMessage(messages.userTagFormatInfo)}
+                      </span>
+                    </label>
+                    <div className="form-input-area">
+                      <Field
+                        as="select"
+                        id="userTagFormat"
+                        name="userTagFormat"
+                      >
+                        <option value={UserTagFormat.USERNAME_ONLY}>
+                          {intl.formatMessage(
+                            messages.userTagFormatUsernameOnly
+                          )}
+                        </option>
+                        <option value={UserTagFormat.USERID_HYPHEN_USERNAME}>
+                          {intl.formatMessage(
+                            messages.userTagFormatUserIdHyphenUsername
+                          )}
+                        </option>
+                        <option value={UserTagFormat.USERID_USERNAME}>
+                          {intl.formatMessage(
+                            messages.userTagFormatUserIdUsername
+                          )}
+                        </option>
+                      </Field>
+                    </div>
+                  </div>
+                )}
               </div>
             </Modal>
           );

@@ -1,3 +1,4 @@
+import type { UserTagFormat } from '@server/constants/usertag';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
 import { merge } from 'lodash';
@@ -62,6 +63,7 @@ export interface DVRSettings {
   syncEnabled: boolean;
   preventSearch: boolean;
   tagRequests: boolean;
+  userTagFormat?: UserTagFormat;
 }
 
 export interface RadarrSettings extends DVRSettings {
