@@ -92,7 +92,7 @@ export class MediaRequestSubscriber
 
     let userTag = (await api.getTags()).find((v) =>
       format === UserTagFormat.USERID_USERNAME
-        ? v.label.startsWith(`${userId} - `)
+        ? v.label.startsWith(`${userId} - `) || v.label === expectedTagLabel
         : v.label === expectedTagLabel
     );
 
