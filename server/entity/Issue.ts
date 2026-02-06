@@ -4,6 +4,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -18,9 +19,11 @@ class Issue {
   @PrimaryGeneratedColumn()
   public id: number;
 
+  @Index()
   @Column({ type: 'int' })
   public issueType: IssueType;
 
+  @Index()
   @Column({ type: 'int', default: IssueStatus.OPEN })
   public status: IssueStatus;
 

@@ -6,6 +6,7 @@ import { Permission } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
+import { isValidPassword } from '@server/utils/validation';
 import { Router } from 'express';
 
 const authRoutes = Router();
@@ -342,7 +343,7 @@ authRoutes.post('/reset-password', async (req, res, next) => {
 
   if (user) {
     await user.resetPassword();
-    userRepository.save(user);
+    await userRepository.save(user);
     logger.info('Successfully sent password reset link', {
       label: 'API',
       ip: req.ip,
@@ -362,15 +363,16 @@ authRoutes.post('/reset-password', async (req, res, next) => {
 authRoutes.post('/reset-password/:guid', async (req, res, next) => {
   const userRepository = getRepository(User);
 
-  if (!req.body.password || req.body.password?.length < 8) {
+  if (!req.body.password || !isValidPassword(req.body.password)) {
     logger.warn('Failed password reset attempt using invalid new password', {
       label: 'API',
       ip: req.ip,
       guid: req.params.guid,
     });
     return next({
-      status: 500,
-      message: 'Password must be at least 8 characters long.',
+      status: 400,
+      message:
+        'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one number.',
     });
   }
 
@@ -408,7 +410,7 @@ authRoutes.post('/reset-password/:guid', async (req, res, next) => {
 
   await user.setPassword(req.body.password);
   user.recoveryLinkExpirationDate = null;
-  userRepository.save(user);
+  await userRepository.save(user);
   logger.info('Successfully reset password', {
     label: 'API',
     ip: req.ip,

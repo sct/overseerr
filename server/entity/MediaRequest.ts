@@ -18,6 +18,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -530,6 +531,7 @@ export class MediaRequest {
   @PrimaryGeneratedColumn()
   public id: number;
 
+  @Index()
   @Column({ type: 'integer' })
   public status: MediaRequestStatus;
 
@@ -559,6 +561,7 @@ export class MediaRequest {
   @UpdateDateColumn()
   public updatedAt: Date;
 
+  @Index()
   @Column({ type: 'varchar' })
   public type: MediaType;
 

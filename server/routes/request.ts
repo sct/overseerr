@@ -190,7 +190,11 @@ requestRoutes.get<Record<string, unknown>, RequestResultsResponse>(
         results: requests,
       });
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error retrieving requests', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'Unable to retrieve requests.' });
     }
   }
 );
@@ -538,9 +542,9 @@ requestRoutes.post<never, BulkRequestResponse, BulkRequestBody>(
         for (const request of requests) {
           request.status = newStatus;
           request.modifiedBy = req.user;
-          await requestRepository.save(request);
-          updated++;
         }
+        await requestRepository.save(requests);
+        updated = requests.length;
       }
 
       await createAuditLog({
@@ -752,7 +756,11 @@ requestRoutes.put<{ requestId: string }>(
 
       return res.status(200).json(request);
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error updating request', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'Unable to update request.' });
     }
   }
 );

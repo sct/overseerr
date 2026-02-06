@@ -1107,7 +1107,7 @@ export class MediaRequestSubscriber
       } else {
         media[entity.is4k ? 'status4k' : 'status'] = MediaStatus.PROCESSING;
       }
-      mediaRepository.save(media);
+      await mediaRepository.save(media);
     }
 
     if (
@@ -1116,7 +1116,7 @@ export class MediaRequestSubscriber
       media[entity.is4k ? 'status4k' : 'status'] !== MediaStatus.DELETED
     ) {
       media[entity.is4k ? 'status4k' : 'status'] = MediaStatus.UNKNOWN;
-      mediaRepository.save(media);
+      await mediaRepository.save(media);
     }
 
     /**
@@ -1136,7 +1136,7 @@ export class MediaRequestSubscriber
       media.status === MediaStatus.PENDING
     ) {
       media.status = MediaStatus.UNKNOWN;
-      mediaRepository.save(media);
+      await mediaRepository.save(media);
     }
 
     /**

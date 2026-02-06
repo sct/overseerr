@@ -72,7 +72,7 @@ settingsRoutes.get('/main', (req, res) => {
   res.status(200).json(filteredMainSettings(req.user, settings.main));
 });
 
-settingsRoutes.post('/main', (req, res) => {
+settingsRoutes.post('/main', isAuthenticated(Permission.ADMIN), (req, res) => {
   const settings = getSettings();
 
   settings.main = merge(settings.main, req.body);
@@ -94,7 +94,7 @@ settingsRoutes.post('/main', (req, res) => {
   return res.status(200).json(settings.main);
 });
 
-settingsRoutes.post('/main/regenerate', (req, res, next) => {
+settingsRoutes.post('/main/regenerate', isAuthenticated(Permission.ADMIN), (req, res, next) => {
   const settings = getSettings();
 
   const main = settings.regenerateApiKey();
@@ -113,13 +113,13 @@ settingsRoutes.post('/main/regenerate', (req, res, next) => {
   return res.status(200).json(filteredMainSettings(req.user, main));
 });
 
-settingsRoutes.get('/plex', (_req, res) => {
+settingsRoutes.get('/plex', isAuthenticated(Permission.ADMIN), (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.plex);
 });
 
-settingsRoutes.post('/plex', async (req, res, next) => {
+settingsRoutes.post('/plex', isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const userRepository = getRepository(User);
   const settings = getSettings();
   try {
@@ -156,7 +156,7 @@ settingsRoutes.post('/plex', async (req, res, next) => {
   return res.status(200).json(settings.plex);
 });
 
-settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
+settingsRoutes.get('/plex/devices/servers', isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const userRepository = getRepository(User);
   try {
     const admin = await userRepository.findOneOrFail({
@@ -233,7 +233,7 @@ settingsRoutes.get('/plex/devices/servers', async (req, res, next) => {
   }
 });
 
-settingsRoutes.get('/plex/library', async (req, res) => {
+settingsRoutes.get('/plex/library', isAuthenticated(Permission.ADMIN), async (req, res) => {
   const settings = getSettings();
 
   if (req.query.sync) {
@@ -258,11 +258,11 @@ settingsRoutes.get('/plex/library', async (req, res) => {
   return res.status(200).json(settings.plex.libraries);
 });
 
-settingsRoutes.get('/plex/sync', (_req, res) => {
+settingsRoutes.get('/plex/sync', isAuthenticated(Permission.ADMIN), (_req, res) => {
   return res.status(200).json(plexFullScanner.status());
 });
 
-settingsRoutes.post('/plex/sync', (req, res) => {
+settingsRoutes.post('/plex/sync', isAuthenticated(Permission.ADMIN), (req, res) => {
   if (req.body.cancel) {
     plexFullScanner.cancel();
   } else if (req.body.start) {
@@ -271,13 +271,13 @@ settingsRoutes.post('/plex/sync', (req, res) => {
   return res.status(200).json(plexFullScanner.status());
 });
 
-settingsRoutes.get('/tautulli', (_req, res) => {
+settingsRoutes.get('/tautulli', isAuthenticated(Permission.ADMIN), (_req, res) => {
   const settings = getSettings();
 
   res.status(200).json(settings.tautulli);
 });
 
-settingsRoutes.post('/tautulli', async (req, res, next) => {
+settingsRoutes.post('/tautulli', isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const settings = getSettings();
 
   Object.assign(settings.tautulli, req.body);
@@ -373,6 +373,7 @@ settingsRoutes.get(
 
 settingsRoutes.get(
   '/logs',
+  isAuthenticated(Permission.ADMIN),
   rateLimit({ windowMs: 60 * 1000, max: 50 }),
   (req, res, next) => {
     const pageSize = req.query.take ? Number(req.query.take) : 25;
@@ -490,7 +491,7 @@ settingsRoutes.get(
   }
 );
 
-settingsRoutes.get('/audit', async (req, res, next) => {
+settingsRoutes.get('/audit', isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const auditRepository = getRepository(AuditLog);
 
   try {
@@ -549,7 +550,7 @@ settingsRoutes.get('/audit', async (req, res, next) => {
   }
 });
 
-settingsRoutes.get('/jobs', (_req, res) => {
+settingsRoutes.get('/jobs', isAuthenticated(Permission.ADMIN), (_req, res) => {
   return res.status(200).json(
     scheduledJobs.map((job) => ({
       id: job.id,
@@ -563,7 +564,7 @@ settingsRoutes.get('/jobs', (_req, res) => {
   );
 });
 
-settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
+settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', isAuthenticated(Permission.ADMIN), (req, res, next) => {
   const scheduledJob = scheduledJobs.find((job) => job.id === req.params.jobId);
 
   if (!scheduledJob) {
@@ -585,6 +586,7 @@ settingsRoutes.post<{ jobId: string }>('/jobs/:jobId/run', (req, res, next) => {
 
 settingsRoutes.post<{ jobId: JobId }>(
   '/jobs/:jobId/cancel',
+  isAuthenticated(Permission.ADMIN),
   (req, res, next) => {
     const scheduledJob = scheduledJobs.find(
       (job) => job.id === req.params.jobId
@@ -612,6 +614,7 @@ settingsRoutes.post<{ jobId: JobId }>(
 
 settingsRoutes.post<{ jobId: JobId }>(
   '/jobs/:jobId/schedule',
+  isAuthenticated(Permission.ADMIN),
   (req, res, next) => {
     const scheduledJob = scheduledJobs.find(
       (job) => job.id === req.params.jobId
@@ -645,7 +648,7 @@ settingsRoutes.post<{ jobId: JobId }>(
   }
 );
 
-settingsRoutes.get('/cache', async (_req, res) => {
+settingsRoutes.get('/cache', isAuthenticated(Permission.ADMIN), async (_req, res) => {
   const cacheManagerCaches = cacheManager.getAllCaches();
 
   const apiCaches = Object.values(cacheManagerCaches).map((cache) => ({
@@ -666,6 +669,7 @@ settingsRoutes.get('/cache', async (_req, res) => {
 
 settingsRoutes.post<{ cacheId: AvailableCacheIds }>(
   '/cache/:cacheId/flush',
+  isAuthenticated(Permission.ADMIN),
   (req, res, next) => {
     const cache = cacheManager.getCache(req.params.cacheId);
 

@@ -6,13 +6,15 @@ import type {
   ApiKeyResponse,
 } from '@server/interfaces/api/apiKeyInterfaces';
 import { createAuditLog } from '@server/lib/auditLog';
+import { Permission } from '@server/lib/permissions';
 import logger from '@server/logger';
+import { isAuthenticated } from '@server/middleware/auth';
 import { Router } from 'express';
 import { createHash, randomBytes } from 'crypto';
 
 const apiKeysRoutes = Router();
 
-apiKeysRoutes.get('/', async (_req, res, next) => {
+apiKeysRoutes.get('/', isAuthenticated(Permission.ADMIN), async (_req, res, next) => {
   const repo = getRepository(ApiKey);
 
   try {
@@ -44,6 +46,7 @@ apiKeysRoutes.get('/', async (_req, res, next) => {
 
 apiKeysRoutes.post<never, ApiKeyCreateResponse, { name: string; permissions: number; userId?: number }>(
   '/',
+  isAuthenticated(Permission.ADMIN),
   async (req, res, next) => {
     const repo = getRepository(ApiKey);
     const userRepo = getRepository(User);
@@ -105,6 +108,7 @@ apiKeysRoutes.post<never, ApiKeyCreateResponse, { name: string; permissions: num
 
 apiKeysRoutes.put<{ keyId: string }, ApiKeyResponse, Partial<Pick<ApiKey, 'name' | 'permissions' | 'isActive'>>>(
   '/:keyId',
+  isAuthenticated(Permission.ADMIN),
   async (req, res, next) => {
     const repo = getRepository(ApiKey);
 
@@ -153,7 +157,7 @@ apiKeysRoutes.put<{ keyId: string }, ApiKeyResponse, Partial<Pick<ApiKey, 'name'
   }
 );
 
-apiKeysRoutes.delete<{ keyId: string }>('/:keyId', async (req, res, next) => {
+apiKeysRoutes.delete<{ keyId: string }>('/:keyId', isAuthenticated(Permission.ADMIN), async (req, res, next) => {
   const repo = getRepository(ApiKey);
 
   try {

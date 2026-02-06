@@ -275,7 +275,7 @@ class WebPushAgent
 
           await Promise.all(
             allSubs.map(async (sub) => {
-              webPushNotification(sub, notificationBadgePayload);
+              await webPushNotification(sub, notificationBadgePayload);
             })
           );
         }
@@ -302,7 +302,7 @@ class WebPushAgent
 
       await Promise.all(
         pushSubs.map(async (sub) => {
-          webPushNotification(sub, notificationPayload);
+          await webPushNotification(sub, notificationPayload);
         })
       );
     }
