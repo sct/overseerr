@@ -2,6 +2,7 @@ import { IssueStatus, IssueTypeName } from '@server/constants/issue';
 import type { NotificationAgentSlack } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import { isSafeUrl } from '@server/utils/validation';
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
 import type { NotificationAgent, NotificationPayload } from './agent';
@@ -238,6 +239,14 @@ class SlackAgent
       subject: payload.subject,
     });
     try {
+      // Validate webhook URL to prevent SSRF attacks
+      if (!isSafeUrl(settings.options.webhookUrl)) {
+        logger.error('Invalid or unsafe webhook URL for Slack notification', {
+          label: 'Notifications',
+        });
+        return false;
+      }
+
       await axios.post(
         settings.options.webhookUrl,
         this.buildEmbed(type, payload)

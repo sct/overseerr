@@ -14,10 +14,24 @@ const TvPage: NextPage<TvPageProps> = ({ tv }) => {
 export const getServerSideProps: GetServerSideProps<TvPageProps> = async (
   ctx
 ) => {
+  const tvId = ctx.query.tvId;
+
+  // Validate tvId is a positive integer to prevent SSRF
+  if (
+    !tvId ||
+    typeof tvId !== 'string' ||
+    !/^\d+$/.test(tvId) ||
+    parseInt(tvId, 10) <= 0
+  ) {
+    return {
+      notFound: true,
+    };
+  }
+
   const response = await axios.get<TvDetailsType>(
     `http://${process.env.HOST || 'localhost'}:${
       process.env.PORT || 5055
-    }/api/v1/tv/${ctx.query.tvId}`,
+    }/api/v1/tv/${tvId}`,
     {
       headers: ctx.req?.headers?.cookie
         ? { cookie: ctx.req.headers.cookie }

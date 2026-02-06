@@ -14,10 +14,24 @@ const CollectionPage: NextPage<CollectionPageProps> = ({ collection }) => {
 export const getServerSideProps: GetServerSideProps<
   CollectionPageProps
 > = async (ctx) => {
+  const collectionId = ctx.query.collectionId;
+
+  // Validate collectionId is a positive integer to prevent SSRF
+  if (
+    !collectionId ||
+    typeof collectionId !== 'string' ||
+    !/^\d+$/.test(collectionId) ||
+    parseInt(collectionId, 10) <= 0
+  ) {
+    return {
+      notFound: true,
+    };
+  }
+
   const response = await axios.get<Collection>(
     `http://${process.env.HOST || 'localhost'}:${
       process.env.PORT || 5055
-    }/api/v1/collection/${ctx.query.collectionId}`,
+    }/api/v1/collection/${collectionId}`,
     {
       headers: ctx.req?.headers?.cookie
         ? { cookie: ctx.req.headers.cookie }

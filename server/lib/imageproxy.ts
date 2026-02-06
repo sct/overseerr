@@ -1,4 +1,5 @@
 import logger from '@server/logger';
+import { isSafeUrl } from '@server/utils/validation';
 import axios from 'axios';
 import rateLimit, { type rateLimitOptions } from 'axios-rate-limit';
 import { createHash } from 'crypto';
@@ -181,6 +182,27 @@ class ImageProxy {
     cacheKey: string
   ): Promise<ImageResponse | null> {
     try {
+      // Validate path is not a full URL to prevent SSRF attacks
+      // Path should be relative, not absolute URL
+      if (path.startsWith('http://') || path.startsWith('https://')) {
+        logger.error('Invalid image path: absolute URL not allowed', {
+          label: 'ImageProxy',
+          path,
+        });
+        return null;
+      }
+
+      // Construct full URL and validate it's safe
+      const fullUrl = new URL(path, this.axios.defaults.baseURL || '').href;
+      if (!isSafeUrl(fullUrl)) {
+        logger.error('Unsafe image URL detected', {
+          label: 'ImageProxy',
+          path,
+          fullUrl,
+        });
+        return null;
+      }
+
       const directory = join(this.getCacheDirectory(), cacheKey);
       const response = await this.axios.get(path, {
         responseType: 'arraybuffer',

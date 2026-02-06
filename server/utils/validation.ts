@@ -89,6 +89,95 @@ export const isValidIPv4 = (ip: string): boolean => {
 };
 
 /**
+ * Checks if an IP address is a private/internal IP address
+ */
+const isPrivateIP = (ip: string): boolean => {
+  // Private IP ranges:
+  // 10.0.0.0/8
+  // 172.16.0.0/12
+  // 192.168.0.0/16
+  // 127.0.0.0/8 (localhost)
+  // 169.254.0.0/16 (link-local)
+  // 0.0.0.0 (invalid)
+  if (!isValidIPv4(ip)) {
+    return true; // Treat invalid IPs as private
+  }
+
+  const parts = ip.split('.').map(Number);
+  const [a, b] = parts;
+
+  return (
+    a === 0 ||
+    a === 127 ||
+    a === 10 ||
+    (a === 172 && b >= 16 && b <= 31) ||
+    (a === 192 && b === 168) ||
+    (a === 169 && b === 254)
+  );
+};
+
+/**
+ * Validates a URL is safe from SSRF attacks
+ * - Only allows http/https protocols
+ * - Blocks private/internal IP addresses
+ * - Blocks localhost variations
+ */
+export const isSafeUrl = (url: string): boolean => {
+  if (!url || typeof url !== 'string') {
+    return false;
+  }
+
+  try {
+    const parsedUrl = new URL(url.trim());
+
+    // Only allow http and https protocols
+    if (parsedUrl.protocol !== 'http:' && parsedUrl.protocol !== 'https:') {
+      return false;
+    }
+
+    const hostname = parsedUrl.hostname.toLowerCase();
+
+    // Block localhost variations
+    if (
+      hostname === 'localhost' ||
+      hostname === '127.0.0.1' ||
+      hostname === '::1' ||
+      hostname === '0.0.0.0' ||
+      hostname.startsWith('127.') ||
+      hostname.endsWith('.localhost')
+    ) {
+      return false;
+    }
+
+    // Block private IP addresses
+    if (isValidIPv4(hostname) && isPrivateIP(hostname)) {
+      return false;
+    }
+
+    // Block IPv6 localhost
+    if (hostname === '[::1]' || hostname.startsWith('[::')) {
+      return false;
+    }
+
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Validates that a numeric ID is safe (positive integer)
+ */
+export const isValidNumericId = (id: string | number | undefined): boolean => {
+  if (id === undefined || id === null) {
+    return false;
+  }
+
+  const num = typeof id === 'number' ? id : parseInt(String(id), 10);
+  return Number.isInteger(num) && num > 0;
+};
+
+/**
  * Sanitizes input to prevent injection attacks
  */
 export const sanitizeInput = (input: string): string => {

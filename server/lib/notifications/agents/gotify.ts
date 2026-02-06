@@ -2,6 +2,7 @@ import { IssueStatus, IssueTypeName } from '@server/constants/issue';
 import type { NotificationAgentGotify } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import { isSafeUrl } from '@server/utils/validation';
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
 import type { NotificationAgent, NotificationPayload } from './agent';
@@ -130,6 +131,14 @@ class GotifyAgent
       subject: payload.subject,
     });
     try {
+      // Validate URL to prevent SSRF attacks
+      if (!isSafeUrl(settings.options.url)) {
+        logger.error('Invalid or unsafe URL for Gotify notification', {
+          label: 'Notifications',
+        });
+        return false;
+      }
+
       const endpoint = `${settings.options.url}/message?token=${settings.options.token}`;
       const notificationPayload = this.getNotificationPayload(type, payload);
 

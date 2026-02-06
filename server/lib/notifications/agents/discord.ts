@@ -4,6 +4,7 @@ import { User } from '@server/entity/User';
 import type { NotificationAgentDiscord } from '@server/lib/settings';
 import { getSettings, NotificationAgentKey } from '@server/lib/settings';
 import logger from '@server/logger';
+import { isSafeUrl } from '@server/utils/validation';
 import axios from 'axios';
 import {
   hasNotificationType,
@@ -290,6 +291,14 @@ class DiscordAgent
               .map((user) => `<@${user.settings?.discordId}>`)
           );
         }
+      }
+
+      // Validate webhook URL to prevent SSRF attacks
+      if (!isSafeUrl(settings.options.webhookUrl)) {
+        logger.error('Invalid or unsafe webhook URL for Discord notification', {
+          label: 'Notifications',
+        });
+        return false;
       }
 
       await axios.post(settings.options.webhookUrl, {

@@ -3,6 +3,7 @@ import { MediaStatus } from '@server/constants/media';
 import type { NotificationAgentLunaSea } from '@server/lib/settings';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
+import { isSafeUrl } from '@server/utils/validation';
 import axios from 'axios';
 import { hasNotificationType, Notification } from '..';
 import type { NotificationAgent, NotificationPayload } from './agent';
@@ -101,6 +102,14 @@ class LunaSeaAgent
     });
 
     try {
+      // Validate webhook URL to prevent SSRF attacks
+      if (!isSafeUrl(settings.options.webhookUrl)) {
+        logger.error('Invalid or unsafe webhook URL for LunaSea notification', {
+          label: 'Notifications',
+        });
+        return false;
+      }
+
       await axios.post(
         settings.options.webhookUrl,
         this.buildPayload(type, payload),

@@ -96,6 +96,17 @@ const ResetPassword = () => {
                 }}
                 validationSchema={ResetSchema}
                 onSubmit={async (values) => {
+                  // Validate guid is a valid UUID format to prevent SSRF
+                  if (
+                    !guid ||
+                    typeof guid !== 'string' ||
+                    !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+                      guid
+                    )
+                  ) {
+                    return;
+                  }
+
                   const response = await axios.post(
                     `/api/v1/auth/reset-password/${guid}`,
                     {

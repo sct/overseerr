@@ -1,3 +1,4 @@
+import { isSafeUrl } from '@server/utils/validation';
 import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import rateLimit from 'axios-rate-limit';
@@ -54,6 +55,18 @@ class ExternalAPI {
     config?: AxiosRequestConfig,
     ttl?: number
   ): Promise<T> {
+    // Validate endpoint is not a full URL to prevent SSRF attacks
+    // Endpoint should be relative, not absolute URL
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+      throw new Error('Invalid endpoint: absolute URL not allowed');
+    }
+
+    // Construct full URL and validate it's safe
+    const fullUrl = new URL(endpoint, this.baseUrl).href;
+    if (!isSafeUrl(fullUrl)) {
+      throw new Error('Unsafe URL detected');
+    }
+
     const cacheKey = this.serializeCacheKey(endpoint, config?.params);
     const cachedItem = this.cache?.get<T>(cacheKey);
     if (cachedItem) {
@@ -87,6 +100,17 @@ class ExternalAPI {
     config?: AxiosRequestConfig,
     ttl?: number
   ): Promise<T> {
+    // Validate endpoint is not a full URL to prevent SSRF attacks
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+      throw new Error('Invalid endpoint: absolute URL not allowed');
+    }
+
+    // Construct full URL and validate it's safe
+    const fullUrl = new URL(endpoint, this.baseUrl).href;
+    if (!isSafeUrl(fullUrl)) {
+      throw new Error('Unsafe URL detected');
+    }
+
     const cacheKey = this.serializeCacheKey(endpoint, {
       config: config?.params,
       data,
@@ -110,6 +134,17 @@ class ExternalAPI {
     config?: AxiosRequestConfig,
     ttl?: number
   ): Promise<T> {
+    // Validate endpoint is not a full URL to prevent SSRF attacks
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+      throw new Error('Invalid endpoint: absolute URL not allowed');
+    }
+
+    // Construct full URL and validate it's safe
+    const fullUrl = new URL(endpoint, this.baseUrl).href;
+    if (!isSafeUrl(fullUrl)) {
+      throw new Error('Unsafe URL detected');
+    }
+
     const cacheKey = this.serializeCacheKey(endpoint, config?.params);
     const cachedItem = this.cache?.get<T>(cacheKey);
 
