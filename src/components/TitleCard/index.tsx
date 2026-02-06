@@ -192,6 +192,8 @@ const TitleCard = React.memo(
                 image
                   ? image.startsWith('http')
                     ? image
+                    : image.startsWith('/')
+                    ? image
                     : `https://image.tmdb.org/t/p/w300_and_h450_face${image}`
                   : `/images/overseerr_poster_not_found_logo_top.png`
               }

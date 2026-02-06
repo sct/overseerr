@@ -949,17 +949,22 @@ discoverRoutes.get('/artists', async (req, res, next) => {
       page,
       totalPages: Math.ceil((results.count || 0) / limit),
       totalResults: results.count || 0,
-      results: sortedResults.map((artist) => ({
-        id: artist.id,
-        mediaType: 'artist',
-        name: artist.name,
-        sortName: artist['sort-name'],
-        disambiguation: artist.disambiguation,
-        country: artist.country,
-        type: artist.type,
-        area: artist.area,
-        mediaInfo: media.find((m) => m.musicBrainzId === artist.id),
-      })),
+      results: sortedResults.map((artist) => {
+        const tags = artist.tags || artist['tag-list'] || [];
+        const popularity = tags.reduce((sum, tag) => sum + (tag.count || 0), 0);
+        return {
+          id: artist.id,
+          mediaType: 'artist',
+          name: artist.name,
+          sortName: artist['sort-name'],
+          disambiguation: artist.disambiguation,
+          country: artist.country,
+          type: artist.type,
+          area: artist.area,
+          popularity,
+          mediaInfo: media.find((m) => m.musicBrainzId === artist.id),
+        };
+      }),
     });
   } catch (e) {
     logger.debug('Something went wrong retrieving artists', {

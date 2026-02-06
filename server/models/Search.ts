@@ -75,6 +75,7 @@ export interface ArtistResult {
     id: string;
     name: string;
   };
+  popularity?: number;
   mediaInfo?: Media;
 }
 

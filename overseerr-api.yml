@@ -5647,6 +5647,28 @@ paths:
             type: string
             example: 'The Beatles'
             default: '*'
+        - in: query
+          name: sortBy
+          schema:
+            type: string
+            enum: [tagcount, name, name-desc]
+            example: tagcount
+            default: tagcount
+        - in: query
+          name: tag
+          schema:
+            type: string
+            example: 'rock'
+        - in: query
+          name: type
+          schema:
+            type: string
+            example: 'Group'
+        - in: query
+          name: country
+          schema:
+            type: string
+            example: 'US'
       responses:
         '200':
           description: Results

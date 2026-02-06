@@ -46,6 +46,8 @@ const messages = defineMessages({
   relatedArtists: 'Related Artists',
   externalLinks: 'External Links',
   artistInfo: 'Artist Info',
+  showMore: 'Show More',
+  showLess: 'Show Less',
 });
 
 interface ArtistDetails {
@@ -100,6 +102,9 @@ const ArtistDetails = () => {
   const [showManager, setShowManager] = useState(
     router.query.manage == '1' ? true : false
   );
+  const [showAllAlbums, setShowAllAlbums] = useState(false);
+  const [artistImageError, setArtistImageError] = useState(false);
+  const ALBUMS_PER_PAGE = 24;
 
   const {
     data,
@@ -172,7 +177,13 @@ const ArtistDetails = () => {
           <div className="relative h-36 w-36 overflow-hidden rounded-full border-2 border-indigo-400/30 bg-gray-800 shadow-2xl ring-4 ring-indigo-400/20 sm:h-44 sm:w-44 xl:h-52 xl:w-52">
             <CachedImage
               src={
+                (artistImageError && data.releaseGroups?.[0]?.id
+                  ? `/api/v1/music/album/${data.releaseGroups[0].id}/cover`
+                  : undefined) ||
                 data.imageUrl ||
+                (data.releaseGroups?.[0]?.id
+                  ? `/api/v1/music/album/${data.releaseGroups[0].id}/cover`
+                  : undefined) ||
                 '/images/overseerr_poster_not_found_logo_center.png'
               }
               alt={data.name}
@@ -180,6 +191,7 @@ const ArtistDetails = () => {
               objectFit="cover"
               className="rounded-full"
               priority
+              onError={() => setArtistImageError(true)}
             />
           </div>
 
@@ -295,24 +307,46 @@ const ArtistDetails = () => {
           {/* Discography */}
           {allAlbums.length > 0 && (
             <section>
-              <h2 className="mb-4 flex items-center gap-2 text-2xl font-bold text-white">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20">
-                  <CircleStackIcon className="h-5 w-5 text-indigo-400" />
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="flex items-center gap-2 text-2xl font-bold text-white">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-500/20">
+                    <CircleStackIcon className="h-5 w-5 text-indigo-400" />
+                  </span>
+                  {intl.formatMessage(messages.discography)}
+                </h2>
+                <span className="text-sm text-gray-400">
+                  {allAlbums.length}{' '}
+                  {allAlbums.length === 1 ? 'release' : 'releases'}
                 </span>
-                {intl.formatMessage(messages.discography)}
-              </h2>
-              <Slider
-                sliderKey="albums"
-                isLoading={false}
-                isEmpty={false}
-                items={allAlbums.slice(0, 20).map((rg) => (
-                  <AlbumTitleCard
-                    key={`album-${rg.id}`}
-                    id={rg.id}
-                    mbid={rg.id}
-                  />
+              </div>
+              <div className="grid grid-cols-4 gap-2 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-8">
+                {(showAllAlbums
+                  ? allAlbums
+                  : allAlbums.slice(0, ALBUMS_PER_PAGE)
+                ).map((rg) => (
+                  <div key={`album-${rg.id}`} className="w-full">
+                    <AlbumTitleCard id={rg.id} mbid={rg.id} canExpand />
+                  </div>
                 ))}
-              />
+              </div>
+              {allAlbums.length > ALBUMS_PER_PAGE && (
+                <div className="mt-6 flex justify-center">
+                  <Button
+                    buttonType="primary"
+                    buttonSize="md"
+                    onClick={() => setShowAllAlbums(!showAllAlbums)}
+                  >
+                    {showAllAlbums
+                      ? intl.formatMessage(messages.showLess)
+                      : intl.formatMessage(messages.showMore)}{' '}
+                    (
+                    {showAllAlbums
+                      ? allAlbums.length
+                      : `${ALBUMS_PER_PAGE} of ${allAlbums.length}`}
+                    )
+                  </Button>
+                </div>
+              )}
             </section>
           )}
 

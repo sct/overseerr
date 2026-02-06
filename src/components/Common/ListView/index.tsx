@@ -1,6 +1,7 @@
 import PersonCard from '@app/components/PersonCard';
 import TitleCard from '@app/components/TitleCard';
 import AlbumTitleCard from '@app/components/TitleCard/AlbumTitleCard';
+import ArtistTitleCard from '@app/components/TitleCard/ArtistTitleCard';
 import TmdbTitleCard from '@app/components/TitleCard/TmdbTitleCard';
 import TrackTitleCard from '@app/components/TitleCard/TrackTitleCard';
 import useVerticalScroll from '@app/hooks/useVerticalScroll';
@@ -73,7 +74,7 @@ const ListView = ({
           </div>
         </div>
       )}
-      <ul className="cards-vertical">
+      <ul className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
         {plexItems?.map((title, index) => {
           return (
             <li key={`${title.ratingKey}-${index}`}>
@@ -150,18 +151,7 @@ const ListView = ({
               break;
             case 'artist':
               titleCard = (
-                <TitleCard
-                  id={title.id}
-                  image={undefined}
-                  status={title.mediaInfo?.status}
-                  summary={undefined}
-                  title={title.name}
-                  userScore={undefined}
-                  year={undefined}
-                  mediaType="artist"
-                  canExpand
-                  mbid={title.id}
-                />
+                <ArtistTitleCard id={title.id} mbid={title.id} canExpand />
               );
               break;
             case 'album':
