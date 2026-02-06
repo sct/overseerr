@@ -190,7 +190,10 @@
     "sqlite3/node-gyp": "8.4.1",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
-    "@types/express-session": "1.17.6"
+    "@types/express-session": "1.17.6",
+    "form-data": "4.0.5",
+    "@babel/traverse": "7.29.0",
+    "sha.js": "2.4.12"
   },
   "config": {
     "commitizen": {
