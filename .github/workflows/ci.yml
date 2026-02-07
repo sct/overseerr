@@ -8,6 +8,10 @@ on:
     branches:
       - develop
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   test:
     name: Lint & Test Build

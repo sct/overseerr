@@ -458,18 +458,18 @@
 
   input[type='range']::-webkit-slider-thumb {
     @apply rounded-full border-0 bg-indigo-500;
+    -webkit-appearance: none;
+    height: 16px;
     pointer-events: all;
     width: 16px;
-    height: 16px;
-    -webkit-appearance: none;
   }
 
   input[type='range']::-moz-range-thumb {
     @apply rounded-full border-0 bg-indigo-500;
+    -webkit-appearance: none;
+    height: 16px;
     pointer-events: all;
     width: 16px;
-    height: 16px;
-    -webkit-appearance: none;
   }
 }
 

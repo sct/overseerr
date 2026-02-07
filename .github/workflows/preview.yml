@@ -5,6 +5,10 @@ on:
     tags:
       - 'preview-*'
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build_and_push:
     name: Build & Publish Docker Preview Images
