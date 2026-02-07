@@ -63,3 +63,25 @@ export interface StatusResponse {
   commitsBehind: number;
   restartRequired: boolean;
 }
+
+export interface HealthResponse {
+  status: 'ok' | 'degraded' | 'error';
+  version: string;
+  commitTag: string;
+  uptime: number;
+  database: {
+    status: 'ok' | 'error';
+    migrationsPending: boolean;
+  };
+  memory: {
+    heapUsedMB: number;
+    heapTotalMB: number;
+    rssMB: number;
+  };
+  services: {
+    plex: 'configured' | 'not_configured';
+    radarr: 'configured' | 'not_configured';
+    sonarr: 'configured' | 'not_configured';
+    lidarr: 'configured' | 'not_configured';
+  };
+}

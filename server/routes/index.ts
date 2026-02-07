@@ -5,9 +5,12 @@ import type {
   TmdbMovieResult,
   TmdbTvResult,
 } from '@server/api/themoviedb/interfaces';
-import { getRepository } from '@server/datasource';
+import dataSource, { getRepository } from '@server/datasource';
 import DiscoverSlider from '@server/entity/DiscoverSlider';
-import type { StatusResponse } from '@server/interfaces/api/settingsInterfaces';
+import type {
+  HealthResponse,
+  StatusResponse,
+} from '@server/interfaces/api/settingsInterfaces';
 import { Permission } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
 import logger from '@server/logger';
@@ -131,6 +134,59 @@ router.get('/status/appdata', (_req, res) => {
   return res.status(200).json({
     appData: appDataStatus(),
     appDataPath: appDataPath(),
+  });
+});
+
+router.get<unknown, HealthResponse>('/health', async (_req, res) => {
+  const memUsage = process.memoryUsage();
+  const settings = getSettings();
+
+  let dbStatus: 'ok' | 'error' = 'ok';
+  let migrationsPending = false;
+
+  try {
+    await dataSource.query('SELECT 1');
+    const pendingMigrations = await dataSource.showMigrations();
+    migrationsPending = pendingMigrations;
+  } catch (e) {
+    dbStatus = 'error';
+    logger.error('Health check: database connectivity failed', {
+      label: 'Health',
+      errorMessage: e.message,
+    });
+  }
+
+  const plexConfigured = !!(
+    settings.plex.ip && settings.plex.port
+  );
+  const radarrConfigured = (settings.radarr ?? []).length > 0;
+  const sonarrConfigured = (settings.sonarr ?? []).length > 0;
+  const lidarrConfigured = (settings.lidarr ?? []).length > 0;
+
+  const overallStatus =
+    dbStatus === 'error' ? 'error' : migrationsPending ? 'degraded' : 'ok';
+
+  return res.status(dbStatus === 'error' ? 503 : 200).json({
+    status: overallStatus,
+    version: getAppVersion(),
+    commitTag: getCommitTag(),
+    uptime: process.uptime(),
+    database: {
+      status: dbStatus,
+      migrationsPending,
+    },
+    memory: {
+      heapUsedMB: Math.round((memUsage.heapUsed / 1024 / 1024) * 100) / 100,
+      heapTotalMB:
+        Math.round((memUsage.heapTotal / 1024 / 1024) * 100) / 100,
+      rssMB: Math.round((memUsage.rss / 1024 / 1024) * 100) / 100,
+    },
+    services: {
+      plex: plexConfigured ? 'configured' : 'not_configured',
+      radarr: radarrConfigured ? 'configured' : 'not_configured',
+      sonarr: sonarrConfigured ? 'configured' : 'not_configured',
+      lidarr: lidarrConfigured ? 'configured' : 'not_configured',
+    },
   });
 });
 

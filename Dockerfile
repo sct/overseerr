@@ -1,4 +1,5 @@
-FROM node:20-alpine AS BUILD_IMAGE
+# ── Stage 1: Install dependencies ──────────────────────────────────────────────
+FROM node:20-alpine AS deps
 
 WORKDIR /app
 
@@ -17,33 +18,69 @@ RUN \
 COPY package.json yarn.lock ./
 RUN CYPRESS_INSTALL_BINARY=0 yarn install --frozen-lockfile --network-timeout 1000000
 
+# ── Stage 2a: Build Next.js client ────────────────────────────────────────────
+FROM deps AS build-client
+
 COPY . ./
 
 ARG COMMIT_TAG=local
 ENV COMMIT_TAG=${COMMIT_TAG}
 
-RUN yarn build
+RUN yarn build:next
 
-# remove development dependencies
+# ── Stage 2b: Build Express server (runs in parallel with client build) ───────
+FROM deps AS build-server
+
+COPY . ./
+
+ARG COMMIT_TAG=local
+ENV COMMIT_TAG=${COMMIT_TAG}
+
+RUN yarn build:server
+
+# ── Stage 3: Assemble production image ────────────────────────────────────────
+FROM deps AS production-deps
+
+# Strip dev dependencies for a smaller final image
 RUN yarn install --production --ignore-scripts --prefer-offline
-
-RUN rm -rf src server .next/cache
-
-RUN touch config/DOCKER
-
-RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
-
 
 FROM node:20-alpine
 
 WORKDIR /app
 
-RUN apk add --no-cache tzdata tini ca-certificates && rm -rf /tmp/*
+ARG COMMIT_TAG=local
 
-# copy from build image
-COPY --from=BUILD_IMAGE /app ./
+RUN apk add --no-cache tzdata tini ca-certificates shadow su-exec && rm -rf /tmp/*
 
-ENTRYPOINT [ "/sbin/tini", "--" ]
-CMD [ "yarn", "start" ]
+# Copy production node_modules
+COPY --from=production-deps /app/node_modules ./node_modules
+COPY --from=production-deps /app/package.json /app/yarn.lock ./
+
+# Copy built client from build-client stage
+COPY --from=build-client /app/.next ./.next
+COPY --from=build-client /app/public ./public
+COPY --from=build-client /app/next.config.js ./
+
+# Copy built server from build-server stage
+COPY --from=build-server /app/dist ./dist
+
+# Copy necessary config/static files
+COPY overseerr-api.yml ./
+COPY config ./config
+
+RUN touch config/DOCKER
+RUN echo "{\"commitTag\": \"${COMMIT_TAG}\"}" > committag.json
+
+# PUID/PGID support: create overseerr user with configurable UID/GID
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT [ "/sbin/tini", "--", "/docker-entrypoint.sh" ]
+CMD [ "node", "dist/index.js" ]
 
 EXPOSE 5055
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+  CMD wget -qO- http://localhost:5055/api/v1/health || exit 1
+
+LABEL maintainer="overseerr"

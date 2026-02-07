@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  overseerr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        COMMIT_TAG: ${COMMIT_TAG:-local}
+    container_name: overseerr
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=5055
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - UMASK=${UMASK:-022}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - overseerr-config:/app/config
+    networks:
+      - overseerr-net
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:5055/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+
+  nginx:
+    image: nginx:alpine
+    container_name: overseerr-nginx
+    restart: unless-stopped
+    ports:
+      - "${PUBLIC_PORT:-5055}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      overseerr:
+        condition: service_healthy
+    networks:
+      - overseerr-net
+
+volumes:
+  overseerr-config:
+    driver: local
+
+networks:
+  overseerr-net:
+    driver: bridge

@@ -2076,6 +2076,80 @@ paths:
                   appDataPath:
                     type: string
                     example: /app/config
+  /health:
+    get:
+      summary: Get application health status
+      description: |
+        Returns the health status of the Overseerr instance including database
+        connectivity, memory usage, uptime, and configured service status.
+        Useful for container orchestration health checks and monitoring systems.
+        Returns HTTP 503 if the database is unreachable.
+      security: []
+      tags:
+        - public
+      responses:
+        '200':
+          description: Application is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, degraded, error]
+                    example: ok
+                  version:
+                    type: string
+                    example: 1.0.0
+                  commitTag:
+                    type: string
+                  uptime:
+                    type: number
+                    description: Process uptime in seconds
+                    example: 3600
+                  database:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [ok, error]
+                      migrationsPending:
+                        type: boolean
+                  memory:
+                    type: object
+                    properties:
+                      heapUsedMB:
+                        type: number
+                      heapTotalMB:
+                        type: number
+                      rssMB:
+                        type: number
+                  services:
+                    type: object
+                    properties:
+                      plex:
+                        type: string
+                        enum: [configured, not_configured]
+                      radarr:
+                        type: string
+                        enum: [configured, not_configured]
+                      sonarr:
+                        type: string
+                        enum: [configured, not_configured]
+                      lidarr:
+                        type: string
+                        enum: [configured, not_configured]
+        '503':
+          description: Application is unhealthy (database unreachable)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
   /settings/main:
     get:
       summary: Get main settings
