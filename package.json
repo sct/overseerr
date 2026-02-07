@@ -93,7 +93,7 @@
     "redis": "^5.10.0",
     "reflect-metadata": "0.1.13",
     "secure-random-password": "0.2.3",
-    "semver": "7.3.8",
+    "semver": "7.5.2",
     "sqlite3": "^5.1.7",
     "swagger-ui-express": "4.6.2",
     "swr": "2.0.4",
