@@ -12,6 +12,7 @@ import TelegramAgent from '@server/lib/notifications/agents/telegram';
 import WebhookAgent from '@server/lib/notifications/agents/webhook';
 import WebPushAgent from '@server/lib/notifications/agents/webpush';
 import { getSettings } from '@server/lib/settings';
+import logger from '@server/logger';
 import { Router } from 'express';
 
 const notificationRoutes = Router();
@@ -304,7 +305,11 @@ notificationRoutes.post('/webhook', (req, res, next) => {
 
     res.status(200).json(settings.notifications.agents.webhook);
   } catch (e) {
-    next({ status: 500, message: e.message });
+    logger.error('Error saving webhook notification settings', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 500, message: 'Unable to save webhook notification settings.' });
   }
 });
 
@@ -341,7 +346,11 @@ notificationRoutes.post('/webhook/test', async (req, res, next) => {
       });
     }
   } catch (e) {
-    next({ status: 500, message: e.message });
+    logger.error('Error testing webhook notification', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 500, message: 'Failed to send test webhook notification.' });
   }
 });
 

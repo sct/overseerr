@@ -12,8 +12,29 @@ sonarrRoutes.get('/', (_req, res) => {
   res.status(200).json(settings.sonarr);
 });
 
-sonarrRoutes.post('/', (req, res) => {
+sonarrRoutes.post('/', (req, res, next) => {
   const settings = getSettings();
+
+  if (!req.body.name || !req.body.hostname || !req.body.apiKey) {
+    return next({
+      status: 400,
+      message:
+        'Missing required fields: name, hostname, and apiKey are required.',
+    });
+  }
+
+  if (
+    req.body.port === undefined ||
+    req.body.port === null ||
+    !Number.isInteger(Number(req.body.port)) ||
+    Number(req.body.port) < 1 ||
+    Number(req.body.port) > 65535
+  ) {
+    return next({
+      status: 400,
+      message: 'Port must be a valid integer between 1 and 65535.',
+    });
+  }
 
   const newSonarr = req.body as SonarrSettings;
   const lastItem = settings.sonarr[settings.sonarr.length - 1];

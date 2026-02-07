@@ -166,7 +166,7 @@ app
           maxAge: 1000 * 60 * 60 * 24 * 30,
           httpOnly: true,
           sameSite: settings.main.csrfProtection ? 'strict' : 'lax',
-          secure: 'auto',
+          secure: !dev,
         },
         store: new TypeormStore({
           cleanupLimit: 2,

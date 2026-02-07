@@ -150,54 +150,51 @@ issueRoutes.get('/count', async (req, res, next) => {
   const issueRepository = getRepository(Issue);
 
   try {
-    const query = issueRepository.createQueryBuilder('issue');
-
-    const totalCount = await query.getCount();
-
-    const videoCount = await query
-      .where('issue.issueType = :issueType', {
-        issueType: IssueType.VIDEO,
+    const counts = await issueRepository
+      .createQueryBuilder('issue')
+      .select('COUNT(*)', 'total')
+      .addSelect(
+        `SUM(CASE WHEN issue.issueType = :videoType THEN 1 ELSE 0 END)`,
+        'video'
+      )
+      .addSelect(
+        `SUM(CASE WHEN issue.issueType = :audioType THEN 1 ELSE 0 END)`,
+        'audio'
+      )
+      .addSelect(
+        `SUM(CASE WHEN issue.issueType = :subtitlesType THEN 1 ELSE 0 END)`,
+        'subtitles'
+      )
+      .addSelect(
+        `SUM(CASE WHEN issue.issueType = :otherType THEN 1 ELSE 0 END)`,
+        'others'
+      )
+      .addSelect(
+        `SUM(CASE WHEN issue.status = :openStatus THEN 1 ELSE 0 END)`,
+        'open'
+      )
+      .addSelect(
+        `SUM(CASE WHEN issue.status = :resolvedStatus THEN 1 ELSE 0 END)`,
+        'closed'
+      )
+      .setParameters({
+        videoType: IssueType.VIDEO,
+        audioType: IssueType.AUDIO,
+        subtitlesType: IssueType.SUBTITLES,
+        otherType: IssueType.OTHER,
+        openStatus: IssueStatus.OPEN,
+        resolvedStatus: IssueStatus.RESOLVED,
       })
-      .getCount();
-
-    const audioCount = await query
-      .where('issue.issueType = :issueType', {
-        issueType: IssueType.AUDIO,
-      })
-      .getCount();
-
-    const subtitlesCount = await query
-      .where('issue.issueType = :issueType', {
-        issueType: IssueType.SUBTITLES,
-      })
-      .getCount();
-
-    const othersCount = await query
-      .where('issue.issueType = :issueType', {
-        issueType: IssueType.OTHER,
-      })
-      .getCount();
-
-    const openCount = await query
-      .where('issue.status = :issueStatus', {
-        issueStatus: IssueStatus.OPEN,
-      })
-      .getCount();
-
-    const closedCount = await query
-      .where('issue.status = :issueStatus', {
-        issueStatus: IssueStatus.RESOLVED,
-      })
-      .getCount();
+      .getRawOne();
 
     return res.status(200).json({
-      total: totalCount,
-      video: videoCount,
-      audio: audioCount,
-      subtitles: subtitlesCount,
-      others: othersCount,
-      open: openCount,
-      closed: closedCount,
+      total: Number(counts.total) || 0,
+      video: Number(counts.video) || 0,
+      audio: Number(counts.audio) || 0,
+      subtitles: Number(counts.subtitles) || 0,
+      others: Number(counts.others) || 0,
+      open: Number(counts.open) || 0,
+      closed: Number(counts.closed) || 0,
     });
   } catch (e) {
     logger.debug('Something went wrong retrieving issue counts.', {
@@ -274,6 +271,7 @@ issueRoutes.post<{ issueId: string }, Issue, { message: string }>(
     try {
       const issue = await issueRepository.findOneOrFail({
         where: { id: Number(req.params.issueId) },
+        relations: { comments: true },
       });
 
       if (
@@ -377,7 +375,7 @@ issueRoutes.delete(
     try {
       const issue = await issueRepository.findOneOrFail({
         where: { id: Number(req.params.issueId) },
-        relations: { createdBy: true },
+        relations: { createdBy: true, comments: true },
       });
 
       if (

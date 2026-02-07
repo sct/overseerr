@@ -159,7 +159,11 @@ serviceRoutes.get<{ sonarrId: string }>(
         tags,
       } as ServiceCommonServerWithDetails);
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error retrieving Sonarr server details', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'Unable to retrieve Sonarr server details.' });
     }
   }
 );
@@ -283,7 +287,11 @@ serviceRoutes.get<{ lidarrId: string }>(
         tags,
       } as ServiceCommonServerWithDetails);
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error retrieving Radarr server details', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'Unable to retrieve Radarr server details.' });
     }
   }
 );

@@ -75,7 +75,11 @@ router.get('/', async (req, res, next) => {
       ),
     } as UserResultsResponse);
   } catch (e) {
-    next({ status: 500, message: e.message });
+    logger.error('Error retrieving users', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 500, message: 'Unable to retrieve users.' });
   }
 });
 
@@ -133,7 +137,11 @@ router.post(
       await userRepository.save(user);
       return res.status(201).json(user.filter());
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error creating user', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'Unable to create user.' });
     }
   }
 );
@@ -326,7 +334,11 @@ router.get<{ id: string }, UserRequestsResponse>(
         results: requests,
       });
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error retrieving user requests', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'Unable to retrieve user requests.' });
     }
   }
 );
@@ -374,7 +386,11 @@ router.put<
 
     return res.status(200).json(updatedUsers);
   } catch (e) {
-    next({ status: 500, message: e.message });
+    logger.error('Error importing Plex users', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 500, message: 'Unable to import Plex users.' });
   }
 });
 
@@ -544,7 +560,11 @@ router.post(
 
       return res.status(201).json(User.filterMany(createdUsers));
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error bulk-importing Plex users', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'Unable to import Plex users.' });
     }
   }
 );
@@ -577,7 +597,11 @@ router.get<{ id: string }, QuotaResponse>(
 
       return res.status(200).json(quotas);
     } catch (e) {
-      next({ status: 404, message: e.message });
+      logger.error('Error retrieving user quota', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 404, message: 'Unable to retrieve user quota.' });
     }
   }
 );

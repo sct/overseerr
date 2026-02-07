@@ -84,7 +84,11 @@ mediaRoutes.get('/', async (req, res, next) => {
       results: media,
     } as MediaResultsResponse);
   } catch (e) {
-    next({ status: 500, message: e.message });
+    logger.error('Error retrieving media', {
+      label: 'API',
+      errorMessage: e.message,
+    });
+    next({ status: 500, message: 'Unable to retrieve media.' });
   }
 });
 

@@ -67,7 +67,11 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
         watchlistSyncTv: user.settings?.watchlistSyncTv,
       });
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error in user settings operation', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'An unexpected error occurred.' });
     }
   }
 );
@@ -162,7 +166,11 @@ userSettingsRoutes.get<{ id: string }, { hasPassword: boolean }>(
 
       return res.status(200).json({ hasPassword: !!user.password });
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error in user settings operation', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'An unexpected error occurred.' });
     }
   }
 );
@@ -283,7 +291,11 @@ userSettingsRoutes.get<{ id: string }, UserSettingsNotificationsResponse>(
         notificationTypes: user.settings?.notificationTypes ?? {},
       });
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error in user settings operation', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'An unexpected error occurred.' });
     }
   }
 );
@@ -354,7 +366,11 @@ userSettingsRoutes.post<{ id: string }, UserSettingsNotificationsResponse>(
         notificationTypes: user.settings.notificationTypes,
       });
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error in user settings operation', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'An unexpected error occurred.' });
     }
   }
 );
@@ -376,7 +392,11 @@ userSettingsRoutes.get<{ id: string }, { permissions?: number }>(
 
       return res.status(200).json({ permissions: user.permissions });
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error in user settings operation', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'An unexpected error occurred.' });
     }
   }
 );
@@ -420,7 +440,11 @@ userSettingsRoutes.post<
 
       return res.status(200).json({ permissions: user.permissions });
     } catch (e) {
-      next({ status: 500, message: e.message });
+      logger.error('Error in user settings operation', {
+        label: 'API',
+        errorMessage: e.message,
+      });
+      next({ status: 500, message: 'An unexpected error occurred.' });
     }
   }
 );
