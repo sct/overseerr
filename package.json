@@ -198,7 +198,11 @@
     "cross-spawn": "7.0.5",
     "express/path-to-regexp": "0.1.12",
     "express-openapi-validator/path-to-regexp": "6.3.0",
-    "socks": "2.7.4"
+    "socks": "2.7.4",
+    "nodemailer": "7.0.12",
+    "xml2js": "0.5.0",
+    "js-yaml": "4.1.1",
+    "on-headers": "1.1.0"
   },
   "config": {
     "commitizen": {

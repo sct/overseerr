@@ -78,21 +78,34 @@ This document addresses security vulnerabilities identified in the project:
 
 ## Summary
 
-| #   | Package          | Severity   | Status      | Action                                      |
-| --- | ---------------- | ---------- | ----------- | ------------------------------------------- |
-| 1   | ip               | High       | ⚠️ No patch | Resolution → socks 2.7.3+                   |
-| 2   | tough-cookie     | Moderate   | ⚠️ Complex  | Requires 4.1.3+; depends on upstream        |
-| 3   | lodash.pick      | High (Dev) | ⚠️ No patch | Dev-only; babel-plugin-react-intl-auto      |
-| 4   | qs               | High       | ✅ Fixed    | Resolution → 6.14.1                         |
-| 5   | tar              | High       | ⚠️ Partial  | Resolution → 6.2.2; 7.5.3 for full fix      |
-| 6   | multer           | High       | ⚠️ Blocked  | express-openapi-validator needs 2.x support |
-| 7   | tar (hardlink)   | High       | Same as #5  |                                             |
-| 8   | tar (symlink)    | High       | Same as #5  |                                             |
-| 9   | semver           | High       | ✅ Fixed    | Upgrade to 7.5.2+                           |
-| 10  | cross-spawn      | High       | ✅ Fixed    | Resolution → 7.0.5                          |
-| 11  | path-to-regexp   | High       | ✅ Fixed    | Resolution → 6.3.0                          |
-| 12  | multer (memory)  | High       | Same as #6  |                                             |
-| 13  | multer (crafted) | High       | Same as #6  |                                             |
+| #   | Package                                           | Severity       | Status      | Action                                             |
+| --- | ------------------------------------------------- | -------------- | ----------- | -------------------------------------------------- |
+| 1   | ip                                                | High           | ⚠️ No patch | Resolution → socks 2.7.3+                          |
+| 2   | tough-cookie                                      | Moderate       | ⚠️ Complex  | Requires 4.1.3+; depends on upstream               |
+| 3   | lodash.pick                                       | High (Dev)     | ⚠️ No patch | Dev-only; babel-plugin-react-intl-auto             |
+| 4   | qs                                                | High           | ✅ Fixed    | Resolution → 6.14.1                                |
+| 5   | tar                                               | High           | ⚠️ Partial  | Resolution → 6.2.2; 7.5.3 for full fix             |
+| 6   | multer                                            | High           | ⚠️ Blocked  | express-openapi-validator needs 2.x support        |
+| 7   | tar (hardlink)                                    | High           | Same as #5  |                                                    |
+| 8   | tar (symlink)                                     | High           | Same as #5  |                                                    |
+| 9   | semver                                            | High           | ✅ Fixed    | Upgrade to 7.5.2+                                  |
+| 10  | cross-spawn                                       | High           | ✅ Fixed    | Resolution → 7.0.5                                 |
+| 11  | path-to-regexp                                    | High           | ✅ Fixed    | Resolution → 6.3.0                                 |
+| 12  | multer (memory)                                   | High           | Same as #6  |                                                    |
+| 13  | multer (crafted)                                  | High           | Same as #6  |                                                    |
+| 14  | multer (malformed)                                | High           | Same as #6  |                                                    |
+| 15  | lodash (_.unset/_.omit)                           | Moderate (Dev) | ⚠️ Check    | Direct dep 4.17.23 (patched); may be transitive    |
+| 16  | tar (folder count DoS)                            | Moderate       | Same as #5  |                                                    |
+| 17  | @cypress/request SSRF                             | Moderate (Dev) | ⚠️ Deferred | Dev-only; Cypress E2E tests                        |
+| 18  | request SSRF                                      | Moderate       | ⚠️ Deferred | plex-api; deprecated package, no fix               |
+| 19  | @babel/helpers RegExp                             | –              | ⚠️ Deferred | Dev-only; babel transpilation                      |
+| 20  | nodemailer (interpretation, ReDoS, addressparser) | Moderate/Low   | ✅ Fixable  | Resolution → 7.0.12; email-templates uses 6.8.0    |
+| 21  | xml2js prototype pollution                        | Moderate       | ✅ Fixable  | Resolution → 0.5.0; plex-api uses 0.4.x            |
+| 22  | js-yaml prototype pollution                       | Moderate (Dev) | ✅ Fixable  | Resolution → 4.1.1; eslint, json-schema-ref-parser |
+| 23  | on-headers header manipulation                    | Low            | ✅ Fixable  | Resolution → 1.1.0; express-session uses 1.0.2     |
+| 24  | diff (jsdiff) DoS                                 | Low            | ⚠️ Deferred | parsePatch/applyPatch; check usage                 |
+| 25  | tmp symlink                                       | Low (Dev)      | ⚠️ Deferred | Dev-only                                           |
+| 26  | brace-expansion ReDoS                             | Low            | ⚠️ Deferred | Transitive; check usage                            |
 
 ---
 
@@ -225,9 +238,13 @@ This document addresses security vulnerabilities identified in the project:
 ```json
 "qs": "6.14.1",
 "cross-spawn": "7.0.5",
-"path-to-regexp": "6.3.0",
-"path-to-regexp@0.1.7": "0.1.12",
-"socks": "2.7.3"
+"express/path-to-regexp": "0.1.12",
+"express-openapi-validator/path-to-regexp": "6.3.0",
+"socks": "2.7.4",
+"nodemailer": "7.0.12",
+"xml2js": "0.5.0",
+"js-yaml": "4.1.1",
+"on-headers": "1.1.0"
 ```
 
 ### Optional (test before applying)
@@ -278,13 +295,29 @@ Add `permissions:` to each workflow. Minimum required:
 
 The following dependencies **cannot be updated yet** due to upstream constraints. These are documented exceptions when dismissing Dependabot alerts or reviewing security reports.
 
-| Package          | Severity   | Reason for Deferral                                                                     | Re-evaluate when                                     |
-| ---------------- | ---------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| **multer**       | High       | `express-openapi-validator` does not support multer 2.x. No compatible fix available.   | express-openapi-validator adds multer 2.x support    |
-| **tar**          | High       | Upgrading to 7.5.3 may break semantic-release, node-gyp, npm tooling. 6.x has no patch. | tar 6.x patch released, or CI confirmed with 7.5.3   |
-| **tough-cookie** | Moderate   | Fix requires 4.1.3+; plex-api, cypress, jsdom depend on 2.x/5.x/6.x. Breaking change.   | plex-api, cypress, or jsdom adopt tough-cookie 4.x   |
-| **ip**           | High       | No patch available. Mitigated by socks 2.7.4 resolution.                                | Maintainers release ip 2.0.2+                        |
-| **lodash.pick**  | High (Dev) | No patched standalone. Dev-only; not in production runtime.                             | babel-plugin-react-intl-auto switches to main lodash |
+| Package              | Severity       | Reason for Deferral                                                                                                                                                         | Re-evaluate when                                       |
+| -------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| **multer**           | High           | `express-openapi-validator` does not support multer 2.x. No compatible fix available.                                                                                       | express-openapi-validator adds multer 2.x support      |
+| **tar**              | High           | Upgrading to 7.5.3 may break semantic-release, node-gyp, npm tooling. 6.x has no patch. Includes: hardlink/symlink path traversal, race condition (APFS), folder count DoS. | tar 6.x patch released, or CI confirmed with 7.5.3     |
+| **tough-cookie**     | Moderate       | Fix requires 4.1.3+; plex-api, cypress, jsdom depend on 2.x/5.x/6.x. Breaking change.                                                                                       | plex-api, cypress, or jsdom adopt tough-cookie 4.x     |
+| **ip**               | High           | No patch available. Mitigated by socks 2.7.4 resolution.                                                                                                                    | Maintainers release ip 2.0.2+                          |
+| **lodash.pick**      | High (Dev)     | No patched standalone. Dev-only; not in production runtime.                                                                                                                 | babel-plugin-react-intl-auto switches to main lodash   |
+| **lodash**           | Moderate (Dev) | `_.unset`/`_.omit` prototype pollution. Direct dep is 4.17.23 (patched); alert may be from transitive.                                                                      | Verify all lodash instances resolve to 4.17.23+        |
+| **@cypress/request** | Moderate (Dev) | SSRF in request. Dev-only (Cypress E2E tests); not in production runtime.                                                                                                   | Cypress updates request dependency                     |
+| **request**          | Moderate       | SSRF. From plex-api; deprecated package, no upstream fix.                                                                                                                   | plex-api migrates off request                          |
+| **@babel/helpers**   | –              | RegExp complexity in transpiled code. Dev-only.                                                                                                                             | Babel upstream fix                                     |
+| **diff** (jsdiff)    | Low            | DoS in parsePatch/applyPatch.                                                                                                                                               | Check if used on untrusted input; upgrade if available |
+| **tmp**              | Low (Dev)      | Symlink arbitrary write. Dev-only.                                                                                                                                          | Dev tooling upgrade                                    |
+| **brace-expansion**  | Low            | ReDoS. Transitive dependency.                                                                                                                                               | Upgrade parent package                                 |
+
+### Fixable with Resolutions (add to package.json)
+
+| Package        | Resolution               | Reason                                                                                                                                                                                                                     |
+| -------------- | ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **nodemailer** | `"nodemailer": "7.0.12"` | email-templates uses 6.8.0; fixes interpretation, ReDoS, addressparser                                                                                                                                                     |
+| **xml2js**     | `"xml2js": "0.5.0"`      | plex-api uses 0.4.x; fixes prototype pollution                                                                                                                                                                             |
+| **js-yaml**    | `"js-yaml": "4.1.1"`     | eslint, json-schema-ref-parser use 4.1.0/3.14.1; fixes merge pollution. Note: extract-react-intl-messages expects 3.x; 4.1.1 may cause compat issues—if so, use `"extract-react-intl-messages/js-yaml": "3.14.2"` instead. |
+| **on-headers** | `"on-headers": "1.1.0"`  | express-session uses 1.0.2; fixes header manipulation                                                                                                                                                                      |
 
 **When dismissing Dependabot alerts for these packages:** reference this section and choose "Tolerate" or "Won't fix" with a note pointing to `SECURITY_REMEDIATION.md`.
 
