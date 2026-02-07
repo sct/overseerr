@@ -121,6 +121,10 @@ const isPrivateIP = (ip: string): boolean => {
  * - Only allows http/https protocols
  * - Blocks private/internal IP addresses
  * - Blocks localhost variations
+ * - Blocks IPv6 addresses (including mapped IPv4 like ::ffff:127.0.0.1)
+ * - Blocks decimal/octal/hex IP representations
+ * - Blocks URLs with embedded credentials
+ * - Blocks cloud metadata service endpoints
  */
 export const isSafeUrl = (url: string): boolean => {
   if (!url || typeof url !== 'string') {
@@ -135,7 +139,17 @@ export const isSafeUrl = (url: string): boolean => {
       return false;
     }
 
+    // Block URLs with embedded credentials (user:pass@host)
+    if (parsedUrl.username || parsedUrl.password) {
+      return false;
+    }
+
     const hostname = parsedUrl.hostname.toLowerCase();
+
+    // Block empty hostname
+    if (!hostname) {
+      return false;
+    }
 
     // Block localhost variations
     if (
@@ -144,8 +158,29 @@ export const isSafeUrl = (url: string): boolean => {
       hostname === '::1' ||
       hostname === '0.0.0.0' ||
       hostname.startsWith('127.') ||
-      hostname.endsWith('.localhost')
+      hostname.endsWith('.localhost') ||
+      hostname.endsWith('.local')
     ) {
+      return false;
+    }
+
+    // Block all IPv6 addresses (including mapped IPv4 like [::ffff:127.0.0.1])
+    if (hostname.startsWith('[') || hostname.includes(':')) {
+      return false;
+    }
+
+    // Block numeric-only hostnames (decimal IP like 2130706433 = 127.0.0.1)
+    if (/^\d+$/.test(hostname)) {
+      return false;
+    }
+
+    // Block octal IP representations (e.g., 0177.0.0.1)
+    if (hostname.split('.').some((part) => /^0\d+$/.test(part))) {
+      return false;
+    }
+
+    // Block hex IP representations (e.g., 0x7f.0x0.0x0.0x1)
+    if (/0x[0-9a-f]/i.test(hostname)) {
       return false;
     }
 
@@ -154,8 +189,11 @@ export const isSafeUrl = (url: string): boolean => {
       return false;
     }
 
-    // Block IPv6 localhost
-    if (hostname === '[::1]' || hostname.startsWith('[::')) {
+    // Block cloud metadata service endpoints
+    if (
+      hostname === '169.254.169.254' ||
+      hostname === 'metadata.google.internal'
+    ) {
       return false;
     }
 

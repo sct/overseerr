@@ -9,10 +9,16 @@ import { createAuditLog } from '@server/lib/auditLog';
 import { Permission } from '@server/lib/permissions';
 import logger from '@server/logger';
 import { isAuthenticated } from '@server/middleware/auth';
+import { getSettings } from '@server/lib/settings';
 import { Router } from 'express';
-import { createHash, randomBytes } from 'crypto';
+import { createHmac, randomBytes } from 'crypto';
 
 const apiKeysRoutes = Router();
+
+const hashApiKey = (key: string): string => {
+  const secret = getSettings().clientId;
+  return createHmac('sha256', secret).update(key).digest('hex');
+};
 
 apiKeysRoutes.get('/', isAuthenticated(Permission.ADMIN), async (_req, res, next) => {
   const repo = getRepository(ApiKey);
@@ -63,7 +69,7 @@ apiKeysRoutes.post<never, ApiKeyCreateResponse, { name: string; permissions: num
       }
 
       const apiKey = randomBytes(32).toString('hex');
-      const keyHash = createHash('sha256').update(apiKey).digest('hex');
+      const keyHash = hashApiKey(apiKey);
 
       const entity = repo.create({
         name: req.body.name,

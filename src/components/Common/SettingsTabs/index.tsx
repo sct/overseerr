@@ -86,10 +86,16 @@ const SettingsTabs = ({
         </label>
         <select
           onChange={(e) => {
-            router.push(e.target.value);
+            const value = e.target.value;
+            if (settingsRoutes.some((r) => r.route === value)) {
+              router.push(value);
+            }
           }}
           onBlur={(e) => {
-            router.push(e.target.value);
+            const value = e.target.value;
+            if (settingsRoutes.some((r) => r.route === value)) {
+              router.push(value);
+            }
           }}
           defaultValue={
             settingsRoutes.find((route) => !!router.pathname.match(route.regex))

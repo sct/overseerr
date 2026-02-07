@@ -15,6 +15,30 @@ const fanart = new FanartAPI();
 
 const wikidataCache = cacheManager.getCache('musicbrainz');
 
+const isAllowedImageHost = (resource: string): boolean => {
+  try {
+    const hostname = new URL(resource).hostname.toLowerCase();
+    return (
+      hostname === 'upload.wikimedia.org' ||
+      hostname.endsWith('.wikimedia.org')
+    );
+  } catch {
+    return false;
+  }
+};
+
+const isAllowedDirectImage = (resource: string): boolean => {
+  if (!/\.(jpg|jpeg|png|webp)$/i.test(resource)) {
+    return false;
+  }
+  try {
+    const protocol = new URL(resource).protocol;
+    return protocol === 'https:' || protocol === 'http:';
+  } catch {
+    return false;
+  }
+};
+
 const getArtistImageUrl = (
   relations: { type: string; url?: { resource: string } }[] = []
 ) => {
@@ -22,18 +46,18 @@ const getArtistImageUrl = (
     (relation) => relation.type === 'image' && relation.url?.resource
   );
 
-  const commonsImage = imageRelations.find((relation) =>
-    relation.url?.resource?.includes('upload.wikimedia.org')
+  const commonsImage = imageRelations.find(
+    (relation) => relation.url?.resource && isAllowedImageHost(relation.url.resource)
   );
 
-  const directImage = imageRelations.find((relation) =>
-    /\.(jpg|jpeg|png|webp)$/i.test(relation.url?.resource ?? '')
+  const directImage = imageRelations.find(
+    (relation) => relation.url?.resource && isAllowedDirectImage(relation.url.resource)
   );
 
   return (
     commonsImage?.url?.resource ??
     directImage?.url?.resource ??
-    imageRelations[0]?.url?.resource
+    undefined
   );
 };
 

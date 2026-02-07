@@ -6,7 +6,7 @@ import type {
   PermissionCheckOptions,
 } from '@server/lib/permissions';
 import { getSettings } from '@server/lib/settings';
-import { createHash } from 'crypto';
+import { createHmac } from 'crypto';
 
 export const checkUser: Middleware = async (req, _res, next) => {
   const settings = getSettings();
@@ -29,7 +29,7 @@ export const checkUser: Middleware = async (req, _res, next) => {
   } else if (apiKeyHeader) {
     // New multi-key support (scoped permissions)
     const apiKeyRepository = getRepository(ApiKey);
-    const hash = createHash('sha256').update(apiKeyHeader).digest('hex');
+    const hash = createHmac('sha256', settings.clientId).update(apiKeyHeader).digest('hex');
     const apiKey = await apiKeyRepository.findOne({
       where: { keyHash: hash, isActive: true },
       relations: { user: true },
