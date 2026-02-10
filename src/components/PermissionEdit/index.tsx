@@ -69,6 +69,9 @@ export const messages = defineMessages({
   viewissues: 'View Issues',
   viewissuesDescription:
     'Grant permission to view media issues reported by other users.',
+  redownload: 'Re-Download',
+  redownloadDescription:
+    'Grant permission to re-download media files.',
   viewrecent: 'View Recently Added',
   viewrecentDescription:
     'Grant permission to view the list of recently added media.',
@@ -311,6 +314,12 @@ export const PermissionEdit = ({
           permission: Permission.VIEW_ISSUES,
         },
       ],
+    },
+    {
+      id: 'redownload',
+      name: intl.formatMessage(messages.redownload),
+      description: intl.formatMessage(messages.redownloadDescription),
+      permission: Permission.RE_DOWNLOAD,
     },
   ];
 

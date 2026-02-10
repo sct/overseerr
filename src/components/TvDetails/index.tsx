@@ -16,6 +16,7 @@ import Tooltip from '@app/components/Common/Tooltip';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import IssueModal from '@app/components/IssueModal';
 import ManageSlideOver from '@app/components/ManageSlideOver';
+import ReDownloadModal from '@app/components/ReDownloadModal';
 import MediaSlider from '@app/components/MediaSlider';
 import PersonCard from '@app/components/PersonCard';
 import RequestButton from '@app/components/RequestButton';
@@ -33,6 +34,7 @@ import { sortCrewPriority } from '@app/utils/creditHelpers';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import { Disclosure, Transition } from '@headlessui/react';
 import {
+  ArrowPathIcon,
   ArrowRightCircleIcon,
   CogIcon,
   ExclamationTriangleIcon,
@@ -79,6 +81,7 @@ const messages = defineMessages({
     'Production {countryCount, plural, one {Country} other {Countries}}',
   reportissue: 'Report an Issue',
   manageseries: 'Manage Series',
+  redownload: 'Re-Download',
   seasonstitle: 'Seasons',
   episodeCount: '{episodeCount, plural, one {# Episode} other {# Episodes}}',
   seasonnumber: 'Season {seasonNumber}',
@@ -103,6 +106,7 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
     router.query.manage == '1' ? true : false
   );
   const [showIssueModal, setShowIssueModal] = useState(false);
+  const [showReDownloadModal, setShowReDownloadModal] = useState(false);
 
   const {
     data,
@@ -307,6 +311,13 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
         mediaType="tv"
         tmdbId={data.id}
       />
+      <ReDownloadModal
+        onCancel={() => setShowReDownloadModal(false)}
+        show={showReDownloadModal}
+        mediaType="tv"
+        tmdbId={data.id}
+        mediaId={data.mediaInfo?.id ?? 0}
+      />
       <RequestModal
         tmdbId={data.id}
         show={showRequestModal}
@@ -436,6 +447,27 @@ const TvDetails = ({ tv }: TvDetailsProps) => {
                   className="ml-2 first:ml-0"
                 >
                   <ExclamationTriangleIcon />
+                </Button>
+              </Tooltip>
+            )}
+          {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
+            data.mediaInfo?.status === MediaStatus.PARTIALLY_AVAILABLE ||
+            (settings.currentSettings.series4kEnabled &&
+              hasPermission([Permission.REQUEST_4K, Permission.REQUEST_4K_TV], {
+                type: 'or',
+              }) &&
+              (data.mediaInfo?.status4k === MediaStatus.AVAILABLE ||
+                data?.mediaInfo?.status4k ===
+                  MediaStatus.PARTIALLY_AVAILABLE))) &&
+            hasPermission(Permission.RE_DOWNLOAD) &&
+            data.mediaInfo && (
+              <Tooltip content={intl.formatMessage(messages.redownload)}>
+                <Button
+                  buttonType="primary"
+                  onClick={() => setShowReDownloadModal(true)}
+                  className="ml-2 first:ml-0"
+                >
+                  <ArrowPathIcon />
                 </Button>
               </Tooltip>
             )}

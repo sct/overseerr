@@ -15,6 +15,7 @@ import Tooltip from '@app/components/Common/Tooltip';
 import ExternalLinkBlock from '@app/components/ExternalLinkBlock';
 import IssueModal from '@app/components/IssueModal';
 import ManageSlideOver from '@app/components/ManageSlideOver';
+import ReDownloadModal from '@app/components/ReDownloadModal';
 import MediaSlider from '@app/components/MediaSlider';
 import PersonCard from '@app/components/PersonCard';
 import RequestButton from '@app/components/RequestButton';
@@ -29,6 +30,7 @@ import Error from '@app/pages/_error';
 import { sortCrewPriority } from '@app/utils/creditHelpers';
 import { refreshIntervalHelper } from '@app/utils/refreshIntervalHelper';
 import {
+  ArrowPathIcon,
   ArrowRightCircleIcon,
   CloudIcon,
   CogIcon,
@@ -84,6 +86,7 @@ const messages = defineMessages({
   physicalrelease: 'Physical Release',
   reportissue: 'Report an Issue',
   managemovie: 'Manage Movie',
+  redownload: 'Re-Download',
   rtcriticsscore: 'Rotten Tomatoes Tomatometer',
   rtaudiencescore: 'Rotten Tomatoes Audience Score',
   tmdbuserscore: 'TMDB User Score',
@@ -106,6 +109,7 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   const minStudios = 3;
   const [showMoreStudios, setShowMoreStudios] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
+  const [showReDownloadModal, setShowReDownloadModal] = useState(false);
 
   const {
     data,
@@ -284,6 +288,13 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
         mediaType="movie"
         tmdbId={data.id}
       />
+      <ReDownloadModal
+        onCancel={() => setShowReDownloadModal(false)}
+        show={showReDownloadModal}
+        mediaType="movie"
+        tmdbId={data.id}
+        mediaId={data.mediaInfo?.id ?? 0}
+      />
       <ManageSlideOver
         data={data}
         mediaType="movie"
@@ -401,6 +412,27 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
                   className="ml-2 first:ml-0"
                 >
                   <ExclamationTriangleIcon />
+                </Button>
+              </Tooltip>
+            )}
+          {(data.mediaInfo?.status === MediaStatus.AVAILABLE ||
+            (settings.currentSettings.movie4kEnabled &&
+              hasPermission(
+                [Permission.REQUEST_4K, Permission.REQUEST_4K_MOVIE],
+                {
+                  type: 'or',
+                }
+              ) &&
+              data.mediaInfo?.status4k === MediaStatus.AVAILABLE)) &&
+            hasPermission(Permission.RE_DOWNLOAD) &&
+            data.mediaInfo && (
+              <Tooltip content={intl.formatMessage(messages.redownload)}>
+                <Button
+                  buttonType="primary"
+                  onClick={() => setShowReDownloadModal(true)}
+                  className="ml-2 first:ml-0"
+                >
+                  <ArrowPathIcon />
                 </Button>
               </Tooltip>
             )}
