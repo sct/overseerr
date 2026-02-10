@@ -394,9 +394,11 @@ class SonarrAPI extends ServarrBase<{
     });
 
     try {
-      for (const fileId of episodeFileIds) {
-        await this.axios.delete(`/episodeFile/${fileId}`);
-      }
+      await Promise.all(
+        episodeFileIds.map((fileId) =>
+          this.axios.delete(`/episodeFile/${fileId}`)
+        )
+      );
     } catch (e) {
       logger.error('Failed to delete episode files from Sonarr', {
         label: 'Sonarr API',
