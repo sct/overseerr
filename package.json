@@ -232,8 +232,8 @@
           "COMMIT_TAG": "$GIT_SHA"
         },
         "imageNames": [
-          "sctx/overseerr",
-          "ghcr.io/sct/overseerr"
+          "$DOCKER_USERNAME/overseerr",
+          "ghcr.io/$GITHUB_REPOSITORY_OWNER/overseerr"
         ],
         "platforms": [
           "linux/amd64",
