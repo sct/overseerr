@@ -319,7 +319,7 @@
   "components.RequestModal.AdvancedRequester.animenote": "* Questa serie è un anime.",
   "components.RequestModal.AdvancedRequester.advancedoptions": "Avanzate",
   "components.RequestButton.declinerequests": "Rifiuta {requestCount, plural, one {Richiesta} other {{requestCount} Richieste}}",
-  "components.RequestBlock.requestoverrides": "Aggiornamenti della richiesta",
+  "components.RequestBlock.requestoverrides": "Personalizzazioni della richiesta",
   "components.UserList.bulkedit": "Modifica collettiva",
   "components.UserList.userssaved": "Permessi salvati con successo!",
   "components.PermissionEdit.users": "Gestisci gli utenti",
