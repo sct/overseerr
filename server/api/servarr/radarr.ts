@@ -14,6 +14,15 @@ export interface RadarrMovieOptions {
   searchNow?: boolean;
 }
 
+export interface RadarrMovieFile {
+  id: number;
+  movieId: number;
+  relativePath: string;
+  path: string;
+  size: number;
+  dateAdded: string;
+}
+
 export interface RadarrMovie {
   id: number;
   title: string;
@@ -28,6 +37,7 @@ export interface RadarrMovie {
   qualityProfileId: number;
   added: string;
   hasFile: boolean;
+  movieFile?: RadarrMovieFile;
   tags: number[];
 }
 
@@ -212,6 +222,24 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
           movieId,
         }
       );
+    }
+  }
+
+  public async deleteMovieFile(movieFileId: number): Promise<void> {
+    logger.info('Deleting movie file from Radarr', {
+      label: 'Radarr API',
+      movieFileId,
+    });
+
+    try {
+      await this.axios.delete(`/movieFile/${movieFileId}`);
+    } catch (e) {
+      logger.error('Failed to delete movie file from Radarr', {
+        label: 'Radarr API',
+        errorMessage: e.message,
+        movieFileId,
+      });
+      throw new Error('Failed to delete movie file from Radarr');
     }
   }
 }

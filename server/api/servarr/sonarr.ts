@@ -318,6 +318,97 @@ class SonarrAPI extends ServarrBase<{
     }
   }
 
+  public async searchSeason(
+    seriesId: number,
+    seasonNumber: number
+  ): Promise<void> {
+    logger.info('Executing season search command.', {
+      label: 'Sonarr API',
+      seriesId,
+      seasonNumber,
+    });
+
+    try {
+      await this.runCommand('SeasonSearch', { seriesId, seasonNumber });
+    } catch (e) {
+      logger.error(
+        'Something went wrong while executing Sonarr season search.',
+        {
+          label: 'Sonarr API',
+          errorMessage: e.message,
+          seriesId,
+          seasonNumber,
+        }
+      );
+    }
+  }
+
+  public async searchEpisodes(episodeIds: number[]): Promise<void> {
+    logger.info('Executing episode search command.', {
+      label: 'Sonarr API',
+      episodeIds,
+    });
+
+    try {
+      await this.runCommand('EpisodeSearch', { episodeIds });
+    } catch (e) {
+      logger.error(
+        'Something went wrong while executing Sonarr episode search.',
+        {
+          label: 'Sonarr API',
+          errorMessage: e.message,
+          episodeIds,
+        }
+      );
+    }
+  }
+
+  public async getEpisodeFiles(seriesId: number): Promise<number[]> {
+    logger.info('Getting episode files for series', {
+      label: 'Sonarr API',
+      seriesId,
+    });
+
+    try {
+      const response = await this.axios.get<{ id: number }[]>(
+        `/episodeFile`,
+        {
+          params: { seriesId },
+        }
+      );
+      return response.data.map((file: { id: number }) => file.id);
+    } catch (e) {
+      logger.error('Failed to get episode files from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        seriesId,
+      });
+      return [];
+    }
+  }
+
+  public async deleteEpisodeFiles(episodeFileIds: number[]): Promise<void> {
+    logger.info('Deleting episode files from Sonarr', {
+      label: 'Sonarr API',
+      episodeFileIds,
+    });
+
+    try {
+      await Promise.all(
+        episodeFileIds.map((fileId) =>
+          this.axios.delete(`/episodeFile/${fileId}`)
+        )
+      );
+    } catch (e) {
+      logger.error('Failed to delete episode files from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        episodeFileIds,
+      });
+      throw new Error('Failed to delete episode files from Sonarr');
+    }
+  }
+
   private buildSeasonList(
     seasons: number[],
     existingSeasons?: SonarrSeason[]

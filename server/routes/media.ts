@@ -1,4 +1,6 @@
 import TautulliAPI from '@server/api/tautulli';
+import RadarrAPI from '@server/api/servarr/radarr';
+import SonarrAPI from '@server/api/servarr/sonarr';
 import { MediaStatus, MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
@@ -279,6 +281,158 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
         mediaId: req.params.id,
       });
       next({ status: 500, message: 'Failed to fetch watch data.' });
+    }
+  }
+);
+
+mediaRoutes.post<
+  { id: string },
+  { success: boolean; message: string },
+  { is4k?: boolean; seasons?: number[]; episodeIds?: number[] }
+>(
+  '/:id/redownload',
+  isAuthenticated(Permission.RE_DOWNLOAD),
+  async (req, res, next) => {
+    try {
+      const mediaRepository = getRepository(Media);
+      const media = await mediaRepository.findOne({
+        where: { id: Number(req.params.id) },
+        relations: { requests: true },
+      });
+
+      if (!media) {
+        return next({ status: 404, message: 'Media does not exist.' });
+      }
+
+      const is4k = Boolean(req.body.is4k);
+      const serviceId = media[is4k ? 'serviceId4k' : 'serviceId'];
+      const externalServiceId = media[is4k ? 'externalServiceId4k' : 'externalServiceId'];
+
+      if (!serviceId || !externalServiceId) {
+        return next({
+          status: 400,
+          message: `Media is not configured in ${media.mediaType === MediaType.MOVIE ? 'Radarr' : 'Sonarr'}.`,
+        });
+      }
+
+      const settings = getSettings();
+
+      if (media.mediaType === MediaType.MOVIE) {
+        // For movies, trigger Radarr search
+        const radarrSettings = settings.radarr.find(
+          (r) => r.id === serviceId
+        );
+
+        if (!radarrSettings) {
+          return next({
+            status: 500,
+            message: 'Radarr server configuration not found.',
+          });
+        }
+
+        const radarr = new RadarrAPI({
+          url: radarrSettings.useSsl
+            ? `https://${radarrSettings.hostname}:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}`
+            : `http://${radarrSettings.hostname}:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}`,
+          apiKey: radarrSettings.apiKey,
+        });
+
+        // Get the movie details to check for existing files
+        try {
+          const movie = await radarr.getMovie({ id: externalServiceId });
+          
+          // Delete existing file if it exists
+          if (movie.hasFile && movie.movieFile?.id) {
+            logger.info('Deleting existing movie file before re-download', {
+              label: 'Media',
+              movieId: externalServiceId,
+              movieFileId: movie.movieFile.id,
+            });
+            await radarr.deleteMovieFile(movie.movieFile.id);
+          }
+        } catch (e) {
+          logger.warn('Could not delete existing movie file, continuing with search', {
+            label: 'Media',
+            errorMessage: e.message,
+          });
+        }
+
+        await radarr.searchMovie(externalServiceId);
+
+        return res.status(200).json({
+          success: true,
+          message: 'Movie re-download initiated.',
+        });
+      } else {
+        // For TV shows, trigger Sonarr search
+        const sonarrSettings = settings.sonarr.find(
+          (s) => s.id === serviceId
+        );
+
+        if (!sonarrSettings) {
+          return next({
+            status: 500,
+            message: 'Sonarr server configuration not found.',
+          });
+        }
+
+        const sonarr = new SonarrAPI({
+          url: sonarrSettings.useSsl
+            ? `https://${sonarrSettings.hostname}:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}`
+            : `http://${sonarrSettings.hostname}:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}`,
+          apiKey: sonarrSettings.apiKey,
+        });
+
+        // Delete existing episode files before re-downloading
+        try {
+          const episodeFileIds = await sonarr.getEpisodeFiles(externalServiceId);
+          
+          if (episodeFileIds.length > 0) {
+            logger.info('Deleting existing episode files before re-download', {
+              label: 'Media',
+              seriesId: externalServiceId,
+              fileCount: episodeFileIds.length,
+            });
+            await sonarr.deleteEpisodeFiles(episodeFileIds);
+          }
+        } catch (e) {
+          logger.warn('Could not delete existing episode files, continuing with search', {
+            label: 'Media',
+            errorMessage: e.message,
+          });
+        }
+
+        if (req.body.seasons && req.body.seasons.length > 0) {
+          // Search specific seasons
+          for (const seasonNumber of req.body.seasons) {
+            await sonarr.searchSeason(externalServiceId, seasonNumber);
+          }
+          return res.status(200).json({
+            success: true,
+            message: `Re-download initiated for ${req.body.seasons.length} season(s).`,
+          });
+        } else if (req.body.episodeIds && req.body.episodeIds.length > 0) {
+          // Search specific episodes
+          await sonarr.searchEpisodes(req.body.episodeIds);
+          return res.status(200).json({
+            success: true,
+            message: `Re-download initiated for ${req.body.episodeIds.length} episode(s).`,
+          });
+        } else {
+          // Search entire series
+          await sonarr.searchSeries(externalServiceId);
+          return res.status(200).json({
+            success: true,
+            message: 'Series re-download initiated.',
+          });
+        }
+      }
+    } catch (e) {
+      logger.error('Something went wrong initiating re-download', {
+        label: 'Media',
+        message: e.message,
+      });
+      next({ status: 500, message: 'Failed to initiate re-download.' });
     }
   }
 );
