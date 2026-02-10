@@ -363,6 +363,50 @@ class SonarrAPI extends ServarrBase<{
     }
   }
 
+  public async getEpisodeFiles(seriesId: number): Promise<number[]> {
+    logger.info('Getting episode files for series', {
+      label: 'Sonarr API',
+      seriesId,
+    });
+
+    try {
+      const response = await this.axios.get<{ id: number }[]>(
+        `/episodeFile`,
+        {
+          params: { seriesId },
+        }
+      );
+      return response.data.map((file: { id: number }) => file.id);
+    } catch (e) {
+      logger.error('Failed to get episode files from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        seriesId,
+      });
+      return [];
+    }
+  }
+
+  public async deleteEpisodeFiles(episodeFileIds: number[]): Promise<void> {
+    logger.info('Deleting episode files from Sonarr', {
+      label: 'Sonarr API',
+      episodeFileIds,
+    });
+
+    try {
+      for (const fileId of episodeFileIds) {
+        await this.axios.delete(`/episodeFile/${fileId}`);
+      }
+    } catch (e) {
+      logger.error('Failed to delete episode files from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        episodeFileIds,
+      });
+      throw new Error('Failed to delete episode files from Sonarr');
+    }
+  }
+
   private buildSeasonList(
     seasons: number[],
     existingSeasons?: SonarrSeason[]

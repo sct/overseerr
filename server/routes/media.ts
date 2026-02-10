@@ -337,6 +337,26 @@ mediaRoutes.post<
           apiKey: radarrSettings.apiKey,
         });
 
+        // Get the movie details to check for existing files
+        try {
+          const movie = await radarr.getMovie({ id: externalServiceId });
+          
+          // Delete existing file if it exists
+          if (movie.hasFile && movie.movieFile?.id) {
+            logger.info('Deleting existing movie file before re-download', {
+              label: 'Media',
+              movieId: externalServiceId,
+              movieFileId: movie.movieFile.id,
+            });
+            await radarr.deleteMovieFile(movie.movieFile.id);
+          }
+        } catch (e) {
+          logger.warn('Could not delete existing movie file, continuing with search', {
+            label: 'Media',
+            errorMessage: e.message,
+          });
+        }
+
         await radarr.searchMovie(externalServiceId);
 
         return res.status(200).json({
@@ -362,6 +382,25 @@ mediaRoutes.post<
             : `http://${sonarrSettings.hostname}:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}`,
           apiKey: sonarrSettings.apiKey,
         });
+
+        // Delete existing episode files before re-downloading
+        try {
+          const episodeFileIds = await sonarr.getEpisodeFiles(externalServiceId);
+          
+          if (episodeFileIds.length > 0) {
+            logger.info('Deleting existing episode files before re-download', {
+              label: 'Media',
+              seriesId: externalServiceId,
+              fileCount: episodeFileIds.length,
+            });
+            await sonarr.deleteEpisodeFiles(episodeFileIds);
+          }
+        } catch (e) {
+          logger.warn('Could not delete existing episode files, continuing with search', {
+            label: 'Media',
+            errorMessage: e.message,
+          });
+        }
 
         if (req.body.seasons && req.body.seasons.length > 0) {
           // Search specific seasons
