@@ -1,4 +1,6 @@
 import TautulliAPI from '@server/api/tautulli';
+import RadarrAPI from '@server/api/servarr/radarr';
+import SonarrAPI from '@server/api/servarr/sonarr';
 import { MediaStatus, MediaType } from '@server/constants/media';
 import { getRepository } from '@server/datasource';
 import Media from '@server/entity/Media';
@@ -303,20 +305,20 @@ mediaRoutes.post<
       }
 
       const is4k = Boolean(req.body.is4k);
+      const serviceId = media[is4k ? 'serviceId4k' : 'serviceId'];
+      const externalServiceId = media[is4k ? 'externalServiceId4k' : 'externalServiceId'];
+
+      if (!serviceId || !externalServiceId) {
+        return next({
+          status: 400,
+          message: `Media is not configured in ${media.mediaType === MediaType.MOVIE ? 'Radarr' : 'Sonarr'}.`,
+        });
+      }
+
+      const settings = getSettings();
 
       if (media.mediaType === MediaType.MOVIE) {
         // For movies, trigger Radarr search
-        const serviceId = media[is4k ? 'serviceId4k' : 'serviceId'];
-        const externalServiceId = media[is4k ? 'externalServiceId4k' : 'externalServiceId'];
-
-        if (!serviceId || !externalServiceId) {
-          return next({
-            status: 400,
-            message: 'Media is not configured in Radarr.',
-          });
-        }
-
-        const settings = getSettings();
         const radarrSettings = settings.radarr.find(
           (r) => r.id === serviceId
         );
@@ -328,7 +330,6 @@ mediaRoutes.post<
           });
         }
 
-        const RadarrAPI = (await import('@server/api/servarr/radarr')).default;
         const radarr = new RadarrAPI({
           url: radarrSettings.useSsl
             ? `https://${radarrSettings.hostname}:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}`
@@ -344,17 +345,6 @@ mediaRoutes.post<
         });
       } else {
         // For TV shows, trigger Sonarr search
-        const serviceId = media[is4k ? 'serviceId4k' : 'serviceId'];
-        const externalServiceId = media[is4k ? 'externalServiceId4k' : 'externalServiceId'];
-
-        if (!serviceId || !externalServiceId) {
-          return next({
-            status: 400,
-            message: 'Media is not configured in Sonarr.',
-          });
-        }
-
-        const settings = getSettings();
         const sonarrSettings = settings.sonarr.find(
           (s) => s.id === serviceId
         );
@@ -366,7 +356,6 @@ mediaRoutes.post<
           });
         }
 
-        const SonarrAPI = (await import('@server/api/servarr/sonarr')).default;
         const sonarr = new SonarrAPI({
           url: sonarrSettings.useSsl
             ? `https://${sonarrSettings.hostname}:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}`
