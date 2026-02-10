@@ -377,10 +377,7 @@ mediaRoutes.post<
         if (req.body.seasons && req.body.seasons.length > 0) {
           // Search specific seasons
           for (const seasonNumber of req.body.seasons) {
-            await sonarr.runCommand('SeasonSearch', {
-              seriesId: externalServiceId,
-              seasonNumber,
-            });
+            await sonarr.searchSeason(externalServiceId, seasonNumber);
           }
           return res.status(200).json({
             success: true,
@@ -388,9 +385,7 @@ mediaRoutes.post<
           });
         } else if (req.body.episodeIds && req.body.episodeIds.length > 0) {
           // Search specific episodes
-          await sonarr.runCommand('EpisodeSearch', {
-            episodeIds: req.body.episodeIds,
-          });
+          await sonarr.searchEpisodes(req.body.episodeIds);
           return res.status(200).json({
             success: true,
             message: `Re-download initiated for ${req.body.episodeIds.length} episode(s).`,

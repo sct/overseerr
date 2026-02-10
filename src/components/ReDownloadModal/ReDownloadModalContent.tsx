@@ -1,7 +1,5 @@
-import Button from '@app/components/Common/Button';
 import Modal from '@app/components/Common/Modal';
 import { RadioGroup } from '@headlessui/react';
-import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import type { MovieDetails } from '@server/models/Movie';
 import type { TvDetails, SeasonWithEpisodes } from '@server/models/Tv';
 import axios from 'axios';
@@ -152,7 +150,6 @@ const ReDownloadModalContent = ({
           selectedOption === 'episodes' &&
           selectedEpisodes.length === 0)
       }
-      iconSvg={<ArrowPathIcon />}
     >
       {mediaType === 'movie' ? (
         <div className="prose prose-invert">
