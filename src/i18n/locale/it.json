@@ -51,7 +51,7 @@
   "components.Discover.upcoming": "Film in uscita",
   "components.Discover.trending": "Di tendenza",
   "components.UserList.deleteconfirm": "Sei sicuro di voler rimuovere questo utente? Tutti le richieste verranno rimosse permanentemente.",
-  "components.UserList.created": "Creato",
+  "components.UserList.created": "Iscritto",
   "components.UserList.admin": "Amministratore",
   "components.UserList.role": "Ruolo",
   "components.UserList.plexuser": "Utente Plex",
