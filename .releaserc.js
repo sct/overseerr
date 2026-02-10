@@ -23,8 +23,8 @@ module.exports = {
           COMMIT_TAG: '$GIT_SHA',
         },
         imageNames: [
-          `${process.env.DOCKER_USERNAME || 'sctx'}/overseerr`,
-          `ghcr.io/${process.env.GITHUB_REPOSITORY_OWNER || 'sct'}/overseerr`,
+          `${process.env.DOCKER_USERNAME || 'ComicalHysteria'}/overseerr`,
+          `ghcr.io/${process.env.GITHUB_REPOSITORY_OWNER || 'ComicalHysteria'}/overseerr`,
         ],
         platforms: ['linux/amd64', 'linux/arm64', 'linux/arm/v7'],
       },
