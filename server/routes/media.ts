@@ -283,4 +283,135 @@ mediaRoutes.get<{ id: string }, MediaWatchDataResponse>(
   }
 );
 
+mediaRoutes.post<
+  { id: string },
+  { success: boolean; message: string },
+  { is4k?: boolean; seasons?: number[]; episodeIds?: number[] }
+>(
+  '/:id/redownload',
+  isAuthenticated(Permission.RE_DOWNLOAD),
+  async (req, res, next) => {
+    try {
+      const mediaRepository = getRepository(Media);
+      const media = await mediaRepository.findOne({
+        where: { id: Number(req.params.id) },
+        relations: { requests: true },
+      });
+
+      if (!media) {
+        return next({ status: 404, message: 'Media does not exist.' });
+      }
+
+      const is4k = Boolean(req.body.is4k);
+
+      if (media.mediaType === MediaType.MOVIE) {
+        // For movies, trigger Radarr search
+        const serviceId = media[is4k ? 'serviceId4k' : 'serviceId'];
+        const externalServiceId = media[is4k ? 'externalServiceId4k' : 'externalServiceId'];
+
+        if (!serviceId || !externalServiceId) {
+          return next({
+            status: 400,
+            message: 'Media is not configured in Radarr.',
+          });
+        }
+
+        const settings = getSettings();
+        const radarrSettings = settings.radarr.find(
+          (r) => r.id === serviceId
+        );
+
+        if (!radarrSettings) {
+          return next({
+            status: 500,
+            message: 'Radarr server configuration not found.',
+          });
+        }
+
+        const RadarrAPI = (await import('@server/api/servarr/radarr')).default;
+        const radarr = new RadarrAPI({
+          url: radarrSettings.useSsl
+            ? `https://${radarrSettings.hostname}:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}`
+            : `http://${radarrSettings.hostname}:${radarrSettings.port}${radarrSettings.baseUrl ?? ''}`,
+          apiKey: radarrSettings.apiKey,
+        });
+
+        await radarr.searchMovie(externalServiceId);
+
+        return res.status(200).json({
+          success: true,
+          message: 'Movie re-download initiated.',
+        });
+      } else {
+        // For TV shows, trigger Sonarr search
+        const serviceId = media[is4k ? 'serviceId4k' : 'serviceId'];
+        const externalServiceId = media[is4k ? 'externalServiceId4k' : 'externalServiceId'];
+
+        if (!serviceId || !externalServiceId) {
+          return next({
+            status: 400,
+            message: 'Media is not configured in Sonarr.',
+          });
+        }
+
+        const settings = getSettings();
+        const sonarrSettings = settings.sonarr.find(
+          (s) => s.id === serviceId
+        );
+
+        if (!sonarrSettings) {
+          return next({
+            status: 500,
+            message: 'Sonarr server configuration not found.',
+          });
+        }
+
+        const SonarrAPI = (await import('@server/api/servarr/sonarr')).default;
+        const sonarr = new SonarrAPI({
+          url: sonarrSettings.useSsl
+            ? `https://${sonarrSettings.hostname}:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}`
+            : `http://${sonarrSettings.hostname}:${sonarrSettings.port}${sonarrSettings.baseUrl ?? ''}`,
+          apiKey: sonarrSettings.apiKey,
+        });
+
+        if (req.body.seasons && req.body.seasons.length > 0) {
+          // Search specific seasons
+          for (const seasonNumber of req.body.seasons) {
+            await sonarr.runCommand('SeasonSearch', {
+              seriesId: externalServiceId,
+              seasonNumber,
+            });
+          }
+          return res.status(200).json({
+            success: true,
+            message: `Re-download initiated for ${req.body.seasons.length} season(s).`,
+          });
+        } else if (req.body.episodeIds && req.body.episodeIds.length > 0) {
+          // Search specific episodes
+          await sonarr.runCommand('EpisodeSearch', {
+            episodeIds: req.body.episodeIds,
+          });
+          return res.status(200).json({
+            success: true,
+            message: `Re-download initiated for ${req.body.episodeIds.length} episode(s).`,
+          });
+        } else {
+          // Search entire series
+          await sonarr.searchSeries(externalServiceId);
+          return res.status(200).json({
+            success: true,
+            message: 'Series re-download initiated.',
+          });
+        }
+      }
+    } catch (e) {
+      logger.error('Something went wrong initiating re-download', {
+        label: 'Media',
+        message: e.message,
+      });
+      next({ status: 500, message: 'Failed to initiate re-download.' });
+    }
+  }
+);
+
 export default mediaRoutes;
