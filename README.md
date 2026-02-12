@@ -1,3 +1,5 @@
+> **⚠️ Overseerr is being superseded by [Seerr](https://github.com/seerr-team/seerr)**, a unified project merging Overseerr and Jellyseerr. This repository will no longer receive new features or major updates. We recommend migrating to Seerr for continued support and development. See the [Seerr migration guide](https://docs.seerr.dev/migration-guide) for details.
+
 <p align="center">
 <img src="./public/logo_full.svg" alt="Overseerr" style="margin: 20px 0;">
 </p>

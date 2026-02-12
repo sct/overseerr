@@ -6,7 +6,6 @@ import PageTitle from '@app/components/Common/PageTitle';
 import Releases from '@app/components/Settings/SettingsAbout/Releases';
 import globalMessages from '@app/i18n/globalMessages';
 import Error from '@app/pages/_error';
-import { InformationCircleIcon } from '@heroicons/react/24/solid';
 import type {
   SettingsAboutResponse,
   StatusResponse,
@@ -30,8 +29,10 @@ const messages = defineMessages({
   preferredmethod: 'Preferred',
   outofdate: 'Out of Date',
   uptodate: 'Up to Date',
-  betawarning:
-    'This is BETA software. Features may be broken and/or unstable. Please report any issues on GitHub!',
+  seerrmigration:
+    'Overseerr is being superseded by {seerrLink}. This project will no longer receive new features or major updates. We recommend migrating to Seerr for continued support and development.',
+  seerrmigrationTitle: 'Overseerr → Seerr',
+  migrationguide: 'Migration Guide',
   runningDevelop:
     'You are running the <code>develop</code> branch of Overseerr, which is only recommended for those contributing to development or assisting with bleeding-edge testing.',
 });
@@ -60,28 +61,35 @@ const SettingsAbout = () => {
           intl.formatMessage(globalMessages.settings),
         ]}
       />
-      <div className="mt-6 rounded-md border border-indigo-500 bg-indigo-400 bg-opacity-20 p-4 backdrop-blur">
-        <div className="flex">
-          <div className="flex-shrink-0">
-            <InformationCircleIcon className="h-5 w-5 text-gray-100" />
-          </div>
-          <div className="ml-3 flex-1 md:flex md:justify-between">
-            <p className="text-sm leading-5 text-gray-100">
-              {intl.formatMessage(messages.betawarning)}
-            </p>
-            <p className="mt-3 text-sm leading-5 md:mt-0 md:ml-6">
+      <Alert
+        title={intl.formatMessage(messages.seerrmigrationTitle)}
+        type="warning"
+      >
+        <p>
+          {intl.formatMessage(messages.seerrmigration, {
+            seerrLink: (
               <a
-                href="http://github.com/sct/overseerr"
-                className="whitespace-nowrap font-medium text-gray-100 transition duration-150 ease-in-out hover:text-white"
+                href="https://github.com/seerr-team/seerr"
                 target="_blank"
                 rel="noreferrer"
+                className="font-bold text-yellow-100 transition duration-150 ease-in-out hover:text-white hover:underline"
               >
-                GitHub &rarr;
+                Seerr
               </a>
-            </p>
-          </div>
-        </div>
-      </div>
+            ),
+          })}
+        </p>
+        <p className="mt-2">
+          <a
+            href="https://docs.seerr.dev/migration-guide"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-yellow-100 transition duration-150 ease-in-out hover:text-white hover:underline"
+          >
+            {intl.formatMessage(messages.migrationguide)} &rarr;
+          </a>
+        </p>
+      </Alert>
       <div className="section">
         <List title={intl.formatMessage(messages.overseerrinformation)}>
           {data.version.startsWith('develop-') && (
