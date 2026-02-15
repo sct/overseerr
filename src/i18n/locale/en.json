@@ -804,6 +804,8 @@
   "components.Settings.SettingsMain.generalsettings": "General Settings",
   "components.Settings.SettingsMain.generalsettingsDescription": "Configure global and default settings for Overseerr.",
   "components.Settings.SettingsMain.hideAvailable": "Hide Available Media",
+  "components.Settings.SettingsMain.hideSpecials": "Hide Specials Season",
+  "components.Settings.SettingsMain.hideSpecialsTip": "Hide specials season and prevent requesting specials",
   "components.Settings.SettingsMain.locale": "Display Language",
   "components.Settings.SettingsMain.originallanguage": "Discover Language",
   "components.Settings.SettingsMain.originallanguageTip": "Filter content by original language",

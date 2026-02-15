@@ -242,6 +242,7 @@ CoreApp.getInitialProps = async (initialProps) => {
     locale: 'en',
     emailEnabled: false,
     newPlexLogin: true,
+    hideSpecials: false,
   };
 
   if (ctx.res) {

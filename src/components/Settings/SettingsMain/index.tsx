@@ -54,6 +54,8 @@ const messages = defineMessages({
   validationApplicationUrl: 'You must provide a valid URL',
   validationApplicationUrlTrailingSlash: 'URL must not end in a trailing slash',
   partialRequestsEnabled: 'Allow Partial Series Requests',
+  hideSpecials: 'Hide Specials Season',
+  hideSpecialsTip: 'Hide specials season and prevent requesting specials',
   locale: 'Display Language',
 });
 
@@ -132,6 +134,7 @@ const SettingsMain = () => {
             region: data?.region,
             originalLanguage: data?.originalLanguage,
             partialRequestsEnabled: data?.partialRequestsEnabled,
+            hideSpecials: data?.hideSpecials,
             trustProxy: data?.trustProxy,
             cacheImages: data?.cacheImages,
           }}
@@ -148,6 +151,7 @@ const SettingsMain = () => {
                 region: values.region,
                 originalLanguage: values.originalLanguage,
                 partialRequestsEnabled: values.partialRequestsEnabled,
+                hideSpecials: values.hideSpecials,
                 trustProxy: values.trustProxy,
                 cacheImages: values.cacheImages,
               });
@@ -400,6 +404,31 @@ const SettingsMain = () => {
                       name="hideAvailable"
                       onChange={() => {
                         setFieldValue('hideAvailable', !values.hideAvailable);
+                      }}
+                    />                  </div>
+                </div>
+                <div className="form-row">
+                  <label
+                    htmlFor="hideSpecials"
+                    className="checkbox-label"
+                  >
+                    <span className="mr-2">
+                      {intl.formatMessage(messages.hideSpecials)}
+                    </span>
+                    <span className="label-tip">
+                      {intl.formatMessage(messages.hideSpecialsTip)}
+                    </span>
+                  </label>
+                  <div className="form-input-area">
+                    <Field
+                      type="checkbox"
+                      id="hideSpecials"
+                      name="hideSpecials"
+                      onChange={() => {
+                        setFieldValue(
+                          'hideSpecials',
+                          !values.hideSpecials
+                        );
                       }}
                     />
                   </div>
