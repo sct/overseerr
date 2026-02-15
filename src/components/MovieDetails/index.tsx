@@ -34,12 +34,14 @@ import {
   CogIcon,
   ExclamationTriangleIcon,
   FilmIcon,
+  HeartIcon,
   PlayIcon,
   TicketIcon,
 } from '@heroicons/react/24/outline';
 import {
   ChevronDoubleDownIcon,
   ChevronDoubleUpIcon,
+  HeartIcon as HeartIconSolid,
 } from '@heroicons/react/24/solid';
 import { type RatingResponse } from '@server/api/ratings';
 import { IssueStatus } from '@server/constants/issue';
@@ -88,6 +90,8 @@ const messages = defineMessages({
   rtaudiencescore: 'Rotten Tomatoes Audience Score',
   tmdbuserscore: 'TMDB User Score',
   imdbuserscore: 'IMDB User Score',
+  addtofavorites: 'Add to Favorites',
+  removefromfavorites: 'Remove from Favorites',
 });
 
 interface MovieDetailsProps {
@@ -106,6 +110,8 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   const minStudios = 3;
   const [showMoreStudios, setShowMoreStudios] = useState(false);
   const [showIssueModal, setShowIssueModal] = useState(false);
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isUpdatingFavorite, setIsUpdatingFavorite] = useState(false);
 
   const {
     data,
@@ -141,6 +147,21 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
     iOSPlexUrl: data?.mediaInfo?.iOSPlexUrl,
     iOSPlexUrl4k: data?.mediaInfo?.iOSPlexUrl4k,
   });
+
+  const { data: favoriteData, mutate: revalidateFavorite } = useSWR<{
+    isFavorite: boolean;
+  }>(
+    data ? `/api/v1/favorites/movie/${data.id}` : null,
+    {
+      shouldRetryOnError: false,
+    }
+  );
+
+  useEffect(() => {
+    if (favoriteData?.isFavorite !== undefined) {
+      setIsFavorite(favoriteData.isFavorite);
+    }
+  }, [favoriteData]);
 
   if (!data && !error) {
     return <LoadingSpinner />;
@@ -195,8 +216,8 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
   const region = user?.settings?.region
     ? user.settings.region
     : settings.currentSettings.region
-    ? settings.currentSettings.region
-    : 'US';
+      ? settings.currentSettings.region
+      : 'US';
 
   const releases = data.releases.results.find(
     (r) => r.iso_3166_1 === region
@@ -373,6 +394,39 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
         </div>
         <div className="media-actions">
           <PlayButton links={mediaLinks} />
+          <Button
+            buttonType="ghost"
+            className="ml-2 first:ml-0"
+            disabled={isUpdatingFavorite}
+            aria-label={
+              isFavorite
+                ? intl.formatMessage(messages.removefromfavorites)
+                : intl.formatMessage(messages.addtofavorites)
+            }
+            onClick={async () => {
+              try {
+                setIsUpdatingFavorite(true);
+                if (isFavorite) {
+                  await fetch(`/api/v1/favorites/movie/${data.id}`, {
+                    method: 'DELETE',
+                  });
+                } else {
+                  await fetch(`/api/v1/favorites/movie/${data.id}`, {
+                    method: 'POST',
+                  });
+                }
+                await revalidateFavorite();
+              } finally {
+                setIsUpdatingFavorite(false);
+              }
+            }}
+          >
+            {isFavorite ? (
+              <HeartIconSolid className="h-6 w-6 text-red-500" />
+            ) : (
+              <HeartIcon className="h-6 w-6 text-gray-300" />
+            )}
+          </Button>
           <RequestButton
             mediaType="movie"
             media={data.mediaInfo}
@@ -518,75 +572,75 @@ const MovieDetails = ({ movie }: MovieDetailsProps) => {
               (ratingData?.rt?.audienceRating &&
                 !!ratingData?.rt?.audienceScore) ||
               ratingData?.imdb?.criticsScore) && (
-              <div className="media-ratings">
-                {ratingData?.rt?.criticsRating &&
-                  !!ratingData?.rt?.criticsScore && (
-                    <Tooltip
-                      content={intl.formatMessage(messages.rtcriticsscore)}
-                    >
+                <div className="media-ratings">
+                  {ratingData?.rt?.criticsRating &&
+                    !!ratingData?.rt?.criticsScore && (
+                      <Tooltip
+                        content={intl.formatMessage(messages.rtcriticsscore)}
+                      >
+                        <a
+                          href={ratingData.rt.url}
+                          className="media-rating"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {ratingData.rt.criticsRating === 'Rotten' ? (
+                            <RTRotten className="w-6" />
+                          ) : (
+                            <RTFresh className="w-6" />
+                          )}
+                          <span>{ratingData.rt.criticsScore}%</span>
+                        </a>
+                      </Tooltip>
+                    )}
+                  {ratingData?.rt?.audienceRating &&
+                    !!ratingData?.rt?.audienceScore && (
+                      <Tooltip
+                        content={intl.formatMessage(messages.rtaudiencescore)}
+                      >
+                        <a
+                          href={ratingData.rt.url}
+                          className="media-rating"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {ratingData.rt.audienceRating === 'Spilled' ? (
+                            <RTAudRotten className="w-6" />
+                          ) : (
+                            <RTAudFresh className="w-6" />
+                          )}
+                          <span>{ratingData.rt.audienceScore}%</span>
+                        </a>
+                      </Tooltip>
+                    )}
+                  {ratingData?.imdb?.criticsScore && (
+                    <Tooltip content={intl.formatMessage(messages.imdbuserscore)}>
                       <a
-                        href={ratingData.rt.url}
+                        href={ratingData.imdb.url}
                         className="media-rating"
                         target="_blank"
                         rel="noreferrer"
                       >
-                        {ratingData.rt.criticsRating === 'Rotten' ? (
-                          <RTRotten className="w-6" />
-                        ) : (
-                          <RTFresh className="w-6" />
-                        )}
-                        <span>{ratingData.rt.criticsScore}%</span>
+                        <ImdbLogo className="mr-1 w-6" />
+                        <span>{ratingData.imdb.criticsScore}</span>
                       </a>
                     </Tooltip>
                   )}
-                {ratingData?.rt?.audienceRating &&
-                  !!ratingData?.rt?.audienceScore && (
-                    <Tooltip
-                      content={intl.formatMessage(messages.rtaudiencescore)}
-                    >
+                  {!!data.voteCount && (
+                    <Tooltip content={intl.formatMessage(messages.tmdbuserscore)}>
                       <a
-                        href={ratingData.rt.url}
+                        href={`https://www.themoviedb.org/movie/${data.id}?language=${locale}`}
                         className="media-rating"
                         target="_blank"
                         rel="noreferrer"
                       >
-                        {ratingData.rt.audienceRating === 'Spilled' ? (
-                          <RTAudRotten className="w-6" />
-                        ) : (
-                          <RTAudFresh className="w-6" />
-                        )}
-                        <span>{ratingData.rt.audienceScore}%</span>
+                        <TmdbLogo className="mr-1 w-6" />
+                        <span>{Math.round(data.voteAverage * 10)}%</span>
                       </a>
                     </Tooltip>
                   )}
-                {ratingData?.imdb?.criticsScore && (
-                  <Tooltip content={intl.formatMessage(messages.imdbuserscore)}>
-                    <a
-                      href={ratingData.imdb.url}
-                      className="media-rating"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <ImdbLogo className="mr-1 w-6" />
-                      <span>{ratingData.imdb.criticsScore}</span>
-                    </a>
-                  </Tooltip>
-                )}
-                {!!data.voteCount && (
-                  <Tooltip content={intl.formatMessage(messages.tmdbuserscore)}>
-                    <a
-                      href={`https://www.themoviedb.org/movie/${data.id}?language=${locale}`}
-                      className="media-rating"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      <TmdbLogo className="mr-1 w-6" />
-                      <span>{Math.round(data.voteAverage * 10)}%</span>
-                    </a>
-                  </Tooltip>
-                )}
-              </div>
-            )}
+                </div>
+              )}
             {data.originalTitle &&
               data.originalLanguage !== locale.slice(0, 2) && (
                 <div className="media-fact">

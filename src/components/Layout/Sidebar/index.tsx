@@ -8,6 +8,7 @@ import {
   CogIcon,
   ExclamationTriangleIcon,
   FilmIcon,
+  HeartIcon,
   SparklesIcon,
   TvIcon,
   UsersIcon,
@@ -26,6 +27,7 @@ export const menuMessages = defineMessages({
   issues: 'Issues',
   users: 'Users',
   settings: 'Settings',
+  favorites: 'Favorites',
 });
 
 interface SidebarProps {
@@ -66,6 +68,12 @@ const SidebarLinks: SidebarLinkProps[] = [
     messagesKey: 'browsetv',
     svgIcon: <TvIcon className="mr-3 h-6 w-6" />,
     activeRegExp: /^\/discover\/tv$/,
+  },
+  {
+    href: '/favorites',
+    messagesKey: 'favorites',
+    svgIcon: <HeartIcon className="mr-3 h-6 w-6" />,
+    activeRegExp: /^\/favorites/,
   },
   {
     href: '/requests',
@@ -185,8 +193,8 @@ const Sidebar = ({
                       {SidebarLinks.filter((link) =>
                         link.requiredPermission
                           ? hasPermission(link.requiredPermission, {
-                              type: link.permissionType ?? 'and',
-                            })
+                            type: link.permissionType ?? 'and',
+                          })
                           : true
                       ).map((sidebarLink) => {
                         return (
@@ -205,12 +213,11 @@ const Sidebar = ({
                               role="button"
                               tabIndex={0}
                               className={`flex items-center rounded-md px-2 py-2 text-base font-medium leading-6 text-white transition duration-150 ease-in-out focus:outline-none
-                                ${
-                                  router.pathname.match(
-                                    sidebarLink.activeRegExp
-                                  )
-                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
-                                    : 'hover:bg-gray-700 focus:bg-gray-700'
+                                ${router.pathname.match(
+                                sidebarLink.activeRegExp
+                              )
+                                  ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
+                                  : 'hover:bg-gray-700 focus:bg-gray-700'
                                 }
                               `}
                               data-testid={`${sidebarLink.dataTestId}-mobile`}
@@ -255,8 +262,8 @@ const Sidebar = ({
                 {SidebarLinks.filter((link) =>
                   link.requiredPermission
                     ? hasPermission(link.requiredPermission, {
-                        type: link.permissionType ?? 'and',
-                      })
+                      type: link.permissionType ?? 'and',
+                    })
                     : true
                 ).map((sidebarLink) => {
                   return (
@@ -267,13 +274,12 @@ const Sidebar = ({
                     >
                       <a
                         className={`group flex items-center rounded-md px-2 py-2 text-lg font-medium leading-6 text-white transition duration-150 ease-in-out focus:outline-none
-                                ${
-                                  router.pathname.match(
-                                    sidebarLink.activeRegExp
-                                  )
-                                    ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
-                                    : 'hover:bg-gray-700 focus:bg-gray-700'
-                                }
+                                ${router.pathname.match(
+                          sidebarLink.activeRegExp
+                        )
+                            ? 'bg-gradient-to-br from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500'
+                            : 'hover:bg-gray-700 focus:bg-gray-700'
+                          }
                               `}
                         data-testid={sidebarLink.dataTestId}
                       >
@@ -286,13 +292,12 @@ const Sidebar = ({
                           hasPermission(Permission.MANAGE_REQUESTS) && (
                             <div className="ml-auto flex">
                               <Badge
-                                className={`rounded-md bg-gradient-to-br ${
-                                  router.pathname.match(
-                                    sidebarLink.activeRegExp
-                                  )
+                                className={`rounded-md bg-gradient-to-br ${router.pathname.match(
+                                  sidebarLink.activeRegExp
+                                )
                                     ? 'border-indigo-600 from-indigo-700 to-purple-700'
                                     : 'border-indigo-500 from-indigo-600 to-purple-600'
-                                }`}
+                                  }`}
                               >
                                 {pendingRequestsCount}
                               </Badge>
@@ -303,13 +308,12 @@ const Sidebar = ({
                           hasPermission(Permission.MANAGE_ISSUES) && (
                             <div className="ml-auto flex">
                               <Badge
-                                className={`rounded-md bg-gradient-to-br ${
-                                  router.pathname.match(
-                                    sidebarLink.activeRegExp
-                                  )
+                                className={`rounded-md bg-gradient-to-br ${router.pathname.match(
+                                  sidebarLink.activeRegExp
+                                )
                                     ? 'border-indigo-600 from-indigo-700 to-purple-700'
                                     : 'border-indigo-500 from-indigo-600 to-purple-600'
-                                }`}
+                                  }`}
                               >
                                 {openIssuesCount}
                               </Badge>
