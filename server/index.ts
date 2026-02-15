@@ -31,6 +31,7 @@ import express from 'express';
 import * as OpenApiValidator from 'express-openapi-validator';
 import type { Store } from 'express-session';
 import session from 'express-session';
+import _ from 'lodash';
 import next from 'next';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
@@ -42,6 +43,39 @@ logger.info(`Starting Overseerr version ${getAppVersion()}`);
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
+
+const logMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  // Enhanced sanitization function with explicit return type
+  const sanitize = (input: unknown, depth = 0): string => {
+    if (depth > 2) {
+      return typeof input === 'string' ? _.escape(input) : '[Complex Object]';
+    }
+    if (typeof input === 'string') {
+      return _.escape(_.truncate(input, { length: 200 }));
+    } else if (_.isObject(input)) {
+      return _.mapValues(input, (value) =>
+        sanitize(value, depth + 1)
+      ) as unknown as string;
+    }
+    return input as string;
+  };
+
+  // Function to selectively log properties with explicit parameter types
+  const safeLog = (key: string, value: unknown): unknown => {
+    const sensitiveKeys = ['authorization', 'cookie', 'set-cookie'];
+    if (sensitiveKeys.includes(key.toLowerCase())) {
+      return '[Filtered]';
+    }
+    return sanitize(value);
+  };
+
+  logger.debug(`Request Method: ${sanitize(req.method)}`);
+  logger.debug(`Request URL: ${sanitize(req.originalUrl)}`);
+  logger.debug(`Request Headers: ${JSON.stringify(req.headers, safeLog)}`);
+  logger.debug(`Request Body: ${JSON.stringify(req.body, safeLog)}`);
+
+  next();
+};
 
 app
   .prepare()
@@ -104,6 +138,7 @@ app
     if (settings.main.trustProxy) {
       server.enable('trust proxy');
     }
+    server.use(logMiddleware);
     server.use(cookieParser());
     server.use(express.json());
     server.use(express.urlencoded({ extended: true }));
