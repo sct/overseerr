@@ -75,6 +75,14 @@ export const messages = defineMessages({
   viewwatchlists: 'View Plex Watchlists',
   viewwatchlistsDescription:
     "Grant permission to view other users' Plex Watchlists.",
+  viewcalendardetails: 'View Calendar Details',
+  viewcalendardetailsDescription:
+    'Grant permission to view extended file details in calendar.',
+  deletecalendarfiles: 'Delete Calendar Files',
+  deletecalendarfilesDescription:
+    'Grant permission to delete files from calendar.',
+  managecalendar: 'Manage Calendar',
+  managecalendarDescription: 'Grant permission to manage calendar.',
 });
 
 interface PermissionEditProps {
@@ -309,6 +317,30 @@ export const PermissionEdit = ({
           name: intl.formatMessage(messages.viewissues),
           description: intl.formatMessage(messages.viewissuesDescription),
           permission: Permission.VIEW_ISSUES,
+        },
+      ],
+    },
+    {
+      id: 'managecalendar',
+      name: intl.formatMessage(messages.managecalendar),
+      description: intl.formatMessage(messages.managecalendarDescription),
+      permission: Permission.MANAGE_CALENDAR,
+      children: [
+        {
+          id: 'viewcalendardetails',
+          name: intl.formatMessage(messages.viewcalendardetails),
+          description: intl.formatMessage(
+            messages.viewcalendardetailsDescription
+          ),
+          permission: Permission.VIEW_CALENDAR_DETAILS,
+        },
+        {
+          id: 'deletecalendarfiles',
+          name: intl.formatMessage(messages.deletecalendarfiles),
+          description: intl.formatMessage(
+            messages.deletecalendarfilesDescription
+          ),
+          permission: Permission.DELETE_CALENDAR_FILES,
         },
       ],
     },

@@ -62,6 +62,25 @@ interface QueueItem {
   downloadClient: string;
   indexer: string;
   id: number;
+  // Enhanced queue fields from Sonarr v3 API
+  customFormatScore?: number;
+  quality?: {
+    quality: {
+      id: number;
+      name: string;
+      source: string;
+      resolution: number;
+    };
+  };
+  customFormats?: {
+    id: number;
+    name: string;
+  }[];
+  languages?: {
+    id: number;
+    name: string;
+  }[];
+  outputPath?: string;
 }
 
 export interface Tag {

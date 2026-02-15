@@ -1,6 +1,7 @@
 import Badge from '@app/components/Common/Badge';
 import { Permission, useUser } from '@app/hooks/useUser';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
+import { useEffect, useState } from 'react';
 import { defineMessages, FormattedRelativeTime, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -21,6 +22,18 @@ const DownloadBlock = ({
 }: DownloadBlockProps) => {
   const intl = useIntl();
   const { hasPermission } = useUser();
+  const [, forceUpdate] = useState({});
+
+  // Force re-render every second when there's an estimated completion time
+  useEffect(() => {
+    if (!downloadItem.estimatedCompletionTime) return;
+
+    const interval = setInterval(() => {
+      forceUpdate({});
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [downloadItem.estimatedCompletionTime]);
 
   return (
     <div className="p-4">
@@ -62,6 +75,17 @@ const DownloadBlock = ({
             %
           </span>
         </div>
+      </div>
+      <div className="mb-1 text-xs text-gray-300">
+        {downloadItem.size && downloadItem.sizeLeft !== undefined && (
+          <span>
+            {(
+              (downloadItem.size - downloadItem.sizeLeft) /
+              (1024 * 1024 * 1024)
+            ).toFixed(2)}{' '}
+            GB / {(downloadItem.size / (1024 * 1024 * 1024)).toFixed(2)} GB
+          </span>
+        )}
       </div>
       <div className="flex items-center justify-between text-xs">
         <span>

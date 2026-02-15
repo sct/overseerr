@@ -29,6 +29,59 @@ export interface RadarrMovie {
   added: string;
   hasFile: boolean;
   tags: number[];
+  inCinemas?: string;
+  physicalRelease?: string;
+  digitalRelease?: string;
+  youTubeTrailerId?: string;
+  movieFile?: {
+    id: number;
+    relativePath: string;
+    path: string;
+    size: number;
+    dateAdded: string;
+    sceneName?: string;
+    releaseGroup?: string;
+    quality: {
+      quality: {
+        id: number;
+        name: string;
+        source: string;
+        resolution: number;
+      };
+      revision: {
+        version: number;
+        real: number;
+        isRepack: boolean;
+      };
+    };
+    mediaInfo?: {
+      containerFormat?: string;
+      videoFormat?: string;
+      videoCodecID?: string;
+      videoProfile?: string;
+      videoBitrate?: number;
+      videoBitDepth?: number;
+      videoMultiViewCount?: number;
+      videoColourPrimaries?: string;
+      videoTransferCharacteristics?: string;
+      width?: number;
+      height?: number;
+      audioFormat?: string;
+      audioCodecID?: string;
+      audioProfile?: string;
+      audioAdditionalFeatures?: string;
+      audioBitrate?: number;
+      runTime?: string;
+      audioStreamCount?: number;
+      audioChannels?: number;
+      audioChannelPositions?: string;
+      videoFps?: number;
+      audioLanguages?: string;
+      subtitles?: string;
+      scanType?: string;
+      schemaRevision?: number;
+    };
+  };
 }
 
 class RadarrAPI extends ServarrBase<{ movieId: number }> {
@@ -212,6 +265,89 @@ class RadarrAPI extends ServarrBase<{ movieId: number }> {
           movieId,
         }
       );
+    }
+  }
+
+  public async getCalendar(
+    start: string,
+    end: string,
+    options?: { tags?: string[] }
+  ): Promise<RadarrMovie[]> {
+    try {
+      const params: Record<string, any> = {
+        start,
+        end,
+      };
+
+      if (options?.tags?.length) {
+        params.tags = options.tags.join(',');
+      }
+
+      const response = await this.axios.get<RadarrMovie[]>('/calendar', {
+        params,
+      });
+
+      return response.data;
+    } catch (e) {
+      logger.error('Failed to retrieve calendar from Radarr', {
+        label: 'Radarr API',
+        errorMessage: e.message,
+        start,
+        end,
+        tags: options?.tags,
+      });
+      throw new Error(`[Radarr] Failed to retrieve calendar: ${e.message}`);
+    }
+  }
+
+  public async getMovieFile(
+    movieFileId: number
+  ): Promise<RadarrMovie['movieFile']> {
+    try {
+      const response = await this.axios.get(`/moviefile/${movieFileId}`);
+      return response.data;
+    } catch (e) {
+      logger.error('Failed to retrieve movie file from Radarr', {
+        label: 'Radarr API',
+        errorMessage: e.message,
+        movieFileId,
+      });
+      throw new Error(`[Radarr] Failed to retrieve movie file: ${e.message}`);
+    }
+  }
+
+  public async deleteMovieFile(movieFileId: number): Promise<void> {
+    try {
+      await this.axios.delete(`/moviefile/${movieFileId}`);
+    } catch (e) {
+      logger.error('Failed to delete movie file from Radarr', {
+        label: 'Radarr API',
+        errorMessage: e.message,
+        movieFileId,
+      });
+      throw new Error(`[Radarr] Failed to delete movie file: ${e.message}`);
+    }
+  }
+
+  public async getHistory(movieId: number, pageSize = 1000): Promise<any> {
+    try {
+      const response = await this.axios.get('/history', {
+        params: {
+          pageSize,
+          page: 1,
+          sortKey: 'date',
+          sortDirection: 'descending',
+          movieId,
+        },
+      });
+      return response.data;
+    } catch (e) {
+      logger.error('Failed to retrieve history from Radarr', {
+        label: 'Radarr API',
+        errorMessage: e.message,
+        movieId,
+      });
+      throw new Error(`[Radarr] Failed to retrieve history: ${e.message}`);
     }
   }
 }

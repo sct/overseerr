@@ -113,11 +113,76 @@ const PermissionOption = ({
             type="checkbox"
             disabled={disabled}
             onChange={() => {
-              onUpdate(
-                hasPermission(option.permission, currentPermission)
-                  ? currentPermission - option.permission
-                  : currentPermission + option.permission
-              );
+              let newPermission: number;
+
+              if (hasPermission(option.permission, currentPermission)) {
+                // Removing permission
+                newPermission = currentPermission - option.permission;
+
+                // If removing MANAGE_CALENDAR, also remove its children
+                if (option.permission === Permission.MANAGE_CALENDAR) {
+                  if (
+                    hasPermission(
+                      Permission.VIEW_CALENDAR_DETAILS,
+                      newPermission
+                    )
+                  ) {
+                    newPermission -= Permission.VIEW_CALENDAR_DETAILS;
+                  }
+                  if (
+                    hasPermission(
+                      Permission.DELETE_CALENDAR_FILES,
+                      newPermission
+                    )
+                  ) {
+                    newPermission -= Permission.DELETE_CALENDAR_FILES;
+                  }
+                }
+
+                // If removing VIEW_CALENDAR_DETAILS, also remove DELETE_CALENDAR_FILES
+                if (
+                  option.permission === Permission.VIEW_CALENDAR_DETAILS &&
+                  hasPermission(Permission.DELETE_CALENDAR_FILES, newPermission)
+                ) {
+                  newPermission -= Permission.DELETE_CALENDAR_FILES;
+                }
+              } else {
+                // Adding permission
+                newPermission = currentPermission + option.permission;
+
+                // If adding MANAGE_CALENDAR, also add its children
+                if (option.permission === Permission.MANAGE_CALENDAR) {
+                  if (
+                    !hasPermission(
+                      Permission.VIEW_CALENDAR_DETAILS,
+                      newPermission
+                    )
+                  ) {
+                    newPermission += Permission.VIEW_CALENDAR_DETAILS;
+                  }
+                  if (
+                    !hasPermission(
+                      Permission.DELETE_CALENDAR_FILES,
+                      newPermission
+                    )
+                  ) {
+                    newPermission += Permission.DELETE_CALENDAR_FILES;
+                  }
+                }
+
+                // If adding DELETE_CALENDAR_FILES, also add VIEW_CALENDAR_DETAILS
+                if (
+                  option.permission === Permission.DELETE_CALENDAR_FILES &&
+                  !hasPermission(
+                    Permission.VIEW_CALENDAR_DETAILS,
+                    newPermission
+                  )
+                ) {
+                  newPermission += Permission.VIEW_CALENDAR_DETAILS;
+                }
+              }
+
+              onUpdate(newPermission);
             }}
             checked={checked}
           />

@@ -7,6 +7,7 @@ import { Permission, useUser } from '@app/hooks/useUser';
 import globalMessages from '@app/i18n/globalMessages';
 import { MediaStatus } from '@server/constants/media';
 import type { DownloadingItem } from '@server/lib/downloadtracker';
+import { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
@@ -44,6 +45,18 @@ const StatusBadge = ({
   const intl = useIntl();
   const { hasPermission } = useUser();
   const settings = useSettings();
+  const [, forceUpdate] = useState({});
+
+  // Force re-render every second when there are active downloads to update progress bars and countdown timers
+  useEffect(() => {
+    if (!inProgress || downloadItem.length === 0) return;
+
+    const interval = setInterval(() => {
+      forceUpdate({});
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [inProgress, downloadItem.length]);
 
   let mediaLink: string | undefined;
   let mediaLinkDescription: string | undefined;
@@ -117,7 +130,7 @@ const StatusBadge = ({
     <div
       className={`
       absolute top-0 left-0 z-10 flex h-full bg-opacity-80 ${
-        status === MediaStatus.PROCESSING ? 'bg-indigo-500' : 'bg-green-500'
+        inProgress ? 'bg-indigo-500' : 'bg-green-500'
       } transition-all duration-200 ease-in-out
     `}
       style={{
@@ -141,7 +154,7 @@ const StatusBadge = ({
           }}
         >
           <Badge
-            badgeType="success"
+            badgeType={inProgress ? 'primary' : 'success'}
             href={mediaLink}
             className={`${
               inProgress &&
@@ -194,7 +207,7 @@ const StatusBadge = ({
           }}
         >
           <Badge
-            badgeType="success"
+            badgeType={inProgress ? 'primary' : 'success'}
             href={mediaLink}
             className={`${
               inProgress &&

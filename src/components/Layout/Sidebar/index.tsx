@@ -4,6 +4,7 @@ import useClickOutside from '@app/hooks/useClickOutside';
 import { Permission, useUser } from '@app/hooks/useUser';
 import { Transition } from '@headlessui/react';
 import {
+  CalendarDaysIcon,
   ClockIcon,
   CogIcon,
   ExclamationTriangleIcon,
@@ -22,6 +23,7 @@ export const menuMessages = defineMessages({
   dashboard: 'Discover',
   browsemovies: 'Movies',
   browsetv: 'Series',
+  calendar: 'Calendar',
   requests: 'Requests',
   issues: 'Issues',
   users: 'Users',
@@ -84,6 +86,12 @@ const SidebarLinks: SidebarLinkProps[] = [
       Permission.VIEW_ISSUES,
     ],
     permissionType: 'or',
+  },
+  {
+    href: '/calendar',
+    messagesKey: 'calendar',
+    svgIcon: <CalendarDaysIcon className="mr-3 h-6 w-6" />,
+    activeRegExp: /^\/calendar/,
   },
   {
     href: '/users',

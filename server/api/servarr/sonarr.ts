@@ -318,6 +318,41 @@ class SonarrAPI extends ServarrBase<{
     }
   }
 
+  public async getCalendar(
+    start: string,
+    end: string,
+    options?: { tags?: string[] }
+  ): Promise<EpisodeResult[]> {
+    try {
+      const params: Record<string, any> = {
+        start,
+        end,
+        includeSeries: true,
+        includeEpisodeImages: true,
+        includeEpisodeFile: true,
+      };
+
+      if (options?.tags?.length) {
+        params.tags = options.tags.join(',');
+      }
+
+      const response = await this.axios.get<EpisodeResult[]>('/calendar', {
+        params,
+      });
+
+      return response.data;
+    } catch (e) {
+      logger.error('Failed to retrieve calendar from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        start,
+        end,
+        tags: options?.tags,
+      });
+      throw new Error(`[Sonarr] Failed to retrieve calendar: ${e.message}`);
+    }
+  }
+
   private buildSeasonList(
     seasons: number[],
     existingSeasons?: SonarrSeason[]
@@ -341,6 +376,108 @@ class SonarrAPI extends ServarrBase<{
     );
 
     return newSeasons;
+  }
+
+  public async getEpisode(episodeId: number): Promise<any> {
+    try {
+      const response = await this.axios.get(`/episode/${episodeId}`);
+      return response.data;
+    } catch (e) {
+      logger.error('Failed to retrieve episode from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        episodeId,
+      });
+      throw new Error(`[Sonarr] Failed to retrieve episode: ${e.message}`);
+    }
+  }
+
+  public async getEpisodeFile(episodeFileId: number): Promise<any> {
+    try {
+      const response = await this.axios.get(`/episodefile/${episodeFileId}`);
+      return response.data;
+    } catch (e) {
+      logger.error('Failed to retrieve episode file from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        episodeFileId,
+      });
+      throw new Error(`[Sonarr] Failed to retrieve episode file: ${e.message}`);
+    }
+  }
+
+  public async deleteEpisodeFile(episodeFileId: number): Promise<void> {
+    try {
+      await this.axios.delete(`/episodefile/${episodeFileId}`);
+    } catch (e) {
+      logger.error('Failed to delete episode file from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        episodeFileId,
+      });
+      throw new Error(`[Sonarr] Failed to delete episode file: ${e.message}`);
+    }
+  }
+
+  public async removeQueueItem(
+    queueItemId: number,
+    options: {
+      removeFromClient?: boolean;
+      blocklist?: boolean;
+      skipRedownload?: boolean;
+    } = {}
+  ): Promise<void> {
+    try {
+      const params: Record<string, any> = {};
+
+      if (options.removeFromClient !== undefined) {
+        params.removeFromClient = options.removeFromClient;
+      }
+      if (options.blocklist !== undefined) {
+        params.blocklist = options.blocklist;
+      }
+      if (options.skipRedownload !== undefined) {
+        params.skipRedownload = options.skipRedownload;
+      }
+
+      await this.axios.delete(`/queue/${queueItemId}`, { params });
+
+      logger.info('Removed queue item from Sonarr', {
+        label: 'Sonarr API',
+        queueItemId,
+        options,
+      });
+    } catch (e) {
+      logger.error('Failed to remove queue item from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        queueItemId,
+        options,
+      });
+      throw new Error(`[Sonarr] Failed to remove queue item: ${e.message}`);
+    }
+  }
+
+  public async getHistory(episodeId: number, pageSize = 1000): Promise<any> {
+    try {
+      const response = await this.axios.get('/history', {
+        params: {
+          pageSize,
+          page: 1,
+          sortKey: 'date',
+          sortDirection: 'descending',
+          episodeId,
+        },
+      });
+      return response.data;
+    } catch (e) {
+      logger.error('Failed to retrieve history from Sonarr', {
+        label: 'Sonarr API',
+        errorMessage: e.message,
+        episodeId,
+      });
+      throw new Error(`[Sonarr] Failed to retrieve history: ${e.message}`);
+    }
   }
 }
 

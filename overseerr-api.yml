@@ -36,6 +36,8 @@ tags:
     description: Endpoints related to retrieving collection details.
   - name: service
     description: Endpoints related to getting service (Radarr/Sonarr) details.
+  - name: calendar
+    description: Endpoints related to calendar data from Sonarr and Radarr.
 servers:
   - url: '{server}/api/v1'
     variables:
@@ -44,6 +46,219 @@ servers:
 
 components:
   schemas:
+    CalendarItem:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        overview:
+          type: string
+          nullable: true
+        airDate:
+          type: string
+          nullable: true
+        airDateUtc:
+          type: string
+          nullable: true
+        releaseDate:
+          type: string
+          nullable: true
+        mediaType:
+          type: string
+          description: 'TV or MOVIE'
+        tmdbId:
+          type: number
+          nullable: true
+        tvdbId:
+          type: number
+          nullable: true
+        seriesId:
+          type: number
+          nullable: true
+        seasonNumber:
+          type: number
+          nullable: true
+        episodeNumber:
+          type: number
+          nullable: true
+        hasFile:
+          type: boolean
+        monitored:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: number
+          nullable: true
+        source:
+          type: string
+          description: 'sonarr or radarr'
+    CalendarResponse:
+      type: object
+      properties:
+        pageInfo:
+          type: object
+          properties:
+            pages:
+              type: number
+            pageSize:
+              type: number
+            results:
+              type: number
+            page:
+              type: number
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/CalendarItem'
+    CalendarCounts:
+      type: object
+      properties:
+        totalEpisodes:
+          type: number
+        totalMovies:
+          type: number
+        totalDownloaded:
+          type: number
+        totalMissing:
+          type: number
+        total:
+          type: number
+    FileInfo:
+      type: object
+      properties:
+        id:
+          type: number
+        relativePath:
+          type: string
+        path:
+          type: string
+        size:
+          type: number
+        dateAdded:
+          type: string
+        sceneName:
+          type: string
+          nullable: true
+        releaseGroup:
+          type: string
+          nullable: true
+        quality:
+          type: object
+          properties:
+            quality:
+              type: object
+              properties:
+                id:
+                  type: number
+                name:
+                  type: string
+                source:
+                  type: string
+                resolution:
+                  type: number
+            revision:
+              type: object
+              properties:
+                version:
+                  type: number
+                real:
+                  type: number
+                isRepack:
+                  type: boolean
+        mediaInfo:
+          type: object
+          nullable: true
+          properties:
+            containerFormat:
+              type: string
+              nullable: true
+            videoFormat:
+              type: string
+              nullable: true
+            videoCodecID:
+              type: string
+              nullable: true
+            videoProfile:
+              type: string
+              nullable: true
+            videoBitrate:
+              type: number
+              nullable: true
+            videoBitDepth:
+              type: number
+              nullable: true
+            videoMultiViewCount:
+              type: number
+              nullable: true
+            videoColourPrimaries:
+              type: string
+              nullable: true
+            videoTransferCharacteristics:
+              type: string
+              nullable: true
+            width:
+              type: number
+              nullable: true
+            height:
+              type: number
+              nullable: true
+            audioFormat:
+              type: string
+              nullable: true
+            audioCodecID:
+              type: string
+              nullable: true
+            audioProfile:
+              type: string
+              nullable: true
+            audioAdditionalFeatures:
+              type: string
+              nullable: true
+            audioBitrate:
+              type: number
+              nullable: true
+            runTime:
+              type: string
+              nullable: true
+            audioStreamCount:
+              type: number
+              nullable: true
+            audioChannels:
+              type: number
+              nullable: true
+            audioChannelPositions:
+              type: string
+              nullable: true
+            videoFps:
+              type: number
+              nullable: true
+            audioLanguages:
+              type: string
+              nullable: true
+            subtitles:
+              type: string
+              nullable: true
+            scanType:
+              type: string
+              nullable: true
+            schemaRevision:
+              type: number
+              nullable: true
+        seriesId:
+          type: number
+          nullable: true
+        seasonNumber:
+          type: number
+          nullable: true
+        episodeNumber:
+          type: number
+          nullable: true
+        movieId:
+          type: number
+          nullable: true
     User:
       type: object
       properties:
@@ -1845,6 +2060,155 @@ components:
       name: X-Api-Key
 
 paths:
+  /calendar:
+    get:
+      summary: Get combined Sonarr/Radarr calendar
+      description: Returns calendar items between the given start and end dates, combining Sonarr TV episodes and Radarr movies.
+      tags:
+        - calendar
+      parameters:
+        - in: query
+          name: start
+          required: true
+          schema:
+            type: string
+          description: ISO date string for start of range
+        - in: query
+          name: end
+          required: true
+          schema:
+            type: string
+          description: ISO date string for end of range
+        - in: query
+          name: take
+          schema:
+            type: number
+          description: Page size (default 20)
+        - in: query
+          name: skip
+          schema:
+            type: number
+          description: Number of items to skip for pagination
+        - in: query
+          name: filter
+          schema:
+            type: string
+            enum: [airing_today, this_week, upcoming, downloaded, missing, processing, my_items, movies, series]
+          description: Filter to apply to results
+        - in: query
+          name: requestedBy
+          schema:
+            type: number
+          description: Filter items based on a specific user tag
+      responses:
+        '200':
+          description: Calendar results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarResponse'
+        '400':
+          description: Missing or invalid parameters
+  /calendar/count:
+    get:
+      summary: Get summary counts for upcoming calendar items
+      description: Returns counts for TV episodes and movies over the next time windows.
+      tags:
+        - calendar
+      responses:
+        '200':
+          description: Calendar counts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarCounts'
+  /calendar/fileinfo:
+    get:
+      summary: Get file information for a calendar item
+      description: Returns file details for a Radarr movie or Sonarr episode identified by itemId.
+      tags:
+        - calendar
+      parameters:
+        - in: query
+          name: source
+          required: true
+          schema:
+            type: string
+            enum: [radarr, sonarr]
+          description: Which service the item comes from
+        - in: query
+          name: itemId
+          required: true
+          schema:
+            type: string
+          description: Radarr movie id or Sonarr episode id
+        - in: query
+          name: serviceId
+          required: false
+          schema:
+            type: string
+          description: Specific Radarr/Sonarr service id to query (supports 0)
+        - in: query
+          name: tmdbId
+          required: false
+          schema:
+            type: string
+          description: Optional TMDB id to use as a fallback lookup for Radarr
+      responses:
+        '200':
+          description: File information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        '400':
+          description: Missing or invalid parameters
+        '404':
+          description: File not found
+    delete:
+      summary: Delete a file for a calendar item
+      description: Deletes a Radarr movie file or Sonarr episode file by id.
+      tags:
+        - calendar
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source:
+                  type: string
+                  enum: [radarr, sonarr]
+                fileId:
+                  oneOf:
+                    - type: string
+                    - type: number
+                itemId:
+                  oneOf:
+                    - type: string
+                    - type: number
+                  nullable: true
+                serviceId:
+                  oneOf:
+                    - type: string
+                    - type: number
+                  nullable: true
+              required:
+                - source
+                - fileId
+      responses:
+        '200':
+          description: Deletion result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '400':
+          description: Missing or invalid parameters
   /status:
     get:
       summary: Get Overseerr status

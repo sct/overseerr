@@ -1,4 +1,7 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-exec < /dev/tty && npx cz --hook || true
+# Only run commitizen if TTY is available
+if [ -t 0 ]; then
+  exec < /dev/tty && npx cz --hook || true
+fi
