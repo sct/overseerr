@@ -39,8 +39,8 @@ const SortOptions: Record<string, TMDBSortOptions> = {
   FirstAirDateDesc: 'first_air_date.desc',
   TmdbRatingAsc: 'vote_average.asc',
   TmdbRatingDesc: 'vote_average.desc',
-  TitleAsc: 'original_title.asc',
-  TitleDesc: 'original_title.desc',
+  TitleAsc: 'name.asc',
+  TitleDesc: 'name.desc',
 } as const;
 
 const DiscoverTv = () => {

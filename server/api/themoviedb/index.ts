@@ -53,7 +53,9 @@ export type SortOptions =
   | 'vote_count.asc'
   | 'vote_count.desc'
   | 'first_air_date.asc'
-  | 'first_air_date.desc';
+  | 'first_air_date.desc'
+  | 'name.asc'
+  | 'name.desc';
 
 interface DiscoverMovieOptions {
   page?: number;
@@ -512,7 +514,14 @@ class TheMovieDb extends ExternalAPI {
           'with_runtime.lte': withRuntimeLte,
           'vote_average.gte': voteAverageGte,
           'vote_average.lte': voteAverageLte,
-          'vote_count.gte': voteCountGte,
+          // Require minimum votes when filtering or sorting by rating to exclude unreliable ratings
+          'vote_count.gte':
+            voteCountGte ??
+            (sortBy?.startsWith('vote_average')
+              ? '50'
+              : voteAverageGte || voteAverageLte
+              ? '1'
+              : undefined),
           'vote_count.lte': voteCountLte,
           watch_region: watchRegion,
           with_watch_providers: watchProviders,
@@ -586,7 +595,14 @@ class TheMovieDb extends ExternalAPI {
           'with_runtime.lte': withRuntimeLte,
           'vote_average.gte': voteAverageGte,
           'vote_average.lte': voteAverageLte,
-          'vote_count.gte': voteCountGte,
+          // Require minimum votes when filtering or sorting by rating to exclude unreliable ratings
+          'vote_count.gte':
+            voteCountGte ??
+            (sortBy?.startsWith('vote_average')
+              ? '50'
+              : voteAverageGte || voteAverageLte
+              ? '1'
+              : undefined),
           'vote_count.lte': voteCountLte,
           with_watch_providers: watchProviders,
           watch_region: watchRegion,
