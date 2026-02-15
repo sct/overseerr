@@ -1,4 +1,3 @@
-import Accordion from '@app/components/Common/Accordion';
 import ImageFader from '@app/components/Common/ImageFader';
 import PageTitle from '@app/components/Common/PageTitle';
 import LanguagePicker from '@app/components/Layout/LanguagePicker';
@@ -17,8 +16,7 @@ import useSWR from 'swr';
 const messages = defineMessages({
   signin: 'Sign In',
   signinheader: 'Sign in to continue',
-  signinwithplex: 'Use your Plex account',
-  signinwithoverseerr: 'Use your {applicationTitle} account',
+  or: 'or',
 });
 
 const Login = () => {
@@ -115,54 +113,28 @@ const Login = () => {
                 </div>
               </div>
             </Transition>
-            <Accordion single atLeastOne>
-              {({ openIndexes, handleClick, AccordionContent }) => (
+            <div className="w-full bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 focus:outline-none sm:rounded-t-lg">
+              {settings.currentSettings?.localLogin && (
                 <>
-                  <button
-                    className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 focus:outline-none sm:rounded-t-lg ${
-                      openIndexes.includes(0) && 'text-indigo-500'
-                    } ${
-                      settings.currentSettings.localLogin &&
-                      'hover:cursor-pointer hover:bg-gray-700'
-                    }`}
-                    onClick={() => handleClick(0)}
-                    disabled={!settings.currentSettings.localLogin}
-                  >
-                    {intl.formatMessage(messages.signinwithplex)}
-                  </button>
-                  <AccordionContent isOpen={openIndexes.includes(0)}>
-                    <div className="px-10 py-8">
-                      <PlexLoginButton
-                        isProcessing={isProcessing}
-                        onAuthToken={(authToken) => setAuthToken(authToken)}
-                      />
-                    </div>
-                  </AccordionContent>
-                  {settings.currentSettings.localLogin && (
-                    <div>
-                      <button
-                        className={`w-full cursor-default bg-gray-800 bg-opacity-70 py-2 text-center text-sm font-bold text-gray-400 transition-colors duration-200 hover:cursor-pointer hover:bg-gray-700 focus:outline-none ${
-                          openIndexes.includes(1)
-                            ? 'text-indigo-500'
-                            : 'sm:rounded-b-lg'
-                        }`}
-                        onClick={() => handleClick(1)}
-                      >
-                        {intl.formatMessage(messages.signinwithoverseerr, {
-                          applicationTitle:
-                            settings.currentSettings.applicationTitle,
-                        })}
-                      </button>
-                      <AccordionContent isOpen={openIndexes.includes(1)}>
-                        <div className="px-10 py-8">
-                          <LocalLogin revalidate={revalidate} />
-                        </div>
-                      </AccordionContent>
-                    </div>
-                  )}
+                  <div className="px-10 py-8">
+                    <LocalLogin revalidate={revalidate} />
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <span className="h-px flex-1 bg-gray-700/50" />
+                    <span className="text-xs uppercase text-gray-500">
+                      {intl.formatMessage(messages.or)}
+                    </span>
+                    <span className="h-px flex-1 bg-gray-700/50" />
+                  </div>
                 </>
               )}
-            </Accordion>
+              <div className="px-10 py-8">
+                <PlexLoginButton
+                  isProcessing={isProcessing}
+                  onAuthToken={(authToken) => setAuthToken(authToken)}
+                />
+              </div>
+            </div>
           </>
         </div>
       </div>

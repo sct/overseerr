@@ -327,7 +327,7 @@
   "components.Login.signinheader": "Connectez-vous pour continuer",
   "components.Login.signingin": "Connexion en cours…",
   "components.Settings.notificationAgentSettingsDescription": "Configurer et activer les agents de notification.",
-  "components.PlexLoginButton.signinwithplex": "Se connecter",
+  "components.PlexLoginButton.signinwithplex": "Se connecter avec Plex",
   "components.PlexLoginButton.signingin": "Connexion en cours…",
   "components.UserList.userssaved": "Les permissions d'utilisateur ont été enregistrées avec succès !",
   "components.UserList.bulkedit": "Modification en masse",
