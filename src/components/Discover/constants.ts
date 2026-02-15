@@ -100,6 +100,7 @@ export const QueryFilterOptions = z.object({
   genre: z.string().optional(),
   keywords: z.string().optional(),
   language: z.string().optional(),
+  status: z.string().optional(),
   withRuntimeGte: z.string().optional(),
   withRuntimeLte: z.string().optional(),
   voteAverageGte: z.string().optional(),
@@ -153,6 +154,10 @@ export const prepareFilterValues = (
 
   if (values.language) {
     filterValues.language = values.language;
+  }
+
+  if (values.status) {
+    filterValues.status = values.status;
   }
 
   if (values.withRuntimeGte) {

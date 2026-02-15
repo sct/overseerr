@@ -4,6 +4,11 @@ export interface GenreSliderItem {
   backdrops: string[];
 }
 
+export interface StatusItem {
+  id: number;
+  name: string;
+}
+
 export interface WatchlistItem {
   ratingKey: string;
   tmdbId: number;
