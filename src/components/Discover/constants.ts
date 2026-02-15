@@ -98,6 +98,7 @@ export const QueryFilterOptions = z.object({
   firstAirDateLte: z.string().optional(),
   studio: z.string().optional(),
   genre: z.string().optional(),
+  filterGenre: z.string().optional(),
   keywords: z.string().optional(),
   language: z.string().optional(),
   withRuntimeGte: z.string().optional(),
@@ -147,6 +148,10 @@ export const prepareFilterValues = (
     filterValues.genre = values.genre;
   }
 
+  if (values.filterGenre) {
+    filterValues.filterGenre = values.filterGenre;
+  }
+
   if (values.keywords) {
     filterValues.keywords = values.keywords;
   }
@@ -190,9 +195,18 @@ export const prepareFilterValues = (
   return filterValues;
 };
 
-export const countActiveFilters = (filterValues: FilterOptions): number => {
+export const countActiveFilters = (
+  filterValues: FilterOptions,
+  userDefaultExcludedGenres?: boolean
+): number => {
   let totalCount = 0;
   const clonedFilters = Object.assign({}, filterValues);
+
+  if (clonedFilters.filterGenre === 'none') {
+    delete clonedFilters.filterGenre;
+  } else if (!clonedFilters.filterGenre && userDefaultExcludedGenres) {
+    totalCount += 1;
+  }
 
   if (clonedFilters.voteAverageGte || filterValues.voteAverageLte) {
     totalCount += 1;

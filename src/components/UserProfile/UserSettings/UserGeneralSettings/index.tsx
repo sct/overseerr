@@ -5,6 +5,7 @@ import PageTitle from '@app/components/Common/PageTitle';
 import LanguageSelector from '@app/components/LanguageSelector';
 import QuotaSelector from '@app/components/QuotaSelector';
 import RegionSelector from '@app/components/RegionSelector';
+import { GenreSelector } from '@app/components/Selector';
 import type { AvailableLocale } from '@app/context/LanguageContext';
 import { availableLanguages } from '@app/context/LanguageContext';
 import useLocale from '@app/hooks/useLocale';
@@ -40,6 +41,8 @@ const messages = defineMessages({
   regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
   originallanguageTip: 'Filter content by original language',
+  filterMovieGenresDefault: 'Exclude movie genres by default',
+  filterTvGenresDefault: 'Exclude TV genres by default',
   movierequestlimit: 'Movie Request Limit',
   seriesrequestlimit: 'Series Request Limit',
   enableOverride: 'Override Global Limit',
@@ -124,6 +127,8 @@ const UserGeneralSettings = () => {
           locale: data?.locale,
           region: data?.region,
           originalLanguage: data?.originalLanguage,
+          filterMovieGenresDefault: data?.filterMovieGenresDefault,
+          filterTvGenresDefault: data?.filterTvGenresDefault,
           movieQuotaLimit: data?.movieQuotaLimit,
           movieQuotaDays: data?.movieQuotaDays,
           tvQuotaLimit: data?.tvQuotaLimit,
@@ -141,6 +146,8 @@ const UserGeneralSettings = () => {
               locale: values.locale,
               region: values.region,
               originalLanguage: values.originalLanguage,
+              filterMovieGenresDefault: values.filterMovieGenresDefault,
+              filterTvGenresDefault: values.filterTvGenresDefault,
               movieQuotaLimit: movieQuotaEnabled
                 ? values.movieQuotaLimit
                 : null,
@@ -330,6 +337,51 @@ const UserGeneralSettings = () => {
                       serverValue={currentSettings.originalLanguage}
                       value={values.originalLanguage}
                       isUserSettings
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <label
+                  htmlFor="filterMovieGenresDefault"
+                  className="text-label"
+                >
+                  <span>
+                    {intl.formatMessage(messages.filterMovieGenresDefault)}
+                  </span>
+                </label>
+                <div className="form-input-area">
+                  <div className="form-input-field">
+                    <GenreSelector
+                      type="movie"
+                      isMulti
+                      defaultValue={values.filterMovieGenresDefault}
+                      onChange={(value) => {
+                        const genreIds =
+                          value?.map((v) => v.value).join(',') || '';
+                        setFieldValue('filterMovieGenresDefault', genreIds);
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="form-row">
+                <label htmlFor="filterTvGenresDefault" className="text-label">
+                  <span>
+                    {intl.formatMessage(messages.filterTvGenresDefault)}
+                  </span>
+                </label>
+                <div className="form-input-area">
+                  <div className="form-input-field">
+                    <GenreSelector
+                      type="tv"
+                      isMulti
+                      defaultValue={values.filterTvGenresDefault}
+                      onChange={(value) => {
+                        const genreIds =
+                          value?.map((v) => v.value).join(',') || '';
+                        setFieldValue('filterTvGenresDefault', genreIds);
+                      }}
                     />
                   </div>
                 </div>

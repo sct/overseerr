@@ -55,6 +55,8 @@ userSettingsRoutes.get<{ id: string }, UserSettingsGeneralResponse>(
         locale: user.settings?.locale,
         region: user.settings?.region,
         originalLanguage: user.settings?.originalLanguage,
+        filterTvGenresDefault: user.settings?.filterTvGenresDefault,
+        filterMovieGenresDefault: user.settings?.filterMovieGenresDefault,
         movieQuotaLimit: user.movieQuotaLimit,
         movieQuotaDays: user.movieQuotaDays,
         tvQuotaLimit: user.tvQuotaLimit,
@@ -116,6 +118,8 @@ userSettingsRoutes.post<
         locale: req.body.locale,
         region: req.body.region,
         originalLanguage: req.body.originalLanguage,
+        filterMovieGenresDefault: req.body.filterMovieGenresDefault,
+        filterTvGenresDefault: req.body.filterTvGenresDefault,
         watchlistSyncMovies: req.body.watchlistSyncMovies,
         watchlistSyncTv: req.body.watchlistSyncTv,
       });
@@ -124,6 +128,9 @@ userSettingsRoutes.post<
       user.settings.locale = req.body.locale;
       user.settings.region = req.body.region;
       user.settings.originalLanguage = req.body.originalLanguage;
+      user.settings.filterMovieGenresDefault =
+        req.body.filterMovieGenresDefault;
+      user.settings.filterTvGenresDefault = req.body.filterTvGenresDefault;
       user.settings.watchlistSyncMovies = req.body.watchlistSyncMovies;
       user.settings.watchlistSyncTv = req.body.watchlistSyncTv;
     }
@@ -136,6 +143,8 @@ userSettingsRoutes.post<
       locale: user.settings.locale,
       region: user.settings.region,
       originalLanguage: user.settings.originalLanguage,
+      filterMovieGenresDefault: user.settings.filterMovieGenresDefault,
+      filterTvGenresDefault: user.settings.filterTvGenresDefault,
       watchlistSyncMovies: user.settings.watchlistSyncMovies,
       watchlistSyncTv: user.settings.watchlistSyncTv,
     });

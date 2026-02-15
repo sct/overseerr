@@ -59,6 +59,7 @@ const QueryFilterOptions = z.object({
   firstAirDateLte: z.coerce.string().optional(),
   studio: z.coerce.string().optional(),
   genre: z.coerce.string().optional(),
+  filterGenre: z.coerce.string().optional(),
   keywords: z.coerce.string().optional(),
   language: z.coerce.string().optional(),
   withRuntimeGte: z.coerce.string().optional(),
@@ -80,12 +81,36 @@ discoverRoutes.get('/movies', async (req, res, next) => {
   try {
     const query = QueryFilterOptions.parse(req.query);
     const keywords = query.keywords;
+
+    // Handle user default excluded genres, resolve genres
+    let filterGenre = query.filterGenre;
+    if (filterGenre === 'none') {
+      filterGenre = undefined;
+    } else if (
+      filterGenre === undefined &&
+      req.user?.settings?.filterMovieGenresDefault
+    ) {
+      filterGenre = req.user.settings.filterMovieGenresDefault;
+    }
+    if (query.genre && filterGenre) {
+      const explicitGenres = query.genre.split(',');
+      const excludedGenres = filterGenre.split(',');
+      const resolvedExclusions = excludedGenres.filter(
+        (id) => !explicitGenres.includes(id)
+      );
+      filterGenre =
+        resolvedExclusions.length > 0
+          ? resolvedExclusions.join(',')
+          : undefined;
+    }
+
     const data = await tmdb.getDiscoverMovies({
       page: Number(query.page),
       sortBy: query.sortBy as SortOptions,
       language: req.locale ?? query.language,
       originalLanguage: query.language,
       genre: query.genre,
+      filterGenre,
       studio: query.studio,
       primaryReleaseDateLte: query.primaryReleaseDateLte
         ? new Date(query.primaryReleaseDateLte).toISOString().split('T')[0]
@@ -357,11 +382,35 @@ discoverRoutes.get('/tv', async (req, res, next) => {
   try {
     const query = QueryFilterOptions.parse(req.query);
     const keywords = query.keywords;
+
+    // Handle user default excluded genres, resolve genres
+    let filterGenre = query.filterGenre;
+    if (filterGenre === 'none') {
+      filterGenre = undefined;
+    } else if (
+      filterGenre === undefined &&
+      req.user?.settings?.filterTvGenresDefault
+    ) {
+      filterGenre = req.user.settings.filterTvGenresDefault;
+    }
+    if (query.genre && filterGenre) {
+      const explicitGenres = query.genre.split(',');
+      const excludedGenres = filterGenre.split(',');
+      const resolvedExclusions = excludedGenres.filter(
+        (id) => !explicitGenres.includes(id)
+      );
+      filterGenre =
+        resolvedExclusions.length > 0
+          ? resolvedExclusions.join(',')
+          : undefined;
+    }
+
     const data = await tmdb.getDiscoverTv({
       page: Number(query.page),
       sortBy: query.sortBy as SortOptions,
       language: req.locale ?? query.language,
       genre: query.genre,
+      filterGenre,
       network: query.network ? Number(query.network) : undefined,
       firstAirDateLte: query.firstAirDateLte
         ? new Date(query.firstAirDateLte).toISOString().split('T')[0]

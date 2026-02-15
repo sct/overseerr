@@ -30,6 +30,8 @@ export interface PublicSettingsResponse {
   series4kEnabled: boolean;
   region: string;
   originalLanguage: string;
+  filterMovieGenresDefault: string;
+  filterTvGenresDefault: string;
   partialRequestsEnabled: boolean;
   cacheImages: boolean;
   vapidPublic: string;

@@ -10,6 +10,7 @@ import {
 import FilterSlideover from '@app/components/Discover/FilterSlideover';
 import useDiscover from '@app/hooks/useDiscover';
 import { useUpdateQueryParams } from '@app/hooks/useUpdateQueryParams';
+import { useUser } from '@app/hooks/useUser';
 import Error from '@app/pages/_error';
 import { BarsArrowDownIcon, FunnelIcon } from '@heroicons/react/24/solid';
 import type { SortOptions as TMDBSortOptions } from '@server/api/themoviedb';
@@ -47,6 +48,7 @@ const DiscoverMovies = () => {
   const intl = useIntl();
   const router = useRouter();
   const updateQueryParams = useUpdateQueryParams({});
+  const { user } = useUser();
 
   const preparedFilters = prepareFilterValues(router.query);
 
@@ -124,7 +126,10 @@ const DiscoverMovies = () => {
               <FunnelIcon />
               <span>
                 {intl.formatMessage(messages.activefilters, {
-                  count: countActiveFilters(preparedFilters),
+                  count: countActiveFilters(
+                    preparedFilters,
+                    !!user?.settings?.filterMovieGenresDefault
+                  ),
                 })}
               </span>
             </Button>

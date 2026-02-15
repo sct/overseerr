@@ -101,6 +101,8 @@ export interface MainSettings {
   newPlexLogin: boolean;
   region: string;
   originalLanguage: string;
+  filterTvGenresDefault: string;
+  filterMovieGenresDefault: string;
   trustProxy: boolean;
   partialRequestsEnabled: boolean;
   locale: string;
@@ -298,6 +300,8 @@ class Settings {
         newPlexLogin: true,
         region: '',
         originalLanguage: '',
+        filterTvGenresDefault: '',
+        filterMovieGenresDefault: '',
         trustProxy: false,
         partialRequestsEnabled: true,
         locale: 'en',

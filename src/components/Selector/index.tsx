@@ -148,6 +148,7 @@ export const GenreSelector = ({
   useEffect(() => {
     const loadDefaultGenre = async (): Promise<void> => {
       if (!defaultValue) {
+        setDefaultDataValue([]);
         return;
       }
 
@@ -184,21 +185,30 @@ export const GenreSelector = ({
       );
   };
 
+  const handleChange = (
+    value: MultiValue<SingleVal> | SingleValue<SingleVal> | null
+  ) => {
+    if (isMulti) {
+      setDefaultDataValue(value ? [...(value as MultiValue<SingleVal>)] : []);
+    } else {
+      setDefaultDataValue(value ? [value as SingleVal] : []);
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    onChange(value as any);
+  };
+
   return (
     <AsyncSelect
-      key={`genre-select-${defaultDataValue}`}
       className="react-select-container"
       classNamePrefix="react-select"
-      defaultValue={isMulti ? defaultDataValue : defaultDataValue?.[0]}
+      value={isMulti ? defaultDataValue : defaultDataValue?.[0]}
       defaultOptions
       cacheOptions
       isMulti={isMulti}
       loadOptions={loadGenreOptions}
       placeholder={intl.formatMessage(messages.searchGenres)}
-      onChange={(value) => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        onChange(value as any);
-      }}
+      onChange={handleChange}
     />
   );
 };

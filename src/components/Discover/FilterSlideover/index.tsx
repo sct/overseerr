@@ -15,6 +15,8 @@ import {
   useBatchUpdateQueryParams,
   useUpdateQueryParams,
 } from '@app/hooks/useUpdateQueryParams';
+import { useUser } from '@app/hooks/useUser';
+import { resolveGenreConflicts } from '@app/utils/genreHelpers';
 import { XCircleIcon } from '@heroicons/react/24/outline';
 import { defineMessages, useIntl } from 'react-intl';
 import Datepicker from 'react-tailwindcss-datepicker-sct';
@@ -29,6 +31,7 @@ const messages = defineMessages({
   to: 'To',
   studio: 'Studio',
   genres: 'Genres',
+  filterGenres: 'Exclude genres',
   keywords: 'Keywords',
   originalLanguage: 'Original Language',
   runtimeText: '{minValue}-{maxValue} minute runtime',
@@ -56,6 +59,7 @@ const FilterSlideover = ({
 }: FilterSlideoverProps) => {
   const intl = useIntl();
   const { currentSettings } = useSettings();
+  const { user } = useUser();
   const updateQueryParams = useUpdateQueryParams({});
   const batchUpdateQueryParams = useBatchUpdateQueryParams({});
 
@@ -64,12 +68,24 @@ const FilterSlideover = ({
   const dateLte =
     type === 'movie' ? 'primaryReleaseDateLte' : 'firstAirDateLte';
 
+  const userDefaultfilterGenres =
+    type === 'movie'
+      ? user?.settings?.filterMovieGenresDefault
+      : user?.settings?.filterTvGenresDefault;
+
+  const filterGenresValue =
+    currentFilters.filterGenre !== undefined
+      ? currentFilters.filterGenre === 'none'
+        ? ''
+        : currentFilters.filterGenre
+      : userDefaultfilterGenres;
+
   return (
     <SlideOver
       show={show}
       title={intl.formatMessage(messages.filters)}
       subText={intl.formatMessage(messages.activefilters, {
-        count: countActiveFilters(currentFilters),
+        count: countActiveFilters(currentFilters, !!userDefaultfilterGenres),
       })}
       onClose={() => onClose()}
     >
@@ -146,7 +162,44 @@ const FilterSlideover = ({
           defaultValue={currentFilters.genre}
           isMulti
           onChange={(value) => {
-            updateQueryParams('genre', value?.map((v) => v.value).join(','));
+            const selectedGenres = value?.map((v) => v.value.toString()) || [];
+            const result = resolveGenreConflicts(
+              selectedGenres,
+              filterGenresValue
+            );
+
+            if (result.hasConflicts) {
+              batchUpdateQueryParams({
+                genre: result.changingList,
+                filterGenre: result.otherList || 'none',
+              });
+            } else {
+              updateQueryParams('genre', result.changingList);
+            }
+          }}
+        />
+        <span className="text-lg font-semibold">
+          {intl.formatMessage(messages.filterGenres)}
+        </span>
+        <GenreSelector
+          type={type}
+          defaultValue={filterGenresValue}
+          isMulti
+          onChange={(value) => {
+            const filterGenres = value?.map((v) => v.value.toString()) || [];
+            const result = resolveGenreConflicts(
+              filterGenres,
+              currentFilters.genre
+            );
+
+            if (result.hasConflicts) {
+              batchUpdateQueryParams({
+                genre: result.otherList,
+                filterGenre: result.changingList || 'none',
+              });
+            } else {
+              updateQueryParams('filterGenre', result.changingList || 'none');
+            }
           }}
         />
         <span className="text-lg font-semibold">

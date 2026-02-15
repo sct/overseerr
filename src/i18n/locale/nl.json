@@ -1157,6 +1157,7 @@
   "components.Discover.DiscoverTv.sortTitleDesc": "Titel (Z-A) aflopend",
   "components.Discover.FilterSlideover.activefilters": "{count, plural, one {# filter actief} other {# filters actief}}",
   "components.Discover.FilterSlideover.clearfilters": "Actieve filters wissen",
+  "components.Discover.FilterSlideover.filterGenres": "Filter genres",
   "components.Discover.FilterSlideover.filters": "Filters",
   "components.Discover.FilterSlideover.firstAirDate": "Eerste uitzenddatum",
   "components.Discover.FilterSlideover.from": "Van",

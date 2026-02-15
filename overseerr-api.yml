@@ -4264,6 +4264,11 @@ paths:
             type: string
             example: 18
         - in: query
+          name: filterGenre
+          schema:
+            type: string
+            example: 28
+        - in: query
           name: studio
           schema:
             type: number
@@ -4552,6 +4557,11 @@ paths:
           schema:
             type: string
             example: 18
+        - in: query
+          name: filterGenre
+          schema:
+            type: string
+            example: 28
         - in: query
           name: network
           schema:

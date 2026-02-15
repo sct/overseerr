@@ -6,6 +6,8 @@ export interface UserSettingsGeneralResponse {
   locale?: string;
   region?: string;
   originalLanguage?: string;
+  filterMovieGenresDefault?: string;
+  filterTvGenresDefault?: string;
   movieQuotaLimit?: number;
   movieQuotaDays?: number;
   tvQuotaLimit?: number;

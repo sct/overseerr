@@ -35,6 +35,8 @@ const messages = defineMessages({
   regionTip: 'Filter content by regional availability',
   originallanguage: 'Discover Language',
   originallanguageTip: 'Filter content by original language',
+  filterMovieGenresDefault: 'Exclude movie genres by default',
+  filterTvGenresDefault: 'Exclude TV genres by default',
   toastApiKeySuccess: 'New API key generated successfully!',
   toastApiKeyFailure: 'Something went wrong while generating a new API key.',
   toastSettingsSuccess: 'Settings saved successfully!',
