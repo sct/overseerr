@@ -1,0 +1,28 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      GH_TOKEN: ${GH_TOKEN}
+    env_file:
+      - path: ./.env
+        required: true
+    volumes:
+      - ../:/workspace
+      # Mount the SSH keys from the host to the container for git access
+      - ~/.ssh:/root/local-ssh
+      # Mount the setup.sh script to the container
+      - ./setup.sh:/root/setup.sh
+    ports:
+      - 5055:5055
+    networks:
+      - default
+    command: ["sleep", "infinity"]
+
+networks:
+  default:
+    name: devcontainer
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.name: devcontainer

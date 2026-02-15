@@ -1,0 +1,65 @@
+{
+  "name": "Overseer Dev Container",
+  "dockerComposeFile": "./compose.yml",
+  "service": "devcontainer",
+  "shutdownAction": "none",
+
+  "remoteUser": "root",
+  "workspaceFolder": "/workspace",
+
+  "postCreateCommand": "bash /root/setup.sh",
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "EditorConfig.editorconfig",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "Orta.vscode-jest",
+        "stylelint.vscode-stylelint",
+        "bradlc.vscode-tailwindcss",
+        "mskelton.npm-outdated",
+        "eamodio.gitlens",
+        "wix.vscode-import-cost",
+        "gruntfuggly.todo-tree",
+        "aaron-bond.better-comments",
+        "usernamehw.errorlens"
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "prettier.configPath": "/workspace/.prettierrc",
+        "prettier.ignorePath": "/workspace/.prettierignore",
+        "eslint.enable": true,
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ],
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "typescript.preferences.importModuleSpecifier": "non-relative",
+        "sqltools.connections": [
+          {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "Local SQLite",
+            "database": "./config/db/db.sqlite3"
+          }
+        ],
+        "files.associations": {
+          "globals.css": "tailwindcss"
+        },
+        "i18n-ally.localesPaths": ["src/i18n/locale"]
+      }
+    }
+  },
+
+  "forwardPorts": [5055],
+  "portsAttributes": {
+    "5055": {
+      "label": "Overseer",
+      "onAutoForward": "notify"
+    }
+  }
+}
