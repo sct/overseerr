@@ -5,7 +5,7 @@ summary: Request management and media discovery tool for the Plex ecosystem.
 description: >
   Overseerr is a free and open source software application for managing requests for your media library.
   It integrates with your existing services such as Sonarr, Radarr and Plex!
-base: core18
+base: core22
 confinement: strict
 
 architectures:
@@ -15,10 +15,9 @@ architectures:
 
 parts:
   overseerr:
-    plugin: nodejs
-    nodejs-version: '18.18.2'
-    nodejs-package-manager: 'yarn'
-    nodejs-yarn-version: v1.22.19
+    plugin: npm
+    npm-node-version: '18.18.2'
+    npm-include-node: true
     build-packages:
       - git
       - on arm64:
@@ -34,7 +33,7 @@ parts:
           - python-gi-dev
     source: .
     override-pull: |
-      snapcraftctl pull
+      craftctl default
       # Get information to determine snap grade and version
       git config --global --add safe.directory /data/parts/overseerr/src
       #setup yarn.rc
@@ -61,8 +60,8 @@ parts:
       \"commit\": \"$COMMIT\"}"
       echo "{\"commitTag\": \"$COMMIT\"}" > committag.json
       # Set snap version and grade
-      snapcraftctl set-version "$SNAP_VERSION"
-      snapcraftctl set-grade "$GRADE"
+      craftctl set version="$SNAP_VERSION"
+      craftctl set grade="$GRADE"
     build-environment:
       - PATH: '$SNAPCRAFT_PART_BUILD/node_modules/.bin:$SNAPCRAFT_PART_BUILD/../npm/bin:$PATH'
       - CYPRESS_INSTALL_BINARY: '0'
@@ -70,15 +69,26 @@ parts:
       set -e
       # Set COMMIT_TAG before the build begins
       export COMMIT_TAG=$(cat $SNAPCRAFT_PART_BUILD/commit.txt)
+
+      # Use snapcraftctl build to execute the build step
       snapcraftctl build
+
+      # Use yarn for building (yarn is already available in /usr/local/bin)
       yarn build
+
       # Copy files needed for staging
       cp $SNAPCRAFT_PART_BUILD/committag.json $SNAPCRAFT_PART_INSTALL/
       cp -R $SNAPCRAFT_PART_BUILD/.next $SNAPCRAFT_PART_INSTALL/
       cp -R $SNAPCRAFT_PART_BUILD/dist $SNAPCRAFT_PART_INSTALL/
       cp -R $SNAPCRAFT_PART_BUILD/node_modules $SNAPCRAFT_PART_INSTALL/
+
       # Remove .github and gitbook as it will fail snap lint
-      rm -rf $SNAPCRAFT_PART_INSTALL/.github && rm $SNAPCRAFT_PART_INSTALL/.gitbook.yaml
+      if [ -d "$SNAPCRAFT_PART_INSTALL/.github" ]; then
+        rm -rf "$SNAPCRAFT_PART_INSTALL/.github"
+      fi
+      if [ -f "$SNAPCRAFT_PART_INSTALL/.gitbook.yaml" ]; then
+        rm "$SNAPCRAFT_PART_INSTALL/.gitbook.yaml"
+      fi
     stage-packages:
       - on armhf:
           - libatomic1
@@ -87,7 +97,7 @@ parts:
 
 apps:
   daemon:
-    command: /bin/sh -c "cd $SNAP && node dist/index.js"
+    command: bin/node dist/index.js
     daemon: simple
     restart-condition: on-failure
     restart-delay: 5s
