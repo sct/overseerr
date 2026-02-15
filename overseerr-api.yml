@@ -1770,6 +1770,26 @@ components:
           type: number
         name:
           type: string
+    DeclineReason:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+          readOnly: true
+        reason:
+          type: string
+          example: 'Content not suitable for our server'
+        createdAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T09:45:00.000Z'
+          readOnly: true
+        updatedAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T09:45:00.000Z'
+          readOnly: true
     Issue:
       type: object
       properties:
@@ -3256,6 +3276,67 @@ paths:
       responses:
         '204':
           description: All sliders reset to defaults
+  /settings/decline-reasons:
+    get:
+      summary: Get all custom decline reasons
+      description: Returns all custom decline reasons in a JSON array.
+      tags:
+        - settings
+      responses:
+        '200':
+          description: Custom decline reasons returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DeclineReason'
+    post:
+      summary: Create a new custom decline reason
+      description: Creates a new custom decline reason. Requires the `ADMIN` permission.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  example: 'Content not suitable for our server'
+              required:
+                - reason
+      responses:
+        '201':
+          description: Custom decline reason created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeclineReason'
+        '400':
+          description: Bad request - reason is required
+        '409':
+          description: Conflict - decline reason already exists
+  /settings/decline-reasons/{reasonId}:
+    delete:
+      summary: Delete a custom decline reason
+      description: Deletes a custom decline reason by ID. Requires the `ADMIN` permission.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: reasonId
+          required: true
+          schema:
+            type: number
+            example: 1
+      responses:
+        '204':
+          description: Custom decline reason deleted
+        '404':
+          description: Decline reason not found
   /settings/about:
     get:
       summary: Get server stats
