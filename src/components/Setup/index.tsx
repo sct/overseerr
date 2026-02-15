@@ -9,6 +9,7 @@ import SettingsServices from '@app/components/Settings/SettingsServices';
 import LoginWithPlex from '@app/components/Setup/LoginWithPlex';
 import SetupSteps from '@app/components/Setup/SetupSteps';
 import useLocale from '@app/hooks/useLocale';
+import type { PlexSettings } from '@server/lib/settings';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -35,6 +36,22 @@ const Setup = () => {
   const [plexSettingsComplete, setPlexSettingsComplete] = useState(false);
   const router = useRouter();
   const { locale } = useLocale();
+
+  // Fetch Plex servers to check if setup is complete
+  const { data: plexServers, mutate: revalidatePlexServers } = useSWR<
+    PlexSettings[]
+  >(currentStep === 2 ? '/api/v1/settings/plex' : null, {
+    refreshInterval: 2000, // Poll to detect changes
+  });
+
+  // Check if any servers have enabled libraries
+  const hasConfiguredServers = plexServers?.some(
+    (server) =>
+      server.libraries.length > 0 && server.libraries.some((lib) => lib.enabled)
+  );
+
+  // Allow continuing if user manually set complete OR if servers are already configured
+  const canContinue = plexSettingsComplete || hasConfiguredServers;
 
   const finishSetup = async () => {
     setIsUpdating(true);
@@ -108,7 +125,12 @@ const Setup = () => {
           )}
           {currentStep === 2 && (
             <div>
-              <SettingsPlex onComplete={() => setPlexSettingsComplete(true)} />
+              <SettingsPlex
+                onComplete={() => {
+                  setPlexSettingsComplete(true);
+                  revalidatePlexServers();
+                }}
+              />
               <div className="mt-4 text-sm text-gray-500">
                 <span className="mr-2">
                   <Badge>{intl.formatMessage(messages.tip)}</Badge>
@@ -120,7 +142,7 @@ const Setup = () => {
                   <span className="ml-3 inline-flex rounded-md shadow-sm">
                     <Button
                       buttonType="primary"
-                      disabled={!plexSettingsComplete}
+                      disabled={!canContinue}
                       onClick={() => setCurrentStep(3)}
                     >
                       {intl.formatMessage(messages.continue)}

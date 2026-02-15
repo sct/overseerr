@@ -30,6 +30,7 @@ const messages = defineMessages({
   accounttype: 'Account Type',
   plexuser: 'Plex User',
   localuser: 'Local User',
+  plexserver: 'Plex Server',
   role: 'Role',
   owner: 'Owner',
   admin: 'Admin',
@@ -80,6 +81,13 @@ const UserGeneralSettings = () => {
   } = useSWR<UserSettingsGeneralResponse>(
     user ? `/api/v1/user/${user?.id}/settings/main` : null
   );
+
+  // Color for server badge
+  const serverBadgeColor = {
+    bg: 'bg-purple-600',
+    border: 'border-purple-500',
+    text: 'text-purple-100',
+  };
 
   const UserGeneralSettingsSchema = Yup.object().shape({
     discordId: Yup.string()
@@ -202,6 +210,22 @@ const UserGeneralSettings = () => {
                   </div>
                 </div>
               </div>
+              {user?.userType === UserType.PLEX && user?.plexServerName && (
+                <div className="form-row">
+                  <label className="text-label">
+                    {intl.formatMessage(messages.plexserver)}
+                  </label>
+                  <div className="mb-1 text-sm font-medium leading-5 text-gray-400 sm:mt-2">
+                    <div className="flex max-w-lg items-center">
+                      <span
+                        className={`inline-flex rounded-full border px-2 text-xs font-semibold leading-5 ${serverBadgeColor.bg} bg-opacity-80 ${serverBadgeColor.border} ${serverBadgeColor.text}`}
+                      >
+                        {user.plexServerName}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
               <div className="form-row">
                 <label className="text-label">
                   {intl.formatMessage(messages.role)}

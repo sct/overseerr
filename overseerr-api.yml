@@ -153,14 +153,15 @@ components:
     PlexSettings:
       type: object
       properties:
+        id:
+          type: number
+          example: 0
         name:
           type: string
           example: 'Main Server'
-          readOnly: true
         machineId:
           type: string
           example: '1234123412341234'
-          readOnly: true
         ip:
           type: string
           example: '127.0.0.1'
@@ -172,7 +173,6 @@ components:
           nullable: true
         libraries:
           type: array
-          readOnly: true
           items:
             $ref: '#/components/schemas/PlexLibrary'
         webAppUrl:
@@ -180,8 +180,6 @@ components:
           nullable: true
           example: 'https://app.plex.tv/desktop'
       required:
-        - name
-        - machineId
         - ip
         - port
     PlexConnection:
@@ -1967,6 +1965,201 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PlexSettings'
+  /settings/plex/test:
+    post:
+      summary: Test Plex server connection
+      description: Tests the connection to a Plex server with the provided settings.
+      tags:
+        - settings
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlexSettings'
+      responses:
+        '200':
+          description: Connection successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  machineId:
+                    type: string
+                    example: 'abc123'
+                  name:
+                    type: string
+                    example: 'My Plex Server'
+        '400':
+          description: Missing Plex token
+        '500':
+          description: Connection failed
+  /settings/plex/{plexId}:
+    get:
+      summary: Get a single Plex server
+      description: Returns a single Plex server configuration.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: plexId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Plex server returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSettings'
+        '404':
+          description: Server not found
+    put:
+      summary: Update a Plex server
+      description: Updates an existing Plex server configuration.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: plexId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlexSettings'
+      responses:
+        '200':
+          description: Plex server updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSettings'
+        '404':
+          description: Server not found
+        '500':
+          description: Failed to connect to server
+    delete:
+      summary: Delete a Plex server
+      description: Removes a Plex server from the configuration.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: plexId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Plex server deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlexSettings'
+        '404':
+          description: Server not found
+  /settings/plex/{plexId}/libraries:
+    get:
+      summary: Get libraries for a Plex server
+      description: Returns the libraries available on a specific Plex server.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: plexId
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: Plex libraries returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlexLibrary'
+        '404':
+          description: Server not found
+        '500':
+          description: Failed to fetch libraries
+  /settings/plex/{plexId}/libraries/sync:
+    post:
+      summary: Sync libraries for a Plex server
+      description: Syncs the library list from a specific Plex server.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: plexId
+          required: true
+          schema:
+            type: number
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+      responses:
+        '200':
+          description: Libraries synced
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlexLibrary'
+        '404':
+          description: Server not found
+        '500':
+          description: Failed to sync libraries
+  /settings/plex/{plexId}/libraries/{libraryId}:
+    put:
+      summary: Toggle library enabled state
+      description: Enables or disables a library on a specific Plex server. If no body is provided, the enabled state is toggled.
+      tags:
+        - settings
+      parameters:
+        - in: path
+          name: plexId
+          required: true
+          schema:
+            type: number
+        - in: path
+          name: libraryId
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+      responses:
+        '200':
+          description: Library toggled
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PlexLibrary'
+        '404':
+          description: Server or library not found
   /settings/plex/library:
     get:
       summary: Get Plex libraries

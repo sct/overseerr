@@ -79,6 +79,12 @@ export class User {
   @Column({ nullable: true, select: false })
   public plexToken?: string;
 
+  @Column({ nullable: true, select: true })
+  public plexServerId?: number; // The Plex server this user was authenticated from
+
+  @Column({ nullable: true, select: true })
+  public plexServerName?: string; // Name of the Plex server (denormalized for non-admin access)
+
   @Column({ type: 'integer', default: 0 })
   public permissions = 0;
 

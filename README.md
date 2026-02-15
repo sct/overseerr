@@ -22,6 +22,7 @@
 ## Current Features
 
 - Full Plex integration. Authenticate and manage user access with Plex!
+- Support for multiple Plex servers, including servers owned by different accounts.
 - Easy integration with your existing services. Currently, Overseerr supports Sonarr and Radarr. More to come!
 - Plex library scan, to keep track of the titles which are already available.
 - Customizable request system, which allows users to request individual seasons or movies in a friendly, easy-to-use interface.

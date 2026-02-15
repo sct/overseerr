@@ -225,18 +225,22 @@ class PlexTvAPI extends ExternalAPI {
     }
   }
 
+  /**
+   * Check if user has access using THIS instance's token.
+   * Only checks servers that belong to this token owner.
+   * @deprecated Use PlexTvAPI.checkUserAccessAnyServer() for multi-owner support
+   */
   public async checkUserAccess(userId: number): Promise<boolean> {
     const settings = getSettings();
+    const plexServers = settings.plex;
 
     try {
-      if (!settings.plex.machineId) {
-        throw new Error('Plex is not configured!');
+      if (plexServers.length === 0) {
+        throw new Error('No Plex servers configured!');
       }
 
       const usersResponse = await this.getUsers();
-
       const users = usersResponse.MediaContainer.User;
-
       const user = users.find((u) => parseInt(u.$.id) === userId);
 
       if (!user) {
@@ -245,13 +249,255 @@ class PlexTvAPI extends ExternalAPI {
         );
       }
 
-      return !!user.Server?.find(
-        (server) => server.$.machineIdentifier === settings.plex.machineId
-      );
+      // Check if user has access to ANY configured Plex server
+      for (const plexServer of plexServers) {
+        if (!plexServer.machineId) {
+          continue;
+        }
+
+        const hasAccess = user.Server?.some(
+          (server) => server.$.machineIdentifier === plexServer.machineId
+        );
+
+        if (hasAccess) {
+          return true;
+        }
+      }
+
+      return false;
     } catch (e) {
       logger.error(`Error checking user access: ${e.message}`);
       return false;
     }
+  }
+
+  /**
+   * Check if a user has access to ANY configured Plex server.
+   * Iterates through all servers and uses each server's authToken to check access.
+   * Returns the server ID if access is granted, or null if no access.
+   */
+  public static async checkUserAccessAnyServer(
+    userId: number,
+    fallbackToken?: string
+  ): Promise<{
+    hasAccess: boolean;
+    plexServerId?: number;
+    plexServerName?: string;
+  }> {
+    const settings = getSettings();
+    const plexServers = settings.plex;
+
+    if (plexServers.length === 0) {
+      logger.error('No Plex servers configured!');
+      return { hasAccess: false };
+    }
+
+    // Iterate through each server and check using its token
+    for (const plexServer of plexServers) {
+      const token = plexServer.authToken || fallbackToken;
+
+      if (!token) {
+        logger.debug(
+          `Skipping server ${plexServer.name}: no auth token configured`,
+          { label: 'Plex.tv API' }
+        );
+        continue;
+      }
+
+      if (!plexServer.machineId) {
+        logger.debug(
+          `Skipping server ${plexServer.name}: no machine ID configured`,
+          { label: 'Plex.tv API' }
+        );
+        continue;
+      }
+
+      try {
+        const plexTv = new PlexTvAPI(token);
+
+        // First check if this user IS the server owner
+        // (owners don't appear in getUsers(), they are the token holder)
+        try {
+          const owner = await plexTv.getUser();
+          if (owner && owner.id === userId) {
+            logger.info(
+              `User ${userId} is the owner of server: ${plexServer.name}`,
+              { label: 'Plex.tv API' }
+            );
+            return {
+              hasAccess: true,
+              plexServerId: plexServer.id,
+              plexServerName: plexServer.name,
+            };
+          }
+        } catch (ownerError) {
+          logger.debug(
+            `Could not get owner info for ${plexServer.name}: ${ownerError.message}`,
+            { label: 'Plex.tv API' }
+          );
+        }
+
+        // Check shared users
+        const usersResponse = await plexTv.getUsers();
+        const users = usersResponse.MediaContainer.User;
+        const user = users.find((u) => parseInt(u.$.id) === userId);
+
+        if (user) {
+          const hasAccess = user.Server?.some(
+            (server) => server.$.machineIdentifier === plexServer.machineId
+          );
+
+          if (hasAccess) {
+            logger.info(
+              `User ${userId} has access via server: ${plexServer.name}`,
+              { label: 'Plex.tv API' }
+            );
+            return {
+              hasAccess: true,
+              plexServerId: plexServer.id,
+              plexServerName: plexServer.name,
+            };
+          }
+        }
+      } catch (e) {
+        logger.warn(
+          `Failed to check user access on server ${plexServer.name}: ${e.message}`,
+          { label: 'Plex.tv API' }
+        );
+        // Continue to next server
+      }
+    }
+
+    logger.debug(
+      `User ${userId} does not have access to any configured server`,
+      {
+        label: 'Plex.tv API',
+      }
+    );
+    return { hasAccess: false };
+  }
+
+  /**
+   * Get all users from all configured Plex servers.
+   * Returns users with their associated server information.
+   */
+  public static async getAllUsersFromAllServers(
+    fallbackToken?: string
+  ): Promise<
+    {
+      plexId: number;
+      username: string;
+      email: string;
+      thumb: string;
+      plexServerId: number;
+      plexServerName: string;
+    }[]
+  > {
+    const settings = getSettings();
+    const plexServers = settings.plex;
+    const allUsers: {
+      plexId: number;
+      username: string;
+      email: string;
+      thumb: string;
+      plexServerId: number;
+      plexServerName: string;
+    }[] = [];
+
+    for (const plexServer of plexServers) {
+      const token = plexServer.authToken || fallbackToken;
+
+      logger.debug(
+        `Processing server ${plexServer.name} (id: ${plexServer.id})`,
+        {
+          label: 'Plex.tv API',
+          hasToken: !!token,
+          hasAuthToken: !!plexServer.authToken,
+          hasMachineId: !!plexServer.machineId,
+          machineId: plexServer.machineId,
+        }
+      );
+
+      if (!token || !plexServer.machineId) {
+        logger.debug(
+          `Skipping server ${plexServer.name}: missing token or machineId`,
+          {
+            label: 'Plex.tv API',
+          }
+        );
+        continue;
+      }
+
+      try {
+        const plexTv = new PlexTvAPI(token);
+
+        // Get the server owner's info (they won't appear in getUsers())
+        try {
+          const owner = await plexTv.getUser();
+          if (owner) {
+            allUsers.push({
+              plexId: owner.id,
+              username: owner.username || owner.title,
+              email: owner.email,
+              thumb: owner.thumb,
+              plexServerId: plexServer.id,
+              plexServerName: plexServer.name,
+            });
+            logger.debug(
+              `Added server owner ${owner.username} for ${plexServer.name}`,
+              {
+                label: 'Plex.tv API',
+              }
+            );
+          }
+        } catch (ownerError) {
+          logger.warn(
+            `Failed to get owner info for ${plexServer.name}: ${ownerError.message}`,
+            {
+              label: 'Plex.tv API',
+            }
+          );
+        }
+
+        // Get shared users
+        const usersResponse = await plexTv.getUsers();
+
+        let usersFoundOnThisServer = 0;
+        for (const user of usersResponse.MediaContainer.User) {
+          const hasAccessToThisServer = user.Server?.some(
+            (server) => server.$.machineIdentifier === plexServer.machineId
+          );
+
+          if (hasAccessToThisServer) {
+            usersFoundOnThisServer++;
+            allUsers.push({
+              plexId: parseInt(user.$.id),
+              username: user.$.username || user.$.title,
+              email: user.$.email,
+              thumb: user.$.thumb,
+              plexServerId: plexServer.id,
+              plexServerName: plexServer.name,
+            });
+          }
+        }
+
+        logger.debug(
+          `Found ${usersFoundOnThisServer} shared users with access to ${plexServer.name}`,
+          {
+            label: 'Plex.tv API',
+            totalUsersInResponse:
+              usersResponse.MediaContainer.User?.length ?? 0,
+          }
+        );
+      } catch (e) {
+        logger.warn(
+          `Failed to fetch users from server ${plexServer.name}: ${e.message}`,
+          { label: 'Plex.tv API' }
+        );
+      }
+    }
+
+    return allUsers;
   }
 
   public async getUsers(): Promise<UsersResponse> {

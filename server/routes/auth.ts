@@ -51,6 +51,9 @@ authRoutes.post('/plex', async (req, res, next) => {
       .getOne();
 
     if (!user && !(await userRepository.count())) {
+      // First user - becomes admin
+      // Assign to primary server (id 0) if configured
+      const primaryServer = settings.plex[0];
       user = new User({
         email: account.email,
         plexUsername: account.username,
@@ -59,6 +62,8 @@ authRoutes.post('/plex', async (req, res, next) => {
         permissions: Permission.ADMIN,
         avatar: account.thumb,
         userType: UserType.PLEX,
+        plexServerId: 0,
+        plexServerName: primaryServer?.name,
       });
 
       await userRepository.save(user);
@@ -67,7 +72,6 @@ authRoutes.post('/plex', async (req, res, next) => {
         select: { id: true, plexToken: true, plexId: true, email: true },
         where: { id: 1 },
       });
-      const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
       if (!account.id) {
         logger.error('Plex ID was missing from Plex.tv response', {
@@ -83,11 +87,26 @@ authRoutes.post('/plex', async (req, res, next) => {
         });
       }
 
-      if (
+      // Check if user is admin or has access to ANY configured server
+      const isAdmin =
         account.id === mainUser.plexId ||
-        (account.email === mainUser.email && !mainUser.plexId) ||
-        (await mainPlexTv.checkUserAccess(account.id))
-      ) {
+        (account.email === mainUser.email && !mainUser.plexId);
+
+      // Use the new multi-server access check with fallback to admin token
+      // For admin, assign to primary server (id 0)
+      const primaryServer = settings.plex[0];
+      const accessResult = isAdmin
+        ? {
+            hasAccess: true,
+            plexServerId: 0,
+            plexServerName: primaryServer?.name,
+          }
+        : await PlexTvAPI.checkUserAccessAnyServer(
+            account.id,
+            mainUser.plexToken ?? undefined
+          );
+
+      if (isAdmin || accessResult.hasAccess) {
         if (user) {
           if (!user.plexId) {
             logger.info(
@@ -109,6 +128,12 @@ authRoutes.post('/plex', async (req, res, next) => {
           user.email = account.email;
           user.plexUsername = account.username;
           user.userType = UserType.PLEX;
+          // Track which server granted access (if not admin)
+          // Also update if plexServerName is missing (for backwards compatibility)
+          if (accessResult.plexServerId !== undefined) {
+            user.plexServerId = accessResult.plexServerId;
+            user.plexServerName = accessResult.plexServerName;
+          }
 
           await userRepository.save(user);
         } else if (!settings.main.newPlexLogin) {
@@ -135,6 +160,7 @@ authRoutes.post('/plex', async (req, res, next) => {
               email: account.email,
               plexId: account.id,
               plexUsername: account.username,
+              plexServerId: accessResult.plexServerId,
             }
           );
           user = new User({
@@ -145,13 +171,15 @@ authRoutes.post('/plex', async (req, res, next) => {
             permissions: settings.main.defaultPermissions,
             avatar: account.thumb,
             userType: UserType.PLEX,
+            plexServerId: accessResult.plexServerId,
+            plexServerName: accessResult.plexServerName,
           });
 
           await userRepository.save(user);
         }
       } else {
         logger.warn(
-          'Failed sign-in attempt by Plex user without access to the media server',
+          'Failed sign-in attempt by Plex user without access to any configured media server',
           {
             label: 'API',
             ip: req.ip,
@@ -222,21 +250,20 @@ authRoutes.post('/local', async (req, res, next) => {
       select: { id: true, plexToken: true, plexId: true },
       where: { id: 1 },
     });
-    const mainPlexTv = new PlexTvAPI(mainUser.plexToken ?? '');
 
     if (!user.plexId) {
       try {
-        const plexUsersResponse = await mainPlexTv.getUsers();
-        const account = plexUsersResponse.MediaContainer.User.find(
-          (account) =>
-            account.$.email &&
-            account.$.email.toLowerCase() === user.email.toLowerCase()
-        )?.$;
+        // Try to find matching Plex user across all servers
+        const allPlexUsers = await PlexTvAPI.getAllUsersFromAllServers(
+          mainUser.plexToken ?? undefined
+        );
+        const matchingPlexUser = allPlexUsers.find(
+          (plexUser) =>
+            plexUser.email &&
+            plexUser.email.toLowerCase() === user.email.toLowerCase()
+        );
 
-        if (
-          account &&
-          (await mainPlexTv.checkUserAccess(parseInt(account.id)))
-        ) {
+        if (matchingPlexUser) {
           logger.info(
             'Found matching Plex user; updating user with Plex data',
             {
@@ -244,16 +271,19 @@ authRoutes.post('/local', async (req, res, next) => {
               ip: req.ip,
               email: body.email,
               userId: user.id,
-              plexId: account.id,
-              plexUsername: account.username,
+              plexId: matchingPlexUser.plexId,
+              plexUsername: matchingPlexUser.username,
+              plexServerId: matchingPlexUser.plexServerId,
             }
           );
 
-          user.plexId = parseInt(account.id);
-          user.avatar = account.thumb;
-          user.email = account.email;
-          user.plexUsername = account.username;
+          user.plexId = matchingPlexUser.plexId;
+          user.avatar = matchingPlexUser.thumb;
+          user.email = matchingPlexUser.email;
+          user.plexUsername = matchingPlexUser.username;
           user.userType = UserType.PLEX;
+          user.plexServerId = matchingPlexUser.plexServerId;
+          user.plexServerName = matchingPlexUser.plexServerName;
 
           await userRepository.save(user);
         }
@@ -265,27 +295,43 @@ authRoutes.post('/local', async (req, res, next) => {
       }
     }
 
-    if (
-      user.plexId &&
-      user.plexId !== mainUser.plexId &&
-      !(await mainPlexTv.checkUserAccess(user.plexId))
-    ) {
-      logger.warn(
-        'Failed sign-in attempt from Plex user without access to the media server',
-        {
-          label: 'API',
-          account: {
-            ip: req.ip,
-            email: body.email,
-            userId: user.id,
-            plexId: user.plexId,
-          },
-        }
+    // Verify user still has access to at least one server
+    if (user.plexId && user.plexId !== mainUser.plexId) {
+      const accessResult = await PlexTvAPI.checkUserAccessAnyServer(
+        user.plexId,
+        mainUser.plexToken ?? undefined
       );
-      return next({
-        status: 403,
-        message: 'Access denied.',
-      });
+
+      if (!accessResult.hasAccess) {
+        logger.warn(
+          'Failed sign-in attempt from Plex user without access to any configured media server',
+          {
+            label: 'API',
+            account: {
+              ip: req.ip,
+              email: body.email,
+              userId: user.id,
+              plexId: user.plexId,
+            },
+          }
+        );
+        return next({
+          status: 403,
+          message: 'Access denied.',
+        });
+      }
+
+      // Update plexServerId/plexServerName if changed or missing
+      if (accessResult.plexServerId !== undefined) {
+        const needsUpdate =
+          user.plexServerId !== accessResult.plexServerId ||
+          !user.plexServerName;
+        if (needsUpdate) {
+          user.plexServerId = accessResult.plexServerId;
+          user.plexServerName = accessResult.plexServerName;
+          await userRepository.save(user);
+        }
+      }
     }
 
     // Set logged in session
