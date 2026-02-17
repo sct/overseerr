@@ -470,11 +470,7 @@
   "components.NotificationTypeSelector.usermediadeclinedDescription": "Получать уведомления, когда ваши медиа-запросы отклоняются.",
   "components.NotificationTypeSelector.usermediaavailableDescription": "Получать уведомления, когда запрошенные вами медиафайлы становятся доступны.",
   "components.NotificationTypeSelector.usermediaapprovedDescription": "Получать уведомления, когда ваши медиа-запросы получают одобрение.",
-  "components.Layout.VersionStatus.commitsbehind": "{commitsBehind} {commitsBehind, plural, one {коммит} other {коммитов}} позади",
   "components.MovieDetails.studio": "{studioCount, plural, one {Студия} other {Студии}}",
-  "components.Layout.VersionStatus.streamstable": "Стабильная версия Overseerr",
-  "components.Layout.VersionStatus.streamdevelop": "Версия Overseerr для разработки",
-  "components.Layout.VersionStatus.outofdate": "Устарела",
   "components.AppDataWarning.dockerVolumeMissingDescription": "Подключение тома <code>{appDataPath}</code> настроено неправильно. Все данные будут удалены при остановке или перезапуске контейнера.",
   "components.RequestModal.QuotaDisplay.requestsremaining": "{remaining, plural, =0 {запросов {type} не осталось} other {осталось <strong>#</strong> запроса(ов) {type}}}",
   "components.RequestModal.QuotaDisplay.quotaLinkUser": "Вы можете посмотреть сводку ограничений на количество запросов этого пользователя на <ProfileLink>странице его профиля</ProfileLink>.",
@@ -647,7 +643,6 @@
   "components.Settings.SettingsAbout.outofdate": "Устарела",
   "components.Settings.SettingsAbout.helppaycoffee": "Помочь оплатить кофе",
   "components.Settings.SettingsAbout.gettingsupport": "Получить поддержку",
-  "components.Settings.SettingsAbout.betawarning": "Это бета-версия программного обеспечения. Некоторые функции могут не работать или работать нестабильно. Пожалуйста, сообщайте о любых проблемах на GitHub!",
   "components.Settings.SettingsAbout.about": "О проекте",
   "components.Settings.SettingsAbout.Releases.viewongithub": "Посмотреть на GitHub",
   "components.Settings.SettingsAbout.Releases.viewchangelog": "Посмотреть список изменений",
@@ -1257,5 +1252,8 @@
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.subscriptiondeleted": "Подписка удалена.",
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.device": "Устройство",
   "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.managedevices": "Управление устройствами",
-  "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.unknown": "Неизвестный"
+  "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.unknown": "Неизвестный",
+  "i18n.completed": "Завершено",
+  "i18n.deleted": "Удалено",
+  "components.UserProfile.UserSettings.UserNotificationSettings.UserNotificationsWebPush.activesubscription": "Активная подписка"
 }
